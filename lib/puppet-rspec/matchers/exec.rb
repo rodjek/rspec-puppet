@@ -20,14 +20,21 @@ module PuppetRSpec
         end
         ret
       end
+
       description do
         "create Exec['#{expected_title}']"
       end
+
       failure_message_for_should do |actual|
-        "expected that the catalogue would contain Exec['#{expected_title}']"
+        "expected that the catalogue would contain Exec['#{expected_title}']#{with_command_msg}"
       end
+
       chain :with_command do |expected_command|
         @expected_command = expected_command
+      end
+
+      def with_command_msg
+        @expected_command.nil?? "" : " with the command `#{@expected_command}`"
       end
     end
   end
