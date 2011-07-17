@@ -1,8 +1,13 @@
-module PuppetRSpec
-  module Helpers
-    def catalogue_for(name, params, module_path)
+module RSpec::Puppet
+  module DefineExampleGroup
+    def subject
+      @catalogue ||= catalogue
+    end
+
+    def catalogue
       Puppet[:modulepath] = module_path
-      Puppet[:code] = name + " { " + name + ": " + params.keys.map { |r|
+      # TODO pull type name from describe string
+      Puppet[:code] = 'sysctl' + " { " + name + ": " + params.keys.map { |r|
         "#{r.to_s} => '#{params[r].to_s}'"
       }.join(', ') + " }"
 
@@ -11,7 +16,7 @@ module PuppetRSpec
       end
 
       unless node = Puppet::Node.find(Puppet[:certname])
-       raise "Could not find node #{Puppet[:certname]}"
+        raise "Could not find node #{Puppet[:certname]}"
       end
 
       node.merge(facts.values)

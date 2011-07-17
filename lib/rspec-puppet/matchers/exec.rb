@@ -1,4 +1,4 @@
-module PuppetRSpec
+module RSpec::Puppet
   module Matchers
     extend RSpec::Matchers::DSL
 
