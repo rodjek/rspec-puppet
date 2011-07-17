@@ -1,5 +1,7 @@
 module RSpec::Puppet
   module DefineExampleGroup
+    include RSpec::Puppet::Matchers
+
     def subject
       @catalogue ||= catalogue
     end
