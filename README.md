@@ -3,6 +3,20 @@
 This is a work in progress.
 
 ## Using
+To test that
+
+    sysctl { 'baz'
+      value => 'foo',
+    }
+
+Will cause the following resource to be in included in catalogue for a host
+
+    exec { 'sysctl/reload':
+      command => '/sbin/sysctl -p /etc/sysctl.conf',
+    }
+
+We can write the following testcase
+
     require 'puppet-rspec'
 
     RSpec.configure do |c|
