@@ -8,7 +8,8 @@ Gem::Specification.new do |s|
   s.files = [
     'puppet-rspec.gemspec',
     'lib/puppet-rspec.rb',
-    'lib/puppet-rspec/matchers/exec.rb'
+    'lib/puppet-rspec/matchers/exec.rb',
+    'lib/puppet-rspec/helpers/subject.rb',
   ]
 
   s.add_dependency 'rspec'
