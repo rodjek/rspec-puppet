@@ -10,6 +10,8 @@ Gem::Specification.new do |s|
     'lib/puppet-rspec.rb',
     'lib/puppet-rspec/matchers/exec.rb',
     'lib/puppet-rspec/helpers/subject.rb',
+    'lib/puppet-rspec/example.rb',
+    'lib/puppet-rspec/example/define_example_group.rb',
   ]
 
   s.add_dependency 'rspec'
