@@ -17,21 +17,16 @@ Will cause the following resource to be in included in catalogue for a host
 
 We can write the following testcase
 
-    require 'puppet-rspec'
+    require 'rspec-puppet'
 
     RSpec.configure do |c|
-      c.include PuppetRSpec
+      c.include RSpec::Puppet
     end
 
-    describe 'sysctl' do
+    describe 'sysctl', :type => :define do
       let(:node) { 'testhost.example.com' }
       let(:name) { 'baz' }
       let(:params) { { :value => 'foo' } }
-
-      before(:all) do
-        @c = catalogue_for('sysctl', params, '/path/to/puppet/modules')
-      end
-      subject { @c }
 
       it { should create_exec('sysctl/reload') }
       it { should create_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf'") }
