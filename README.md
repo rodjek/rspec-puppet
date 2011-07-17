@@ -19,10 +19,6 @@ We can write the following testcase
 
     require 'rspec-puppet'
 
-    RSpec.configure do |c|
-      c.include RSpec::Puppet
-    end
-
     describe 'sysctl', :type => :define do
       let(:node) { 'testhost.example.com' }
       let(:name) { 'baz' }
