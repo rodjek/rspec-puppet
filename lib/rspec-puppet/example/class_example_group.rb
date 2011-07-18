@@ -18,8 +18,14 @@ module RSpec::Puppet
 
       node = Puppet::Node.new('test_node')
 
-      Puppet::Resource::Catalog.find(node.name, :use_node => node)
       node.merge(facts)
+      # trying to be compatible with 2.7 as well as 2.6
+      if Puppet::Resource::Catalog.respond_to? :find
+        Puppet::Resource::Catalog.find(node.name, :use_node => node)
+      else
+        require 'puppet/face'
+        Puppet::Face[:catalog, :current].find(node.name, :use_node => node)
+      end
     end
   end
 end
