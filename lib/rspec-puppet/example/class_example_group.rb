@@ -26,10 +26,10 @@ module RSpec::Puppet
 
       # trying to be compatible with 2.7 as well as 2.6
       if Puppet::Resource::Catalog.respond_to? :find
-        Puppet::Resource::Catalog.find(node.name, :use_node => node)
+        Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
       else
         require 'puppet/face'
-        Puppet::Face[:catalog, :current].find(node.name, :use_node => node)
+        Puppet::Face[:catalog, :current].find(node_obj.name, :use_node => node_obj)
       end
     end
   end
