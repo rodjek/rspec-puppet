@@ -28,3 +28,7 @@ We can write the following testcase
       it { should create_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf") }
     end
 
+## Features I'd like
+
+ * Override fact values
+ * Override node FQDN
