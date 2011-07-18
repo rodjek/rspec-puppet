@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
     'lib/rspec-puppet/matchers/exec.rb',
     'lib/rspec-puppet/example.rb',
     'lib/rspec-puppet/example/define_example_group.rb',
+    'lib/rspec-puppet/example/class_example_group.rb',
   ]
 
   s.add_dependency 'rspec'
