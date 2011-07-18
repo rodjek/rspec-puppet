@@ -9,13 +9,13 @@ module RSpec::Puppet
     def catalogue
       define_name = self.class.top_level_description.downcase
 
-      Puppet[:modulepath] = module_path
+      Puppet[:modulepath] = self.respond_to?(:module_path) ? module_path : RSpec.configuration.module_path
 
       # If we're testing a standalone module (i.e. one that's outside of a
       # puppet tree), the autoloader won't work, so we need to fudge it a bit.
-      if File.exists?(File.join(module_path, 'manifests', 'init.pp'))
-        path_to_manifest = File.join([module_path, 'manifests', define_name.split('::')[1..-1]].flatten)
-        import_str = "import '#{module_path}/manifests/init.pp'\nimport '#{path_to_manifest}.pp'\n"
+      if File.exists?(File.join(Puppet[:modulepath], 'manifests', 'init.pp'))
+        path_to_manifest = File.join([Puppet[:modulepath], 'manifests', define_name.split('::')[1..-1]].flatten)
+        import_str = "import '#{Puppet[:modulepath]}/manifests/init.pp'\nimport '#{path_to_manifest}.pp'\n"
       else
         import_str = ""
       end
