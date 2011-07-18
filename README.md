@@ -31,8 +31,6 @@ We can write the following testcase
 ## TODO
 
  * Matchers for all the builtin types
- * Generic create_resource(foo).with_param(name, value) matcher for custom
-   resources
  * Move module_path definition to RSpec.configure
  * Override fact values
  * Override node FQDN
