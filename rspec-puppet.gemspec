@@ -8,7 +8,9 @@ Gem::Specification.new do |s|
   s.files = [
     'rspec-puppet.gemspec',
     'lib/rspec-puppet.rb',
+    'lib/rspec-puppet/matchers.rb',
     'lib/rspec-puppet/matchers/exec.rb',
+    'lib/rspec-puppet/matchers/include_class.rb',
     'lib/rspec-puppet/example.rb',
     'lib/rspec-puppet/example/define_example_group.rb',
     'lib/rspec-puppet/example/class_example_group.rb',
