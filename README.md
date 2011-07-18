@@ -1,6 +1,10 @@
 # RSpec tests for your Puppet manifests
 
-This is a work in progress.
+This is a work in progress.  Documentation is coming, I swear.
+
+## Installation
+
+   gem install rspec-puppet
 
 ## Using
 To test that
@@ -27,8 +31,3 @@ We can write the following testcase
       it { should create_exec('sysctl/reload') }
       it { should create_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf") }
     end
-
-## TODO
-
- * Matchers for all the builtin types
- * Move module_path definition to RSpec.configure
