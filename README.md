@@ -20,11 +20,11 @@ We can write the following testcase
     require 'rspec-puppet'
 
     describe 'sysctl', :type => :define do
-      let(:node) { 'testhost.example.com' }
+      let(:module_path) { '/path/to/puppet/modules' }
       let(:name) { 'baz' }
       let(:params) { { :value => 'foo' } }
 
       it { should create_exec('sysctl/reload') }
-      it { should create_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf'") }
+      it { should create_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf") }
     end
 
