@@ -32,5 +32,3 @@ We can write the following testcase
 
  * Matchers for all the builtin types
  * Move module_path definition to RSpec.configure
- * Override fact values
- * Override node FQDN
