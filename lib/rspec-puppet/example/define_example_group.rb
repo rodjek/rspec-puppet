@@ -11,6 +11,15 @@ module RSpec::Puppet
 
       Puppet[:modulepath] = module_path
 
+      # If we're testing a standalone module (i.e. one that's outside of a
+      # puppet tree), the autoloader won't work, so we need to fudge it a bit.
+      if File.exists?(File.join(module_path, 'manifests', 'init.pp'))
+        path_to_manifest = File.join([module_path, 'manifests', define_name.split('::')[1..-1]].flatten)
+        import_str = "import '#{module_path}/manifests/init.pp'\nimport '#{path_to_manifest}.pp'\n"
+      else
+        import_str = ""
+      end
+
       if self.respond_to? :params
         param_str = params.keys.map { |r|
           "#{r.to_s} => \"#{params[r].to_s}\""
@@ -19,7 +28,7 @@ module RSpec::Puppet
         param_str = ""
       end
 
-      Puppet[:code] = define_name + " { \"" + title + "\": " + param_str + " }"
+      Puppet[:code] = import_str + define_name + " { \"" + title + "\": " + param_str + " }"
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
       facts_val = self.respond_to?(:facts) ? facts : {}

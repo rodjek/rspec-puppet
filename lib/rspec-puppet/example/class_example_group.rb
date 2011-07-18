@@ -10,10 +10,20 @@ module RSpec::Puppet
       Puppet[:modulepath] = module_path
 
       klass_name = self.class.top_level_description.downcase
-      if !self.respond_to?(:params) || params == {}
-        Puppet[:code] = "include #{klass_name}"
+
+      # If we're testing a standalone module (i.e. one that's outside of a
+      # puppet tree), the autoloader won't work, so we need to fudge it a bit.
+      if File.exists?(File.join(module_path, 'manifests', 'init.pp'))
+        path_to_manifest = File.join([module_path, 'manifests', define_name.split('::')[1..-1]].flatten)
+        import_str = "import '#{module_path}/manifests/init.pp'\nimport '#{path_to_manifest}.pp'\n"
       else
-        Puppet[:code] = 'class' + " { " + klass_name + ": " + params.keys.map { |r| "#{r.to_s} => '#{params[r].to_s}'"
+        import_str = ""
+      end
+
+      if !self.respond_to?(:params) || params == {}
+        Puppet[:code] = import_str + "include #{klass_name}"
+      else
+        Puppet[:code] = import_str + 'class' + " { " + klass_name + ": " + params.keys.map { |r| "#{r.to_s} => '#{params[r].to_s}'"
       }.join(', ') + " }"
       end
 
