@@ -28,7 +28,12 @@ We can write the following testcase
       it { should create_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf") }
     end
 
-## Features I'd like
+## TODO
 
+ * Matchers for all the builtin types
+ * Generic create_resource(foo).with_param(name, value) matcher for custom
+   resources
+ * include_class matcher
+ * Move module_path definition to RSpec.configure
  * Override fact values
  * Override node FQDN
