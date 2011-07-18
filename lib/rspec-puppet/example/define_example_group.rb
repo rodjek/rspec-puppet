@@ -8,8 +8,7 @@ module RSpec::Puppet
 
     def catalogue
       Puppet[:modulepath] = module_path
-      # TODO pull type name from describe string
-      Puppet[:code] = 'sysctl' + " { " + name + ": " + params.keys.map { |r|
+      Puppet[:code] = self.class.metadata[:example_group][:full_description].downcase + " { " + name + ": " + params.keys.map { |r|
         "#{r.to_s} => '#{params[r].to_s}'"
       }.join(', ') + " }"
 
