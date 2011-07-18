@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
     'lib/rspec-puppet.rb',
     'lib/rspec-puppet/matchers.rb',
     'lib/rspec-puppet/matchers/create_resource.rb',
-    'lib/rspec-puppet/matchers/exec.rb',
+    'lib/rspec-puppet/matchers/create_exec.rb',
     'lib/rspec-puppet/matchers/include_class.rb',
     'lib/rspec-puppet/example.rb',
     'lib/rspec-puppet/example/define_example_group.rb',
