@@ -17,7 +17,7 @@ module RSpec::Puppet
 
       node_obj.merge(facts_val)
 
-      Puppet::Resource::Catalog.find(node.name, :use_node => node)
+      Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
     end
   end
 end
