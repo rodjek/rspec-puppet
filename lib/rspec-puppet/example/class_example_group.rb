@@ -8,12 +8,6 @@ module RSpec::Puppet
 
     def catalogue
       Puppet[:modulepath] = module_path
-      unless facts = Puppet::Node::Facts.find(Puppet[:certname])
-        raise "Could not find facts for #{Puppet[:certname]}"
-      end
-
-      unless node = Puppet::Node.find(Puppet[:certname])
-        raise "Could not find node #{Puppet[:certname]}"
       klass_name = self.class.top_level_description.downcase
       if params || params == {}
         Puppet[:code] = "include #{klass_name}"
@@ -22,9 +16,10 @@ module RSpec::Puppet
       }.join(', ') + " }"
       end
 
-      node.merge(facts.values)
+      node = Puppet::Node.new('test_node')
 
       Puppet::Resource::Catalog.find(node.name, :use_node => node)
+      node.merge(facts)
     end
   end
 end
