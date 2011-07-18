@@ -7,8 +7,10 @@ module RSpec::Puppet
     end
 
     def catalogue
+      define_name = self.class.top_level_description.downcase
+
       Puppet[:modulepath] = module_path
-      Puppet[:code] = self.class.metadata[:example_group][:full_description].downcase + " { \"" + title + "\": " + params.keys.map { |r|
+      Puppet[:code] = define_name + " { \"" + title + "\": " + params.keys.map { |r|
         "#{r.to_s} => '#{params[r].to_s}'"
       }.join(', ') + " }"
 
@@ -19,7 +21,13 @@ module RSpec::Puppet
 
       node_obj.merge(facts_val)
 
-      Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
+      # trying to be compatible with 2.7 as well as 2.6
+      if Puppet::Resource::Catalog.respond_to? :find
+        Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
+      else
+        require 'puppet/face'
+        Puppet::Face[:catalog, :current].find(node_obj.name, :use_node => node)
+      end
     end
   end
 end
