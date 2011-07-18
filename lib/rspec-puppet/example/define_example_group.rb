@@ -10,9 +10,16 @@ module RSpec::Puppet
       define_name = self.class.top_level_description.downcase
 
       Puppet[:modulepath] = module_path
-      Puppet[:code] = define_name + " { \"" + title + "\": " + params.keys.map { |r|
-        "#{r.to_s} => '#{params[r].to_s}'"
-      }.join(', ') + " }"
+
+      if self.respond_to? :params
+        param_str = params.keys.map { |r|
+          "#{r.to_s} => \"#{params[r].to_s}\""
+        }.join(', ')
+      else
+        param_str = ""
+      end
+
+      Puppet[:code] = define_name + " { \"" + title + "\": " + param_str + " }"
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
       facts_val = self.respond_to?(:facts) ? facts : {}
