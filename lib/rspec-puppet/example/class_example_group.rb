@@ -10,7 +10,7 @@ module RSpec::Puppet
       Puppet[:modulepath] = module_path
 
       klass_name = self.class.top_level_description.downcase
-      if params || params == {}
+      if !self.respond_to?(:params) || params == {}
         Puppet[:code] = "include #{klass_name}"
       else
         Puppet[:code] = 'class' + " { " + klass_name + ": " + params.keys.map { |r| "#{r.to_s} => '#{params[r].to_s}'"
