@@ -8,7 +8,7 @@ module RSpec::Puppet
 
     def catalogue
       Puppet[:modulepath] = module_path
-      Puppet[:code] = self.class.metadata[:example_group][:full_description].downcase + " { \"" + name + "\": " + params.keys.map { |r|
+      Puppet[:code] = self.class.metadata[:example_group][:full_description].downcase + " { \"" + title + "\": " + params.keys.map { |r|
         "#{r.to_s} => '#{params[r].to_s}'"
       }.join(', ') + " }"
 

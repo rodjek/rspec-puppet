@@ -21,7 +21,7 @@ We can write the following testcase
 
     describe 'sysctl', :type => :define do
       let(:module_path) { '/path/to/puppet/modules' }
-      let(:name) { 'baz' }
+      let(:title) { 'baz' }
       let(:params) { { :value => 'foo' } }
 
       it { should create_exec('sysctl/reload') }
