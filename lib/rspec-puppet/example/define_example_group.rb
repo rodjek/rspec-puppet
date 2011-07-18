@@ -12,13 +12,12 @@ module RSpec::Puppet
         "#{r.to_s} => '#{params[r].to_s}'"
       }.join(', ') + " }"
 
-      unless facts = Puppet::Node::Facts.find(Puppet[:certname])
-        raise "Could not find facts for #{Puppet[:certname]}"
-      end
+      nodename = self.respond_to?(:node) ? node : Puppet[:certname]
+      facts_val = {}
+      facts_val.merge(facts) if self.respond_to? :facts
 
-      unless node = Puppet::Node.find(Puppet[:certname])
-        raise "Could not find node #{Puppet[:certname]}"
-      end
+      node = Puppet::Node.new(nodename)
+      facts = Puppet::Node::Facts.new(nodename, facts_val)
 
       node.merge(facts.values)
 

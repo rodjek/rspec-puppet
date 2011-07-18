@@ -10,13 +10,12 @@ module RSpec::Puppet
       Puppet[:modulepath] = module_path
       Puppet[:code] = "include #{self.class.metadata[:example_group][:full_description].downcase}"
 
-      unless facts = Puppet::Node::Facts.find(Puppet[:certname])
-        raise "Could not find facts for #{Puppet[:certname]}"
-      end
+      nodename = self.respond_to?(:node) ? node : Puppet[:certname]
+      facts_val = {}
+      facts_val.merge(facts) if self.respond_to? :facts
 
-      unless node = Puppet::Node.find(Puppet[:certname])
-        raise "Could not find node #{Puppet[:certname]}"
-      end
+      node = Puppet::Node.new(nodename)
+      facts = Puppet::Node::Facts.new(nodename, facts_val)
 
       node.merge(facts.values)
 
