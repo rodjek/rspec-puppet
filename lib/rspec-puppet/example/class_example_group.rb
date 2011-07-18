@@ -11,13 +11,11 @@ module RSpec::Puppet
       Puppet[:code] = "include #{self.class.metadata[:example_group][:full_description].downcase}"
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
-      facts_val = {}
-      facts_val.merge(facts) if self.respond_to? :facts
+      facts_val = self.respond_to?(:facts) ? facts : {}
 
-      node = Puppet::Node.new(nodename)
-      facts = Puppet::Node::Facts.new(nodename, facts_val)
+      node_obj = Puppet::Node.new(nodename)
 
-      node.merge(facts.values)
+      node_obj.merge(facts_val)
 
       Puppet::Resource::Catalog.find(node.name, :use_node => node)
     end
