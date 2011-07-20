@@ -2,7 +2,7 @@ module RSpec::Puppet
   module Matchers
     class CreateGeneric
       def initialize(*args, &block)
-        @exp_resource_type = args.shift.to_s.gsub(/^create_/, '')
+        @exp_resource_type = args.shift.to_s.gsub(/^(create|contain)_/, '')
         @args = args
         @block = block
         @referenced_type = referenced_type(@exp_resource_type)
@@ -67,7 +67,7 @@ module RSpec::Puppet
     end
 
     def method_missing(method, *args, &block)
-      return RSpec::Puppet::Matchers::CreateGeneric.new(method, *args, &block) if method.to_s =~ /^create_/
+      return RSpec::Puppet::Matchers::CreateGeneric.new(method, *args, &block) if method.to_s =~ /^(create|contain)_/
       super
     end
   end
