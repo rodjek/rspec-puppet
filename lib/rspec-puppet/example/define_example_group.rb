@@ -31,7 +31,11 @@ module RSpec::Puppet
       Puppet[:code] = import_str + define_name + " { \"" + title + "\": " + param_str + " }"
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
-      facts_val = self.respond_to?(:facts) ? facts : {}
+      facts_val = {
+        'hostname' => nodename.split('.').first,
+        'fqdn' => nodename,
+      }
+      facts_val.merge!(facts) if self.respond_to?(:facts)
 
       node_obj = Puppet::Node.new(nodename)
 
