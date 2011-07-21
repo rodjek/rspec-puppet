@@ -21,18 +21,14 @@ module RSpec::Puppet
 
       def matches?(catalogue)
         ret = true
-        resources = catalogue.resources.select { |r|
-          r.type == @referenced_type
-        }.select { |r|
-          r.title == @title if r.respond_to? :title
-        }
+        resource = catalogue.resource(@referenced_type, @title)
 
-        unless resources.length == 1
+        if resource.nil?
           ret = false
         else
           if @expected_params
             @expected_params.each do |name, value|
-              unless resources.first.send(:parameters)[name.to_sym].to_s == value.to_s
+              unless resource.send(:parameters)[name.to_sym].to_s == value.to_s
                 ret = false
                 (@errors ||= []) << "#{name.to_s} set to `#{value.inspect}`"
               end
