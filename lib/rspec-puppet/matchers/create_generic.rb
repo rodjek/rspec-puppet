@@ -58,7 +58,7 @@ module RSpec::Puppet
     private
 
       def referenced_type(type)
-        type.split('-').map { |r| r.capitalize }.join('::')
+        type.split('__').map { |r| r.capitalize }.join('::')
       end
 
       def errors
