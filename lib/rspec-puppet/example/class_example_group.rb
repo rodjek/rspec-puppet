@@ -24,7 +24,7 @@ module RSpec::Puppet
         Puppet[:code] = import_str + "include #{klass_name}"
       else
         Puppet[:code] = import_str + 'class' + ' { "' + klass_name + '": ' + \
-          params.keys.map { |r| "#{r.to_s} => #{params[r].to_s == "false" || params[r].to_s == "true" ? params[r].to_s : '#params[r].to_s'}"
+          params.keys.map { |r| "#{r.to_s} => " + (params[r] == false || params[r] == true ? params[r].to_s : '"' + params[r].to_s + '"')
       }.join(', ') + " }"
       end
 
