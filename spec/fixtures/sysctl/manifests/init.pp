@@ -1,4 +1,4 @@
-class sysctl::common {
+class sysctl::common ($test_param = 'yes') {
   exec { 'sysctl/reload':
     command     => '/sbin/sysctl -p /etc/sysctl.conf',
     refreshonly => true,
