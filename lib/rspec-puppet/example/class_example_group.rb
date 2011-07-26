@@ -20,10 +20,17 @@ module RSpec::Puppet
         import_str = ""
       end
 
-      if !self.respond_to?(:params) || params == {}
-        Puppet[:code] = import_str + "include #{klass_name}"
+      if self.respond_to? :pre_condition
+        pre_cond = pre_condition
       else
-        Puppet[:code] = import_str + 'class' + " { " + klass_name + ": " + params.keys.map { |r| "#{r.to_s} => '#{params[r].to_s}'"
+        pre_cond = ''
+      end
+
+      if !self.respond_to?(:params) || params == {}
+        Puppet[:code] = pre_cond + "\n" + import_str + "include #{klass_name}"
+      else
+        Puppet[:code] = pre_cond + "\n" + import_str + 'class' + ' { "' + klass_name + '": ' + \
+          params.keys.map { |r| "#{r.to_s} => " + (params[r] == false || params[r] == true ? params[r].to_s : '"' + params[r].to_s + '"')
       }.join(', ') + " }"
       end
 
