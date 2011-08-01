@@ -1,6 +1,7 @@
 module RSpec::Puppet
   module DefineExampleGroup
     include RSpec::Puppet::Matchers
+    include RSpec::Puppet::Support
 
     def subject
       @catalogue ||= catalogue
@@ -37,17 +38,7 @@ module RSpec::Puppet
       }
       facts_val.merge!(facts) if self.respond_to?(:facts)
 
-      node_obj = Puppet::Node.new(nodename)
-
-      node_obj.merge(facts_val)
-
-      # trying to be compatible with 2.7 as well as 2.6
-      if Puppet::Resource::Catalog.respond_to? :find
-        Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
-      else
-        require 'puppet/face'
-        Puppet::Face[:catalog, :current].find(node_obj.name, :use_node => node)
-      end
+      build_catalog(nodename, facts_val)
     end
   end
 end
