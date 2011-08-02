@@ -1,3 +1,4 @@
+require 'rspec-puppet/support'
 require 'rspec-puppet/example/define_example_group'
 require 'rspec-puppet/example/class_example_group'
 
