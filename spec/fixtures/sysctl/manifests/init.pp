@@ -16,3 +16,10 @@ define sysctl($value) {
     notify  => Exec['sysctl/reload'],
   }
 }
+define sysctl::before($value) {
+  Class['sysctl::common'] -> Sysctl::Before[$name]
+
+  notify {"message-${name}":
+    message => "This should print if the class is here first."
+  }
+}
