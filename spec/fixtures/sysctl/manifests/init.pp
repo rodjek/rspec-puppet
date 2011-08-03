@@ -1,4 +1,4 @@
-class sysctl::common {
+class sysctl::common ($test_param = 'yes') {
   exec { 'sysctl/reload':
     command     => '/sbin/sysctl -p /etc/sysctl.conf',
     refreshonly => true,
@@ -16,6 +16,20 @@ define sysctl($value) {
     notify  => Exec['sysctl/reload'],
   }
 }
+
+class boolean($bool) {
+  $real_bool = $bool ? {
+    true => false,
+    false => true,
+  }
+
+  if ($real_bool) {
+    notify {"bool testing":
+      message => "This will print when \$bool is false."
+    }
+  }
+}
+
 define sysctl::before($value) {
   Class['sysctl::common'] -> Sysctl::Before[$name]
 

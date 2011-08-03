@@ -23,7 +23,7 @@ module RSpec::Puppet
 
       if self.respond_to? :params
         param_str = params.keys.map { |r|
-          "#{r.to_s} => \"#{params[r].to_s}\""
+          "#{r.to_s} => #{params[r].inspect}"
         }.join(', ')
       else
         param_str = ""
