@@ -21,12 +21,19 @@ module RSpec::Puppet
         import_str = ""
       end
 
+      if self.respond_to? :pre_condition
+        pre_cond = pre_condition
+      else
+        pre_cond = ''
+      end
+
       if !self.respond_to?(:params) || params == {}
         Puppet[:code] = import_str + "include #{klass_name}"
       else
-        Puppet[:code] = import_str + 'class' + " { " + klass_name + ": " + params.keys.map { |r| "#{r.to_s} => '#{params[r].to_s}'"
-      }.join(', ') + " }"
+        Puppet[:code] = import_str + 'class' + " { \"" + klass_name + "\": " + params.keys.map { |r| "#{r.to_s} => #{params[r].inspect}"
+      }.join(',' ) + " }"
       end
+      Puppet[:code] = pre_cond + "\n" + Puppet[:code]
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
       facts_val = self.respond_to?(:facts) ? facts : {}
