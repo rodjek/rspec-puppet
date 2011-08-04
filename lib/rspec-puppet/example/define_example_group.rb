@@ -37,8 +37,9 @@ module RSpec::Puppet
         'fqdn' => nodename,
       }
       facts_val.merge!(facts) if self.respond_to?(:facts)
+      additional_resources = self.respond_to?(:virtual_resources) ? virtual_resources : []
 
-      build_catalog(nodename, facts_val)
+      build_catalog(nodename, facts_val, additional_resources)
     end
   end
 end

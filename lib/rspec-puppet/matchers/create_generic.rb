@@ -23,7 +23,7 @@ module RSpec::Puppet
         ret = true
         resource = catalogue.resource(@referenced_type, @title)
 
-        if resource.nil?
+        if resource.nil? or resource.virtual?
           ret = false
         else
           if @expected_params
