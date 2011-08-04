@@ -39,7 +39,7 @@ module RSpec::Puppet
         ret = true
         resource = catalogue.resource(@referenced_type, @title)
 
-        if resource.nil?
+        if resource.nil? or resource.virtual?
           ret = false
         else
           rsrc_hsh = resource.to_hash
