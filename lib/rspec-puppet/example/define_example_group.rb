@@ -23,13 +23,19 @@ module RSpec::Puppet
 
       if self.respond_to? :params
         param_str = params.keys.map { |r|
-          "#{r.to_s} => \"#{params[r].to_s}\""
+          "#{r.to_s} => #{params[r].inspect}"
         }.join(', ')
       else
         param_str = ""
       end
 
-      Puppet[:code] = import_str + define_name + " { \"" + title + "\": " + param_str + " }"
+      if self.respond_to? :pre_condition
+        pre_cond = pre_condition
+      else
+        pre_cond = ""
+      end
+
+      Puppet[:code] = pre_cond + "\n" + import_str + define_name + " { \"" + title + "\": " + param_str + " }"
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
       facts_val = {

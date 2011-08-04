@@ -15,7 +15,7 @@ module RSpec::Puppet
           ret = false
         end
 
-        if @expected_params
+        if @expected_params and resources.length != 0
           @expected_params.each do |name, value|
             unless resources.first.send(:parameters)[name.to_sym] == value
               ret = false
