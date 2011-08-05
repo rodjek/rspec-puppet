@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
     'lib/rspec-puppet/example/class_example_group.rb',
     'lib/rspec-puppet/example/define_example_group.rb',
     'lib/rspec-puppet/example.rb',
+    'lib/rspec-puppet/support.rb',
     'lib/rspec-puppet/matchers/create_generic.rb',
     'lib/rspec-puppet/matchers/create_resource.rb',
     'lib/rspec-puppet/matchers/include_class.rb',
