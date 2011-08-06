@@ -1,5 +1,5 @@
 module RSpec::Puppet
-  module Support 
+  module Support
     def build_catalog nodename, facts_val
       node_obj = Puppet::Node.new(nodename)
 
@@ -9,8 +9,7 @@ module RSpec::Puppet
       if Puppet::Resource::Catalog.respond_to? :find
         Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
       else
-        require 'puppet/face'
-        Puppet::Face[:catalog, :current].find(node_obj.name, :use_node => node_obj)
+        Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
       end
     end
   end
