@@ -8,11 +8,11 @@ module RSpec::Puppet
       end
 
       description do
-        "include Class['#{expected_class}']"
+        "include Class[#{expected_class}]"
       end
 
       failure_message_for_should do |actual|
-        "expected that the catalogue would include Class['#{expected_class}']"
+        "expected that the catalogue would include Class[#{expected_class}]"
       end
     end
   end

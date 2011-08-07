@@ -40,15 +40,15 @@ module RSpec::Puppet
       end
 
       def failure_message_for_should
-        "expected that the catalogue would contain #{@referenced_type}[\"#{@title}\"]#{errors}"
+        "expected that the catalogue would contain #{@referenced_type}[#{@title}]#{errors}"
       end
 
       def failure_message_for_should_not
-        "expected that the catalogue would not contain #{@referenced_type}[\"#{@title}\"]#{errors}"
+        "expected that the catalogue would not contain #{@referenced_type}[#{@title}]#{errors}"
       end
 
       def description
-        "create #{@referenced_type}[\"#{@title}\"]"
+        "create #{@referenced_type}[#{@title}]"
       end
 
     private
