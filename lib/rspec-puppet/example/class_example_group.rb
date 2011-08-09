@@ -30,9 +30,10 @@ module RSpec::Puppet
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
       facts_val = self.respond_to?(:facts) ? facts : {}
-      additional_resources = self.respond_to?(:virtual_resources) ? virtual_resources : []
+      virt_res = self.respond_to?(:virtual_resources) ? virtual_resources : []
+      exp_res = self.respond_to?(:exported_resources) ? exported_resources : []
 
-      build_catalog(nodename, facts_val, additional_resources)
+      build_catalog(nodename, facts_val, virt_res, exp_res)
     end
   end
 end

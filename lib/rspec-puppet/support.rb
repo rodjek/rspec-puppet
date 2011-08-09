@@ -7,10 +7,9 @@ class Puppet::Parser::Compiler
 
     evaluate_ast_node
 
-    mock_virtual_resources.each do |r|
+    mock_resources.each do |r|
       add_resource(topscope, r)
     end
-
 
     evaluate_node_classes
 
@@ -24,34 +23,56 @@ class Puppet::Parser::Compiler
   end
 end
 
+class Puppet::Parser::Collector
+  def collect_exported
+    if @equery =~ /param_values.value = '(.*?)' and param_names.name = '(.*?)'/
+      param_value = $1
+      param_name = $2.to_sym
+    end
+
+    mock_resources.select { |r| r[param_name] == param_value }
+  end
+end
+
 module RSpec::Puppet
   module Support
-    def build_catalog(nodename, facts_val, additional_resources)
+    def build_catalog(nodename, facts_val, virt_res, exp_res)
       node_obj = Puppet::Node.new(nodename)
 
       node_obj.merge(facts_val)
 
-      additional_resources = [additional_resources] if additional_resources.is_a? Hash
+      virt_res = [virt_res] if virt_res.is_a? Hash
+      exp_res = [exp_res] if exp_res.is_a? Hash
+
       scope = Puppet::Parser::Scope.new
-      additional_resources = additional_resources.map do |r|
+
+      mock_virtual_resources = virt_res.map do |r|
         res = Puppet::Parser::Resource.new(r[:type], r[:title], {:virtual => true, :scope => scope})
-        r[:parameters].keys.each { |k|
-        res[k] = r[:parameters][k]
-        }
+        r[:parameters].keys.each { |k| res[k] = r[:parameters][k] }
         res
       end
 
-      Puppet::Parser::Compiler.any_instance.stub(:mock_virtual_resources).and_return(additional_resources)
+      mock_exported_resources = exp_res.map do |r|
+        res = Puppet::Parser::Resource.new(r[:type], r[:title], :virtual => true, :exported => true, :scope => scope)
+        r[:parameters].keys.each { |k| res[k] = r[:parameters][k] }
+        res
+      end
+
+      Puppet::Parser::Compiler.any_instance.stub(:mock_resources).and_return(mock_virtual_resources + mock_exported_resources)
+      Puppet::Parser::Collector.any_instance.stub(:mock_resources).and_return(mock_exported_resources)
+
+      require 'puppet/rails'
+      Puppet::Rails.stub(:init).and_return(true)
+      Puppet.features.stub(:rails?).and_return(true)
+      Puppet.settings.set_value(:storeconfigs, true, :memory, :dont_trigger_handles => true)
 
       # trying to be compatible with 2.7 as well as 2.6
       if Puppet::Resource::Catalog.respond_to? :find
-        catalogue = Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
+        Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
       else
         require 'puppet/face'
-        catalogue = Puppet::Face[:catalog, :current].find(node_obj.name, :use_node => node_obj)
+        Puppet::Face[:catalog, :current].find(node_obj.name, :use_node => node_obj)
       end
-
-      catalogue
     end
   end
 end
