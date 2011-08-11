@@ -55,15 +55,15 @@ argument
 
 You can test if a resource exists in the catalogue with the generic
 `creates_<resource type>` matcher.  If your resource type includes :: (e.g.
-`foo::bar` simply replace the :: with -
+`foo::bar` simply replace the :: with __ (two underscores).
 
-    it { should create_augeas('bleh') }
-    it { should create_foo-bar('baz') }
+    it { should contain_augeas('bleh') }
+    it { should contain_foo__bar('baz') }
 
 You can further test the parameters that have been passed to the resources with
 the generic `with_<parameter>` chains.
 
-    it { should create_package('mysql-server').with_ensure('present') }
+    it { should contain_package('mysql-server').with_ensure('present') }
 
 ## Writing tests
 
@@ -87,7 +87,7 @@ We can write the following testcase
       let(:title) { 'baz' }
       let(:params) { { :value => 'foo' } }
 
-      it { should create_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf") }
+      it { should contain_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf") }
     end
 
 ### Specifying the title of a resource
