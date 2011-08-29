@@ -9,5 +9,6 @@ describe 'sysctl' do
     .with_context('/files/etc/sysctl.conf') \
     .with_changes("set vm.swappiness '60'") \
     .with_onlyif("match vm.swappiness[.='60'] size == 0") \
-    .with_notify('Exec[sysctl/reload]') }
+    .with_notify('Exec[sysctl/reload]')\
+    .without_foo }
 end

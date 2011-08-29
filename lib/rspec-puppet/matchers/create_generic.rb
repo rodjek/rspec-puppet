@@ -14,6 +14,10 @@ module RSpec::Puppet
           param = method.to_s.gsub(/^with_/, '')
           (@expected_params ||= []) << [param, args[0]]
           self
+        elsif method.to_s =~ /^without_/
+          param = method.to_s.gsub(/^without_/, '')
+          (@expected_undef_params ||= []) << param
+          self
         else
           super
         end
@@ -31,6 +35,15 @@ module RSpec::Puppet
               unless resource.send(:parameters)[name.to_sym].to_s == value.to_s
                 ret = false
                 (@errors ||= []) << "#{name.to_s} set to `#{value.inspect}`"
+              end
+            end
+          end
+
+          if @expected_undef_params
+            @expected_undef_params.each do |name|
+              unless resource.send(:parameters)[name.to_sym].nil?
+                ret = false
+                (@errors ||= []) << "#{name.to_s} undefined"
               end
             end
           end

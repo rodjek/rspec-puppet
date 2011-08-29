@@ -78,6 +78,13 @@ the generic `with_<parameter>` chains.
 it { should contain_package('mysql-server').with_ensure('present') }
 ```
 
+You can also test that specific parameters have been left undefined with the
+generic `without_<parameter>` chains.
+
+```ruby
+it { should contain_file('/foo/bar').without_mode }
+```
+
 ## Writing tests
 
 ### Basic test structure
