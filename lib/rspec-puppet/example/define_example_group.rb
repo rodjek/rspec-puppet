@@ -42,7 +42,7 @@ module RSpec::Puppet
         'hostname' => nodename.split('.').first,
         'fqdn' => nodename,
       }
-      facts_val.merge!(facts) if self.respond_to?(:facts)
+      facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
 
       build_catalog(nodename, facts_val)
     end

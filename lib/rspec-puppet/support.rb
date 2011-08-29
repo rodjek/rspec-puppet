@@ -12,5 +12,11 @@ module RSpec::Puppet
         Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
       end
     end
+
+    def munge_facts(facts)
+      output = {}
+      facts.keys.each { |key| output[key.to_s] = facts[key] }
+      output
+    end
   end
 end

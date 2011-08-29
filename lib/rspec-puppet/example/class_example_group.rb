@@ -36,7 +36,11 @@ module RSpec::Puppet
       Puppet[:code] = pre_cond + "\n" + Puppet[:code]
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
-      facts_val = self.respond_to?(:facts) ? facts : {}
+      facts_val = {
+        'hostname' => nodename.split('.').first,
+        'fqdn' => nodename,
+      }
+      facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
 
       build_catalog(nodename, facts_val)
     end
