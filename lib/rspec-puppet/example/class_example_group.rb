@@ -44,6 +44,7 @@ module RSpec::Puppet
       facts_val = {
         'hostname' => nodename.split('.').first,
         'fqdn' => nodename,
+        'domain' => nodename.split('.').last,
       }
       facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
 
