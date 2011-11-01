@@ -65,7 +65,7 @@ argument
 it { should include_class('foo') }
 ```
 
-#### Checking if a resources exists
+#### Checking if a resource exists
 
 You can test if a resource exists in the catalogue with the generic
 `contain_<resource type>` matcher.
