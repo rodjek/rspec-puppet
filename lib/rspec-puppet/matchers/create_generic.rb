@@ -1,5 +1,5 @@
 module RSpec::Puppet
-  module Matchers
+  module ManifestMatchers
     class CreateGeneric
       def initialize(*args, &block)
         @exp_resource_type = args.shift.to_s.gsub(/^(create|contain)_/, '')
@@ -76,7 +76,7 @@ module RSpec::Puppet
     end
 
     def method_missing(method, *args, &block)
-      return RSpec::Puppet::Matchers::CreateGeneric.new(method, *args, &block) if method.to_s =~ /^(create|contain)_/
+      return RSpec::Puppet::ManifestMatchers::CreateGeneric.new(method, *args, &block) if method.to_s =~ /^(create|contain)_/
       super
     end
   end

@@ -1,5 +1,5 @@
 module RSpec::Puppet
-  module Matchers
+  module ManifestMatchers
     extend RSpec::Matchers::DSL
 
     matcher :include_class do |expected_class|

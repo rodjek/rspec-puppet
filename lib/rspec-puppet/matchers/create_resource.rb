@@ -1,5 +1,5 @@
 module RSpec::Puppet
-  module Matchers
+  module ManifestMatchers
     extend RSpec::Matchers::DSL
 
     matcher :create_resource do |expected_type, expected_title|
