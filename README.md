@@ -1,4 +1,4 @@
-# RSpec tests for your Puppet manifests
+# RSpec tests for your Puppet manifests & modules
 
 ## Installation
 
@@ -24,14 +24,18 @@ structure and naming convention.
            |     +-- <class_name>_spec.rb
            |
            +-- defines
+           |     |
+           |     +-- <define_name>_spec.rb
+           |
+           +-- functions
                  |
-                 +-- <define_name>_spec.rb
+                 +-- <function_name>_spec.rb
 
 ## Example groups
 
 If you use the above directory structure, your examples will automatically be
-placed in the correct groups and have access to the custom matchers.  If you
-choose not to, you can force the examples into the required groups as follows.
+placed in the correct groups and have access to the custom matchers.  *If you
+choose not to*, you can force the examples into the required groups as follows.
 
 ```ruby
 describe 'myclass', :type => :class do
@@ -41,11 +45,17 @@ end
 describe 'mydefine', :type => :define do
   ...
 end
+
+describe 'myfunction', :type => :puppet_function do
+  ...
+end
 ```
 
-## Matchers
+## Defined Types & Classes
 
-### Checking if a class has been included
+### Matchers
+
+#### Checking if a class has been included
 
 You can test if a class has been included in the catalogue with the
 `include_class` matcher.  It takes the class name as a string as its only
@@ -55,7 +65,7 @@ argument
 it { should include_class('foo') }
 ```
 
-### Checking if a resources exists
+#### Checking if a resources exists
 
 You can test if a resource exists in the catalogue with the generic
 `contain_<resource type>` matcher.
@@ -85,9 +95,9 @@ generic `without_<parameter>` chains.
 it { should contain_file('/foo/bar').without_mode }
 ```
 
-## Writing tests
+### Writing tests
 
-### Basic test structure
+#### Basic test structure
 
 To test that
 
@@ -112,19 +122,19 @@ describe 'sysctl' do
 end
 ```
 
-### Specifying the title of a resource
+#### Specifying the title of a resource
 
 ```ruby
 let(:title) { 'foo' }
 ```
 
-### Specifying the parameters to pass to a resources or parametised class
+#### Specifying the parameters to pass to a resources or parametised class
 
 ```ruby
 let(:params) { {:ensure => 'present', ...} }
 ```
 
-### Specifying the FQDN of the test node
+#### Specifying the FQDN of the test node
 
 If the manifest you're testing expects to run on host with a particular name,
 you can specify this as follows
@@ -133,7 +143,7 @@ you can specify this as follows
 let(:node) { 'testhost.example.com' }
 ```
 
-### Specifying the facts that should be available to your manifest
+#### Specifying the facts that should be available to your manifest
 
 By default, the test environment contains no facts for your manifest to use.
 You can set them with a hash
@@ -142,7 +152,7 @@ You can set them with a hash
 let(:facts) { {:operatingsystem => 'Debian', :kernel => 'Linux', ...} }
 ```
 
-### Specifying the path to find your modules
+#### Specifying the path to find your modules
 
 I recommend setting a default module path by adding the following code to your
 `spec_helper.rb`
@@ -157,4 +167,40 @@ However, if you want to specify it in each example, you can do so
 
 ```ruby
 let(:module_path) { '/path/to/your/module/dir' }
+```
+
+## Functions
+
+### Matchers
+
+All of the standard RSpec matchers are available for you to use when testing
+Puppet functions.
+
+### Writing tests
+
+#### Basic test structure
+
+#### Specifying the name of the function to test
+
+#### Specifying the arguments to pass to the function
+
+You can specify the arguments to pass to your function during the test(s) as
+follows
+
+```ruby
+let(:args) { ['arg1', 'arg2'] }
+```
+
+If you do not specify any arguments, your function will be passed `nil`
+during the test(s).
+
+#### Testing the results of the function
+
+#### Testing the errors thrown by the function
+
+```ruby
+it 'should throw Puppet::ParseError' do
+  expect { should == 'foo' }.to raise_error(Puppet::ParseError)
+  expect { should == 'foo' }.to_not raise_error(Puppet::DevError)
+end
 ```

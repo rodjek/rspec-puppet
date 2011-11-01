@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.files = [
     'lib/rspec-puppet/example/class_example_group.rb',
     'lib/rspec-puppet/example/define_example_group.rb',
+    'lib/rspec-puppet/example/function_example_group.rb',
     'lib/rspec-puppet/example.rb',
     'lib/rspec-puppet/matchers/create_generic.rb',
     'lib/rspec-puppet/matchers/create_resource.rb',
