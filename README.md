@@ -260,4 +260,5 @@ Or by using the existing `raises_error` RSpec matcher
 it 'something' do
   expect { subject.call('a', 'b') }.should raise_error(Puppet::ParseError)
   expect { subject.call('a') }.should_not raise_error(Puppet::ParseError)
+end
 ```
