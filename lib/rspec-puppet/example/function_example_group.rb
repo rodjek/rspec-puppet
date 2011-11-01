@@ -1,5 +1,7 @@
 module RSpec::Puppet
   module FunctionExampleGroup
+    include RSpec::Puppet::FunctionMatchers
+
     def subject
       function_name = self.class.top_level_description.downcase
 
@@ -7,9 +9,7 @@ module RSpec::Puppet
 
       scope = Puppet::Parser::Scope.new
 
-      func_args = self.respond_to?(:args) ? args : nil
-
-      lambda { scope.send("function_#{function_name}".to_sym, args) }.call
+      scope.method "function_#{function_name}".to_sym
     end
   end
 end
