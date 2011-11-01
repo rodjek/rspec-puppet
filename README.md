@@ -176,31 +176,88 @@ let(:module_path) { '/path/to/your/module/dir' }
 All of the standard RSpec matchers are available for you to use when testing
 Puppet functions.
 
+```ruby
+it 'should be able to do something' do
+  subject.call('foo') == 'bar'
+end
+```
+
+For your convenience though, a `run` matcher exists to provide easier to
+understand test cases.
+
+```ruby
+it { should run.with_params('foo').and_return('bar') }
+```
+
 ### Writing tests
 
 #### Basic test structure
 
+```ruby
+require 'spec_helper'
+
+describe '<function name>' do
+  ...
+end
+```
+
 #### Specifying the name of the function to test
+
+The name of the function must be provided in the top level description, e.g.
+
+```ruby
+describe 'split' do
+```
 
 #### Specifying the arguments to pass to the function
 
-You can specify the arguments to pass to your function during the test(s) as
-follows
+You can specify the arguments to pass to your function during the test(s) using
+either the `with_params` chain method in the `run` matcher
 
 ```ruby
-let(:args) { ['arg1', 'arg2'] }
+it { should run.with_params('foo', 'bar', ['baz']) }
 ```
 
-If you do not specify any arguments, your function will be passed `nil`
-during the test(s).
+Or by using the `call` method on the subject directly
+
+```ruby
+it 'something' do
+  subject.call('foo', 'bar', ['baz'])
+end
+```
 
 #### Testing the results of the function
 
-#### Testing the errors thrown by the function
+You can test the result of a function (if it produces one) using either the
+`and_returns` chain method in the `run` matcher
 
 ```ruby
-it 'should throw Puppet::ParseError' do
-  expect { should == 'foo' }.to raise_error(Puppet::ParseError)
-  expect { should == 'foo' }.to_not raise_error(Puppet::DevError)
+it { should run.with_params('foo').and_return('bar') }
+```
+
+Or by using any of the existing RSpec matchers on the subject directly
+
+```ruby
+it 'something' do
+  subject.call('foo') == 'bar'
+  subject.call('baz').should be_an Array
 end
+```
+
+#### Testing the errors thrown by the function
+
+You can test whether the function throws an exception using either the
+`and_raises_error` chain method in the `run` matcher
+
+```ruby
+it { should run.with_params('a', 'b').and_raise_error(Puppet::ParseError) }
+it { should_not run.with_params('a').and_raise_error(Puppet::ParseError) }
+```
+
+Or by using the existing `raises_error` RSpec matcher
+
+```ruby
+it 'something' do
+  expect { subject.call('a', 'b') }.should raise_error(Puppet::ParseError)
+  expect { subject.call('a') }.should_not raise_error(Puppet::ParseError)
 ```
