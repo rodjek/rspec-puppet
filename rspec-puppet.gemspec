@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
     'lib/rspec-puppet/matchers/create_generic.rb',
     'lib/rspec-puppet/matchers/create_resource.rb',
     'lib/rspec-puppet/matchers/include_class.rb',
+    'lib/rspec-puppet/matchers/run.rb',
     'lib/rspec-puppet/matchers.rb',
     'lib/rspec-puppet/support.rb',
     'lib/rspec-puppet.rb',
@@ -26,6 +27,7 @@ Gem::Specification.new do |s|
     'spec/defines/sysctl_spec.rb',
     'spec/fixtures/boolean/manifests/init.pp',
     'spec/fixtures/sysctl/manifests/init.pp',
+    'spec/functions/split_spec.rb',
     'spec/spec_helper.rb',
   ]
 
