@@ -5,14 +5,14 @@ module RSpec::Puppet
     matcher :run do
       match do |func_obj|
         if @params
-          func = lambda { func_obj.call(@params) }
+          @func = lambda { func_obj.call(@params) }
         else
-          func = lambda { func_obj.call }
+          @func = lambda { func_obj.call }
         end
 
         if @expected_error
           begin
-            func.call
+            @func.call
           rescue @expected_error
             #XXX check error string here
             true
@@ -21,10 +21,10 @@ module RSpec::Puppet
           end
         else
           if @expected_return
-            func.call == @expected_return
+            @func.call == @expected_return
           else
             begin
-              func.call
+              @func.call
             rescue
               false
             end
@@ -44,6 +44,32 @@ module RSpec::Puppet
       # XXX support error string and regexp
       chain :and_raise_error do |value|
         @expected_error = value
+      end
+
+      failure_message_for_should do |func_obj|
+        func_name = func_obj.name.gsub(/^function_/, '')
+        func_params = @params.inspect[1..-2]
+
+        if @expected_return
+          "expected #{func_name}(#{func_params}) to have returned #{@expected_return.inspect} instead of #{@func.call.inspect}"
+        elsif @expected_error
+          "expected #{func_name}(#{func_params}) to have raised #{@expected_error.inspect}"
+        else
+          "expected #{func_name}(#{func_params}) to have run successfully"
+        end
+      end
+
+      failure_message_for_should_not do |func_obj|
+        func_name = func_obj.name.gsub(/^function_/, '')
+        func_params = @params.inspect[1..-2]
+
+        if @expected_return
+          "expected #{func_name}(#{func_params}) to not have returned #{@expected_return.inspect}"
+        elsif @expected_error
+          "expected #{func_name}(#{func_params}) to not have raised #{@expected_error.inspect}"
+        else
+          "expected #{func_name}(#{func_params}) to not have run successfully"
+        end
       end
     end
   end
