@@ -1,4 +1,5 @@
 require 'puppet'
+require 'rspec'
 require 'rspec-puppet/matchers'
 require 'rspec-puppet/example'
 
