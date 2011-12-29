@@ -88,6 +88,17 @@ the generic `with_<parameter>` chains.
 it { should contain_package('mysql-server').with_ensure('present') }
 ```
 
+You can use the `with` method to verify the value of multiple parameters.
+
+```ruby
+it do should contain_service('keystone').with(
+  'ensure'     => 'running',
+  'enable'     => 'true',
+  'hasstatus'  => 'true',
+  'hasrestart' => 'true'
+) end
+```
+
 You can also test that specific parameters have been left undefined with the
 generic `without_<parameter>` chains.
 
