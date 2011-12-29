@@ -106,6 +106,15 @@ generic `without_<parameter>` chains.
 it { should contain_file('/foo/bar').without_mode }
 ```
 
+You can use the without method to verify that a list of parameters have not been
+defined
+
+```ruby
+it { should contain_service('keystone').without(
+  ['restart', 'status']
+)}
+```
+
 ### Writing tests
 
 #### Basic test structure

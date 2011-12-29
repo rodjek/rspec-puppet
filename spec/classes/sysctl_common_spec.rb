@@ -17,6 +17,19 @@ describe 'sysctl::common' do
       )
     end
   end
+  describe 'when using without to specify parameter name(s)' do
+    it 'should pass if the parameter name is not contained in the resource' do
+      subject.should contain_exec('sysctl/reload').without('foo')
+    end
+    it 'should pass if the parameter names are not contained in the resource' do
+      subject.should contain_exec('sysctl/reload').without(['foo', 'bar'])
+    end
+    it 'should fail if any of the parameter names are contained in the resource' do
+      expect do
+        subject.should contain_exec('sysctl/reload').without(['foo', 'returns'])
+      end.should raise_error(RSpec::Expectations::ExpectationNotMetError)
+    end
+  end
 end
 
 describe 'sysctl::common' do
