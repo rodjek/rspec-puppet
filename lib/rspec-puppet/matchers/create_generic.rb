@@ -30,11 +30,19 @@ module RSpec::Puppet
         if resource.nil?
           ret = false
         else
+          rsrc_hsh = resource.to_hash
           if @expected_params
             @expected_params.each do |name, value|
-              unless resource.send(:parameters)[name.to_sym].to_s == value.to_s
-                ret = false
-                (@errors ||= []) << "#{name.to_s} set to `#{value.inspect}`"
+              if value.kind_of?(Regexp) then
+                unless rsrc_hsh[name.to_sym].to_s =~ value
+                  ret = false
+                  (@errors ||= []) << "#{name.to_s} matching `#{value.inspect}` but its value of `#{rsrc_hsh[name.to_sym].inspect}` does not"
+                end
+              else
+                unless rsrc_hsh[name.to_sym].to_s == value.to_s
+                  ret = false
+                  (@errors ||= []) << "#{name.to_s} set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
+                end
               end
             end
           end
@@ -71,7 +79,7 @@ module RSpec::Puppet
       end
 
       def errors
-        @errors.nil? ? "" : " with #{@errors.join(', ')}"
+        @errors.nil? ? "" : " with #{@errors.join(', and parameter ')}"
       end
     end
 
