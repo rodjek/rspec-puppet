@@ -9,6 +9,18 @@ module RSpec::Puppet
         @title = args[0]
       end
 
+      def with(*args, &block)
+        params = args.shift
+        @expected_params = (@expected_params || []) | params.to_a
+        self
+      end
+
+      def without(*args, &block)
+        params = args.shift
+        @expected_undef_params = (@expected_undef_params || []) | params.to_a
+        self
+      end
+
       def method_missing(method, *args, &block)
         if method.to_s =~ /^with_/
           param = method.to_s.gsub(/^with_/, '')
