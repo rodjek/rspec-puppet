@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'rspec-puppet'
-  s.version = '0.1.0'
+  s.version = '0.1.1'
   s.homepage = 'https://github.com/rodjek/rspec-puppet/'
   s.summary = 'RSpec tests for your Puppet manifests'
   s.description = 'RSpec tests for your Puppet manifests'
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
     'Rakefile',
     'README.md',
     'rspec-puppet.gemspec',
+    'spec/classes/boolean_regexp_spec.rb',
     'spec/classes/boolean_spec.rb',
     'spec/classes/sysctl_common_spec.rb',
     'spec/defines/sysctl_before_spec.rb',
