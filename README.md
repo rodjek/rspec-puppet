@@ -28,8 +28,12 @@ structure and naming convention.
            |     +-- <define_name>_spec.rb
            |
            +-- functions
+           |     |
+           |     +-- <function_name>_spec.rb
+           |
+           +-- hosts
                  |
-                 +-- <function_name>_spec.rb
+                 +-- <host_name>_spec.rb
 
 ## Example groups
 
@@ -47,6 +51,10 @@ describe 'mydefine', :type => :define do
 end
 
 describe 'myfunction', :type => :puppet_function do
+  ...
+end
+
+describe 'myhost.example.com', :type => :host do
   ...
 end
 ```
