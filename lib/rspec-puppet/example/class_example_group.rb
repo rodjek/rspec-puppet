@@ -12,6 +12,7 @@ module RSpec::Puppet
       Puppet[:manifestdir] = self.respond_to?(:manifest_dir) ? manifest_dir : RSpec.configuration.manifest_dir
       Puppet[:manifest] = self.respond_to?(:manifest) ? manifest : RSpec.configuration.manifest
       Puppet[:templatedir] = self.respond_to?(:template_dir) ? template_dir : RSpec.configuration.template_dir
+      Puppet[:config] = self.respond_to?(:config) ? config : RSpec.configuration.config
 
       klass_name = self.class.top_level_description.downcase
 
