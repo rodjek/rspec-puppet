@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+
+require 'rspec-puppet'
+require 'optparse'
+
+options = {
+  :module_name => nil,
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: rspec-puppet-init [options]"
+
+  opts.on('-n', '--name NAME', 'The name of the module (override autodetection)') do |v|
+    options[:module_name] = v
+  end
+end.parse!
+
+RSpec::Puppet::Setup.run(options[:module_name])

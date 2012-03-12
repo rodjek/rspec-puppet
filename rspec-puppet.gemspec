@@ -5,7 +5,10 @@ Gem::Specification.new do |s|
   s.summary = 'RSpec tests for your Puppet manifests'
   s.description = 'RSpec tests for your Puppet manifests'
 
+  s.executables = ['rspec-puppet-init']
+
   s.files = [
+    'bin/rspec-puppet-init',
     'lib/rspec-puppet/example/class_example_group.rb',
     'lib/rspec-puppet/example/define_example_group.rb',
     'lib/rspec-puppet/example/function_example_group.rb',
@@ -16,6 +19,7 @@ Gem::Specification.new do |s|
     'lib/rspec-puppet/matchers/include_class.rb',
     'lib/rspec-puppet/matchers/run.rb',
     'lib/rspec-puppet/matchers.rb',
+    'lib/rspec-puppet/setup.rb',
     'lib/rspec-puppet/support.rb',
     'lib/rspec-puppet.rb',
     'LICENSE',

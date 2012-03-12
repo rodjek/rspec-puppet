@@ -2,6 +2,7 @@ require 'puppet'
 require 'rspec'
 require 'rspec-puppet/matchers'
 require 'rspec-puppet/example'
+require 'rspec-puppet/setup'
 
 RSpec.configure do |c|
   c.add_setting :module_path, :default => '/etc/puppet/modules'
