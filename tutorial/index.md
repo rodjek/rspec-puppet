@@ -155,7 +155,7 @@ describe 'logrotate::rule' do
 end
 {% endhighlight %}
 
-What about the most important part of the file, it's contents?  Before we get
+What about the most important part of the file, its contents?  Before we get
 to that, we're going to make your type take a boolean parameter called
 `compress`.  If this value is `true`, a line containing `compress` should
 exist in the file.  If this value is `false`, a line containing `nocompress`
