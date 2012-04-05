@@ -62,7 +62,7 @@ _This is not intended to be an RSpec tutorial, just an explanation of how to
 use the extended functionality that rspec-puppet provides.  If you are not
 familiar with the basics of RSpec, I highly recommend you take a couple of
 minutes before continuing to read through the [RSpec
-documentation](https://relishapp.info/rspec)_
+documentation](https://www.relishapp.com/rspec)_
 
 Lets say you're writing tests for a `logrotate::rule` type that does two
 things:
