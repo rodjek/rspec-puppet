@@ -28,6 +28,7 @@ with `__` (two underscores).  For example, to test that your manifest contains
 it { should contain_apache__vhost('my awesome vhost') }
 {% endhighlight %}
 
+#### with_\* and without_\*
 Further to this, you can test for the presence or absence of parameters on
 these resources by chaining any number of `.with_<parameter>` or 
 `.without_<parameter>` methods onto the end of your test.  These methods can
@@ -38,6 +39,7 @@ it { should contain_service('mysql-server').with_ensure('present') }
 it { should contain_file('/etc/logrotate.d/apache').with_content(/compress/) }
 {% endhighlight %}
 
+#### with and without
 This can become very verbose when you're testing for multiple parameters, so
 you can also chain `.with` and `.without` methods on to the end of your tests
 and pass it a hash of parameters.

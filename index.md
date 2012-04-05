@@ -23,3 +23,8 @@ Go to your module, and run this handy script to prepare it for testing
 $ cd path/to/your/module
 $ rspec-puppet-init
 {% endhighlight %}
+
+If this fails or you wish to prepare your module manually, follow these
+[instructions](/setup/).
+
+Now, proceed to the [tutorial](/tutorial/)!
