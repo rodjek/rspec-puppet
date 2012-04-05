@@ -81,7 +81,32 @@ module RSpec::Puppet
       end
 
       def description
-        "create #{@referenced_type}[#{@title}]"
+        values = []
+        if @expected_params
+          @expected_params.each do |name, value|
+            if value.kind_of?(Regexp)
+              values << "#{name.to_s} matching #{value.inspect}"
+            else
+              values << "#{name.to_s} => #{value.inspect}"
+            end
+          end
+        end
+
+        if @expected_undef_params
+          @expected_undef_params.each do |name, value|
+            values << "#{name.to_s} undefined"
+          end
+        end
+
+        unless values.empty?
+          if values.length == 1
+            value_str = " with #{values.first}"
+          else
+            value_str = " with #{values[0..-2].join(", ")} and #{values[-1]}"
+          end
+        end
+
+        "contain #{@referenced_type}[#{@title}]#{value_str}"
       end
 
     private
