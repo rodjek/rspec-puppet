@@ -50,6 +50,11 @@ module RSpec::Puppet
                   ret = false
                   (@errors ||= []) << "#{name.to_s} matching `#{value.inspect}` but its value of `#{rsrc_hsh[name.to_sym].inspect}` does not"
                 end
+              elsif value.kind_of?(Array) then
+                unless rsrc_hsh[name.to_sym].join == value.join
+                  ret = false
+                  (@errors ||= []) << "#{name.to_s} set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
+                end
               else
                 unless rsrc_hsh[name.to_sym].to_s == value.to_s
                   ret = false
