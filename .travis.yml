@@ -5,6 +5,7 @@ rvm:
 branches:
   only:
     - master
+    - 1.9
 notifications:
   email:
     - tim@github.com
