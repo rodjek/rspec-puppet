@@ -4,6 +4,15 @@ layout: minimal
 
 # Changelog
 
+## 0.1.3
+
+ * Add support for testing the catalogue of a node
+ * Add Puppet[:config] as a supported option
+ * Add rspec-puppet-init helper script
+ * Chained methods added to description of contain\_\* matcher
+ * Add support for Ruby 1.9.x
+ * [View Diff](https://github.com/rodjek/rspec-puppet/compare/v0.1.1...v0.1.3)
+
 ## 0.1.1
 
  * Add 'with' and 'without' chains to the 'contain\_' matcher to support
