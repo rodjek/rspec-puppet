@@ -8,7 +8,7 @@ describe 'sysctl::common' do
     it 'should fail if the parameter is not contained in the resource' do
       expect do
         subject.should contain_exec('sysctl/reload').with('foo' => 'bar')
-      end.should raise_error(RSpec::Expectations::ExpectationNotMetError)
+      end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
     it 'should pass if the parameters are contained in the resource' do
       subject.should contain_exec('sysctl/reload').with(
@@ -27,7 +27,7 @@ describe 'sysctl::common' do
     it 'should fail if any of the parameter names are contained in the resource' do
       expect do
         subject.should contain_exec('sysctl/reload').without(['foo', 'returns'])
-      end.should raise_error(RSpec::Expectations::ExpectationNotMetError)
+      end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
   end
 end
