@@ -7,6 +7,7 @@ env:
   - PUPPET_VERSION=2.7.12
   - RSPEC_VERSION=2.9.0
   - RSPEC_VERSION=2.11.0
+
 matrix:
   exclude:
     - rvm: 1.9.2
