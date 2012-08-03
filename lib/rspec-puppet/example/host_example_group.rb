@@ -13,7 +13,7 @@ module RSpec::Puppet
       Puppet[:manifest] = self.respond_to?(:manifest) ? manifest : RSpec.configuration.manifest
       Puppet[:templatedir] = self.respond_to?(:template_dir) ? template_dir : RSpec.configuration.template_dir
       Puppet[:config] = self.respond_to?(:config) ? config : RSpec.configuration.config
-      Puppet[:code] = ""
+      code = ""
 
       nodename = self.class.top_level_description.downcase
 
@@ -24,7 +24,7 @@ module RSpec::Puppet
       }
       facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
 
-      build_catalog(nodename, facts_val)
+      build_catalog(nodename, facts_val, code)
     end
   end
 end

@@ -4,7 +4,9 @@ module RSpec::Puppet
     @@cache = {}
 
     protected
-    def build_catalog_without_cache nodename, facts_val
+    def build_catalog_without_cache(nodename, facts_val, code)
+      Puppet[:code] = code
+
       node_obj = Puppet::Node.new(nodename)
 
       node_obj.merge(facts_val)
