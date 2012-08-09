@@ -4,6 +4,13 @@ layout: minimal
 
 # Changelog
 
+## 0.1.4
+
+ * Improved catalogue caching for faster testing on the same compiled catalogue
+ * Add support for pre\_condition when testing functions
+ * Fix bug when specifying a array with a single value as a parameter
+ * [View Diff](https://github.com/rodjek/rspec-puppet/compare/v0.1.3...v0.1.4)
+
 ## 0.1.3
 
  * Add support for testing the catalogue of a node
