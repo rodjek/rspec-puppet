@@ -34,12 +34,12 @@ module RSpec::Puppet
       end
 
       if !self.respond_to?(:params) || params == {}
-        Puppet[:code] = import_str + "include #{klass_name}"
+        code = import_str + "include #{klass_name}"
       else
-        Puppet[:code] = import_str + 'class' + " { \"" + klass_name + "\": " + params.keys.map { |r| "#{r.to_s} => #{params[r].inspect}"
+        code = import_str + 'class' + " { \"" + klass_name + "\": " + params.keys.map { |r| "#{r.to_s} => #{params[r].inspect}"
       }.join(',' ) + " }"
       end
-      Puppet[:code] = pre_cond + "\n" + Puppet[:code]
+      code = pre_cond + "\n" + code
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
       facts_val = {
@@ -49,7 +49,7 @@ module RSpec::Puppet
       }
       facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
 
-      build_catalog(nodename, facts_val)
+      build_catalog(nodename, facts_val, code)
     end
   end
 end

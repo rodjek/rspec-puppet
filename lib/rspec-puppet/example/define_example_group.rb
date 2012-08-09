@@ -41,7 +41,7 @@ module RSpec::Puppet
         pre_cond = ""
       end
 
-      Puppet[:code] = pre_cond + "\n" + import_str + define_name + " { \"" + title + "\": " + param_str + " }"
+      code = pre_cond + "\n" + import_str + define_name + " { \"" + title + "\": " + param_str + " }"
 
       nodename = self.respond_to?(:node) ? node : Puppet[:certname]
       facts_val = {
@@ -51,7 +51,7 @@ module RSpec::Puppet
       }
       facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
 
-      build_catalog(nodename, facts_val)
+      build_catalog(nodename, facts_val, code)
     end
   end
 end

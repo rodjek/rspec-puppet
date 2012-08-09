@@ -1,6 +1,12 @@
 module RSpec::Puppet
   module Support
-    def build_catalog nodename, facts_val
+
+    @@cache = {}
+
+    protected
+    def build_catalog_without_cache(nodename, facts_val, code)
+      Puppet[:code] = code
+
       node_obj = Puppet::Node.new(nodename)
 
       node_obj.merge(facts_val)
@@ -11,6 +17,11 @@ module RSpec::Puppet
       else
         Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
       end
+    end
+
+    public
+    def build_catalog *args
+      @@cache[args] ||= self.build_catalog_without_cache(*args)
     end
 
     def munge_facts(facts)
