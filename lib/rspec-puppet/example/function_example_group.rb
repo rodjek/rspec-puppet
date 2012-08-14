@@ -28,6 +28,8 @@ module RSpec::Puppet
 
       scope = Puppet::Parser::Scope.new(:compiler => @compiler)
 
+      Puppet::Parser::Functions.function(function_name)
+
       scope.method "function_#{function_name}".to_sym
     end
 
