@@ -64,12 +64,12 @@ module RSpec::Puppet
         res
       end
 
-      Puppet::Parser::Compiler.any_instance.stub(:mock_resources).and_return(mock_virtual_resources + mock_exported_resources)
-      Puppet::Parser::Collector.any_instance.stub(:mock_resources).and_return(mock_exported_resources)
+      Puppet::Parser::Compiler.any_instance.stubs(:mock_resources).returns(mock_virtual_resources + mock_exported_resources)
+      Puppet::Parser::Collector.any_instance.stubs(:mock_resources).returns(mock_exported_resources)
 
       require 'puppet/rails'
-      Puppet::Rails.stub(:init).and_return(true)
-      Puppet.features.stub(:rails?).and_return(true)
+      Puppet::Rails.stubs(:init).returns(true)
+      Puppet.features.stubs(:rails?).returns(true)
       Puppet.settings.set_value(:storeconfigs, true, :memory, :dont_trigger_handles => true)
 
       # trying to be compatible with 2.7 as well as 2.6
