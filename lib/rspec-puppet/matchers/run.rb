@@ -47,7 +47,7 @@ module RSpec::Puppet
       end
 
       failure_message_for_should do |func_obj|
-        func_name = func_obj.name.gsub(/^function_/, '')
+        func_name = func_obj.name.to_s.gsub(/^function_/, '')
         func_params = @params.inspect[1..-2]
 
         if @expected_return
