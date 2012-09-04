@@ -25,12 +25,33 @@ end
 
 class Puppet::Parser::Collector
   def collect_exported
-    if @equery =~ /param_values.value = '(.*?)' and param_names.name = '(.*?)'/
-      param_value = $1
-      param_name = $2.to_sym
-    end
+    mock_resources.select { |mock_resource| eval(mock_filter_helper(@equery)) }
+  end
 
-    mock_resources.select { |r| r[param_name] == param_value }
+  def mock_filter_helper(filter)
+    lvalue, op, rvalue = filter
+
+    case op
+    when nil then # Empty filter
+      return "true"
+    when /^(and|or)$/i then # Conjunctive filters
+      first = mock_filter_helper(lvalue)
+      second = mock_filter_helper(rvalue)
+      return "(#{first}) #{op} (#{second})"
+    when '==', '!=' then # Equality filter
+      case lvalue
+      when "tag" then
+        if op == '!='
+          return "! mock_resource.tags.include? '#{rvalue}'"
+        else
+          return "mock_resource.tags.include? '#{rvalue}'"
+        end
+      else
+        return "mock_resource['#{lvalue}'] #{op} '#{rvalue}'"
+      end
+    else
+      raise ArgumentError, "unknown operator #{op.inspect} in #{filter.inspect}"
+    end
   end
 end
 
