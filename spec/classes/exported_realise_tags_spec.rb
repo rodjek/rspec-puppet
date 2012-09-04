@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'exported::realise_file' do
+describe 'exported::realise_tags' do
   let(:exported_resources) { [
     {
       :type => 'file',
@@ -12,23 +12,22 @@ describe 'exported::realise_file' do
     },
     {
       :type => 'file',
-      :title => 'baz',
-      :parameters => {
-        :owner => 'bob',
-        :group => 'bob',
-      }
-    },
-    {
-      :type => 'file',
       :title => 'foobar',
       :parameters => {
         :owner => 'daemon',
         :group => 'daemon',
       }
+    },
+    {
+      :type => 'package',
+      :title => 'baz',
+      :parameters => {
+        :ensure => 'present'
+      }
     }
   ] }
 
   it { should contain_file('foo').with_owner('root').with_group('root') }
-  it { should contain_file('baz').with_owner('bob').with_group('bob') }
-  it { should_not contain_file('foobar') }
+  it { should contain_file('foobar').with_owner('daemon').with_group('daemon') }
+  it { should_not contain_package('baz') }
 end

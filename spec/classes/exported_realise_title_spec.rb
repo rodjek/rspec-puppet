@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'exported::realise_file' do
+describe 'exported::realise_and' do
   let(:exported_resources) { [
     {
       :type => 'file',
@@ -8,14 +8,6 @@ describe 'exported::realise_file' do
       :parameters => {
         :owner => 'root',
         :group => 'root',
-      }
-    },
-    {
-      :type => 'file',
-      :title => 'baz',
-      :parameters => {
-        :owner => 'bob',
-        :group => 'bob',
       }
     },
     {
@@ -29,6 +21,5 @@ describe 'exported::realise_file' do
   ] }
 
   it { should contain_file('foo').with_owner('root').with_group('root') }
-  it { should contain_file('baz').with_owner('bob').with_group('bob') }
   it { should_not contain_file('foobar') }
 end
