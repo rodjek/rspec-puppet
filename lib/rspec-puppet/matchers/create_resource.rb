@@ -8,7 +8,11 @@ module RSpec::Puppet
         resources = catalogue.resources.select { |r|
           r.type == referenced_type(expected_type)
         }.select { |r|
-          r.title == expected_title if r.respond_to? :title
+          if expected_title.class.to_s == 'Regexp' then
+            (expected_title.match(r.title) != nil) if r.respond_to? :title
+          else
+            r.title == expected_title if r.respond_to? :title
+          end
         }
 
         unless resources.length == 1
@@ -41,12 +45,20 @@ module RSpec::Puppet
 
       description do
         type = referenced_type(expected_type)
-        "create #{type}['#{expected_title}']"
+        if expected_title.class.to_s == 'Regexp' then
+          "create #{type} matching a Regexp"
+        else
+          "create #{type}['#{expected_title}']"
+        end
       end
 
       failure_message_for_should do |actual|
         type = referenced_type(expected_type)
-        "expected that the catalogue would contain #{type}['#{expected_title}']#{errors}"
+        if expect_title.class.to_s == 'Regexp' then
+          "expected that the catalogue would contain #{type}[matching Regexp]#{errors}"
+        else
+          "expected that the catalogue would contain #{type}['#{expected_title}']#{errors}"
+        end
       end
     end
   end
