@@ -8,3 +8,4 @@ gem 'rspec', rspecversion
 gem 'puppet', puppetversion
 gem 'puppetlabs_spec_helper'
 gem 'activerecord', '~> 3.0.17'
+gem 'sqlite3'

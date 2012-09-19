@@ -14,7 +14,7 @@ module RSpec::Puppet
 
       exp_res = [exp_res] if exp_res.is_a? Hash
 
-      if exp_res
+      if exp_res and ! exp_res.empty?
         if can_use_scratch_database?
           setup_scratch_database
           scope = Puppet::Parser::Scope.new
