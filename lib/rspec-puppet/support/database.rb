@@ -24,7 +24,13 @@ def setup_scratch_database
   require 'puppet/indirector/catalog/active_record'
   Puppet[:storeconfigs] = true
   Puppet[:environment]  = "production"
-  Puppet[:storeconfigs_backend] = "active_record"
+  # trying to be compatible with 2.7 as well as 2.6
+  begin
+    Puppet[:storeconfigs_backend] = "active_record"
+  rescue ArgumentError => e
+    # 2.6 has no storeconfigs_backend configuration parameter; it is
+    # hard-coded to 'active_record'
+  end
   Puppet::Rails.stubs(:database_arguments).returns(
     :adapter => 'sqlite3',
     :log_level => Puppet[:rails_loglevel],
