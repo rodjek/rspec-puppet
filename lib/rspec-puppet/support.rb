@@ -5,6 +5,16 @@ module RSpec::Puppet
 
     protected
     def build_catalog_without_cache(nodename, facts_val, exp_res, code)
+      exp_res = [exp_res] if exp_res.is_a? Hash
+
+      tmpdir = Dir.mktmpdir('rspec-puppet-sqlite')
+
+      if can_use_scratch_database?
+        setup_scratch_database(tmpdir)
+        export_resources(exp_res)
+      else
+        raise Puppet::Error, "Unable to use scratch database for exported resources."
+      end
 
       Puppet[:code] = code
 
@@ -12,46 +22,42 @@ module RSpec::Puppet
 
       node_obj.merge(facts_val)
 
-      exp_res = [exp_res] if exp_res.is_a? Hash
+      # trying to be compatible with 2.7 as well as 2.6
+      if Puppet::Resource::Catalog.respond_to? :find
+        catalog = Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
+      else
+        catalog = Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
+      end
+      Puppet::Rails::PuppetTag.accumulators.each do |name,accumulator|
+        accumulator.reset
+      end
+      Puppet::Rails.teardown if defined?(ActiveRecord::Base)
+      PuppetlabsSpec::Files.cleanup
+      catalog
+    ensure
+      FileUtils.remove_entry_secure tmpdir
+    end
 
-      Dir.mktmpdir('puppet-sqlite') do |tmpdir|
-        if can_use_scratch_database?
-          setup_scratch_database(tmpdir)
-          if exp_res and ! exp_res.empty?
-            scope = Puppet::Parser::Scope.new
-            catalog = Puppet::Resource::Catalog.new("mock_node")
-            exp_res.each do |types|
-              types.each do |type, resource|
-                resource.each do |title, params|
-                  parser_resource = Puppet::Parser::Resource.new( type, title, {
-                    :virtual  => true,
-                    :exported => true,
-                    :scope    => scope,
-                  })
-                  params.each { |attribute, value| parser_resource[attribute] = value } if params
-                  res = parser_resource.to_resource
-                  catalog.add_resource res
-                end
-              end
+    def export_resources(exp_res)
+      if exp_res and ! exp_res.empty?
+        scope = Puppet::Parser::Scope.new
+        catalog = Puppet::Resource::Catalog.new("mock_node")
+        exp_res.each do |types|
+          types.each do |type, resource|
+            resource.each do |title, params|
+              parser_resource = Puppet::Parser::Resource.new( type, title, {
+                :virtual  => true,
+                :exported => true,
+                :scope    => scope,
+              })
+              params.each { |attribute, value| parser_resource[attribute] = value } if params
+              res = parser_resource.to_resource
+              catalog.add_resource res
             end
-            request = Puppet::Indirector::Request.new(:active_record, :save, catalog)
-            Puppet::Resource::Catalog::ActiveRecord.new.save(request)
           end
-        else
-          raise Puppet::Error, "Cannot use scratch database for exported resources."
         end
-
-        # trying to be compatible with 2.7 as well as 2.6
-        if Puppet::Resource::Catalog.respond_to? :find
-          catalog = Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
-        else
-          catalog = Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
-        end
-        Puppet::Rails::PuppetTag.accumulators.each do |name,accumulator|
-          accumulator.reset
-        end
-        Puppet::Rails.teardown if defined?(ActiveRecord::Base)
-        catalog
+        request = Puppet::Indirector::Request.new(:active_record, :save, catalog)
+        Puppet::Resource::Catalog::ActiveRecord.new.save(request)
       end
     end
 
