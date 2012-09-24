@@ -180,6 +180,31 @@ You can set them with a hash
 let(:facts) { {:operatingsystem => 'Debian', :kernel => 'Linux', ...} }
 ```
 
+#### Specifying the exported resources that should be available to your manifest
+
+By default, the test environment contains no exported resources for your
+manifest to use. You can set them with a hash:
+
+```ruby
+let(:exported_resources) {
+  {
+    'host' => {
+      'mock1.example.com' => {
+        :ip => '127.0.0.1',
+      },
+      'mock2.example.com' => {
+        :ip => '127.0.0.1',
+      }
+    },
+    'user' => {
+      'mockuser' => {
+        :uid => '1337',
+      }
+    }
+  }
+}
+```
+
 #### Specifying the path to find your modules
 
 I recommend setting a default module path by adding the following code to your
