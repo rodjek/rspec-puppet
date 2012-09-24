@@ -22,17 +22,15 @@ module RSpec::Puppet
 
       # trying to be compatible with 2.7 as well as 2.6
       if Puppet::Resource::Catalog.respond_to? :find
-        catalog = Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
+        Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
       else
-        catalog = Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
+        Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
       end
+    ensure
       Puppet::Rails::PuppetTag.accumulators.each do |name,accumulator|
         accumulator.reset
       end
       Puppet::Rails.teardown if defined?(ActiveRecord::Base)
-      PuppetlabsSpec::Files.cleanup
-      catalog
-    ensure
       FileUtils.remove_entry_secure tmpdir
     end
 
