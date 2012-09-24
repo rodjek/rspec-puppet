@@ -50,8 +50,9 @@ module RSpec::Puppet
         'domain' => nodename.split('.', 2).last,
       }
       facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
+      exp_res = self.respond_to?(:exported_resources) ? exported_resources : []
 
-      build_catalog(nodename, facts_val, code)
+      build_catalog(nodename, facts_val, exp_res, code)
     end
   end
 end
