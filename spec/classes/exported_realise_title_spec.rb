@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'exported::realise_title' do
   let(:exported_resources) do
-    [
+    {
       'file' => {
         'foo' => {
           :owner => 'root',
@@ -13,7 +13,7 @@ describe 'exported::realise_title' do
           :group => 'daemon',
         }
       }
-    ]
+    }
   end
 
   it { should contain_file('foo').with_owner('root').with_group('root') }

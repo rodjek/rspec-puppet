@@ -187,7 +187,7 @@ manifest to use. You can set them with a hash:
 
 ```ruby
 let(:exported_resources) {
-  [
+  {
     'host' => {
       'mock1.example.com' => {
         :ip => '127.0.0.1',
@@ -201,7 +201,7 @@ let(:exported_resources) {
         :uid => '1337',
       }
     }
-  ]
+  }
 }
 ```
 

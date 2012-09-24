@@ -5,8 +5,6 @@ module RSpec::Puppet
 
     protected
     def build_catalog_without_cache(nodename, facts_val, exp_res, code)
-      exp_res = [exp_res] if exp_res.is_a? Hash
-
       tmpdir = Dir.mktmpdir('rspec-puppet-sqlite')
 
       if can_use_scratch_database?
@@ -42,18 +40,16 @@ module RSpec::Puppet
       if exp_res and ! exp_res.empty?
         scope = Puppet::Parser::Scope.new
         catalog = Puppet::Resource::Catalog.new("mock_node")
-        exp_res.each do |types|
-          types.each do |type, resource|
-            resource.each do |title, params|
-              parser_resource = Puppet::Parser::Resource.new( type, title, {
-                :virtual  => true,
-                :exported => true,
-                :scope    => scope,
-              })
-              params.each { |attribute, value| parser_resource[attribute] = value } if params
-              res = parser_resource.to_resource
-              catalog.add_resource res
-            end
+        exp_res.each do |type, resource|
+          resource.each do |title, params|
+            parser_resource = Puppet::Parser::Resource.new( type, title, {
+              :virtual  => true,
+              :exported => true,
+              :scope    => scope,
+            })
+            params.each { |attribute, value| parser_resource[attribute] = value } if params
+            res = parser_resource.to_resource
+            catalog.add_resource res
           end
         end
         request = Puppet::Indirector::Request.new(:active_record, :save, catalog)

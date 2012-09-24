@@ -9,7 +9,7 @@ describe 'exported::realise_tags' do
 
   context 'with exported resources' do
     let(:exported_resources) do
-      [
+      {
         'file' => {
           'foo' => {
             :owner => 'root',
@@ -25,7 +25,7 @@ describe 'exported::realise_tags' do
             :ensure => 'present',
           }
         }
-      ]
+      }
     end
 
     it { should contain_file('foo').with_owner('root').with_group('root') }
@@ -35,7 +35,7 @@ describe 'exported::realise_tags' do
 
   context 'with different exported resources' do
     let(:exported_resources) do
-      [
+      {
         'file' => {
           'foo' => {
             :owner => 'root',
@@ -47,10 +47,26 @@ describe 'exported::realise_tags' do
             :ensure => 'present',
           }
         }
-      ]
+      }
     end
 
     it { should contain_file('foo').with_owner('root').with_group('root') }
+    it { should_not contain_file('bar') }
+    it { should_not contain_package('baz') }
+  end
+
+  context 'with a single exported resource' do
+    let(:exported_resources) do
+      {
+        'package' => {
+          'baz' => {
+            :ensure => 'present',
+          }
+        }
+      }
+    end
+
+    it { should_not contain_file('foo') }
     it { should_not contain_file('bar') }
     it { should_not contain_package('baz') }
   end
