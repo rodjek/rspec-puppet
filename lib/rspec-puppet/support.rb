@@ -5,13 +5,14 @@ module RSpec::Puppet
 
     protected
     def build_catalog_without_cache(nodename, facts_val, exp_res, code)
-      tmpdir = Dir.mktmpdir('rspec-puppet-sqlite')
-
-      if can_use_scratch_database?
-        setup_scratch_database(tmpdir)
-        export_resources(exp_res)
-      else
-        raise Puppet::Error, "Unable to use scratch database for exported resources."
+      if exp_res and ! exp_res.empty?
+        tmpdir = Dir.mktmpdir('rspec-puppet-sqlite')
+        if can_use_scratch_database?
+          setup_scratch_database(tmpdir)
+          export_resources(exp_res)
+        else
+          raise Puppet::Error, "Unable to use scratch database for exported resources."
+        end
       end
 
       Puppet[:code] = code
@@ -29,30 +30,28 @@ module RSpec::Puppet
     ensure
       Puppet::Rails::PuppetTag.accumulators.each do |name,accumulator|
         accumulator.reset
-      end
-      Puppet::Rails.teardown if defined?(ActiveRecord::Base)
-      FileUtils.remove_entry_secure tmpdir
+      end if defined?(Puppet::Rails)
+      Puppet::Rails.teardown if defined?(ActiveRecord::Base) and ActiveRecord::Base.connected?
+      FileUtils.remove_entry_secure(tmpdir) if tmpdir
     end
 
     def export_resources(exp_res)
-      if exp_res and ! exp_res.empty?
-        scope = Puppet::Parser::Scope.new
-        catalog = Puppet::Resource::Catalog.new("mock_node")
-        exp_res.each do |type, resource|
-          resource.each do |title, params|
-            parser_resource = Puppet::Parser::Resource.new( type, title, {
-              :virtual  => true,
-              :exported => true,
-              :scope    => scope,
-            })
-            params.each { |attribute, value| parser_resource[attribute] = value } if params
-            res = parser_resource.to_resource
-            catalog.add_resource res
-          end
+      scope = Puppet::Parser::Scope.new
+      catalog = Puppet::Resource::Catalog.new("mock_node")
+      exp_res.each do |type, resource|
+        resource.each do |title, params|
+          parser_resource = Puppet::Parser::Resource.new( type, title, {
+            :virtual  => true,
+            :exported => true,
+            :scope    => scope,
+          })
+          params.each { |attribute, value| parser_resource[attribute] = value } if params
+          res = parser_resource.to_resource
+          catalog.add_resource res
         end
-        request = Puppet::Indirector::Request.new(:active_record, :save, catalog)
-        Puppet::Resource::Catalog::ActiveRecord.new.save(request)
       end
+      request = Puppet::Indirector::Request.new(:active_record, :save, catalog)
+      Puppet::Resource::Catalog::ActiveRecord.new.save(request)
     end
 
     public
