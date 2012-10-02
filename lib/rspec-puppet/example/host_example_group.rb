@@ -8,6 +8,8 @@ module RSpec::Puppet
     end
 
     def catalogue
+      vardir = Dir.mktmpdir
+      Puppet[:vardir] = vardir
       Puppet[:modulepath] = self.respond_to?(:module_path) ? module_path : RSpec.configuration.module_path
       Puppet[:manifestdir] = self.respond_to?(:manifest_dir) ? manifest_dir : RSpec.configuration.manifest_dir
       Puppet[:manifest] = self.respond_to?(:manifest) ? manifest : RSpec.configuration.manifest
@@ -24,7 +26,9 @@ module RSpec::Puppet
       }
       facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
 
-      build_catalog(nodename, facts_val, code)
+      catalogue = build_catalog(nodename, facts_val, code)
+      FileUtils.rm_rf(vardir) if File.directory?(vardir)
+      catalogue
     end
   end
 end

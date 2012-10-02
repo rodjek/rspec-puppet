@@ -6,6 +6,6 @@ describe 'split' do
   it { should_not run.with_params('foo').and_raise_error(Puppet::DevError) }
 
   it 'something' do
-    expect { subject.call('foo') }.to raise_error(Puppet::ParseError)
+    expect { subject.call('foo') }.to raise_error(ArgumentError)
   end
 end
