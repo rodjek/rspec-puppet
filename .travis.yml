@@ -17,6 +17,6 @@ env:
 matrix:
   exclude:
     - rvm: 1.9.2
-      env: PUPPET_VERSION=2.6.14
+      env: PUPPET_VERSION=2.6.17
     - rvm: 1.9.3
-      env: PUPPET_VERSION=2.6.14
+      env: PUPPET_VERSION=2.6.17
