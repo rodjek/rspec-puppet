@@ -6,3 +6,4 @@ rspecversion = ENV.key?('RSPEC_VERSION') ? "= #{ENV['RSPEC_VERSION']}" : ['>= 2.
 gem 'rake'
 gem 'rspec', rspecversion
 gem 'puppet', puppetversion
+gem 'puppetlabs_spec_helper'
