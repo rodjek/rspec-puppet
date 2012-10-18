@@ -53,8 +53,9 @@ module RSpec::Puppet
         'domain' => nodename.split('.', 2).last,
       }
       facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
+      exp_res = self.respond_to?(:exported_resources) ? exported_resources : []
 
-      catalogue = build_catalog(nodename, facts_val, code)
+      catalogue = build_catalog(nodename, facts_val, exp_res, code)
       FileUtils.rm_rf(vardir) if File.directory?(vardir)
       catalogue
     end
