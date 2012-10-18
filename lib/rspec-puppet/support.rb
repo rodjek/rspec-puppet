@@ -35,7 +35,16 @@ module RSpec::Puppet
     end
 
     def export_resources(exp_res)
-      scope = Puppet::Parser::Scope.new
+      # Puppet 3 scopes require a compiler while Puppet 2 scopes require nothing
+      case Puppet.version
+      when /^3/
+        compiler = Puppet::Parser::Compiler.new(Puppet::Node.new("mock_node"))
+        scope = Puppet::Parser::Scope.new(compiler)
+      when /^2/
+        scope = Puppet::Parser::Scope.new
+      else
+        raise Puppet::Error, "Puppet version #{Puppet.version} is not recognised by rspec-puppet"
+      end
       catalog = Puppet::Resource::Catalog.new("mock_node")
       (exp_res||{}).each do |type, resource|
         resource.each do |title, params|
@@ -49,7 +58,7 @@ module RSpec::Puppet
           catalog.add_resource res
         end
       end
-      request = Puppet::Indirector::Request.new(:active_record, :save, catalog)
+      request = Puppet::Indirector::Request.new(:active_record, :save, nil, catalog)
       Puppet::Resource::Catalog::ActiveRecord.new.save(request)
     end
 
