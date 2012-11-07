@@ -37,23 +37,13 @@ module RSpec::Puppet
 
       def matches?(catalogue)
         ret = true
-        if @title.class.to_s == 'Regexp' then
-          resource = catalogue.resources.select { |r|
-	    r.type == @referenced_type
-          }.select { |r|
-            @title.match(r.title) != nil
-          }
-        else
-          resource = catalogue.resource(@referenced_type, @title)
-        end
+        resource = catalogue.resource(@referenced_type, @title)
 
         if resource.nil?
           ret = false
         else
-          if @expected_params || @unexpected_params then
-            rsrc_hsh = resource.to_hash
-          end
-          if @expected_params then
+          rsrc_hsh = resource.to_hash
+          if @expected_params
             @expected_params.each do |name, value|
               if value.kind_of?(Regexp) then
                 unless rsrc_hsh[name.to_sym].to_s =~ value
