@@ -14,7 +14,11 @@ module RSpec::Puppet
       # if we specify a pre_condition, we should ensure that we compile that code
       # into a catalog that is accessible from the scope where the function is called
       if self.respond_to? :pre_condition
-        Puppet[:code] = pre_condition
+        if pre_condition.kind_of?(Array)
+          Puppet[:code] = pre_condition.join("\n")
+        else
+          Puppet[:code] = pre_condition
+        end
         nodename = self.respond_to?(:node) ? node : Puppet[:certname]
         facts_val = {
           'hostname' => nodename.split('.').first,
