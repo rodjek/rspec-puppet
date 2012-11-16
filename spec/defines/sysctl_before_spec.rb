@@ -13,7 +13,9 @@ end
   
 describe 'sysctl::before' do
   let(:title) { 'test define' }
-  let(:pre_condition) { 'class {"sysctl::common":}' }
+  let(:pre_condition) {
+    [ '# we need sysctl common',
+      'class {"sysctl::common":}' ] }
   let(:params) { { :value => "title" } }
 
   it { should create_resource("sysctl::before", 'test define')\
