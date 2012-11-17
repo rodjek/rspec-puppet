@@ -39,7 +39,11 @@ module RSpec::Puppet
       end
 
       if self.respond_to? :pre_condition
-        pre_cond = pre_condition
+        if pre_condition.kind_of?(Array)
+          pre_cond = pre_condition.join("\n")
+        else
+          pre_cond = pre_condition
+        end
       else
         pre_cond = ""
       end
