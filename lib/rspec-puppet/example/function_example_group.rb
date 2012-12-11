@@ -8,6 +8,8 @@ module RSpec::Puppet
     def subject
       function_name = self.class.top_level_description.downcase
 
+      Puppet[:vardir] = vardir
+      Puppet[:hiera_config] = RSpec.configuration.hiera_config ? RSpec.configuration.hiera_config : File.join(vardir, "hiera.yaml")
       Puppet[:modulepath] = self.respond_to?(:module_path) ? module_path : RSpec.configuration.module_path
       Puppet[:libdir] = Dir["#{Puppet[:modulepath]}/*/lib"].entries.join(File::PATH_SEPARATOR)
 
