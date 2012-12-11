@@ -6,7 +6,7 @@ module RSpec::Puppet
     protected
     def build_catalog_without_cache(nodename, facts_val, code)
       if Integer(Puppet.version.split('.').first) >= 3
-          Puppet.initialize_settings
+        Puppet.initialize_settings
       end
 
       Puppet[:code] = code
