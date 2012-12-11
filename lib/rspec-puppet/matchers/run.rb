@@ -20,7 +20,7 @@ module RSpec::Puppet
             false
           end
         else
-          if @expected_return
+          unless @expected_return.nil?
             @func.call == @expected_return
           else
             begin
@@ -50,7 +50,7 @@ module RSpec::Puppet
         func_name = func_obj.name.to_s.gsub(/^function_/, '')
         func_params = @params.inspect[1..-2]
 
-        if @expected_return
+        if !@expected_return.nil?
           "expected #{func_name}(#{func_params}) to have returned #{@expected_return.inspect} instead of #{@func.call.inspect}"
         elsif @expected_error
           "expected #{func_name}(#{func_params}) to have raised #{@expected_error.inspect}"
@@ -63,7 +63,7 @@ module RSpec::Puppet
         func_name = func_obj.name.gsub(/^function_/, '')
         func_params = @params.inspect[1..-2]
 
-        if @expected_return
+        if !@expected_return.nil?
           "expected #{func_name}(#{func_params}) to not have returned #{@expected_return.inspect}"
         elsif @expected_error
           "expected #{func_name}(#{func_params}) to not have raised #{@expected_error.inspect}"

@@ -33,6 +33,7 @@ module RSpec::Puppet
       end
 
       scope = PuppetInternals.scope(:compiler => @compiler)
+      Puppet.initialize_settings
 
       # Return the method instance for the function.  This can be used with
       # method.call
