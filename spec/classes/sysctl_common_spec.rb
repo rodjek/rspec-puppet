@@ -30,6 +30,16 @@ describe 'sysctl::common' do
       end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
   end
+  describe 'when using without to specify parameter value(s)' do
+    it 'should pass if the parameter value is not contained in the resource' do
+      subject.should contain_exec('sysctl/reload').without_refreshonly('false')
+    end
+    it 'should fail if the parameter value is contained in the resource' do
+      expect do
+        subject.should contain_exec('sysctl/reload').without_refreshonly('true')
+      end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+    end
+  end
 end
 
 describe 'sysctl::common' do
