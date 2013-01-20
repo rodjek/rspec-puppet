@@ -43,8 +43,11 @@ module RSpec::Puppet
       if !self.respond_to?(:params) || params == {}
         code = import_str + "include #{klass_name}"
       else
-        code = import_str + 'class' + " { \"" + klass_name + "\": " + params.keys.map { |r| "#{r.to_s} => #{params[r].inspect}"
-      }.join(',' ) + " }"
+        param_str = params.keys.map { |r|
+          param_val = escape_special_chars(params[r].inspect)
+          "#{r.to_s} => #{param_val}"
+        }.join(',')
+        code = import_str + 'class' + " { \"" + klass_name + "\": " + param_str + " }"
       end
       code = pre_cond + "\n" + code
 

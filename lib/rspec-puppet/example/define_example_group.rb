@@ -32,7 +32,8 @@ module RSpec::Puppet
 
       if self.respond_to? :params
         param_str = params.keys.map { |r|
-          "#{r.to_s} => #{params[r].inspect}"
+          param_val = escape_special_chars(params[r].inspect)
+          "#{r.to_s} => #{param_val}"
         }.join(', ')
       else
         param_str = ""
