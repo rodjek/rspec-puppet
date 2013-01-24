@@ -11,6 +11,15 @@ module RSpec::Puppet
       Puppet[:modulepath] = self.respond_to?(:module_path) ? module_path : RSpec.configuration.module_path
       Puppet[:libdir] = Dir["#{Puppet[:modulepath]}/*/lib"].entries.join(File::PATH_SEPARATOR)
 
+      nodename = self.respond_to?(:node) ? node : Puppet[:certname]
+      facts_val = {
+        'hostname' => nodename.split('.').first,
+        'fqdn' => nodename,
+        'domain' => nodename.split('.').last,
+      }
+      facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
+      facts_val.each { |k, v| Facter.add(k) { setcode { v } } }
+
       # if we specify a pre_condition, we should ensure that we compile that code
       # into a catalog that is accessible from the scope where the function is called
       if self.respond_to? :pre_condition
@@ -19,13 +28,6 @@ module RSpec::Puppet
         else
           Puppet[:code] = pre_condition
         end
-        nodename = self.respond_to?(:node) ? node : Puppet[:certname]
-        facts_val = {
-          'hostname' => nodename.split('.').first,
-          'fqdn' => nodename,
-          'domain' => nodename.split('.').last,
-        }
-        facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
         # we need to get a compiler, b/c we can attach that to a scope
         @compiler = build_compiler(nodename, facts_val)
       else

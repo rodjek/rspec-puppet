@@ -11,6 +11,8 @@ module RSpec::Puppet
 
       Puppet[:code] = code
 
+      facts_val.each { |k, v| Facter.add(k) { setcode { v } } }
+
       node_obj = Puppet::Node.new(nodename)
 
       node_obj.merge(facts_val)
