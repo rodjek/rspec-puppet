@@ -41,7 +41,6 @@ Gem::Specification.new do |s|
   ]
 
   s.add_dependency 'rspec'
-  s.add_dependency 'puppetlabs_spec_helper'
 
   s.authors = ['Tim Sharpe']
   s.email = 'tim@sharpe.id.au'
