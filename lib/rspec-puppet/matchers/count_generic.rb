@@ -3,7 +3,7 @@ module RSpec::Puppet
     class CountGeneric
       def initialize(type, count, *method)
         if type.nil?
-          @type = method.to_s.gsub(/^have_(.+)_resource_count$/, '\1')
+          @type = method[0].to_s.gsub(/^have_(.+)_resource_count$/, '\1')
         else
           @type = type
         end
