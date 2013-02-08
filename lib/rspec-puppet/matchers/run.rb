@@ -11,17 +11,20 @@ module RSpec::Puppet
         end
 
         if @expected_error
+          result = false
           begin
             @func.call
-          rescue @expected_error
-            #XXX check error string here
-            true
-          rescue
-            false
+          rescue Exception => e
+            @actual_error = e.class
+            if @actual_error == @expected_error
+              result = true
+            end
           end
+          result
         else
           if @expected_return
-            @func.call == @expected_return
+            @actual_return = @func.call
+            @actual_return == @expected_return
           else
             begin
               @func.call
@@ -51,7 +54,7 @@ module RSpec::Puppet
         func_params = @params.inspect[1..-2]
 
         if @expected_return
-          "expected #{func_name}(#{func_params}) to have returned #{@expected_return.inspect} instead of #{@func.call.inspect}"
+          "expected #{func_name}(#{func_params}) to have returned #{@expected_return.inspect} instead of #{@actual_return.inspect}"
         elsif @expected_error
           "expected #{func_name}(#{func_params}) to have raised #{@expected_error.inspect}"
         else
