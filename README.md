@@ -96,6 +96,13 @@ the generic `with_<parameter>` chains.
 it { should contain_package('mysql-server').with_ensure('present') }
 ```
 
+If you want to specify that the given parameters should be the only ones passed
+to the resource, use the `only_with_<parameter>` chains.
+
+```ruby
+it { should contain_package('httpd').only_with_ensure('latest') }
+```
+
 You can use the `with` method to verify the value of multiple parameters.
 
 ```ruby
@@ -104,6 +111,16 @@ it do should contain_service('keystone').with(
   'enable'     => 'true',
   'hasstatus'  => 'true',
   'hasrestart' => 'true'
+) end
+```
+
+The same holds for the `only_with` method, which in addition verifies the exact
+set of parameters and values for the resource in the catalogue.
+
+```ruby
+it do should contain_user('luke').only_with(
+  'ensure'    => 'present',
+  'uid'    => '501'
 ) end
 ```
 
