@@ -15,6 +15,12 @@ module RSpec::Puppet
         self
       end
 
+      def only_with(*args, &block)
+        params = args.shift
+        @expected_params_count = (@expected_params_count || 0) + params.size
+        self.with(params, &block)
+      end
+
       def without(*args, &block)
         params = args.shift
         @expected_undef_params = (@expected_undef_params || []) | Array(params)
@@ -24,6 +30,11 @@ module RSpec::Puppet
       def method_missing(method, *args, &block)
         if method.to_s =~ /^with_/
           param = method.to_s.gsub(/^with_/, '')
+          (@expected_params ||= []) << [param, args[0]]
+          self
+        elsif method.to_s =~ /^only_with_/
+          param = method.to_s.gsub(/^only_with_/, '')
+          @expected_params_count = (@expected_params_count || 0) + 1
           (@expected_params ||= []) << [param, args[0]]
           self
         elsif method.to_s =~ /^without_/
@@ -43,6 +54,12 @@ module RSpec::Puppet
           ret = false
         else
           rsrc_hsh = resource.to_hash
+          if @expected_params_count
+            unless rsrc_hsh.size == @expected_params_count
+              ret = false
+              (@errors ||= []) << "exactly #{@expected_params_count} parameters but the catalogue contains #{rsrc_hsh.size}"
+            end
+          end
           if @expected_params
             @expected_params.each do |name, value|
               if value.kind_of?(Regexp) then
@@ -87,6 +104,9 @@ module RSpec::Puppet
 
       def description
         values = []
+        if @expected_params_count
+          values << "exactly #{@expected_params_count} parameters"
+        end
         if @expected_params
           @expected_params.each do |name, value|
             if value.kind_of?(Regexp)
