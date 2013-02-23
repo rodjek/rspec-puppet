@@ -140,6 +140,41 @@ it { should contain_service('keystone').without(
 )}
 ```
 
+#### Checking the number of resources
+
+You can test the number of resources in the catalogue with the
+`have_resource_count` matcher.
+
+```ruby
+it { should have_resource_count(2) }
+```
+
+The number of classes in the catalogue can be checked with the
+`have_class_count` matcher.
+
+```ruby
+it { should have_class_count(2) }
+```
+
+You can also test the number of a specific resource type, by using the generic
+`have_<resource type>_count` matcher.
+
+```ruby
+it { should have_exec_resource_count(1) }
+```
+
+This last matcher also works for defined types. If the resource type contains
+::, you can replace it with __ (two underscores).
+
+```ruby
+it { should have_logrotate__rule_count(3) }
+```
+
+*NOTE*: when testing a class, the catalogue generated will always contain at
+least one class, the class under test. The same holds for defined types, the
+catalogue generated when testing a defined type will have at least one resource
+(the defined type itself).
+
 ### Writing tests
 
 #### Basic test structure

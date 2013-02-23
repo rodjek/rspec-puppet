@@ -144,10 +144,5 @@ module RSpec::Puppet
         @errors.nil? ? "" : " with #{@errors.join(', and parameter ')}"
       end
     end
-
-    def method_missing(method, *args, &block)
-      return RSpec::Puppet::ManifestMatchers::CreateGeneric.new(method, *args, &block) if method.to_s =~ /^(create|contain)_/
-      super
-    end
   end
 end

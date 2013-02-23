@@ -37,6 +37,10 @@ describe 'sysctl::common' do
 
   it { should create_class("sysctl::common")\
     .with_test_param("yes") }
+  it { should have_class_count(1) }
+  it { should have_exec_resource_count(1) }
+  # one exec resource and one notify resource from the default node (site.pp)
+  it { should have_resource_count(2) }
 end
 
 describe 'sysctl::common' do
