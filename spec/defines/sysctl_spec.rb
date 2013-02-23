@@ -11,4 +11,5 @@ describe 'sysctl' do
     .with_onlyif("match vm.swappiness[.='60'] size == 0") \
     .with_notify('Exec[sysctl/reload]')\
     .without_foo }
+  it { should have_sysctl_resource_count(1) }
 end
