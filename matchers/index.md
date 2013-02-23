@@ -30,7 +30,7 @@ it { should contain_apache__vhost('my awesome vhost') }
 
 #### with_\* and without_\*
 Further to this, you can test for the presence or absence of parameters on
-these resources by chaining any number of `.with_<parameter>` or 
+these resources by chaining any number of `.with_<parameter>` or
 `.without_<parameter>` methods onto the end of your test.  These methods can
 either take an exact value or a regular expression.
 
@@ -53,6 +53,40 @@ it do
   )
 end
 {% endhighlight %}
+
+### have_resource_count
+To test for an exact number of resources in the manifest, you can use the
+`have_resource_count` matcher.
+
+{% highlight ruby %}
+it { should have_resource_count(2) }
+{% endhighlight %}
+
+### have_class_count
+It is also possible to test the number of classes in a manifest. Use the
+`have_class_count` matcher for this.
+
+{% highlight ruby %}
+it { should have_class_count(1) }
+{% endhighlight %}
+
+### have_\*_resource_count
+To test the number of resources of a specific type in the manifest, the
+`have_<resource type>_resource_count is available. This works for both native
+and defined types.
+
+If the resource type you're testing for contains `::` in it, replace the `::`
+with `__` (two underscores).  For example, to test that your manifest contains
+a single `logrotate::rule` resource you would do
+
+{% highlight ruby %}
+it { should have_logrotate__rule_resource_count(1) }
+{% endhighlight %}
+
+*NOTE*: when testing a class, the catalogue generated will always contain at
+least one class, the class under test. The same holds for defined types, the
+catalogue generated when testing a defined type will have at least one resource
+(the defined type itself).
 
 ## Functions
 ### run
