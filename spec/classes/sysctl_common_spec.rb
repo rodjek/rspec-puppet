@@ -38,3 +38,33 @@ describe 'sysctl::common' do
   it { should create_class("sysctl::common")\
     .with_test_param("yes") }
 end
+
+describe 'sysctl::common' do
+  it { should contain_exec('sysctl/reload').only_with(
+         :command     => '/sbin/sysctl -p /etc/sysctl.conf',
+         :refreshonly => true,
+         :returns     => [0, 2]
+  )}
+  it { should contain_exec('sysctl/reload') \
+    .only_with_command('/sbin/sysctl -p /etc/sysctl.conf') \
+    .only_with_refreshonly(true) \
+    .only_with_returns([0, 2])
+  }
+  it 'should fail if not enough parameters are contained in the resource' do
+    expect do
+      subject.should contain_exec('sysctl/reload').only_with(
+        :command => '/sbin/sysctl -p /etc/sysctl.conf',
+        :returns => [0, 2]
+      )
+    end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+  end
+  it 'should fail if different parameters are contained in the resource' do
+    expect do
+      subject.should contain_exec('sysctl/reload').only_with(
+        :command => '/sbin/sysctl -p /etc/sysctl.conf',
+        :refreshonly => true,
+        :creates => '/tmp/bla'
+      )
+    end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+  end
+end
