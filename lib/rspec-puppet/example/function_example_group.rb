@@ -3,6 +3,7 @@ require 'puppetlabs_spec_helper/puppetlabs_spec/puppet_internals'
 module RSpec::Puppet
   module FunctionExampleGroup
     include RSpec::Puppet::FunctionMatchers
+    include RSpec::Puppet::ManifestMatchers
     PuppetInternals = PuppetlabsSpec::PuppetInternals
 
     def subject
