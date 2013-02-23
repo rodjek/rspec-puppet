@@ -76,8 +76,7 @@ module RSpec::Puppet
                 ret = value.call(rsrc_hsh[name.to_sym].to_s)
                 if ret != true
                   ret = false
-                  (@errors ||= []) << "#{name.to_s} `#{rsrc_hsh[name.to_sym].inspect}` passed to`#{value.to_s}` would be
-`true` but it's `#{ret}`"
+                  (@errors ||= []) << "#{name.to_s} `#{rsrc_hsh[name.to_sym].inspect}` passed to `#{value.to_s}` would be `true` but it's `#{ret}`"
                 end
               else
                 unless rsrc_hsh[name.to_sym].to_s == value.to_s
