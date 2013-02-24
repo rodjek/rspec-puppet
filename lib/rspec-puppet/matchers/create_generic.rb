@@ -39,7 +39,7 @@ module RSpec::Puppet
           self
         elsif method.to_s =~ /^without_/
           param = method.to_s.gsub(/^without_/, '')
-          (@expected_undef_params ||= []) << param
+          (@expected_undef_params ||= []) << [param, args[0]]
           self
         else
           super
@@ -88,10 +88,27 @@ module RSpec::Puppet
           end
 
           if @expected_undef_params
-            @expected_undef_params.each do |name|
-              unless resource.send(:parameters)[name.to_sym].nil?
-                ret = false
-                (@errors ||= []) << "#{name.to_s} undefined"
+            @expected_undef_params.each do |name,value|
+              if value.nil? then
+                unless resource.send(:parameters)[name.to_sym].nil?
+                  ret = false
+                  (@errors ||= []) << "#{name.to_s} undefined"
+                end
+              elsif value.kind_of?(Regexp) then
+                if rsrc_hsh[name.to_sym].to_s =~ value
+                  ret = false
+                  (@errors ||= []) << "#{name.to_s} not matching `#{value.inspect}` but its value of `#{rsrc_hsh[name.to_sym].inspect}` does"
+                end
+              elsif value.kind_of?(Array) then
+                if Array(rsrc_hsh[name.to_sym]).flatten.join == value.flatten.join
+                  ret = false
+                  (@errors ||= []) << "#{name.to_s} not set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
+                end
+              else
+                if rsrc_hsh[name.to_sym].to_s == value.to_s
+                  ret = false
+                  (@errors ||= []) << "#{name.to_s} not set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
+                end
               end
             end
           end
@@ -125,7 +142,13 @@ module RSpec::Puppet
 
         if @expected_undef_params
           @expected_undef_params.each do |name, value|
-            values << "#{name.to_s} undefined"
+            if value.nil?
+              values << "#{name.to_s} undefined"
+            elsif value.kind_of?(Regexp)
+              values << "#{name.to_s} not matching #{value.inspect}"
+            else
+              values << "#{name.to_s} !> #{value.inspect}"
+            end
           end
         end
 
