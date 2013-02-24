@@ -157,7 +157,7 @@ it { should have_class_count(2) }
 ```
 
 You can also test the number of a specific resource type, by using the generic
-`have_<resource type>_count` matcher.
+`have_<resource type>_resource_count` matcher.
 
 ```ruby
 it { should have_exec_resource_count(1) }
@@ -167,7 +167,7 @@ This last matcher also works for defined types. If the resource type contains
 ::, you can replace it with __ (two underscores).
 
 ```ruby
-it { should have_logrotate__rule_count(3) }
+it { should have_logrotate__rule_resource_count(3) }
 ```
 
 *NOTE*: when testing a class, the catalogue generated will always contain at
