@@ -10,7 +10,7 @@ module RSpec::Puppet
           @func = lambda { func_obj.call }
         end
 
-        if @expected_error
+        unless @expected_error.nil?
           result = false
           begin
             @func.call
@@ -22,7 +22,7 @@ module RSpec::Puppet
           end
           result
         else
-          if @expected_return
+          unless @expected_return.nil?
             @actual_return = @func.call
             @actual_return == @expected_return
           else
