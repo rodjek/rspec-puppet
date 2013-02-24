@@ -258,7 +258,7 @@ Puppet functions.
 
 ```ruby
 it 'should be able to do something' do
-  subject.call('foo') == 'bar'
+  subject.call(['foo']) == 'bar'
 end
 ```
 
@@ -302,7 +302,7 @@ Or by using the `call` method on the subject directly
 
 ```ruby
 it 'something' do
-  subject.call('foo', 'bar', ['baz'])
+  subject.call(['foo', 'bar', ['baz']])
 end
 ```
 
@@ -319,8 +319,8 @@ Or by using any of the existing RSpec matchers on the subject directly
 
 ```ruby
 it 'something' do
-  subject.call('foo') == 'bar'
-  subject.call('baz').should be_an Array
+  subject.call(['foo']) == 'bar'
+  subject.call(['baz']).should be_an Array
 end
 ```
 
@@ -338,7 +338,7 @@ Or by using the existing `raises_error` RSpec matcher
 
 ```ruby
 it 'something' do
-  expect { subject.call('a', 'b') }.should raise_error(Puppet::ParseError)
-  expect { subject.call('a') }.should_not raise_error(Puppet::ParseError)
+  expect { subject.call(['a', 'b']) }.should raise_error(Puppet::ParseError)
+  expect { subject.call(['a']) }.should_not raise_error(Puppet::ParseError)
 end
 ```
