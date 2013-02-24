@@ -39,6 +39,15 @@ it { should contain_service('mysql-server').with_ensure('present') }
 it { should contain_file('/etc/logrotate.d/apache').with_content(/compress/) }
 {% endhighlight %}
 
+#### only_with_\*
+If you want to test the presence of an exact set of parameters on your
+resources, you can do so by chaining the `.only_with_<parameter>` methods.
+These methods also take an exact value or a regular expression.
+
+{% highlight ruby %}
+it { should contain_service('httpd').only_with_ensure('running') }
+{% endhighlight %}
+
 #### with and without
 This can become very verbose when you're testing for multiple parameters, so
 you can also chain `.with` and `.without` methods on to the end of your tests
@@ -50,6 +59,20 @@ it do
     'ensure'     => 'running',
     'enable'     => 'true',
     'hasrestart' => 'true',
+  )
+end
+{% endhighlight %}
+
+#### only_with
+The chaining also works with the `.only_with` method, by passing a hash of
+parameters. These will be the exact set of parameters the catalogue should
+contain for that resource or class.
+
+{% highlight ruby %}
+it do
+  should contain_user('luke').only_with(
+    'ensure' => 'present',
+    'uid'    => '501',
   )
 end
 {% endhighlight %}
@@ -72,8 +95,8 @@ it { should have_class_count(1) }
 
 ### have_\*_resource_count
 To test the number of resources of a specific type in the manifest, the
-`have_<resource type>_resource_count is available. This works for both native
-and defined types.
+`have_<resource type>_resource_count` matcher is available. This works for
+both native and defined types.
 
 If the resource type you're testing for contains `::` in it, replace the `::`
 with `__` (two underscores).  For example, to test that your manifest contains
