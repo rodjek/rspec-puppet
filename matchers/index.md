@@ -72,8 +72,8 @@ it { should have_class_count(1) }
 
 ### have_\*_resource_count
 To test the number of resources of a specific type in the manifest, the
-`have_<resource type>_resource_count is available. This works for both native
-and defined types.
+`have_<resource type>_resource_count` matcher is available. This works for
+both native and defined types.
 
 If the resource type you're testing for contains `::` in it, replace the `::`
 with `__` (two underscores).  For example, to test that your manifest contains
