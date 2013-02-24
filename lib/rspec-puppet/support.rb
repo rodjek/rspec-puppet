@@ -35,5 +35,10 @@ module RSpec::Puppet
       facts.keys.each { |key| output[key.to_s] = facts[key] }
       output
     end
+
+    def escape_special_chars(string)
+      string.gsub!(/\$/, "\\$")
+      string
+    end
   end
 end
