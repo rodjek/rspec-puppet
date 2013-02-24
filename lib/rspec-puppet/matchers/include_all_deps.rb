@@ -6,48 +6,45 @@ module RSpec::Puppet
       @failed_resource=""
 
       match do |catalogue|
-  retval=true
+        retval=true
         # Build a hash of defined resources
-        @reshash = { }
-        catalogue.vertices.each do |vertix|
-          if vertix.class == Puppet::Resource then
-            @reshash["#{vertix.type.to_s}[#{vertix.title}]"]=1
-            vertix.each do |param,value|
-              if param == :alias then
-                @reshash["#{vertix.type.to_s}[#{value}]"]=1
-              end
+        @res_hash = { }
+        catalogue.vertices.each do |vertex|
+          if vertex.is_a? Puppet::Resource
+            @res_hash[vertex.ref] = 1
+            if vertex[:alias]
+              @res_hash["#{vertex.type.to_s}[#{vertex[:alias]}]"] = 1
             end
           end
         end
-        def check_resource (res)
-          return true if 1 == @reshash["#{res.type.to_s}[#{res.title.to_s}]"]
-          res.each do |param,value|
-            if param == :alias then
-              return true if 1 == @reshash["#{res.type.to_s}[#{value}]"]
-            end
+
+        def check_resource(res)
+          if @res_hash[res.ref]
+            true
+          elsif res[:alias] && @res_hash["#{res.type.to_s}[#{res[:alias]}]"]
+            true
+          else
+            false
           end
-          return false
         end
-        catalogue.vertices.each do |vertix|
-          if vertix.class.to_s == "Puppet::Resource" then
-            vertix.each do |param,value|
-              if param == :require or
-             param == :subscribe or
-                 param == :notify or
-                 param == :before then
-                 if value.class == Puppet::Resource then
-                   next if check_resource(value)
-       @failed_resource="#{value.type.to_s}['#{value.title.to_s}'] used at #{vertix.file.to_s}[#{vertix.line.to_s}] in #{vertix.type.to_s}['#{vertix.title.to_s}']"
-                   retval=false
-                 elsif value.class == Array then
-                   value.each do |val|
-                     if val.class == Puppet::Resource then
-                       next if check_resource(val)
-           @failed_resource="#{val.type.to_s}['#{val.title.to_s}'] used at #{vertix.file.to_s}[#{vertix.line.to_s}] in #{vertix.type.to_s}['#{vertix.title.to_s}']"
-                       retval=false
-                     end
-                   end
-                 end
+
+        catalogue.vertices.each do |vertex|
+          if vertex.is_a? Puppet::Resource
+            vertex.each do |param,value|
+              if [:require, :subscribe, :notify, :before].include? param
+                if value.is_a? Puppet::Resource
+                  next if check_resource(value)
+                  @failed_resource="#{value.ref} used at #{vertex.file.to_s}:#{vertex.line.to_s} in #{vertex.ref}"
+                   retval = false
+                elsif value.is_a? Array
+                  value.each do |val|
+                    if val.is_a? Puppet::Resource
+                      next if check_resource(val)
+                      @failed_resource="#{val.ref} used at #{vertex.file.to_s}:#{vertex.line.to_s}: in #{vertex.ref}"
+                      retval=false
+                    end
+                  end
+                end
               end
             end
           end
