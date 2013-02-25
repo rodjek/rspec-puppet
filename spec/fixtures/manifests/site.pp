@@ -6,7 +6,7 @@ node /testhost/ {
   include sysctl::common
 }
 
-node /gooddephost/ {
+node 'good_dep_host' {
   file { 'tmpdir':
     alias => '/tmp',
     path  => '/tmp',
@@ -19,7 +19,7 @@ node /gooddephost/ {
   }
 }
 
-node /baddephost/ {
+node 'bad_dep_host' {
   file { '/tmp':
     require => File['/'],
   }
