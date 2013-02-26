@@ -17,13 +17,22 @@ module RSpec::Puppet
         begin
           cat = catalogue.to_ral.relationship_graph
           cat.write_graph(:resources)
-          cycles = cat.find_cycles_in_graph
-          if cycles.length > 0
-            cycles.each do |cycle|
-              paths = cat.paths_in_cycle(cycle)
-              @cycles << (paths.map{ |path| '(' + path.join(" => ") + ')'}.join("\n") + "\n")
+          if cat.respond_to? :find_cycles_in_graph
+            cycles = cat.find_cycles_in_graph
+            if cycles.length > 0
+              cycles.each do |cycle|
+                paths = cat.paths_in_cycle(cycle)
+                @cycles << (paths.map{ |path| '(' + path.join(" => ") + ')'}.join("\n") + "\n")
+              end
+              retval = false
             end
-            retval = false
+          else
+            begin
+              cat.topsort
+            rescue Puppet::Error => e
+              @cycles = [e.message.rpartition(';').first.partition(':').last]
+              retval = false
+            end
           end
         rescue Puppet::Error
           retval = false
