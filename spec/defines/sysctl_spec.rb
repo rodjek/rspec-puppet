@@ -7,6 +7,7 @@ end
 describe 'sysctl' do
   let(:title) { 'vm.swappiness' }
   let(:params) { {:value => '60'} }
+  let(:pre_condition) { }
 
   it { should include_class('sysctl::common') }
   it { should create_augeas('sysctl/vm.swappiness') \

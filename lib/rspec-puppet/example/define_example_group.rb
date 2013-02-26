@@ -40,7 +40,7 @@ module RSpec::Puppet
         param_str = ""
       end
 
-      if self.respond_to? :pre_condition
+      if self.respond_to?(:pre_condition) && !pre_condition.nil?
         if pre_condition.kind_of?(Array)
           pre_cond = pre_condition.join("\n")
         else
