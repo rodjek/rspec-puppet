@@ -4,6 +4,7 @@ module RSpec::Puppet
   module FunctionExampleGroup
     include RSpec::Puppet::FunctionMatchers
     include RSpec::Puppet::ManifestMatchers
+    include RSpec::Puppet::Support
     PuppetInternals = PuppetlabsSpec::PuppetInternals
 
     def subject
