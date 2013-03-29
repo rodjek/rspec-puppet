@@ -12,7 +12,7 @@ module RSpec::Puppet
 
       vardir = Dir.mktmpdir
       Puppet[:vardir] = vardir
-      Puppet[:hiera_config] = File.join(vardir, "hiera.yaml") if Puppet[:hiera_config] == File.expand_path("/dev/null")
+      Puppet[:hiera_config] = self.respond_to?(:hiera_config) ? hiera_config : RSpec.configuration.hiera_config
       Puppet[:modulepath] = self.respond_to?(:module_path) ? module_path : RSpec.configuration.module_path
       Puppet[:manifestdir] = self.respond_to?(:manifest_dir) ? manifest_dir : RSpec.configuration.manifest_dir
       Puppet[:manifest] = self.respond_to?(:manifest) ? manifest : RSpec.configuration.manifest
