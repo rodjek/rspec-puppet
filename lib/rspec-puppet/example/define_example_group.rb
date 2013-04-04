@@ -58,6 +58,11 @@ module RSpec::Puppet
         'fqdn' => nodename,
         'domain' => nodename.split('.', 2).last,
       }
+
+      if RSpec.configuration.default_facts.any?
+        facts_val.merge!(munge_facts(RSpec.configuration.default_facts))
+      end
+
       facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
 
       catalogue = build_catalog(nodename, facts_val, code)
