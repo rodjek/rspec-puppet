@@ -232,6 +232,19 @@ You can set them with a hash
 let(:facts) { {:operatingsystem => 'Debian', :kernel => 'Linux', ...} }
 ```
 
+You can also create a set of default facts provided to all specs in your spec_helper:
+
+``` ruby
+RSpec.configure do |c|
+  c.default_facts = {
+    :operatingsystem => 'Ubuntu'
+  }
+end
+```
+
+Any facts you provide with `let(:facts)` in a spec will automatically be merged on top
+of the default facts.
+
 #### Specifying the path to find your modules
 
 I recommend setting a default module path by adding the following code to your
