@@ -9,11 +9,13 @@ module RSpec::Puppet
         @title = args[0]
 
         @errors = []
+        @expected_params = []
+        @expected_undef_params = []
       end
 
       def with(*args, &block)
         params = args.shift
-        @expected_params = (@expected_params || []) | params.to_a
+        @expected_params = @expected_params | params.to_a
         self
       end
 
@@ -25,23 +27,23 @@ module RSpec::Puppet
 
       def without(*args, &block)
         params = args.shift
-        @expected_undef_params = (@expected_undef_params || []) | Array(params)
+        @expected_undef_params = @expected_undef_params | Array(params)
         self
       end
 
       def method_missing(method, *args, &block)
         if method.to_s =~ /^with_/
           param = method.to_s.gsub(/^with_/, '')
-          (@expected_params ||= []) << [param, args[0]]
+          @expected_params << [param, args[0]]
           self
         elsif method.to_s =~ /^only_with_/
           param = method.to_s.gsub(/^only_with_/, '')
           @expected_params_count = (@expected_params_count || 0) + 1
-          (@expected_params ||= []) << [param, args[0]]
+          @expected_params << [param, args[0]]
           self
         elsif method.to_s =~ /^without_/
           param = method.to_s.gsub(/^without_/, '')
-          (@expected_undef_params ||= []) << [param, args[0]]
+          @expected_undef_params << [param, args[0]]
           self
         else
           super
@@ -62,7 +64,7 @@ module RSpec::Puppet
               (@errors ||= []) << "exactly #{@expected_params_count} parameters but the catalogue contains #{rsrc_hsh.size}"
             end
           end
-          if @expected_params
+          if @expected_params.any?
             @expected_params.each do |name, value|
               if value.kind_of?(Regexp) then
                 unless rsrc_hsh[name.to_sym].to_s =~ value
@@ -89,7 +91,7 @@ module RSpec::Puppet
             end
           end
 
-          if @expected_undef_params
+          if @expected_undef_params.any?
             @expected_undef_params.each do |name,value|
               if value.nil? then
                 unless resource.send(:parameters)[name.to_sym].nil?
@@ -129,29 +131,17 @@ module RSpec::Puppet
 
       def description
         values = []
+
         if @expected_params_count
           values << "exactly #{@expected_params_count} parameters"
         end
-        if @expected_params
-          @expected_params.each do |name, value|
-            if value.kind_of?(Regexp)
-              values << "#{name.to_s} matching #{value.inspect}"
-            else
-              values << "#{name.to_s} => #{value.inspect}"
-            end
-          end
+
+        if @expected_params.any?
+          values.concat(generate_param_list(@expected_params, :should))
         end
 
-        if @expected_undef_params
-          @expected_undef_params.each do |name, value|
-            if value.nil?
-              values << "#{name.to_s} undefined"
-            elsif value.kind_of?(Regexp)
-              values << "#{name.to_s} not matching #{value.inspect}"
-            else
-              values << "#{name.to_s} !> #{value.inspect}"
-            end
-          end
+        if @expected_undef_params.any?
+          values.concat(generate_param_list(@expected_undef_params, :not))
         end
 
         unless values.empty?
@@ -165,14 +155,27 @@ module RSpec::Puppet
         "contain #{@referenced_type}[#{@title}]#{value_str}"
       end
 
-    private
-
+      private
       def referenced_type(type)
         type.split('__').map { |r| r.capitalize }.join('::')
       end
 
       def errors
         @errors.empty? ? "" : " with #{@errors.join(', and parameter ')}"
+      end
+
+      def generate_param_list(list, type)
+        output = []
+        list.each do |param, value|
+          if value.nil?
+            output << "#{param.to_s} #{type == :not ? 'un' : ''}defined"
+          elsif value.is_a? Regexp
+            output << "#{param.to_s} #{type == :not ? '!' : '='}= #{value.inspect}"
+          else
+            output << "#{param.to_s} #{type == :not ? '!' : '='}> #{value.inspect}"
+          end
+        end
+        output
       end
     end
   end
