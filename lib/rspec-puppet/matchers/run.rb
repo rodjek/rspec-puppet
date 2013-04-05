@@ -50,29 +50,31 @@ module RSpec::Puppet
       end
 
       failure_message_for_should do |func_obj|
-        func_name = func_obj.name.to_s.gsub(/^function_/, '')
-        func_params = @params.inspect[1..-2]
-
-        if @expected_return
-          "expected #{func_name}(#{func_params}) to have returned #{@expected_return.inspect} instead of #{@actual_return.inspect}"
-        elsif @expected_error
-          "expected #{func_name}(#{func_params}) to have raised #{@expected_error.inspect}"
-        else
-          "expected #{func_name}(#{func_params}) to have run successfully"
-        end
+        failure_message_generic(:should, func_obj)
       end
 
       failure_message_for_should_not do |func_obj|
+        failure_message_generic(:should_not, func_obj)
+      end
+
+      def failure_message_generic(type, func_obj)
         func_name = func_obj.name.gsub(/^function_/, '')
         func_params = @params.inspect[1..-2]
 
+        message = "expected #{func_name}(#{func_params}) to "
+        message << "not " if type == :should_not
+
         if @expected_return
-          "expected #{func_name}(#{func_params}) to not have returned #{@expected_return.inspect}"
+          message << "have returned #{@expected_return.inspect}"
+          if type == :should
+            message << " instead of #{@actual_return.inspect}"
+          end
         elsif @expected_error
-          "expected #{func_name}(#{func_params}) to not have raised #{@expected_error.inspect}"
+          message << "have raised #{@expected_error.inspect}"
         else
-          "expected #{func_name}(#{func_params}) to not have run successfully"
+          message << "have run successfully"
         end
+        message
       end
     end
   end
