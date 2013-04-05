@@ -43,17 +43,6 @@ module RSpec::Puppet
       def missing_dependencies?
         retval = false
 
-        # Build a hash of defined resources
-        @res_hash = { }
-        @catalogue.vertices.each do |vertex|
-          if vertex.is_a? Puppet::Resource
-            @res_hash[vertex.ref] = 1
-            if vertex[:alias]
-              @res_hash["#{vertex.type.to_s}[#{vertex[:alias]}]"] = 1
-            end
-          end
-        end
-
         @catalogue.vertices.each do |vertex|
           if vertex.is_a? Puppet::Resource
             vertex.each do |param,value|
@@ -72,10 +61,25 @@ module RSpec::Puppet
         retval
       end
 
+      def resource_hash
+        @resource_hash ||= Proc.new do
+          res_hash = {}
+          @catalogue.vertices.each do |vertex|
+            if vertex.is_a? Puppet::Resource
+              res_hash[vertex.ref] = 1
+              if vertex[:alias]
+                res_hash["#{vertex.type.to_s}[#{vertex[:alias]}]"] = 1
+              end
+            end
+          end
+          res_hash
+        end.call
+      end
+
       def check_resource(res)
-        if @res_hash[res.ref]
+        if resource_hash[res.ref]
           true
-        elsif res[:alias] && @res_hash["#{res.type.to_s}[#{res[:alias]}]"]
+        elsif res[:alias] && resource_hash["#{res.type.to_s}[#{res[:alias]}]"]
           true
         else
           false
