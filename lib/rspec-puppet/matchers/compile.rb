@@ -43,15 +43,14 @@ module RSpec::Puppet
       def missing_dependencies?
         retval = false
 
-        @catalogue.vertices.each do |vertex|
-          if vertex.is_a? Puppet::Resource
-            vertex.each do |param,value|
-              if [:require, :subscribe, :notify, :before].include? param
-                value = Array[value] unless value.is_a? Array
-                value.each do |val|
-                  if val.is_a? Puppet::Resource
-                    retval = true unless resource_exists?(val, vertex)
-                  end
+        resource_vertices = @catalogue.vertices.select { |v| v.is_a? Puppet::Resource }
+        resource_vertices.each do |vertex|
+          vertex.each do |param,value|
+            if [:require, :subscribe, :notify, :before].include? param
+              value = Array[value] unless value.is_a? Array
+              value.each do |val|
+                if val.is_a? Puppet::Resource
+                  retval = true unless resource_exists?(val, vertex)
                 end
               end
             end
@@ -101,26 +100,33 @@ module RSpec::Puppet
           cat = @catalogue.to_ral.relationship_graph
           cat.write_graph(:resources)
           if cat.respond_to? :find_cycles_in_graph
-            cycles = cat.find_cycles_in_graph
-            if cycles.length > 0
-              cycles.each do |cycle|
-                paths = cat.paths_in_cycle(cycle)
-                @cycles << (paths.map{ |path| '(' + path.join(" => ") + ')'}.join("\n") + "\n")
-              end
-              retval = true
-            end
+            find_cycles(cat)
           else
-            begin
-              cat.topsort
-            rescue Puppet::Error => e
-              @cycles = [e.message.rpartition(';').first.partition(':').last]
-              retval = true
-            end
+            find_cycles_legacy(cat)
           end
+          retval = true unless @cycles.empty?
         rescue Puppet::Error
           retval = true
         end
         retval
+      end
+
+      def find_cycles(catalogue)
+        cycles = catalogue.find_cycles_in_graph
+        if cycles.length > 0
+          cycles.each do |cycle|
+            paths = catalogue.paths_in_cycle(cycle)
+            @cycles << (paths.map{ |path| '(' + path.join(" => ") + ')'}.join("\n") + "\n")
+          end
+        end
+      end
+
+      def find_cycles_legacy(catalogue)
+        begin
+          catalogue.topsort
+        rescue Puppet::Error => e
+          @cycles = [e.message.rpartition(';').first.partition(':').last]
+        end
       end
     end
   end
