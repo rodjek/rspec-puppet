@@ -60,21 +60,23 @@ module RSpec::Puppet
             end
           end
 
+          def resource_exists?(res, vertex)
+            unless check_resource(res)
+              @failed_resource = "#{res.ref} used at #{vertex.file}:#{vertex.line} in #{vertex.ref}"
+              false
+            else
+              true
+            end
+          end
+
           catalogue.vertices.each do |vertex|
             if vertex.is_a? Puppet::Resource
               vertex.each do |param,value|
                 if [:require, :subscribe, :notify, :before].include? param
-                  if value.is_a? Puppet::Resource
-                    next if check_resource(value)
-                    @failed_resource="#{value.ref} used at #{vertex.file.to_s}:#{vertex.line.to_s} in #{vertex.ref}"
-                     retval = false
-                  elsif value.is_a? Array
-                    value.each do |val|
-                      if val.is_a? Puppet::Resource
-                        next if check_resource(val)
-                        @failed_resource="#{val.ref} used at #{vertex.file.to_s}:#{vertex.line.to_s}: in #{vertex.ref}"
-                        retval = false
-                      end
+                  value = Array[value] unless value.is_a? Array
+                  value.each do |val|
+                    if val.is_a? Puppet::Resource
+                      retval = false unless resource_exists?(val, vertex)
                     end
                   end
                 end
