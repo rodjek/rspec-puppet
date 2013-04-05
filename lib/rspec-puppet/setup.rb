@@ -43,17 +43,25 @@ module RSpec::Puppet
 
   protected
     def self.get_module_name
-      p = Puppet::Parser::Lexer.new
       module_name = nil
       Dir["manifests/*.pp"].entries.each do |manifest|
-        p.string = File.read(manifest)
-        tokens = p.fullscan
-        i = tokens.index { |token| [:CLASS, :DEFINE].include? token.first }
-        unless i.nil?
-          module_name = tokens[i + 1].last[:value].split('::').first
-          break
-        end
+        module_name = get_module_name_from_file(manifest)
+        break unless module_name.nil?
       end
+      module_name
+    end
+
+    def self.get_module_name_from_file(file)
+      p = Puppet::Parser::Lexer.new
+      module_name = nil
+      p.string = File.read(file)
+      tokens = p.fullscan
+
+      i = tokens.index { |token| [:CLASS, :DEFINE].include? token.first }
+      unless i.nil?
+        module_name = tokens[i + 1].last[:value].split('::').first
+      end
+
       module_name
     end
 
@@ -83,6 +91,20 @@ module RSpec::Puppet
       end
     end
 
+    def self.safe_create_file(filename, content)
+      if File.exists? filename
+        old_content = File.read(filename)
+        if old_content != content
+          $stderr.puts "!! #{filename} already exists and differs from template"
+        end
+      else
+        File.open(filename, 'w') do |f|
+          f.puts content
+        end
+        puts " + #{filename}"
+      end
+    end
+
     def self.safe_create_spec_helper
       content = <<-EOF
 require 'rspec-puppet'
@@ -94,17 +116,7 @@ RSpec.configure do |c|
   c.manifest_dir = File.join(fixture_path, 'manifests')
 end
 EOF
-      if File.exists? 'spec/spec_helper.rb'
-        old_content = File.read('spec/spec_helper.rb')
-        if old_content != content
-          $stderr.puts "!! spec/spec_helper.rb already exists and differs from template"
-        end
-      else
-        File.open('spec/spec_helper.rb', 'w') do |f|
-          f.puts content
-        end
-        puts ' + spec/spec_helper.rb'
-      end
+    safe_create_file('spec/spec_helper.rb', content)
     end
 
     def self.safe_make_symlink(source, target)
@@ -149,17 +161,7 @@ begin
 rescue Gem::LoadError
 end
 EOF
-      if File.exists? 'Rakefile'
-        old_content = File.read('Rakefile')
-        if old_content != content
-          $stderr.puts "!! Rakefile already exists and differs from template"
-        end
-      else
-        File.open('Rakefile', 'w') do |f|
-          f.puts content
-        end
-        puts ' + Rakefile'
-      end
+    safe_create_file('Rakefile', content)
     end
   end
 end
