@@ -7,6 +7,8 @@ module RSpec::Puppet
         @block = block
         @referenced_type = referenced_type(@exp_resource_type)
         @title = args[0]
+
+        @errors = []
       end
 
       def with(*args, &block)
@@ -65,23 +67,23 @@ module RSpec::Puppet
               if value.kind_of?(Regexp) then
                 unless rsrc_hsh[name.to_sym].to_s =~ value
                   ret = false
-                  (@errors ||= []) << "#{name.to_s} matching `#{value.inspect}` but its value of `#{rsrc_hsh[name.to_sym].inspect}` does not"
+                  @errors << "#{name.to_s} matching `#{value.inspect}` but its value of `#{rsrc_hsh[name.to_sym].inspect}` does not"
                 end
               elsif value.kind_of?(Array) then
                 unless Array(rsrc_hsh[name.to_sym]).flatten.join == value.flatten.join
                   ret = false
-                  (@errors ||= []) << "#{name.to_s} set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
+                  @errors << "#{name.to_s} set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
                 end
               elsif value.kind_of?(Proc) then
                 ret = value.call(rsrc_hsh[name.to_sym].to_s)
                 if ret != true
                   ret = false
-                  (@errors ||= []) << "#{name.to_s} `#{rsrc_hsh[name.to_sym].inspect}` passed to `#{value.to_s}` would be `true` but it's `#{ret}`"
+                  @errors << "#{name.to_s} `#{rsrc_hsh[name.to_sym].inspect}` passed to `#{value.to_s}` would be `true` but it's `#{ret}`"
                 end
               else
                 unless rsrc_hsh[name.to_sym].to_s == value.to_s
                   ret = false
-                  (@errors ||= []) << "#{name.to_s} set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
+                  @errors << "#{name.to_s} set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
                 end
               end
             end
@@ -92,22 +94,22 @@ module RSpec::Puppet
               if value.nil? then
                 unless resource.send(:parameters)[name.to_sym].nil?
                   ret = false
-                  (@errors ||= []) << "#{name.to_s} undefined"
+                  @errors << "#{name.to_s} undefined"
                 end
               elsif value.kind_of?(Regexp) then
                 if rsrc_hsh[name.to_sym].to_s =~ value
                   ret = false
-                  (@errors ||= []) << "#{name.to_s} not matching `#{value.inspect}` but its value of `#{rsrc_hsh[name.to_sym].inspect}` does"
+                  @errors << "#{name.to_s} not matching `#{value.inspect}` but its value of `#{rsrc_hsh[name.to_sym].inspect}` does"
                 end
               elsif value.kind_of?(Array) then
                 if Array(rsrc_hsh[name.to_sym]).flatten.join == value.flatten.join
                   ret = false
-                  (@errors ||= []) << "#{name.to_s} not set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
+                  @errors << "#{name.to_s} not set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
                 end
               else
                 if rsrc_hsh[name.to_sym].to_s == value.to_s
                   ret = false
-                  (@errors ||= []) << "#{name.to_s} not set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
+                  @errors << "#{name.to_s} not set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
                 end
               end
             end
@@ -170,7 +172,7 @@ module RSpec::Puppet
       end
 
       def errors
-        @errors.nil? ? "" : " with #{@errors.join(', and parameter ')}"
+        @errors.empty? ? "" : " with #{@errors.join(', and parameter ')}"
       end
     end
   end
