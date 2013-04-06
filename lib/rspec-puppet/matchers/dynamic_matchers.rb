@@ -7,4 +7,11 @@ module RSpec::Puppet
       super
     end
   end
+
+  module FunctionMatchers
+    def method_missing(method, *args, &block)
+      return RSpec::Puppet::FunctionMatchers::Run.new if method == :run
+      super
+    end
+  end
 end

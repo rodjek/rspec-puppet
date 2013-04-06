@@ -1,9 +1,7 @@
 module RSpec::Puppet
   module FunctionMatchers
-    extend RSpec::Matchers::DSL
-
-    matcher :run do
-      match do |func_obj|
+    class Run
+      def matches?(func_obj)
         if @params
           @func = lambda { func_obj.call(@params) }
         else
@@ -36,27 +34,31 @@ module RSpec::Puppet
         end
       end
 
-      chain :with_params do |*params|
+      def with_params(*params)
         @params = params
+        self
       end
 
-      chain :and_return do |value|
+      def and_return(value)
         @expected_return = value
+        self
       end
 
       # XXX support error string and regexp
-      chain :and_raise_error do |value|
+      def and_raise_error(value)
         @expected_error = value
+        self
       end
 
-      failure_message_for_should do |func_obj|
+      def failure_message_for_should(func_obj)
         failure_message_generic(:should, func_obj)
       end
 
-      failure_message_for_should_not do |func_obj|
+      def failure_message_for_should_not(func_obj)
         failure_message_generic(:should_not, func_obj)
       end
 
+      private
       def failure_message_generic(type, func_obj)
         func_name = func_obj.name.gsub(/^function_/, '')
         func_params = @params.inspect[1..-2]
