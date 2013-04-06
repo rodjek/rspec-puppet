@@ -13,18 +13,16 @@ module RSpec::Puppet
 
       def matches?(catalogue)
         if @type == "resource"
-          actual = catalogue.resources.select do |res|
-            !res.type.eql? "Class" and !res.type.eql? "Node"
+          @actual_number = catalogue.resources.count do |res|
+            !(['Class', 'Node'].include? res.type)
           end
 
           # Puppet automatically adds Stage[main]
-          @actual_number = actual.length - 1
+          @actual_number = @actual_number - 1
         else
-          actual = catalogue.resources.select do |res|
-            res.type.eql? @referenced_type
+          @actual_number = catalogue.resources.count do |res|
+            res.type == @referenced_type
           end
-
-          @actual_number = actual.length
 
           # Puppet automatically adds Class[main] and Class[Settings]
           @actual_number = @actual_number - 2 if @type == "class"
