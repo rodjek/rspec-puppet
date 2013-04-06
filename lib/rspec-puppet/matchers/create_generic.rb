@@ -152,8 +152,7 @@ module RSpec::Puppet
       end
 
       def check_regexp_param(type, resource, param, value)
-        op = type == :not ? :"!~" : :"=~"
-        unless resource[param].to_s.send(op, value)
+        if !!(resource[param].to_s =~ value) == (type == :not)
           @errors << RegexpMatchError.new(param, value, resource[param], type == :not)
         end
       end
