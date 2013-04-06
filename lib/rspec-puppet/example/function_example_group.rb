@@ -7,46 +7,24 @@ module RSpec::Puppet
     def subject
       function_name = self.class.top_level_description.downcase
 
-      if self.respond_to? :module_path
-        Puppet[:modulepath] = module_path
-      else
-        Puppet[:modulepath] = RSpec.configuration.module_path
-      end
+      vardir = setup_puppet
 
-      Puppet[:libdir] = Dir["#{Puppet[:modulepath]}/*/lib"].entries.join(File::PATH_SEPARATOR)
+      node_name = nodename(:function)
 
-      nodename = self.respond_to?(:node) ? node : Puppet[:certname]
-      facts_val = {
-        'hostname' => nodename.split('.').first,
-        'fqdn'     => nodename,
-        'domain'   => nodename.split('.').last,
-      }
-
-      if RSpec.configuration.default_facts.any?
-        facts_val.merge!(munge_facts(RSpec.configuration.default_facts))
-      end
-
-      facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
-
-      stub_facts! facts_val
+      facts_val = facts_hash(node_name)
 
       # if we specify a pre_condition, we should ensure that we compile that code
       # into a catalog that is accessible from the scope where the function is called
-      if self.respond_to? :pre_condition
-        if pre_condition.kind_of?(Array)
-          Puppet[:code] = pre_condition.join("\n")
-        else
-          Puppet[:code] = pre_condition
-        end
-      end
+      Puppet[:code] = pre_cond
 
-      compiler = build_compiler(nodename, facts_val)
+      compiler = build_compiler(node_name, facts_val)
 
-      function_scope = scope(compiler, nodename)
+      function_scope = scope(compiler, node_name)
 
       # Return the method instance for the function.  This can be used with
       # method.call
       return nil unless Puppet::Parser::Functions.function(function_name)
+      FileUtils.rm_rf(vardir) if File.directory?(vardir)
       function_scope.method("function_#{function_name}".intern)
     end
 

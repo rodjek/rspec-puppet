@@ -33,7 +33,7 @@ module RSpec::Puppet
     end
 
     def nodename(type)
-      if [:class, :define].include? type
+      if [:class, :define, :function].include? type
         self.respond_to?(:node) ? node : Puppet[:certname]
       else
         self.class.top_level_description.downcase
@@ -98,6 +98,7 @@ module RSpec::Puppet
         Puppet[:hiera_config] = File.join(vardir, 'hiera.yaml')
       end
 
+      Puppet[:libdir] = Dir["#{Puppet[:modulepath]}/*/lib"].entries.join(File::PATH_SEPARATOR)
       vardir
     end
 
