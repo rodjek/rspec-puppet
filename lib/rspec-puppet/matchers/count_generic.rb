@@ -12,17 +12,7 @@ module RSpec::Puppet
       end
 
       def matches?(catalogue)
-        ret = true
-
-        case @type
-        when "class"
-          actual = catalogue.resources.select do |res|
-            res.type.eql? "Class"
-          end
-
-          # Puppet automatically adds Class[main] and Class[Settings]
-          @actual_number = actual.length - 2
-        when "resource"
+        if @type == "resource"
           actual = catalogue.resources.select do |res|
             !res.type.eql? "Class" and !res.type.eql? "Node"
           end
@@ -31,17 +21,20 @@ module RSpec::Puppet
           @actual_number = actual.length - 1
         else
           actual = catalogue.resources.select do |res|
-            res.type.eql? "#{@referenced_type}"
+            res.type.eql? @referenced_type
           end
 
           @actual_number = actual.length
+
+          # Puppet automatically adds Class[main] and Class[Settings]
+          @actual_number = @actual_number - 2 if @type == "class"
         end
 
-        unless @actual_number == @expected_number
-          ret = false
+        if @actual_number == @expected_number
+          true
+        else
+          false
         end
-
-        ret
       end
 
       def description
