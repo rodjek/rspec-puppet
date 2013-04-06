@@ -1,6 +1,8 @@
 module RSpec::Puppet
   module ManifestMatchers
     class CreateGeneric
+      include RSpec::Puppet::Errors
+
       def initialize(*args, &block)
         @exp_resource_type = args.shift.to_s.gsub(/^(create|contain)_/, '')
         @args = args
@@ -55,7 +57,7 @@ module RSpec::Puppet
         resource = catalogue.resource(@referenced_type, @title)
 
         if resource.nil?
-          ret = false
+          false
         else
           rsrc_hsh = resource.to_hash
           if @expected_params_count
@@ -64,61 +66,12 @@ module RSpec::Puppet
               (@errors ||= []) << "exactly #{@expected_params_count} parameters but the catalogue contains #{rsrc_hsh.size}"
             end
           end
-          if @expected_params.any?
-            @expected_params.each do |name, value|
-              if value.kind_of?(Regexp) then
-                unless rsrc_hsh[name.to_sym].to_s =~ value
-                  ret = false
-                  @errors << "#{name.to_s} matching `#{value.inspect}` but its value of `#{rsrc_hsh[name.to_sym].inspect}` does not"
-                end
-              elsif value.kind_of?(Array) then
-                unless Array(rsrc_hsh[name.to_sym]).flatten.join == value.flatten.join
-                  ret = false
-                  @errors << "#{name.to_s} set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
-                end
-              elsif value.kind_of?(Proc) then
-                ret = value.call(rsrc_hsh[name.to_sym].to_s)
-                if ret != true
-                  ret = false
-                  @errors << "#{name.to_s} `#{rsrc_hsh[name.to_sym].inspect}` passed to `#{value.to_s}` would be `true` but it's `#{ret}`"
-                end
-              else
-                unless rsrc_hsh[name.to_sym].to_s == value.to_s
-                  ret = false
-                  @errors << "#{name.to_s} set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
-                end
-              end
-            end
-          end
 
-          if @expected_undef_params.any?
-            @expected_undef_params.each do |name,value|
-              if value.nil? then
-                unless resource.send(:parameters)[name.to_sym].nil?
-                  ret = false
-                  @errors << "#{name.to_s} undefined"
-                end
-              elsif value.kind_of?(Regexp) then
-                if rsrc_hsh[name.to_sym].to_s =~ value
-                  ret = false
-                  @errors << "#{name.to_s} not matching `#{value.inspect}` but its value of `#{rsrc_hsh[name.to_sym].inspect}` does"
-                end
-              elsif value.kind_of?(Array) then
-                if Array(rsrc_hsh[name.to_sym]).flatten.join == value.flatten.join
-                  ret = false
-                  @errors << "#{name.to_s} not set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
-                end
-              else
-                if rsrc_hsh[name.to_sym].to_s == value.to_s
-                  ret = false
-                  @errors << "#{name.to_s} not set to `#{value.inspect}` but it is set to `#{rsrc_hsh[name.to_sym].inspect}` in the catalogue"
-                end
-              end
-            end
-          end
+          check_params(rsrc_hsh, @expected_params, :should) if @expected_params.any?
+          check_params(rsrc_hsh, @expected_undef_params, :not) if @expected_undef_params.any?
+
+          @errors.empty?
         end
-
-        ret
       end
 
       def failure_message_for_should
@@ -169,13 +122,62 @@ module RSpec::Puppet
         list.each do |param, value|
           if value.nil?
             output << "#{param.to_s} #{type == :not ? 'un' : ''}defined"
-          elsif value.is_a? Regexp
-            output << "#{param.to_s} #{type == :not ? '!' : '='}= #{value.inspect}"
           else
-            output << "#{param.to_s} #{type == :not ? '!' : '='}> #{value.inspect}"
+            a = type == :not ? '!' : '='
+            b = value.is_a?(Regexp) ? '~' : '>'
+            output << "#{param.to_s} #{a}#{b} #{value.inspect}"
           end
         end
         output
+      end
+
+      def check_params(resource, list, type)
+        list.each do |param, value|
+          param = param.to_sym
+
+          if value.nil? then
+            unless resource[param].nil?
+              @errors << "#{param} undefined"
+            end
+          elsif value.is_a? Regexp
+            check_regexp_param(type, resource, param, value)
+          elsif value.is_a? Array
+            check_array_param(type, resource, param, value)
+          elsif value.is_a? Proc
+            check_proc_param(type, resource, param, value)
+          else
+            check_string_param(type, resource, param, value)
+          end
+        end
+      end
+
+      def check_regexp_param(type, resource, param, value)
+        op = type == :not ? :!~ : :=~
+        unless resource[param].to_s.send(op, value)
+          @errors << RegexpMatchError.new(param, value, resource[param], type == :not)
+        end
+      end
+
+      def check_array_param(type, resource, param, value)
+        op = type == :not ? :!= : :==
+        unless Array(resource[param]).flatten.join.send(op, value.flatten.join)
+          @errors << MatchError.new(param, value, resource[param], type == :not)
+        end
+      end
+
+      def check_proc_param(type, resource, param, value)
+        expected_return = type == :not ? false : true
+        actual_return = value.call(resource[param].to_s)
+        if actual_return != expected_return
+          @errors << ProcMatchError.new(param, expected_return, actual_return, type == :not)
+        end
+      end
+
+      def check_string_param(type, resource, param, value)
+        op = type == :not ? :!= : :==
+        unless resource[param].to_s.send(op, value.to_s)
+          @errors << MatchError.new(param, value, resource[param], (type == :not))
+        end
       end
     end
   end
