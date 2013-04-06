@@ -3,26 +3,68 @@ module RSpec::Puppet
 
     @@cache = {}
 
-    protected
-    def build_catalog_without_cache(nodename, facts_val, code)
-      Puppet[:code] = code
+    def catalogue(type)
+      vardir = setup_puppet
+      klass_name = self.class.top_level_description.downcase
 
-      stub_facts! facts_val
+      if type == :class
+        if !self.respond_to?(:params) || params == {}
+          code = "include #{klass_name}"
+        else
+          code = "class { '#{klass_name}': #{param_str} }"
+        end
+        nodename = self.respond_to?(:node) ? node : Puppet[:certname]
+      elsif type == :define
+        if self.respond_to? :params
+          code = "#{klass_name} { '#{title}': #{param_str} }"
+        end
+        nodename = self.respond_to?(:node) ? node : Puppet[:certname]
+      elsif type == :host
+        code = ""
+        nodename = self.class.top_level_description.downcase
+      end
 
-      node_obj = Puppet::Node.new(nodename)
+      code = pre_cond + code
+      catalogue = build_catalog(nodename, facts_hash(nodename), code)
+      FileUtils.rm_rf(vardir) if File.directory?(vardir)
+      catalogue
+    end
 
-      node_obj.merge(facts_val)
-
-      # trying to be compatible with 2.7 as well as 2.6
-      if Puppet::Resource::Catalog.respond_to? :find
-        Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
+    def pre_cond
+      if self.respond_to?(:pre_condition) && !pre_condition.nil?
+        if pre_condition.is_a? Array
+          pre_condition.join("\n")
+        else
+          pre_condition
+        end
       else
-        Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
+        ''
       end
     end
 
-    public
-    def catalogue(type)
+    def facts_hash(node)
+      facts_val = {
+        'hostname' => node.split('.').first,
+        'fqdn'     => node,
+        'domain'   => node.split('.').last,
+      }
+
+      if RSpec.configuration.default_facts.any?
+        facts_val.merge!(munge_facts(RSpec.configuration.default_facts))
+      end
+
+      facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
+      facts_val
+    end
+
+    def param_str
+      params.keys.map do |r|
+        param_val = escape_special_chars(params[r].inspect)
+        "#{r.to_s} => #{param_val}"
+      end.join(', ')
+    end
+
+    def setup_puppet
       vardir = Dir.mktmpdir
       Puppet[:vardir] = vardir
 
@@ -45,58 +87,24 @@ module RSpec::Puppet
         Puppet[:hiera_config] = File.join(vardir, 'hiera.yaml')
       end
 
-      klass_name = self.class.top_level_description.downcase
+      vardir
+    end
 
-      if self.respond_to?(:pre_condition) && !pre_condition.nil?
-        if pre_condition.is_a? Array
-          pre_cond = pre_condition.join("\n")
-        else
-          pre_cond = pre_condition
-        end
+    def build_catalog_without_cache(nodename, facts_val, code)
+      Puppet[:code] = code
+
+      stub_facts! facts_val
+
+      node_obj = Puppet::Node.new(nodename)
+
+      node_obj.merge(facts_val)
+
+      # trying to be compatible with 2.7 as well as 2.6
+      if Puppet::Resource::Catalog.respond_to? :find
+        Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
       else
-        pre_cond = ''
+        Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
       end
-
-      if type == :class
-        if !self.respond_to?(:params) || params == {}
-          code = "include #{klass_name}"
-        else
-          param_str = params.keys.map do |r|
-            param_val = escape_special_chars(params[r].inspect)
-            "#{r.to_s} => #{param_val}"
-          end.join(', ')
-          code = pre_cond + "class { '#{klass_name}': #{param_str} }"
-        end
-        nodename = self.respond_to?(:node) ? node : Puppet[:certname]
-      elsif type == :define
-        if self.respond_to? :params
-          param_str = params.keys.map do |r|
-            param_val = escape_special_chars(params[r].inspect)
-            "#{r.to_s} => #{param_val}"
-          end.join(', ')
-          code = pre_cond + "#{klass_name} { '#{title}': #{param_str} }"
-        end
-        nodename = self.respond_to?(:node) ? node : Puppet[:certname]
-      elsif type == :host
-        code = ""
-        nodename = self.class.top_level_description.downcase
-      end
-
-      facts_val = {
-        'hostname' => nodename.split('.').first,
-        'fqdn'     => nodename,
-        'domain'   => nodename.split('.').last,
-      }
-
-      if RSpec.configuration.default_facts.any?
-        facts_val.merge!(munge_facts(RSpec.configuration.default_facts))
-      end
-
-      facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
-
-      catalogue = build_catalog(nodename, facts_val, code)
-      FileUtils.rm_rf(vardir) if File.directory?(vardir)
-      catalogue
     end
 
     def stub_facts!(facts)
