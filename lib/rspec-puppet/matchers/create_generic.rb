@@ -152,14 +152,14 @@ module RSpec::Puppet
       end
 
       def check_regexp_param(type, resource, param, value)
-        op = type == :not ? :!~ : :=~
+        op = type == :not ? :"!~" : :"=~"
         unless resource[param].to_s.send(op, value)
           @errors << RegexpMatchError.new(param, value, resource[param], type == :not)
         end
       end
 
       def check_array_param(type, resource, param, value)
-        op = type == :not ? :!= : :==
+        op = type == :not ? :"!=" : :"=="
         unless Array(resource[param]).flatten.join.send(op, value.flatten.join)
           @errors << MatchError.new(param, value, resource[param], type == :not)
         end
@@ -174,7 +174,7 @@ module RSpec::Puppet
       end
 
       def check_string_param(type, resource, param, value)
-        op = type == :not ? :!= : :==
+        op = type == :not ? :"!=" : :"=="
         unless resource[param].to_s.send(op, value.to_s)
           @errors << MatchError.new(param, value, resource[param], (type == :not))
         end
