@@ -30,11 +30,7 @@ module RSpec::Puppet
           @actual_number = @actual_number - 2 if @type == "class"
         end
 
-        if @actual_number == @expected_number
-          true
-        else
-          false
-        end
+        @actual_number == @expected_number
       end
 
       def description
