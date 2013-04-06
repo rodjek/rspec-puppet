@@ -5,30 +5,41 @@ module RSpec::Puppet
 
     def catalogue(type)
       vardir = setup_puppet
+
+      code = pre_cond + test_manifest(type)
+      node_name = nodename(type)
+
+      catalogue = build_catalog(node_name, facts_hash(node_name), code)
+      FileUtils.rm_rf(vardir) if File.directory?(vardir)
+      catalogue
+    end
+
+    def test_manifest(type)
       klass_name = self.class.top_level_description.downcase
 
       if type == :class
         if !self.respond_to?(:params) || params == {}
-          code = "include #{klass_name}"
+          "include #{klass_name}"
         else
-          code = "class { '#{klass_name}': #{param_str} }"
+          "class { '#{klass_name}': #{param_str} }"
         end
-        nodename = self.respond_to?(:node) ? node : Puppet[:certname]
       elsif type == :define
         if self.respond_to? :params
-          code = "#{klass_name} { '#{title}': #{param_str} }"
+          "#{klass_name} { '#{title}': #{param_str} }"
         end
-        nodename = self.respond_to?(:node) ? node : Puppet[:certname]
       elsif type == :host
-        code = ""
-        nodename = self.class.top_level_description.downcase
+        ""
       end
-
-      code = pre_cond + code
-      catalogue = build_catalog(nodename, facts_hash(nodename), code)
-      FileUtils.rm_rf(vardir) if File.directory?(vardir)
-      catalogue
     end
+
+    def nodename(type)
+      if [:class, :define].include? type
+        self.respond_to?(:node) ? node : Puppet[:certname]
+      else
+        self.class.top_level_description.downcase
+      end
+    end
+
 
     def pre_cond
       if self.respond_to?(:pre_condition) && !pre_condition.nil?
