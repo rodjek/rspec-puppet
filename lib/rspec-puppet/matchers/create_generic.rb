@@ -173,8 +173,7 @@ module RSpec::Puppet
       end
 
       def check_string_param(type, resource, param, value)
-        op = type == :not ? :"!=" : :"=="
-        unless resource[param].to_s.send(op, value.to_s)
+        if (resource[param].to_s == value.to_s) == (type == :not)
           @errors << MatchError.new(param, value, resource[param], (type == :not))
         end
       end
