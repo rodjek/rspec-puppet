@@ -143,6 +143,8 @@ module RSpec::Puppet
             check_regexp_param(type, resource, param, value)
           elsif value.is_a? Array
             check_array_param(type, resource, param, value)
+          elsif value.is_a? Hash
+            check_hash_param(type, resource, param, value)
           elsif value.is_a? Proc
             check_proc_param(type, resource, param, value)
           else
@@ -160,6 +162,13 @@ module RSpec::Puppet
       def check_array_param(type, resource, param, value)
         op = type == :not ? :"!=" : :"=="
         unless Array(resource[param]).flatten.join.send(op, value.flatten.join)
+          @errors << MatchError.new(param, value, resource[param], type == :not)
+        end
+      end
+
+      def check_hash_param(type, resource, param, value)
+        op = type == :not ? :"!=" : :"=="
+        unless resource[param].send(op, value)
           @errors << MatchError.new(param, value, resource[param], type == :not)
         end
       end
