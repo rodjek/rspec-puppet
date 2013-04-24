@@ -2,16 +2,14 @@ rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
-branches:
-  only:
-    - master
 notifications:
   email:
     - tim@github.com
 env:
   - PUPPET_VERSION=2.6.17
-  - PUPPET_VERSION=2.7.19
-  - PUPPET_VERSION=3.0.0
+  - PUPPET_VERSION=2.7.20
+  - PUPPET_VERSION=3.0.2
+  - PUPPET_VERSION=3.1.0
 matrix:
   exclude:
     - rvm: 1.9.2

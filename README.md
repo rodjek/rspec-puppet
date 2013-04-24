@@ -96,6 +96,13 @@ the generic `with_<parameter>` chains.
 it { should contain_package('mysql-server').with_ensure('present') }
 ```
 
+If you want to specify that the given parameters should be the only ones passed
+to the resource, use the `only_with_<parameter>` chains.
+
+```ruby
+it { should contain_package('httpd').only_with_ensure('latest') }
+```
+
 You can use the `with` method to verify the value of multiple parameters.
 
 ```ruby
@@ -104,6 +111,16 @@ it do should contain_service('keystone').with(
   'enable'     => 'true',
   'hasstatus'  => 'true',
   'hasrestart' => 'true'
+) end
+```
+
+The same holds for the `only_with` method, which in addition verifies the exact
+set of parameters and values for the resource in the catalogue.
+
+```ruby
+it do should contain_user('luke').only_with(
+  'ensure'    => 'present',
+  'uid'    => '501'
 ) end
 ```
 
@@ -122,6 +139,41 @@ it { should contain_service('keystone').without(
   ['restart', 'status']
 )}
 ```
+
+#### Checking the number of resources
+
+You can test the number of resources in the catalogue with the
+`have_resource_count` matcher.
+
+```ruby
+it { should have_resource_count(2) }
+```
+
+The number of classes in the catalogue can be checked with the
+`have_class_count` matcher.
+
+```ruby
+it { should have_class_count(2) }
+```
+
+You can also test the number of a specific resource type, by using the generic
+`have_<resource type>_resource_count` matcher.
+
+```ruby
+it { should have_exec_resource_count(1) }
+```
+
+This last matcher also works for defined types. If the resource type contains
+::, you can replace it with __ (two underscores).
+
+```ruby
+it { should have_logrotate__rule_resource_count(3) }
+```
+
+*NOTE*: when testing a class, the catalogue generated will always contain at
+least one class, the class under test. The same holds for defined types, the
+catalogue generated when testing a defined type will have at least one resource
+(the defined type itself).
 
 ### Writing tests
 
@@ -180,6 +232,19 @@ You can set them with a hash
 let(:facts) { {:operatingsystem => 'Debian', :kernel => 'Linux', ...} }
 ```
 
+You can also create a set of default facts provided to all specs in your spec_helper:
+
+``` ruby
+RSpec.configure do |c|
+  c.default_facts = {
+    :operatingsystem => 'Ubuntu'
+  }
+end
+```
+
+Any facts you provide with `let(:facts)` in a spec will automatically be merged on top
+of the default facts.
+
 #### Specifying the path to find your modules
 
 I recommend setting a default module path by adding the following code to your
@@ -206,7 +271,7 @@ Puppet functions.
 
 ```ruby
 it 'should be able to do something' do
-  subject.call('foo') == 'bar'
+  subject.call(['foo']) == 'bar'
 end
 ```
 
@@ -250,7 +315,7 @@ Or by using the `call` method on the subject directly
 
 ```ruby
 it 'something' do
-  subject.call('foo', 'bar', ['baz'])
+  subject.call(['foo', 'bar', ['baz']])
 end
 ```
 
@@ -267,8 +332,8 @@ Or by using any of the existing RSpec matchers on the subject directly
 
 ```ruby
 it 'something' do
-  subject.call('foo') == 'bar'
-  subject.call('baz').should be_an Array
+  subject.call(['foo']) == 'bar'
+  subject.call(['baz']).should be_an Array
 end
 ```
 
@@ -286,7 +351,7 @@ Or by using the existing `raises_error` RSpec matcher
 
 ```ruby
 it 'something' do
-  expect { subject.call('a', 'b') }.should raise_error(Puppet::ParseError)
-  expect { subject.call('a') }.should_not raise_error(Puppet::ParseError)
+  expect { subject.call(['a', 'b']) }.should raise_error(Puppet::ParseError)
+  expect { subject.call(['a']) }.should_not raise_error(Puppet::ParseError)
 end
 ```

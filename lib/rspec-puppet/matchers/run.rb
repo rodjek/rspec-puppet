@@ -1,27 +1,28 @@
 module RSpec::Puppet
   module FunctionMatchers
-    extend RSpec::Matchers::DSL
-
-    matcher :run do
-      match do |func_obj|
+    class Run
+      def matches?(func_obj)
         if @params
           @func = lambda { func_obj.call(@params) }
         else
           @func = lambda { func_obj.call }
         end
 
-        if @expected_error
+        unless @expected_error.nil?
+          result = false
           begin
             @func.call
-          rescue @expected_error
-            #XXX check error string here
-            true
-          rescue
-            false
+          rescue Exception => e
+            @actual_error = e.class
+            if @actual_error == @expected_error
+              result = true
+            end
           end
+          result
         else
-          if @expected_return
-            @func.call == @expected_return
+          unless @expected_return.nil?
+            @actual_return = @func.call
+            @actual_return == @expected_return
           else
             begin
               @func.call
@@ -33,43 +34,49 @@ module RSpec::Puppet
         end
       end
 
-      chain :with_params do |*params|
+      def with_params(*params)
         @params = params
+        self
       end
 
-      chain :and_return do |value|
+      def and_return(value)
         @expected_return = value
+        self
       end
 
       # XXX support error string and regexp
-      chain :and_raise_error do |value|
+      def and_raise_error(value)
         @expected_error = value
+        self
       end
 
-      failure_message_for_should do |func_obj|
-        func_name = func_obj.name.to_s.gsub(/^function_/, '')
-        func_params = @params.inspect[1..-2]
-
-        if @expected_return
-          "expected #{func_name}(#{func_params}) to have returned #{@expected_return.inspect} instead of #{@func.call.inspect}"
-        elsif @expected_error
-          "expected #{func_name}(#{func_params}) to have raised #{@expected_error.inspect}"
-        else
-          "expected #{func_name}(#{func_params}) to have run successfully"
-        end
+      def failure_message_for_should(func_obj)
+        failure_message_generic(:should, func_obj)
       end
 
-      failure_message_for_should_not do |func_obj|
+      def failure_message_for_should_not(func_obj)
+        failure_message_generic(:should_not, func_obj)
+      end
+
+      private
+      def failure_message_generic(type, func_obj)
         func_name = func_obj.name.gsub(/^function_/, '')
         func_params = @params.inspect[1..-2]
 
+        message = "expected #{func_name}(#{func_params}) to "
+        message << "not " if type == :should_not
+
         if @expected_return
-          "expected #{func_name}(#{func_params}) to not have returned #{@expected_return.inspect}"
+          message << "have returned #{@expected_return.inspect}"
+          if type == :should
+            message << " instead of #{@actual_return.inspect}"
+          end
         elsif @expected_error
-          "expected #{func_name}(#{func_params}) to not have raised #{@expected_error.inspect}"
+          message << "have raised #{@expected_error.inspect}"
         else
-          "expected #{func_name}(#{func_params}) to not have run successfully"
+          message << "have run successfully"
         end
+        message
       end
     end
   end

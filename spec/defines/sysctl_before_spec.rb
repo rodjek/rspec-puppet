@@ -10,7 +10,7 @@ describe 'sysctl::before' do
     .to raise_error(Puppet::Error, /Could not find resource 'Class\[Sysctl::Common\]/)
   end
 end
-  
+
 describe 'sysctl::before' do
   let(:title) { 'test define' }
   let(:pre_condition) {
@@ -18,8 +18,7 @@ describe 'sysctl::before' do
       'class {"sysctl::common":}' ] }
   let(:params) { { :value => "title" } }
 
-  it { should create_resource("sysctl::before", 'test define')\
-    .with_param(:value, "title") }
+  it { should create_sysctl__before('test define').with_value("title") }
 
   it { should include_class("sysctl::common") }
 
