@@ -145,6 +145,8 @@ module RSpec::Puppet
             check_array_param(type, resource, param, value)
           elsif value.is_a? Proc
             check_proc_param(type, resource, param, value)
+          elsif value.is_a? Hash
+            check_hash_param(type, resource, param, value)
           else
             check_string_param(type, resource, param, value)
           end
@@ -169,6 +171,13 @@ module RSpec::Puppet
         actual_return = value.call(resource[param].to_s)
         if actual_return != expected_return
           @errors << ProcMatchError.new(param, expected_return, actual_return, type == :not)
+        end
+      end
+
+      def check_hash_param(type, resource, param, value)
+        op = type == :not ? :"!=" : :"=="
+        unless resource[param].send(op, value)
+          @errors << MatchError.new(param, value, resource[param], type == :not)
         end
       end
 
