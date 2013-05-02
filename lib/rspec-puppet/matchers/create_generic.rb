@@ -1,3 +1,4 @@
+require 'rspec-puppet/matchers/parameter_matcher'
 module RSpec::Puppet
   module ManifestMatchers
     class CreateGeneric
@@ -131,6 +132,9 @@ module RSpec::Puppet
         output
       end
 
+      # @param resource [Hash<Symbol, Object>] The resource in the catalog
+      # @param list [Array<String, Object>] The expected values of the resource
+      # @param type [:should, :not] Whether the given parameters should/not match
       def check_params(resource, list, type)
         list.each do |param, value|
           param = param.to_sym
@@ -139,42 +143,12 @@ module RSpec::Puppet
             unless resource[param].nil?
               @errors << "#{param} undefined"
             end
-          elsif value.is_a? Regexp
-            check_regexp_param(type, resource, param, value)
-          elsif value.is_a? Array
-            check_array_param(type, resource, param, value)
-          elsif value.is_a? Proc
-            check_proc_param(type, resource, param, value)
           else
-            check_string_param(type, resource, param, value)
+            m = ParameterMatcher.new(param, value, type)
+            unless m.matches?(resource)
+              @errors.concat m.errors
+            end
           end
-        end
-      end
-
-      def check_regexp_param(type, resource, param, value)
-        if !!(resource[param].to_s =~ value) == (type == :not)
-          @errors << RegexpMatchError.new(param, value, resource[param], type == :not)
-        end
-      end
-
-      def check_array_param(type, resource, param, value)
-        op = type == :not ? :"!=" : :"=="
-        unless Array(resource[param]).flatten.join.send(op, value.flatten.join)
-          @errors << MatchError.new(param, value, resource[param], type == :not)
-        end
-      end
-
-      def check_proc_param(type, resource, param, value)
-        expected_return = type == :not ? false : true
-        actual_return = value.call(resource[param].to_s)
-        if actual_return != expected_return
-          @errors << ProcMatchError.new(param, expected_return, actual_return, type == :not)
-        end
-      end
-
-      def check_string_param(type, resource, param, value)
-        if (resource[param].to_s == value.to_s) == (type == :not)
-          @errors << MatchError.new(param, value, resource[param], (type == :not))
         end
       end
     end
