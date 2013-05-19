@@ -1,6 +1,6 @@
 class relationships::before {
   notify { 'foo':
-    before => Notify['bar']
+    before => [Notify['bar']],
   }
 
   notify { 'bar': }
