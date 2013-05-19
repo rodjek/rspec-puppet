@@ -13,6 +13,10 @@ module RSpec::Puppet
         @errors = []
         @expected_params = []
         @expected_undef_params = []
+        @notifies = []
+        @subscribes = []
+        @requires = []
+        @befores = []
       end
 
       def with(*args, &block)
@@ -30,6 +34,26 @@ module RSpec::Puppet
       def without(*args, &block)
         params = args.shift
         @expected_undef_params = @expected_undef_params | Array(params)
+        self
+      end
+
+      def that_notifies(resource)
+        @notifies << resource
+        self
+      end
+
+      def that_subscribes_to(resource)
+        @subscribes << resource
+        self
+      end
+
+      def that_requires(resource)
+        @requires << resource
+        self
+      end
+
+      def that_comes_before(resource)
+        @befores << resource
         self
       end
 
@@ -69,6 +93,10 @@ module RSpec::Puppet
 
           check_params(rsrc_hsh, @expected_params, :should) if @expected_params.any?
           check_params(rsrc_hsh, @expected_undef_params, :not) if @expected_undef_params.any?
+          check_befores(catalogue, resource) if @befores.any?
+          check_requires(catalogue, resource) if @requires.any?
+          check_notifies(catalogue, resource) if @notifies.any?
+          check_subscribes(catalogue, resource) if @subscribes.any?
 
           @errors.empty?
         end
@@ -129,6 +157,74 @@ module RSpec::Puppet
           end
         end
         output
+      end
+
+      def check_befores(catalogue, resource)
+        before_refs = Array[resource[:before]].flatten.map { |ref|
+          ref.respond_to?(:to_ref) ? ref.to_ref : ref
+        }
+
+        @befores.each do |ref|
+          unless before_refs.include?(ref)
+            required_refs = Array[catalogue.resource(ref)[:require]].flatten.map { |r|
+              r.respond_to?(:to_ref) ? r.to_ref : r
+            }
+            unless required_refs.include?(resource.to_ref)
+              @errors << BeforeRelationshipError.new(resource.to_ref, ref)
+            end
+          end
+        end
+      end
+
+      def check_requires(catalogue, resource)
+        require_refs = Array[resource[:require]].flatten.map { |ref|
+          ref.respond_to?(:to_ref) ? ref.to_ref : ref
+        }
+
+        @requires.each do |ref|
+          unless require_refs.include?(ref)
+            before_refs = Array[catalogue.resource(ref)[:before]].flatten.map { |r|
+              r.respond_to?(:to_ref) ? r.to_ref : r
+            }
+            unless before_refs.include?(resource.to_ref)
+              @errors << RequireRelationshipError.new(resource.to_ref, ref)
+            end
+          end
+        end
+      end
+
+      def check_notifies(catalogue, resource)
+        notify_refs = Array[resource[:notify]].flatten.map { |ref|
+          ref.respond_to?(:to_ref) ? ref.to_ref : ref
+        }
+
+        @notifies.each do |ref|
+          unless notify_refs.include?(ref)
+            subscribed_refs = Array[catalogue.resource(ref)[:subscribe]].flatten.map { |r|
+              r.respond_to?(:to_ref) ? r.to_ref : r
+            }
+            unless subscribed_refs.include?(resource.to_ref)
+              @errors << NotifyRelationshipError.new(resource.to_ref, ref)
+            end
+          end
+        end
+      end
+
+      def check_subscribes(catalogue, resource)
+        subscribed_refs = Array[resource[:subscribe]].flatten.map { |ref|
+          ref.respond_to?(:to_ref) ? ref.to_ref : ref
+        }
+
+        @subscribes.each do |ref|
+          unless subscribed_refs.include?(ref)
+            notify_refs = Array[catalogue.resource(ref)[:notify]].flatten.map { |r|
+              r.respond_to?(:to_ref) ? r.to_ref : r
+            }
+            unless notify_refs.include?(resource.to_ref)
+              @errors << SubscribeRelationshipError.new(resource.ref, ref)
+            end
+          end
+        end
       end
 
       def check_params(resource, list, type)

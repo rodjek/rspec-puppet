@@ -42,5 +42,42 @@ module RSpec::Puppet
         end
       end
     end
+
+    class RelationshipError < StandardError
+      attr_reader :from, :to
+
+      def initialize(from, to)
+        @from = from
+        @to = to
+      end
+
+      def to_s
+        message
+      end
+    end
+
+    class BeforeRelationshipError < RelationshipError
+      def message
+        "#{from} to come before #{to} in the graph"
+      end
+    end
+
+    class RequireRelationshipError < RelationshipError
+      def message
+        "#{from} to require #{to} in the graph"
+      end
+    end
+
+    class NotifyRelationshipError < RelationshipError
+      def message
+        "#{from} to notify #{to}"
+      end
+    end
+
+    class SubscribeRelationshipError < RelationshipError
+      def message
+        "#{from} to be subscribed to #{to}"
+      end
+    end
   end
 end
