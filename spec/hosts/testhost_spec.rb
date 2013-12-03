@@ -1,5 +1,5 @@
 require 'spec_helper'
 
 describe 'testhost' do
-  it { should include_class('sysctl::common') }
+  it { should contain_class('sysctl::common') }
 end
