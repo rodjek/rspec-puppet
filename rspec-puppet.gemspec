@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
 
   s.executables = ['rspec-puppet-init']
 
-  s.files = `git ls-files|grep -v "^\."`.split("\n")
+  s.files = Dir['LICENSE.md', 'README.md', 'lib/**/*', 'bin/**/*']
 
   s.add_dependency 'rspec'
 
