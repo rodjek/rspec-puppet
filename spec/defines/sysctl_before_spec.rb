@@ -20,6 +20,6 @@ describe 'sysctl::before' do
 
   it { should create_sysctl__before('test define').with_value("title") }
 
-  it { should include_class("sysctl::common") }
+  it { should contain_class("sysctl::common") }
 
 end

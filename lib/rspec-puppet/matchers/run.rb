@@ -14,8 +14,15 @@ module RSpec::Puppet
             @func.call
           rescue Exception => e
             @actual_error = e.class
-            if @actual_error == @expected_error
-              result = true
+            if e.is_a?(@expected_error)
+              case @expected_error_message
+              when nil
+                result = true
+              when Regexp
+                result = @expected_error_message =~ e.message
+              else
+                result = @expected_error_message == e.message
+              end
             end
           end
           result
@@ -44,9 +51,13 @@ module RSpec::Puppet
         self
       end
 
-      # XXX support error string and regexp
-      def and_raise_error(value)
-        @expected_error = value
+      def and_raise_error(error_or_message, message=nil)
+        case error_or_message
+        when String, Regexp
+          @expected_error, @expected_error_message = Exception, error_or_message
+        else
+          @expected_error, @expected_error_message = error_or_message, message
+        end
         self
       end
 

@@ -9,7 +9,7 @@ describe 'sysctl' do
   let(:params) { {:value => '60'} }
   let(:pre_condition) { }
 
-  it { should include_class('sysctl::common') }
+  it { should contain_class('sysctl::common') }
   it { should create_augeas('sysctl/vm.swappiness') \
     .with_context('/files/etc/sysctl.conf') \
     .with_changes("set vm.swappiness '60'") \

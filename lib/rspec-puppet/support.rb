@@ -26,6 +26,8 @@ module RSpec::Puppet
       elsif type == :define
         if self.respond_to? :params
           "#{klass_name} { '#{title}': #{param_str} }"
+        else
+          "#{klass_name} { '#{title}': }"
         end
       elsif type == :host
         ""
