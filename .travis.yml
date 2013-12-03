@@ -6,10 +6,12 @@ notifications:
   email:
     - tim@github.com
 env:
-  - PUPPET_VERSION=2.6.17
-  - PUPPET_VERSION=2.7.20
+  - PUPPET_VERSION=2.6.18
+  - PUPPET_VERSION=2.7.23
   - PUPPET_VERSION=3.0.2
-  - PUPPET_VERSION=3.1.0
+  - PUPPET_VERSION=3.1.1
+  - PUPPET_VERSION=3.2.4
+  - PUPPET_VERSION=3.3.2
 matrix:
   exclude:
     - rvm: 1.9.2
