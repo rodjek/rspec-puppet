@@ -90,10 +90,12 @@ module RSpec::Puppet
         [:confdir, :confdir],
         [:hiera_config, :hiera_config],
       ].each do |a, b|
-        if self.respond_to? b
-          Puppet[a] = self.send(b)
-        else
-          Puppet[a] = RSpec.configuration.send(b)
+        if Puppet[a]
+          if self.respond_to? b
+            Puppet[a] = self.send(b)
+          else
+            Puppet[a] = RSpec.configuration.send(b)
+          end
         end
       end
 
