@@ -161,71 +161,55 @@ module RSpec::Puppet
       end
 
       def check_befores(catalogue, resource)
-        before_refs = Array[resource[:before]].flatten.map { |ref|
-          ref.respond_to?(:to_ref) ? ref.to_ref : ref
-        }
-
         @befores.each do |ref|
-          unless before_refs.include?(ref)
-            required_refs = Array[catalogue.resource(ref)[:require]].flatten.map { |r|
-              r.respond_to?(:to_ref) ? r.to_ref : r
-            }
-            unless required_refs.include?(resource.to_ref)
-              @errors << BeforeRelationshipError.new(resource.to_ref, ref)
-            end
+          unless precedes?(resource, catalogue.resource(ref))
+            @errors << BeforeRelationshipError.new(resource.to_ref, ref)
           end
         end
       end
 
       def check_requires(catalogue, resource)
-        require_refs = Array[resource[:require]].flatten.map { |ref|
-          ref.respond_to?(:to_ref) ? ref.to_ref : ref
-        }
-
         @requires.each do |ref|
-          unless require_refs.include?(ref)
-            before_refs = Array[catalogue.resource(ref)[:before]].flatten.map { |r|
-              r.respond_to?(:to_ref) ? r.to_ref : r
-            }
-            unless before_refs.include?(resource.to_ref)
-              @errors << RequireRelationshipError.new(resource.to_ref, ref)
-            end
+          unless precedes?(catalogue.resource(ref), resource)
+            @errors << RequireRelationshipError.new(resource.to_ref, ref)
           end
         end
       end
 
       def check_notifies(catalogue, resource)
-        notify_refs = Array[resource[:notify]].flatten.map { |ref|
-          ref.respond_to?(:to_ref) ? ref.to_ref : ref
-        }
-
         @notifies.each do |ref|
-          unless notify_refs.include?(ref)
-            subscribed_refs = Array[catalogue.resource(ref)[:subscribe]].flatten.map { |r|
-              r.respond_to?(:to_ref) ? r.to_ref : r
-            }
-            unless subscribed_refs.include?(resource.to_ref)
-              @errors << NotifyRelationshipError.new(resource.to_ref, ref)
-            end
+          unless notifies?(resource, catalogue.resource(ref))
+            @errors << NotifyRelationshipError.new(resource.to_ref, ref)
           end
         end
       end
 
       def check_subscribes(catalogue, resource)
-        subscribed_refs = Array[resource[:subscribe]].flatten.map { |ref|
-          ref.respond_to?(:to_ref) ? ref.to_ref : ref
-        }
-
         @subscribes.each do |ref|
-          unless subscribed_refs.include?(ref)
-            notify_refs = Array[catalogue.resource(ref)[:notify]].flatten.map { |r|
-              r.respond_to?(:to_ref) ? r.to_ref : r
-            }
-            unless notify_refs.include?(resource.to_ref)
-              @errors << SubscribeRelationshipError.new(resource.ref, ref)
-            end
+          unless notifies?(catalogue.resource(ref), resource)
+            @errors << SubscribeRelationshipError.new(resource.to_ref, ref)
           end
         end
+      end
+
+      def relationship_refs(array)
+        Array[array].flatten.map do |resource|
+          resource.respond_to?(:to_ref) ? resource.to_ref : resource
+        end
+      end
+
+      def precedes?(first, second)
+        before_refs = relationship_refs(first[:before])
+        require_refs = relationship_refs(second[:require])
+
+        before_refs.include?(second.to_ref) || require_refs.include?(first.to_ref)
+      end
+
+      def notifies?(first, second)
+        notify_refs = relationship_refs(first[:notify])
+        subscribe_refs = relationship_refs(second[:subscribe])
+
+        notify_refs.include?(second.to_ref) || subscribe_refs.include?(first.to_ref)
       end
 
       # @param resource [Hash<Symbol, Object>] The resource in the catalog
