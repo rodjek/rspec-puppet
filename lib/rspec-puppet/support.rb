@@ -82,7 +82,7 @@ module RSpec::Puppet
       facts_val = {
         'hostname' => node.split('.').first,
         'fqdn'     => node,
-        'domain'   => node.split('.').last,
+        'domain'   => node.split('.', 2).last,
       }
 
       if RSpec.configuration.default_facts.any?
