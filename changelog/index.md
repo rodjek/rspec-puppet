@@ -4,6 +4,13 @@ layout: minimal
 
 # Changelog
 
+## 0.1.6
+
+ * Allow an array of pre\_conditions
+ * Fix `object name is a symbol` error when a test on a function fails
+ * Puppet 3.1.x support
+ * [View Diff](https://github.com/rodjek/rspec-puppet/compare/v0.1.5...v0.1.6)
+
 ## 0.1.5
 
  * Puppet 3.0.x support
