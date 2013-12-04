@@ -88,16 +88,13 @@ module RSpec::Puppet
         [:templatedir, :template_dir],
         [:config, :config],
         [:confdir, :confdir],
+        [:hiera_config, :hiera_config],
       ].each do |a, b|
         if self.respond_to? b
           Puppet[a] = self.send(b)
         else
           Puppet[a] = RSpec.configuration.send(b)
         end
-      end
-
-      if Puppet[:hiera_config] == File.expand_path('/dev/null')
-        Puppet[:hiera_config] = File.join(vardir, 'hiera.yaml')
       end
 
       Puppet[:libdir] = Dir["#{Puppet[:modulepath]}/*/lib"].entries.join(File::PATH_SEPARATOR)
