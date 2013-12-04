@@ -113,12 +113,11 @@ module RSpec::Puppet
         [:confdir, :confdir],
         [:hiera_config, :hiera_config],
       ].each do |a, b|
-        if Puppet[a]
-          if self.respond_to? b
-            Puppet[a] = self.send(b)
-          else
-            Puppet[a] = RSpec.configuration.send(b)
-          end
+        value = self.respond_to?(b) ? self.send(b) : RSpec.configuration.send(b)
+        begin
+          Puppet[a] = value
+        rescue ArgumentError
+          Puppet.settings.setdefaults(:main, {a => {:default => value, :desc => a.to_s}})
         end
       end
 
