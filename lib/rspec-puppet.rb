@@ -30,19 +30,31 @@ RSpec.configure do |c|
     end
 
     c.before :all do
-      Puppet::Test::TestHelper.before_all_tests
+      begin
+        Puppet::Test::TestHelper.before_all_tests
+      rescue
+      end
     end
 
     c.after :all do
-      Puppet::Test::TestHelper.after_all_tests
+      begin
+        Puppet::Test::TestHelper.after_all_tests
+      rescue
+      end
     end
 
     c.before :each do
-      Puppet::Test::TestHelper.before_each_test
+      begin
+        Puppet::Test::TestHelper.before_each_test
+      rescue
+      end
     end
 
     c.after :each do
-      Puppet::Test::TestHelper.after_each_test
+      begin
+        Puppet::Test::TestHelper.after_each_test
+      rescue
+      end
     end
   end
 end
