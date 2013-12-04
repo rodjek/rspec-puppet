@@ -4,6 +4,11 @@ layout: minimal
 
 # Changelog
 
+## 0.1.5
+
+ * Puppet 3.0.x support
+ * [View Diff](https://github.com/rodjek/rspec-puppet/compare/v0.1.4...v0.1.5)
+
 ## 0.1.4
 
  * Improved catalogue caching for faster testing on the same compiled catalogue
