@@ -14,6 +14,10 @@ module RSpec::Puppet
         @errors = []
         @expected_params = []
         @expected_undef_params = []
+        @notifies = []
+        @subscribes = []
+        @requires = []
+        @befores = []
       end
 
       def with(*args, &block)
@@ -31,6 +35,26 @@ module RSpec::Puppet
       def without(*args, &block)
         params = args.shift
         @expected_undef_params = @expected_undef_params | Array(params)
+        self
+      end
+
+      def that_notifies(resource)
+        @notifies << resource
+        self
+      end
+
+      def that_subscribes_to(resource)
+        @subscribes << resource
+        self
+      end
+
+      def that_requires(resource)
+        @requires << resource
+        self
+      end
+
+      def that_comes_before(resource)
+        @befores << resource
         self
       end
 
@@ -70,6 +94,10 @@ module RSpec::Puppet
 
           check_params(rsrc_hsh, @expected_params, :should) if @expected_params.any?
           check_params(rsrc_hsh, @expected_undef_params, :not) if @expected_undef_params.any?
+          check_befores(catalogue, resource) if @befores.any?
+          check_requires(catalogue, resource) if @requires.any?
+          check_notifies(catalogue, resource) if @notifies.any?
+          check_subscribes(catalogue, resource) if @subscribes.any?
 
           @errors.empty?
         end
@@ -130,6 +158,58 @@ module RSpec::Puppet
           end
         end
         output
+      end
+
+      def check_befores(catalogue, resource)
+        @befores.each do |ref|
+          unless precedes?(resource, catalogue.resource(ref))
+            @errors << BeforeRelationshipError.new(resource.to_ref, ref)
+          end
+        end
+      end
+
+      def check_requires(catalogue, resource)
+        @requires.each do |ref|
+          unless precedes?(catalogue.resource(ref), resource)
+            @errors << RequireRelationshipError.new(resource.to_ref, ref)
+          end
+        end
+      end
+
+      def check_notifies(catalogue, resource)
+        @notifies.each do |ref|
+          unless notifies?(resource, catalogue.resource(ref))
+            @errors << NotifyRelationshipError.new(resource.to_ref, ref)
+          end
+        end
+      end
+
+      def check_subscribes(catalogue, resource)
+        @subscribes.each do |ref|
+          unless notifies?(catalogue.resource(ref), resource)
+            @errors << SubscribeRelationshipError.new(resource.to_ref, ref)
+          end
+        end
+      end
+
+      def relationship_refs(array)
+        Array[array].flatten.map do |resource|
+          resource.respond_to?(:to_ref) ? resource.to_ref : resource
+        end
+      end
+
+      def precedes?(first, second)
+        before_refs = relationship_refs(first[:before])
+        require_refs = relationship_refs(second[:require])
+
+        before_refs.include?(second.to_ref) || require_refs.include?(first.to_ref)
+      end
+
+      def notifies?(first, second)
+        notify_refs = relationship_refs(first[:notify])
+        subscribe_refs = relationship_refs(second[:subscribe])
+
+        notify_refs.include?(second.to_ref) || subscribe_refs.include?(first.to_ref)
       end
 
       # @param resource [Hash<Symbol, Object>] The resource in the catalog
