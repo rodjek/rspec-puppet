@@ -91,7 +91,7 @@ As this is a defined type, the first thing we need to do is give it a title
 Now, lets test that we're including that `logrotate::setup` class
 
 {% highlight ruby %}
-  it { should include_class('logrotate::setup') }
+  it { should contain_class('logrotate::setup') }
 {% endhighlight %}
 
 Remember, we don't want to test what `logrotate::setup` does, we'll leave that
@@ -105,7 +105,7 @@ require 'spec_helper'
 describe 'logrotate::rule' do
   let(:title) { 'nginx' }
 
-  it { should include_class('logrotate::setup') }
+  it { should contain_class('logrotate::setup') }
 end
 {% endhighlight %}
 
@@ -142,7 +142,7 @@ require 'spec_helper'
 describe 'logrotate::rule' do
   let(:title) { 'nginx' }
 
-  it { should include_class('logrotate::rule') }
+  it { should contain_class('logrotate::rule') }
 
   it do
     should contain_file('/etc/logrotate.d/nginx').with({
@@ -212,7 +212,7 @@ require 'spec_helper'
 describe 'logrotate::rule' do
   let(:title) { 'nginx' }
 
-  it { should include_class('logrotate::rule') }
+  it { should contain_class('logrotate::rule') }
 
   it do
     should contain_file('/etc/logrotate.d/nginx').with({
