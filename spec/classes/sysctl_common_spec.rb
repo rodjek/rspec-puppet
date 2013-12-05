@@ -49,7 +49,7 @@ describe 'sysctl::common' do
     .with_test_param("yes") }
   it { should have_class_count(1) }
   it { should have_exec_resource_count(1) }
-  it { should have_resource_count(1) }
+  it { should have_resource_count(2) }
 end
 
 describe 'sysctl::common' do
