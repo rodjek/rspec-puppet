@@ -64,3 +64,35 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.pattern = 'spec/*/*_spec.rb'
 end
 {% endhighlight %}
+
+## Configuring RSpec to know about your Puppet setup
+
+You can see above how we told RSpec where to find our manifest and module
+directories, but there's other things you can tell RSpec about your Puppet
+setup if necessary (you should only set these if your tests aren't working
+correctly, for most setups the default values will suffice).
+
+manifest_dir
+: The path to the directory containing your basic manifests like `site.pp`.
+
+module\_path
+: The path to the directory containing your modules.
+
+manifest
+: The entry-point manifest for Puppet, usually `<manifest_dir>/site.pp`.
+
+template\_dir
+: The path to the directory where Puppet will look for templates outside of
+modules.
+
+config
+: The path to the `puppet.conf`.
+
+confdir
+: The path to the main Puppet configuration directory.
+
+default\_facts
+: A hash of default facts that should be used for all your tests.
+
+hiera\_config
+: The path to your `hiera.yaml` file, if you use Hiera.
