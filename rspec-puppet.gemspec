@@ -4,6 +4,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/rodjek/rspec-puppet/'
   s.summary = 'RSpec tests for your Puppet manifests'
   s.description = 'RSpec tests for your Puppet manifests'
+  s.license = 'MIT'
 
   s.executables = ['rspec-puppet-init']
 
