@@ -63,16 +63,6 @@ end
 
 ### Matchers
 
-#### Checking if a class has been included
-
-You can test if a class has been included in the catalogue with the
-`include_class` matcher.  It takes the class name as a string as its only
-argument
-
-```ruby
-it { should include_class('foo') }
-```
-
 #### Checking if a resource exists
 
 You can test if a resource exists in the catalogue with the generic
@@ -80,6 +70,13 @@ You can test if a resource exists in the catalogue with the generic
 
 ```ruby
 it { should contain_augeas('bleh') }
+```
+
+You can also test if a class has been included in the catalogue with the
+same matcher.
+
+```ruby
+it { should contain_class('foo') }
 ```
 
 If your resource type includes :: (e.g.
