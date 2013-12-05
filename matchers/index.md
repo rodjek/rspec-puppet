@@ -4,9 +4,6 @@ layout: minimal
 
 # Matchers
 ## Classes, Defined Types and Hosts
-### include_class
-In order to test that your manifest has successfully included a class, you
-should use the `include_class` matcher
 
 {% highlight ruby %}
 it { should include_class('my::class') }
