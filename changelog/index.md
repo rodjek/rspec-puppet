@@ -4,7 +4,7 @@ layout: minimal
 
 # Changelog
 
-## 0.2.0
+## 1.0.0
 
  * Added support for setting `confdir` inside the `RSpec.configure` block
  * Added support for checking if all the dependencies in the graph have been met
@@ -32,7 +32,7 @@ layout: minimal
  * Fixed bug where RSpec fails when testing a define without specifying
    parameters.
  * Deprecated `include_class` matcher in favour of `contain_class`
- * [View Diff](https://github.com/rodjek/rspec-puppet/compare/v0.1.6...v0.2.0)
+ * [View Diff](https://github.com/rodjek/rspec-puppet/compare/v0.1.6...v1.0.0)
 
 ## 0.1.6
 
