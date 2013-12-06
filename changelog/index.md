@@ -4,6 +4,14 @@ layout: minimal
 
 # Changelog
 
+## 1.0.1
+
+ * Fixed bug where under certain circumstances a newline isn't added after the
+   user specified `pre_condition`, causing the catalogue compilation to fail.
+ * When comparing parameter values, munge the actual value into an array if the
+   expected value is an array with a single item.
+ * [View Diff](https://github.com/rodjek/rspec-puppet/compare/v1.0.0...v1.0.1)
+
 ## 1.0.0
 
  * Added support for setting `confdir` inside the `RSpec.configure` block
