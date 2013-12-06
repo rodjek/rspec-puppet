@@ -6,7 +6,7 @@ module RSpec::Puppet
     def catalogue(type)
       vardir = setup_puppet
 
-      code = import_str + pre_cond + test_manifest(type)
+      code = [import_str, pre_cond, test_manifest(type)].join("\n")
       node_name = nodename(type)
 
       catalogue = build_catalog(node_name, facts_hash(node_name), code)
