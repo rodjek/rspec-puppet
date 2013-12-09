@@ -353,9 +353,9 @@ it 'something' do
 end
 ```
 
-# Hiera integration
+## Hiera integration
 
-## Configuration
+### Configuration
 
 Set the hiera config symbol properly in your spec files:
 
@@ -388,7 +388,7 @@ user:
     shell: '/sbin/nologin'
 ```
 
-## Use hiera in your tests
+### Use hiera in your tests
 
 ```ruby
   ntpserver = hiera.lookup('ntpserver', nil, nil)
