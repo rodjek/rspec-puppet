@@ -2,6 +2,7 @@ module RSpec::Puppet
   module FunctionMatchers
     class Run
       def matches?(func_obj)
+        @func_obj = func_obj
         if @params
           @func = lambda { func_obj.call(@params) }
         else
@@ -61,17 +62,21 @@ module RSpec::Puppet
         self
       end
 
-      def failure_message_for_should(func_obj)
-        failure_message_generic(:should, func_obj)
+      def failure_message_for_should
+        failure_message_generic(:should, @func_obj)
       end
 
-      def failure_message_for_should_not(func_obj)
-        failure_message_generic(:should_not, func_obj)
+      def failure_message_for_should_not
+        failure_message_generic(:should_not, @func_obj)
+      end
+
+      def description
+        "run function and match"
       end
 
       private
       def failure_message_generic(type, func_obj)
-        func_name = func_obj.name.gsub(/^function_/, '')
+        func_name = func_obj.name.to_s.gsub(/^function_/, '')
         func_params = @params.inspect[1..-2]
 
         message = "expected #{func_name}(#{func_params}) to "
