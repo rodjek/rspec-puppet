@@ -1,8 +1,6 @@
 module RSpec::Puppet
   module Support
 
-    @@cache = {}
-
     def catalogue(type)
       vardir = setup_puppet
 
@@ -147,7 +145,7 @@ module RSpec::Puppet
     end
 
     def build_catalog(*args)
-      @@cache[args] ||= self.build_catalog_without_cache(*args)
+      self.build_catalog_without_cache(*args)
     end
 
     def munge_facts(facts)
