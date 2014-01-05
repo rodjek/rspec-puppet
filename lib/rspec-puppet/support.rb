@@ -10,6 +10,13 @@ module RSpec::Puppet
       node_name = nodename(type)
 
       catalogue = build_catalog(node_name, facts_hash(node_name), code)
+
+      RSpec::Puppet::Coverage.filters << "#{type.to_s.capitalize}[#{self.class.display_name.capitalize}]"
+
+      catalogue.to_a.each do |resource|
+        RSpec::Puppet::Coverage.add(resource)
+      end
+
       FileUtils.rm_rf(vardir) if File.directory?(vardir)
       catalogue
     end

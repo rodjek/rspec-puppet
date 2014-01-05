@@ -84,6 +84,7 @@ module RSpec::Puppet
         if resource.nil?
           false
         else
+          RSpec::Puppet::Coverage.cover!(resource)
           rsrc_hsh = resource.to_hash
           if @expected_params_count
             unless rsrc_hsh.size == @expected_params_count
