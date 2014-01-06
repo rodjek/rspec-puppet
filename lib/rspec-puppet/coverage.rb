@@ -43,23 +43,23 @@ module RSpec::Puppet
         [name, wrapper.to_hash]
       end.flatten]
 
-      puts <<-EOH.gsub(/^ {10}/, '')
+      puts <<-EOH.gsub(/^ {8}/, '')
 
-Total resources:   #{report[:total]}
-Touched resources: #{report[:touched]}
-Coverage:    #{report[:coverage]}%
+        Total resources:   #{report[:total]}
+        Touched resources: #{report[:touched]}
+        Resource coverage: #{report[:coverage]}%
 
-Untouched resources:
+        Untouched resources:
 
-#{
-  report[:detailed]
-    .select { |_, resource| !resource[:touched] }
-    .map do |name, resource|
-      "  #{name}"
-    end
-    .flatten
-    .join("\n")
-}
+        #{
+           report[:detailed]
+             .select { |_, resource| !resource[:touched] }
+             .map do |name, resource|
+               "  #{name}"
+             end
+             .flatten
+             .join("\n")
+        }
       EOH
     end
 
