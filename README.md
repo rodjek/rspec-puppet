@@ -359,7 +359,7 @@ You can output a basic resource coverage report with the following in
 you spec file.
 
 ```ruby
-at_exit { puts RSpec::Puppet::Coverage.report! }
+at_exit { RSpec::Puppet::Coverage.report! }
 ```
 
 This checks which Puppet resources have been explicitly checked as part
