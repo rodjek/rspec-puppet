@@ -6,6 +6,7 @@ require 'rspec-puppet/errors'
 require 'rspec-puppet/matchers'
 require 'rspec-puppet/example'
 require 'rspec-puppet/setup'
+require 'rspec-puppet/coverage'
 
 begin
   require 'puppet/test/test_helper'
