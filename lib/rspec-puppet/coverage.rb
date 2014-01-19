@@ -52,11 +52,12 @@ module RSpec::Puppet
         Untouched resources:
 
         #{
-          report[:detailed].select { |_, resource| !resource[:touch]}.map do |name, resource|
+          report[:detailed].select { |_, resource| !resource["touched"]}.map do |name, resource|
             "  #{name}"
           end.flatten.join("\n")
         }
       EOH
+
     end
 
     private
