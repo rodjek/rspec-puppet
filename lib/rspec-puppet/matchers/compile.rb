@@ -30,11 +30,9 @@ module RSpec::Puppet
       def failure_message_for_should
         unless @cycles.empty?
           "dependency cycles found: #{@cycles.join('; ')}"
-        elsif @error
-          # if we received a Puppet::Error previously, bubble the message up
-          @error
         else
-          "expected that the catalogue would include #{@failed_resource}"
+          # if we received a Puppet::Error previously, bubble the message up
+          @error ? @error : "expected that the catalogue would include #{@failed_resource}"
         end
       end
 
