@@ -58,25 +58,25 @@ module RSpec::Puppet
 
     class BeforeRelationshipError < RelationshipError
       def message
-        "#{from} to come before #{to} in the graph"
+        "that comes before #{to}"
       end
     end
 
     class RequireRelationshipError < RelationshipError
       def message
-        "#{from} to require #{to} in the graph"
+        "that requires #{to}"
       end
     end
 
     class NotifyRelationshipError < RelationshipError
       def message
-        "#{from} to notify #{to}"
+        "that notifies #{to}"
       end
     end
 
     class SubscribeRelationshipError < RelationshipError
       def message
-        "#{from} to be subscribed to #{to}"
+        "that is subscribed to #{to}"
       end
     end
   end
