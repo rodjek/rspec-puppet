@@ -31,7 +31,8 @@ module RSpec::Puppet
         unless @cycles.empty?
           "dependency cycles found: #{@cycles.join('; ')}"
         else
-          "expected that the catalogue would include #{@failed_resource}"
+          # if we received a Puppet::Error previously, bubble the message up
+          @error ? @error : "expected that the catalogue would include #{@failed_resource}"
         end
       end
 
@@ -105,7 +106,8 @@ module RSpec::Puppet
             find_cycles_legacy(cat)
           end
           retval = true unless @cycles.empty?
-        rescue Puppet::Error
+        rescue Puppet::Error => e
+          @error = e.message
           retval = true
         end
         retval
