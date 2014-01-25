@@ -1,4 +1,4 @@
-# RSpec tests for your Puppet manifests & modules
+# RSpec tests for your Puppet manifests & modules [![Build Status](https://travis-ci.org/rodjek/rspec-puppet.png)](https://travis-ci.org/rodjek/rspec-puppet)
 
 ## Installation
 
