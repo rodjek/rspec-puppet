@@ -199,17 +199,25 @@ module RSpec::Puppet
       end
 
       def precedes?(first, second)
-        before_refs = relationship_refs(first[:before])
-        require_refs = relationship_refs(second[:require])
+        if first.nil? || second.nil?
+          false
+        else
+          before_refs = relationship_refs(first[:before])
+          require_refs = relationship_refs(second[:require])
 
-        before_refs.include?(second.to_ref) || require_refs.include?(first.to_ref)
+          before_refs.include?(second.to_ref) || require_refs.include?(first.to_ref)
+        end
       end
 
       def notifies?(first, second)
-        notify_refs = relationship_refs(first[:notify])
-        subscribe_refs = relationship_refs(second[:subscribe])
+        if first.nil? || second.nil?
+          false
+        else
+          notify_refs = relationship_refs(first[:notify])
+          subscribe_refs = relationship_refs(second[:subscribe])
 
-        notify_refs.include?(second.to_ref) || subscribe_refs.include?(first.to_ref)
+          notify_refs.include?(second.to_ref) || subscribe_refs.include?(first.to_ref)
+        end
       end
 
       # @param resource [Hash<Symbol, Object>] The resource in the catalog
