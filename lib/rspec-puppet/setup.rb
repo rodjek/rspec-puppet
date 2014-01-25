@@ -122,7 +122,7 @@ EOF
     def self.safe_make_symlink(source, target)
       if File.exists? target
         unless File.symlink? target
-          $stderr.puts "!! #{file} already exists and is not a symlink"
+          $stderr.puts "!! #{target} already exists and is not a symlink"
         end
       else
         FileUtils.ln_s(source, target)
