@@ -5,6 +5,7 @@ module RSpec::Puppet
         @failed_resource = ""
         @check_deps = false
         @cycles = []
+        @error_msg = ""
       end
 
       def with_all_deps
@@ -31,7 +32,11 @@ module RSpec::Puppet
         unless @cycles.empty?
           "dependency cycles found: #{@cycles.join('; ')}"
         else
-          "expected that the catalogue would include #{@failed_resource}"
+          unless @error_msg.empty?
+            "error during compilation: #{@error_msg}"
+          else
+            "expected that the catalogue would include #{@failed_resource}"
+          end
         end
       end
 
@@ -105,8 +110,9 @@ module RSpec::Puppet
             find_cycles_legacy(cat)
           end
           retval = true unless @cycles.empty?
-        rescue Puppet::Error
+        rescue Puppet::Error => e
           retval = true
+          @error_msg = e.message
         end
         retval
       end
