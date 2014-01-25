@@ -30,7 +30,12 @@ module RSpec::Puppet
         else
           unless @expected_return.nil?
             @actual_return = @func.call
-            @actual_return == @expected_return
+            case @expected_return
+            when Regexp
+              @actual_return =~ @expected_return
+            else
+              @actual_return == @expected_return
+            end
           else
             begin
               @func.call
