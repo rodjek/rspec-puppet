@@ -395,3 +395,15 @@ user:
   let(:params) { :ntpserver => ntpserver }
 ```
 
+## Producing coverage reports
+
+You can output a basic resource coverage report with the following in
+you spec file.
+
+```ruby
+at_exit { RSpec::Puppet::Coverage.report! }
+```
+
+This checks which Puppet resources have been explicitly checked as part
+of the current test run and outputs both a coverage percentage and a
+list of untouched resources.
