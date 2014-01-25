@@ -54,6 +54,11 @@ module RSpec::Puppet
 
       def and_return(value)
         @expected_return = value
+        if value.is_a? Regexp
+          @desc = "match #{value.inspect}"
+        else
+          @desc = "return #{value.inspect}"
+        end
         self
       end
 
@@ -63,6 +68,15 @@ module RSpec::Puppet
           @expected_error, @expected_error_message = Exception, error_or_message
         else
           @expected_error, @expected_error_message = error_or_message, message
+        end
+
+        if @expected_error_message.is_a? Regexp
+          @desc = "raise an #{@expected_error} with the message matching #{@expected_error_message.inspect}"
+        else
+          @desc = "raise an #{@expected_error}"
+          unless @expected_error_message.nil?
+            @desc += "with the message #{@expected_error_message.inspect}"
+          end
         end
         self
       end
@@ -76,14 +90,19 @@ module RSpec::Puppet
       end
 
       def description
-        "run function and match"
+        "run #{func_name}(#{func_params}) and #{@desc}"
       end
 
       private
-      def failure_message_generic(type, func_obj)
-        func_name = func_obj.name.to_s.gsub(/^function_/, '')
-        func_params = @params.inspect[1..-2]
+      def func_name
+        @func_name ||= @func_obj.name.to_s.gsub(/^function_/, '')
+      end
 
+      def func_params
+        @func_args ||= @params.inspect[1..-2]
+      end
+
+      def failure_message_generic(type, func_obj)
         message = "expected #{func_name}(#{func_params}) to "
         message << "not " if type == :should_not
 
