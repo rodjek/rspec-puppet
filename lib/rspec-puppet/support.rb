@@ -3,7 +3,7 @@ module RSpec::Puppet
 
     @@cache = {}
 
-    def catalogue(type)
+    def load_catalogue(type)
       vardir = setup_puppet
 
       code = [import_str, pre_cond, test_manifest(type)].join("\n")

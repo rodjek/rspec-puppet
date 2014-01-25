@@ -3,8 +3,10 @@ module RSpec::Puppet
     include RSpec::Puppet::ManifestMatchers
     include RSpec::Puppet::Support
 
-    def subject
-      @catalogue ||= catalogue(:class)
+    def catalogue
+      @catalogue ||= load_catalogue(:class)
     end
+
+    alias_method :subject, :catalogue
   end
 end
