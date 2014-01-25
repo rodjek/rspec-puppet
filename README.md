@@ -352,3 +352,46 @@ it 'something' do
   expect { subject.call(['a']) }.should_not raise_error(Puppet::ParseError)
 end
 ```
+
+## Hiera integration
+
+### Configuration
+
+Set the hiera config symbol properly in your spec files:
+
+```ruby
+let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
+hiera = Hiera.new(:config => 'spec/fixtures/hiera/hiera.yaml')
+```
+
+Create your spec hiera files
+
+spec/fixtures/hiera/hiera.yaml
+```ruby
+---
+:backends:
+  - yaml
+:hierarchy:
+  - test
+:yaml:
+  :datadir: 'spec/fixtures/hiera'
+```
+
+spec/fixtures/hiera/test.yaml
+```ruby
+---
+ntpserver: ['ntp1.domain.com','ntpXX.domain.com']
+user:
+  oneuser:
+    shell: '/bin/bash'
+  twouser:
+    shell: '/sbin/nologin'
+```
+
+### Use hiera in your tests
+
+```ruby
+  ntpserver = hiera.lookup('ntpserver', nil, nil)
+  let(:params) { :ntpserver => ntpserver }
+```
+
