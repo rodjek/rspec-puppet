@@ -6,7 +6,5 @@ module RSpec::Puppet
     def catalogue
       @catalogue ||= load_catalogue(:host)
     end
-
-    alias_method :subject, :catalogue
   end
 end

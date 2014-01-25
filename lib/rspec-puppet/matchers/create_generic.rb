@@ -79,7 +79,8 @@ module RSpec::Puppet
 
       def matches?(catalogue)
         ret = true
-        resource = catalogue.resource(@referenced_type, @title)
+        @catalogue = catalogue.call
+        resource = @catalogue.resource(@referenced_type, @title)
 
         if resource.nil?
           false
@@ -95,10 +96,10 @@ module RSpec::Puppet
 
           check_params(rsrc_hsh, @expected_params, :should) if @expected_params.any?
           check_params(rsrc_hsh, @expected_undef_params, :not) if @expected_undef_params.any?
-          check_befores(catalogue, resource) if @befores.any?
-          check_requires(catalogue, resource) if @requires.any?
-          check_notifies(catalogue, resource) if @notifies.any?
-          check_subscribes(catalogue, resource) if @subscribes.any?
+          check_befores(@catalogue, resource) if @befores.any?
+          check_requires(@catalogue, resource) if @requires.any?
+          check_notifies(@catalogue, resource) if @notifies.any?
+          check_subscribes(@catalogue, resource) if @subscribes.any?
 
           @errors.empty?
         end

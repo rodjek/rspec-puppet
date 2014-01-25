@@ -14,13 +14,13 @@ module RSpec::Puppet
       end
 
       def matches?(catalogue)
-        @catalogue = catalogue
         if cycles_found?
           false
         elsif @check_deps == true && missing_dependencies?
           false
         else
           true
+          @catalogue = catalogue.call
         end
       end
 
@@ -118,10 +118,10 @@ module RSpec::Puppet
       end
 
       def find_cycles(catalogue)
-        cycles = catalogue.find_cycles_in_graph
+        cycles = @catalogue.find_cycles_in_graph
         if cycles.length > 0
           cycles.each do |cycle|
-            paths = catalogue.paths_in_cycle(cycle)
+            paths = @catalogue.paths_in_cycle(cycle)
             @cycles << (paths.map{ |path| '(' + path.join(" => ") + ')'}.join("\n") + "\n")
           end
         end
@@ -129,7 +129,7 @@ module RSpec::Puppet
 
       def find_cycles_legacy(catalogue)
         begin
-          catalogue.topsort
+          @catalogue.topsort
         rescue Puppet::Error => e
           @cycles = [e.message.rpartition(';').first.partition(':').last]
         end
