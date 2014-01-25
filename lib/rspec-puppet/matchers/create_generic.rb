@@ -137,6 +137,18 @@ module RSpec::Puppet
         "contain #{@referenced_type}[#{@title}]#{value_str}"
       end
 
+      def diffable?
+        true
+      end
+
+      def expected
+        @errors.map {|e| e.expected if e.respond_to?(:expected)}.compact.join("\n\n")
+      end
+
+      def actual
+        @errors.map {|e| e.actual if e.respond_to?(:actual)}.compact.join("\n\n")
+      end
+
       private
       def referenced_type(type)
         type.split('__').map { |r| r.capitalize }.join('::')

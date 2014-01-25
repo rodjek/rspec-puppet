@@ -5,16 +5,16 @@ module RSpec::Puppet
 
       def initialize(param, expected, actual, negative)
         @param = param
-        @expected = expected.inspect
-        @actual = actual.inspect
+        @expected = expected
+        @actual = actual
         @negative = negative
       end
 
       def message
         if negative == true
-          "#{param} not set to #{expected} but it is set to #{actual}"
+          "#{param} not set to #{expected.inspect} but it is set to #{actual.inspect}"
         else
-          "#{param} set to #{expected} but it is set to #{actual}"
+          "#{param} set to #{expected.inspect} but it is set to #{actual.inspect}"
         end
       end
 
@@ -26,9 +26,9 @@ module RSpec::Puppet
     class RegexpMatchError < MatchError
       def message
         if negative == true
-          "#{param} not matching #{expected} but its value of #{actual} does"
+          "#{param} not matching #{expected.inspect} but its value of #{actual.inspect} does"
         else
-          "#{param} matching #{expected} but its value of #{actual} does not"
+          "#{param} matching #{expected.inspect} but its value of #{actual.inspect} does not"
         end
       end
     end
@@ -36,9 +36,9 @@ module RSpec::Puppet
     class ProcMatchError < MatchError
       def message
         if negative == true
-          "#{param} passed to the block would not return `#{expected}` but it did"
+          "#{param} passed to the block would not return `#{expected.inspect}` but it did"
         else
-          "#{param} passed to the block would return `#{expected}` but it is `#{actual}`"
+          "#{param} passed to the block would return `#{expected.inspect}` but it is `#{actual.inspect}`"
         end
       end
     end
