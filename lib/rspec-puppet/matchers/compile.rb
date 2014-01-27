@@ -133,8 +133,9 @@ module RSpec::Puppet
             find_cycles_legacy(cat)
           end
           retval = true unless @cycles.empty?
-        rescue Puppet::Error
+        rescue Puppet::Error => e
           retval = true
+          @error_msg = e.message
         end
         retval
       end
