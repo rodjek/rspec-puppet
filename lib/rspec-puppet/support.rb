@@ -3,6 +3,10 @@ module RSpec::Puppet
 
     @@cache = {}
 
+    def subject
+      lambda { catalogue }
+    end
+
     def load_catalogue(type)
       vardir = setup_puppet
 

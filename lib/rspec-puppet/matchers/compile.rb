@@ -13,19 +13,42 @@ module RSpec::Puppet
         self
       end
 
+      def and_raise_error(error)
+        @expected_error = error
+        self
+      end
+
       def matches?(catalogue)
-        @catalogue = catalogue
-        if cycles_found?
-          false
-        elsif @check_deps == true && missing_dependencies?
-          false
-        else
-          true
+        begin
+          @catalogue = catalogue.call
+
+          if cycles_found?
+            false
+          elsif @check_deps == true && missing_dependencies?
+            false
+          else
+            true
+          end
+        rescue Puppet::Error => e
+          @error_msg = e.message
+          if @expected_error.nil?
+            false
+          else
+            method = @expected_error.is_a?(Regexp) ? :=~ : :==
+            e.message.send(method, @expected_error)
+          end
         end
       end
 
       def description
-        "compile the catalogue without cycles"
+        case @expected_error
+        when nil
+          "compile into a catalogue without dependency cycles"
+        when Regexp
+          "fail to compile and raise an error matching #{@expected_error.inspect}"
+        else
+          "fail to compile and raise the error #{@expected_error.inspect}"
+        end
       end
 
       def failure_message_for_should
@@ -110,9 +133,8 @@ module RSpec::Puppet
             find_cycles_legacy(cat)
           end
           retval = true unless @cycles.empty?
-        rescue Puppet::Error => e
+        rescue Puppet::Error
           retval = true
-          @error_msg = e.message
         end
         retval
       end
