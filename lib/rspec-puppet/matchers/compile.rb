@@ -123,20 +123,14 @@ module RSpec::Puppet
       end
 
       def cycles_found?
-        retval = false
-        begin
-          cat = @catalogue.to_ral.relationship_graph
-          cat.write_graph(:resources)
-          if cat.respond_to? :find_cycles_in_graph
-            find_cycles(cat)
-          else
-            find_cycles_legacy(cat)
-          end
-          retval = true unless @cycles.empty?
-        rescue Puppet::Error
-          retval = true
+        cat = @catalogue.to_ral.relationship_graph
+        cat.write_graph(:resources)
+        if cat.respond_to? :find_cycles_in_graph
+          find_cycles(cat)
+        else
+          find_cycles_legacy(cat)
         end
-        retval
+        !@cycles.empty?
       end
 
       def find_cycles(catalogue)
