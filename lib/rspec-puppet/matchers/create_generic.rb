@@ -39,22 +39,22 @@ module RSpec::Puppet
       end
 
       def that_notifies(resource)
-        @notifies << resource
+        @notifies.concat(Array(resource))
         self
       end
 
       def that_subscribes_to(resource)
-        @subscribes << resource
+        @subscribes.concat(Array(resource))
         self
       end
 
       def that_requires(resource)
-        @requires << resource
+        @requires.concat(Array(resource))
         self
       end
 
       def that_comes_before(resource)
-        @befores << resource
+        @befores.concat(Array(resource))
         self
       end
 
@@ -115,6 +115,7 @@ module RSpec::Puppet
 
       def description
         values = []
+        value_str_prefix = "with"
 
         if @expected_params_count
           values << "exactly #{@expected_params_count} parameters"
@@ -128,11 +129,31 @@ module RSpec::Puppet
           values.concat(generate_param_list(@expected_undef_params, :not))
         end
 
+        if @notifies.any?
+          value_str_prefix = "that notifies"
+          values = @notifies
+        end
+
+        if @subscribes.any?
+          value_str_prefix = "that subscribes to"
+          values = @subscribes
+        end
+
+        if @requires.any?
+          value_str_prefix = "that requires"
+          values = @requires
+        end
+
+        if @befores.any?
+          value_str_prefix = "that comes before"
+          values = @befores
+        end
+
         unless values.empty?
           if values.length == 1
-            value_str = " with #{values.first}"
+            value_str = " #{value_str_prefix} #{values.first}"
           else
-            value_str = " with #{values[0..-2].join(", ")} and #{values[-1]}"
+            value_str = " #{value_str_prefix} #{values[0..-2].join(", ")} and #{values[-1]}"
           end
         end
 
