@@ -11,14 +11,6 @@ module RSpec::Puppet
 
       node_name = nodename(:function)
 
-      facts_val = facts_hash(node_name)
-
-      # if we specify a pre_condition, we should ensure that we compile that code
-      # into a catalog that is accessible from the scope where the function is called
-      Puppet[:code] = pre_cond
-
-      compiler = build_compiler(node_name, facts_val)
-
       function_scope = scope(compiler, node_name)
 
       # Return the method instance for the function.  This can be used with
@@ -28,8 +20,26 @@ module RSpec::Puppet
       function_scope.method("function_#{function_name}".intern)
     end
 
+    def catalogue
+      @catalogue ||= compiler.catalog
+    end
+
+    private
+
+    def compiler
+      @compiler ||= build_compiler
+    end
+
     # get a compiler with an attached compiled catalog
-    def build_compiler(node_name, fact_values)
+    def build_compiler
+      node_name   = nodename(:function)
+      fact_values = facts_hash(node_name)
+
+      # if we specify a pre_condition, we should ensure that we compile that
+      # code into a catalog that is accessible from the scope where the
+      # function is called
+      Puppet[:code] = pre_cond
+
       node_options = {
         :parameters => fact_values,
       }
