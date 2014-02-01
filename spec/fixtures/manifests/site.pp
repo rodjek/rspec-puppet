@@ -24,3 +24,24 @@ node 'bad_dep_host' {
     require => File['/'],
   }
 }
+
+node 'facts.acme.com' {
+  file { 'environment':
+    path => $environment
+  }
+  file { 'clientversion':
+    path => $clientversion
+  }
+  file { 'fqdn':
+    path => $fqdn
+  }
+  file { 'hostname':
+    path => $hostname
+  }
+  file { 'domain':
+    path => $domain
+  }
+  file { 'clientcert':
+    path => $clientcert
+  }
+}
