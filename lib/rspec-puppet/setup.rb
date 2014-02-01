@@ -31,7 +31,7 @@ module RSpec::Puppet
 
       safe_touch('spec/fixtures/manifests/site.pp')
 
-      ['manifests','lib','files','templates'].each do |dir|
+      %w(data manifests lib files templates).each do |dir|
         if File.exist? dir
           safe_make_symlink("../../../../#{dir}", "spec/fixtures/modules/#{module_name}/#{dir}")
         end
