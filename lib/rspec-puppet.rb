@@ -22,6 +22,7 @@ RSpec.configure do |c|
   c.add_setting :confdir, :default => '/etc/puppet'
   c.add_setting :default_facts, :default => {}
   c.add_setting :hiera_config, :default => '/dev/null'
+  c.add_setting :parser, :default => 'current'
 
   if defined?(Puppet::Test::TestHelper)
     begin
