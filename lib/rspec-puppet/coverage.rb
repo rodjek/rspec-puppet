@@ -55,9 +55,12 @@ module RSpec::Puppet
           Untouched resources:
 
           #{
-            report[:detailed].select { |_, resource| !resource["touched"]}.map do |name, resource|
-              "  #{name}"
-            end.flatten.join("\n")
+            untouched_resources = report[:detailed].reject do |_,rsrc|
+              rsrc["touched"]
+            end
+            untouched_resources.inject([]) do |memo, (name,_)|
+              memo << "  #{name}"
+            end.join("\n")
           }
         EOH
       end
