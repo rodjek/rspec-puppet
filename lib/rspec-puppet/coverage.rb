@@ -48,15 +48,22 @@ module RSpec::Puppet
         Total resources:   #{report[:total]}
         Touched resources: #{report[:touched]}
         Resource coverage: #{report[:coverage]}%
-
-        Untouched resources:
-
-        #{
-          report[:detailed].select { |_, resource| !resource["touched"]}.map do |name, resource|
-            "  #{name}"
-          end.flatten.join("\n")
-        }
       EOH
+
+      if report[:coverage] != "100.00"
+        puts <<-EOH.gsub(/^ {10}/, '')
+          Untouched resources:
+
+          #{
+            untouched_resources = report[:detailed].reject do |_,rsrc|
+              rsrc["touched"]
+            end
+            untouched_resources.inject([]) do |memo, (name,_)|
+              memo << "  #{name}"
+            end.sort.join("\n")
+          }
+        EOH
+      end
 
     end
 
