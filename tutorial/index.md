@@ -198,7 +198,7 @@ it.
 
     it do
       expect {
-        contain_file('/etc/logrotate.d/nginx')
+        should contain_file('/etc/logrotate.d/nginx')
       }.to raise_error(Puppet::Error, /compress must be true or false/)
     end
   end
@@ -246,7 +246,7 @@ describe 'logrotate::rule' do
 
     it do
       expect {
-        contain_file('/etc/logrotate.d/nginx')
+        should contain_file('/etc/logrotate.d/nginx')
       }.to raise_error(Puppet::Error, /compress must be true or false/)
     end
   end
