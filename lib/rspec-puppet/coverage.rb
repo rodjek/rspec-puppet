@@ -60,7 +60,7 @@ module RSpec::Puppet
             end
             untouched_resources.inject([]) do |memo, (name,_)|
               memo << "  #{name}"
-            end.join("\n")
+            end.sort.join("\n")
           }
         EOH
       end
