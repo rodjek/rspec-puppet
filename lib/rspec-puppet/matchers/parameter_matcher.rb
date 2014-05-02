@@ -30,9 +30,7 @@ module RSpec::Puppet
         # Puppet flattens an array with a single value into just the value and
         # this can cause confusion when testing as people expect when you put
         # an array in, you'll get an array out.
-        if expected.is_a?(Array) && expected.length == 1
-          actual = Array[actual] unless actual.is_a?(Array)
-        end
+        actual = [*actual] if expected.is_a?(Array)
 
         retval = check(expected, actual)
 
@@ -57,6 +55,7 @@ module RSpec::Puppet
       #
       # @return [true, false] If the resource matched
       def check(expected, actual)
+        return false if actual.nil? && !expected.nil?
         case expected
         when Proc
           check_proc(expected, actual)
@@ -100,10 +99,6 @@ module RSpec::Puppet
       def check_array(expected, actual)
         op = @should_match ? :"==" : :"!="
 
-        # fix also the case where actual is nil (to have more explicit error
-        # message than NoMethodError: undefined method `size' for nil:NilClass)
-        return false if actual.nil?
-        
         unless expected.size.send(op, actual.size)
           return false
         end
