@@ -124,6 +124,7 @@ module RSpec::Puppet
         [:confdir, :confdir],
         [:hiera_config, :hiera_config],
         [:parser, :parser],
+        [:ordering, :ordering],
       ].each do |a, b|
         value = self.respond_to?(b) ? self.send(b) : RSpec.configuration.send(b)
         begin
