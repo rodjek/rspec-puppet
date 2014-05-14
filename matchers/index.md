@@ -139,10 +139,10 @@ with the metaparameters (`require`, `before`, `notify` and `subscribe`) or the
 chaining arrows (`->`, `~>`, `<-` and `<~`), they're all tested the same.
 
 {% highlight ruby %}
-it { should contain_file('foo').that_requires(File[bar]) }
-it { should contain_file('foo').that_comes_before(File[bar]) }
-it { should contain_file('foo').that_notifies(File[bar]) }
-it { should contain_file('foo').that_subscribes_to(File[bar]) }
+it { should contain_file('foo').that_requires('File[bar]') }
+it { should contain_file('foo').that_comes_before('File[bar]') }
+it { should contain_file('foo').that_notifies('File[bar]') }
+it { should contain_file('foo').that_subscribes_to('File[bar]') }
 {% endhighlight %}
 
 You can also test the reverse direction of the relationship, so if you have the
