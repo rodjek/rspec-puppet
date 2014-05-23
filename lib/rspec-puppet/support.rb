@@ -10,7 +10,7 @@ module RSpec::Puppet
     def load_catalogue(type)
       vardir = setup_puppet
 
-      code = [import_str, pre_cond, test_manifest(type)].join("\n")
+      code = [pre_cond, test_manifest(type)].join("\n")
       node_name = nodename(type)
 
       catalogue = build_catalog(node_name, facts_hash(node_name), code)
@@ -23,29 +23,6 @@ module RSpec::Puppet
 
       FileUtils.rm_rf(vardir) if File.directory?(vardir)
       catalogue
-    end
-
-    def import_str
-      klass_name = self.class.top_level_description.downcase
-
-      if File.exists?(File.join(Puppet[:modulepath], 'manifests', 'init.pp'))
-        path_to_manifest = File.join([
-          Puppet[:modulepath],
-          'manifests',
-          klass_name.split('::')[1..-1]
-        ].flatten)
-        import_str = [
-          "import '#{Puppet[:modulepath]}/manifests/init.pp'",
-          "import '#{path_to_manifest}.pp'",
-          '',
-        ].join("\n")
-      elsif File.exists?(Puppet[:modulepath])
-        import_str = "import '#{Puppet[:manifest]}'\n"
-      else
-        import_str = ""
-      end
-
-      import_str
     end
 
     def test_manifest(type)
