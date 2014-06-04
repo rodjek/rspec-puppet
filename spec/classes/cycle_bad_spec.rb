@@ -1,5 +1,5 @@
 require 'spec_helper'
 
 describe 'cycle::bad' do
-  it { should_not compile }
+  it { is_expected.not_to compile }
 end

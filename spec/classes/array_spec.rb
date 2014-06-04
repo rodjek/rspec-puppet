@@ -7,7 +7,7 @@ describe 'structured_data' do
     end
 
     it {
-      should contain_structured_data__def('thing').with(
+      is_expected.to contain_structured_data__def('thing').with(
         { 'data'  => ['foo', 'bar', 'baz', 'quux'] }
       )
     }
@@ -19,7 +19,7 @@ describe 'structured_data' do
     end
 
     it {
-      should contain_structured_data__def('thing').with(
+      is_expected.to contain_structured_data__def('thing').with(
         { 'data' => ['first', 1, 'second', 2] }
       )
     }
@@ -42,7 +42,7 @@ describe 'structured_data' do
     # we're still handling numeric values correctly.
     describe 'on Puppet 2.6', :if => Puppet.version =~ /^2\.6/ do
       it {
-        should contain_structured_data__def('thing').with(
+        is_expected.to contain_structured_data__def('thing').with(
           { 'data'  => [
               'first',
               'second',
@@ -58,7 +58,7 @@ describe 'structured_data' do
 
     describe 'on Puppet 2.7 and later', :unless => Puppet.version =~ /^2\.6/ do
       it {
-        should contain_structured_data__def('thing').with(
+        is_expected.to contain_structured_data__def('thing').with(
           { 'data'  => [
               'first',
               'second',

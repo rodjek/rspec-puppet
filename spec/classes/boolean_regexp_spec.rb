@@ -5,9 +5,9 @@ describe 'boolean' do
   let(:params) { { :bool => false } }
   let(:message_re) { /bool is false/ }
 
-  it { should create_notify("bool testing").with_message(message_re) }
+  it { is_expected.to create_notify("bool testing").with_message(message_re) }
 
   # `should_not with_messsage` == `should without_message`
-  it { should_not create_notify("bool testing").with_message(/true/) }
-  it { should create_notify("bool testing").without_message(/true/) }
+  it { is_expected.not_to create_notify("bool testing").with_message(/true/) }
+  it { is_expected.to create_notify("bool testing").without_message(/true/) }
 end

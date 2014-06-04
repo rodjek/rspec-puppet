@@ -1,6 +1,6 @@
 require 'spec_helper'
 
 describe 'foo.example.com' do
-  it { should_not contain_class('sysctl::common') }
-  it { should contain_notify('test') }
+  it { is_expected.not_to contain_class('sysctl::common') }
+  it { is_expected.to contain_notify('test') }
 end
