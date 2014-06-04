@@ -395,6 +395,17 @@ user:
   let(:params) { :ntpserver => ntpserver }
 ```
 
+### Enabling hiera lookups
+If you just want to fetch values from hiera (e.g. because
+you're testing code that uses explicit hiera lookups) just specify
+the path to the hiera config in your `spec_helper.rb`
+
+```ruby
+RSpec.configure do |c|
+  c.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
+end
+```
+
 ## Producing coverage reports
 
 You can output a basic resource coverage report with the following in
