@@ -143,6 +143,9 @@ module RSpec::Puppet
           [:confdir, :confdir],
           [:hiera_config, :hiera_config],
           [:parser, :parser],
+          [:trusted_node_data, :trusted_node_data],
+          [:ordering, :ordering],
+          [:stringify_facts, :stringify_facts],
         ]
       end
       settings.each do |a,b|
