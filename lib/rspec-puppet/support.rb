@@ -124,6 +124,9 @@ module RSpec::Puppet
         [:confdir, :confdir],
         [:hiera_config, :hiera_config],
         [:parser, :parser],
+        [:trusted_node_data, :trusted_node_data],
+        [:ordering, :ordering],
+        [:stringify_facts, :stringify_facts],
       ].each do |a, b|
         value = self.respond_to?(b) ? self.send(b) : RSpec.configuration.send(b)
         begin
