@@ -85,7 +85,7 @@ module RSpec::Puppet
 
       source_files_hash.each do |k, v|
         source_files << {
-          :name     => k.gsub(%r{.*/spec/fixtures/modules/[^/]+/}, ''), # hack!
+          :name     => k.gsub(%r{.*/spec/fixtures/modules/([^/]+)/manifests}, '\1'),
           :source   => File.open(k).read,
           :coverage => v,
         }
