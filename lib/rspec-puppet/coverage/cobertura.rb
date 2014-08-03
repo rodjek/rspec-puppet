@@ -82,9 +82,19 @@ eos
     def dump_class( item , indent='' )
       rate = item['lines'].select{ |n,h| not h.zero? }.length.to_f / item['lines'].length
 
+      # This block is a bit complex, so adds 'internal indent'
+      content = [ '<methods/>' , '<lines>' ]
+      content.push( dump_lines( item['lines'] , '  ' ) ).flatten!
+      content.push( '</lines>' ).collect!{ |e| '  ' + e.to_s }
+
       class_fmt = '<class filename="%s" name="%s" line-rate="%s" branch-rate="0">'
       output = [ class_fmt % [ item['filename'] , item['name'] , rate ] ]
+      output.push( content ).flatten!
       output.push( '</class>' ).collect{ |e| indent + e.to_s }
+    end
+
+    def dump_lines( lines , indent='' )
+      lines.collect{ |k,v| indent + '<line number="' + k.to_s + '" hits="' + v.to_s + '" branch="false"/>' }
     end
 
   end
