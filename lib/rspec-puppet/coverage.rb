@@ -66,8 +66,7 @@ module RSpec::Puppet
       end
     end
 
-    def coveralls!
-      require 'coveralls'
+    def coverage
 
       source_files_hash = {}
       source_files = []
@@ -91,7 +90,12 @@ module RSpec::Puppet
         }
       end
 
-      ::Coveralls::API.post_json "jobs", { :source_files => source_files }
+      source_files
+    end
+
+    def coveralls!
+      require 'coveralls'
+      ::Coveralls::API.post_json "jobs", { :source_files => coverage }
       report!
     end
 
