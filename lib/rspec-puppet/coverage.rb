@@ -1,4 +1,5 @@
 require 'rspec-puppet/coverage/coveralls'
+require 'rspec-puppet/coverage/cobertura'
 
 module RSpec::Puppet
   class Coverage
