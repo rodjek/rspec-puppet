@@ -1,3 +1,5 @@
+require 'rspec-puppet/coverage/coveralls'
+
 module RSpec::Puppet
   class Coverage
 
@@ -5,7 +7,7 @@ module RSpec::Puppet
 
     class << self
       extend Forwardable
-      def_delegators :instance, :add, :cover!, :report!, :filters, :coveralls!
+      def_delegators :instance, :add, :cover!, :report!, :filters
     end
 
     include Singleton
@@ -91,12 +93,6 @@ module RSpec::Puppet
       end
 
       source_files
-    end
-
-    def coveralls!
-      require 'coveralls'
-      ::Coveralls::API.post_json "jobs", { :source_files => coverage }
-      report!
     end
 
     private
