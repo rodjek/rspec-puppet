@@ -45,13 +45,32 @@ module RSpec::Puppet
         lines = @modules.values.flatten!.collect{ |e| e['lines'].values }.flatten
         rate = lines.select{ |e| not e.zero? }.length.to_f / lines.length
 
-        <<eos
+        output = <<eos
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="#{rate}" timestamp="#{Time.now.to_i}" branch-rate="0" version="#{version}" complexity="0" />
+<coverage line-rate="#{rate}" timestamp="#{Time.now.to_i}" branch-rate="0" version="#{version}" complexity="0">
+  <packages>
+eos
+
+        @modules.each do |k,v|
+          dump_packages(k,v,'  ').map{ |e| output << '  ' << e << "\n" }
+        end
+
+        output += <<eos
+  </packages>
+</coverage>
 eos
 
       end
+
+    def dump_packages( package , classlist , indent='' )
+      lines = classlist.collect{ |e| e['lines'].values }.flatten
+      rate = lines.select{ |e| not e.zero? }.length.to_f / lines.length
+
+      pkg_fmt = '<package name="%s" line-rate="%s" branch-rate="0">'
+      output = [ pkg_fmt % [ package , rate ] ]
+      output.push( '</package>' ).collect{ |e| indent + e.to_s }
+    end
 
   end
 end
