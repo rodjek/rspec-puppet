@@ -69,7 +69,22 @@ eos
 
       pkg_fmt = '<package name="%s" line-rate="%s" branch-rate="0">'
       output = [ pkg_fmt % [ package , rate ] ]
+      output.push( dump_classes( classlist , '  ' ) ).flatten!
       output.push( '</package>' ).collect{ |e| indent + e.to_s }
+    end
+
+    def dump_classes( items , indent='' )
+      output = [ '<classes>' ]
+      output.push( items.collect{ |e| dump_class( e , '  ' ) } ).flatten!
+      output.push( '</classes>' ).collect{ |e| indent + e.to_s }
+    end
+
+    def dump_class( item , indent='' )
+      rate = item['lines'].select{ |n,h| not h.zero? }.length.to_f / item['lines'].length
+
+      class_fmt = '<class filename="%s" name="%s" line-rate="%s" branch-rate="0">'
+      output = [ class_fmt % [ item['filename'] , item['name'] , rate ] ]
+      output.push( '</class>' ).collect{ |e| indent + e.to_s }
     end
 
   end
