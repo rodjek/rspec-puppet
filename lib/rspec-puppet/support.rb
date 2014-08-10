@@ -15,7 +15,7 @@ module RSpec::Puppet
 
       catalogue = build_catalog(node_name, facts_hash(node_name), code)
 
-      RSpec::Puppet::Coverage.filters << "#{type.to_s.capitalize}[#{self.class.display_name.capitalize}]"
+      RSpec::Puppet::Coverage.filters << "#{type.to_s.capitalize}[#{self.class.description.capitalize}]"
 
       catalogue.to_a.each do |resource|
         RSpec::Puppet::Coverage.add(resource)
