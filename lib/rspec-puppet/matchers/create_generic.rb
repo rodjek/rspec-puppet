@@ -168,7 +168,7 @@ module RSpec::Puppet
           else
             a = type == :not ? '!' : '='
             b = value.is_a?(Regexp) ? '~' : '>'
-            if param.to_s == 'content'
+            if param.to_s == 'content' and value.is_a?( String )
               output << "#{param.to_s} #{a}#{b} #{value.lines.first.chomp} ..."
             else
               output << "#{param.to_s} #{a}#{b} #{value.inspect}"

@@ -11,7 +11,7 @@ module RSpec::Puppet
       end
 
       def message
-        if @param.to_s == 'content'
+        if @param.to_s == 'content' and expected.is_a?( String )
           if negative == true
             "#{param} not set to #{expected.lines.first.chomp} ... but it is set to #{actual.lines.first.chomp} ..."
           else
