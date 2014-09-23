@@ -69,8 +69,9 @@ module RSpec::Puppet
     end
 
     def nodename(type)
+      return node if self.respond_to?(:node)
       if [:class, :define, :function].include? type
-        self.respond_to?(:node) ? node : Puppet[:certname]
+        Puppet[:certname]
       else
         self.class.top_level_description.downcase
       end

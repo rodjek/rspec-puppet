@@ -2,6 +2,10 @@ node default {
   notify { 'test': }
 }
 
+node 'testhost_a' {
+  file { '/tmp/a': }
+}
+
 node /testhost/ {
   include sysctl::common
 }
