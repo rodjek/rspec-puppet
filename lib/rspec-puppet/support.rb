@@ -92,9 +92,12 @@ module RSpec::Puppet
 
     def facts_hash(node)
       facts_val = {
-        'hostname' => node.split('.').first,
-        'fqdn'     => node,
-        'domain'   => node.split('.', 2).last,
+        'clientversion' => Puppet::PUPPETVERSION,
+        'environment'   => 'production',
+        'hostname'      => node.split('.').first,
+        'fqdn'          => node,
+        'domain'        => node.split('.', 2).last,
+        'clientcert'    => node
       }
 
       if RSpec.configuration.default_facts.any?
