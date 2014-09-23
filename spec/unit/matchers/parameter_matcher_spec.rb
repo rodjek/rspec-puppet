@@ -8,16 +8,16 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
       end
 
       it 'matches [1]' do
-        expect(subject.matches?(:foo_parameter => [1])).to be_true
+        expect(subject.matches?(:foo_parameter => [1])).to be(true)
       end
       it 'does not match []' do
-        expect(subject.matches?(:foo_parameter => [])).to be_false
+        expect(subject.matches?(:foo_parameter => [])).to be(false)
       end
       it 'does not match [1,2,3]' do
-        expect(subject.matches?(:foo_parameter => [1,2,3])).to be_false
+        expect(subject.matches?(:foo_parameter => [1,2,3])).to be(false)
       end
       it 'does not match nil' do
-        expect(subject.matches?(:foo_parameter => nil)).to be_false
+        expect(subject.matches?(:foo_parameter => nil)).to be(false)
       end
     end
     context 'with [1,2,3] expected' do
@@ -26,13 +26,13 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
       end
 
       it 'matches [1,2,3]' do
-        expect(subject.matches?(:foo_parameter => [1,2,3])).to be_true
+        expect(subject.matches?(:foo_parameter => [1,2,3])).to be(true)
       end
       it 'does not match []' do
-        expect(subject.matches?(:foo_parameter => [])).to be_false
+        expect(subject.matches?(:foo_parameter => [])).to be(false)
       end
       it 'does not match nil' do
-        expect(subject.matches?(:foo_parameter => nil)).to be_false
+        expect(subject.matches?(:foo_parameter => nil)).to be(false)
       end
     end
     context 'with {"foo" => "bar"} expected' do
@@ -41,16 +41,16 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
       end
 
       it 'matches {"foo" => "bar"}' do
-        expect(subject.matches?(:foo_parameter => {"foo" => "bar"})).to be_true
+        expect(subject.matches?(:foo_parameter => {"foo" => "bar"})).to be(true)
       end
       it 'does not match nil' do
-        expect(subject.matches?(:foo_parameter => nil)).to be_false
+        expect(subject.matches?(:foo_parameter => nil)).to be(false)
       end
       it 'does not match {}' do
-        expect(subject.matches?(:foo_parameter => {})).to be_false
+        expect(subject.matches?(:foo_parameter => {})).to be(false)
       end
       it 'does not match {"foo" => "baz"}' do
-        expect(subject.matches?(:foo_parameter => {"foo" => "baz"})).to be_false
+        expect(subject.matches?(:foo_parameter => {"foo" => "baz"})).to be(false)
       end
     end
 
@@ -61,10 +61,10 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
       end
 
       it 'matches "foo"' do
-        expect(subject.matches?(:foo_parameter => "foo")).to be_true
+        expect(subject.matches?(:foo_parameter => "foo")).to be(true)
       end
       it 'does not match nil' do
-        expect(subject.matches?(:foo_parameter => nil)).to be_false
+        expect(subject.matches?(:foo_parameter => nil)).to be(false)
       end
     end
 
@@ -74,10 +74,10 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
       end
 
       it 'matches "foo"' do
-        expect(subject.matches?(:foo_parameter => "foo")).to be_true
+        expect(subject.matches?(:foo_parameter => "foo")).to be(true)
       end
       it 'does not match nil' do
-        expect(subject.matches?(:foo_parameter => nil)).to be_false
+        expect(subject.matches?(:foo_parameter => nil)).to be(false)
       end
     end
 
@@ -87,10 +87,10 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
       end
 
       it 'matches "foo"' do
-        expect(subject.matches?(:foo_parameter => "foo")).to be_true
+        expect(subject.matches?(:foo_parameter => "foo")).to be(true)
       end
       it 'does not match nil' do
-        expect(subject.matches?(:foo_parameter => nil)).to be_false
+        expect(subject.matches?(:foo_parameter => nil)).to be(false)
       end
     end
   end
