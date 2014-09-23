@@ -172,6 +172,46 @@ least one class, the class under test. The same holds for defined types, the
 catalogue generated when testing a defined type will have at least one resource
 (the defined type itself).
 
+#### Relationship matchers
+
+The following methods will allow you to test the relationships between the resources in your catalogue, regardless of how the relationship is defined. This means that it doesn’t matter if you prefer to define your relationships with the metaparameters (**require**, **before**, **notify** and **subscribe**) or the chaining arrows (**->**, **~>**, **<-** and **<~**), they’re all tested the same.
+
+```ruby
+it { should contain_file('foo').that_requires('File[bar]') }
+it { should contain_file('foo').that_comes_before('File[bar]') }
+it { should contain_file('foo').that_notifies('File[bar]') }
+it { should contain_file('foo').that_subscribes_to('File[bar]') }
+```
+
+An array can be used to test a resource for multiple relationships
+
+```ruby
+it { should contain_file('foo').that_requires(['File[bar]', 'File[baz]']) }
+it { should contain_file('foo').that_comes_before(['File[bar]','File[baz]']) }
+it { should contain_file('foo').that_notifies(['File[bar]', 'File[baz]']) }
+it { should contain_file('foo').that_subscribes_to(['File[bar]', 'File[baz]']) }
+```
+
+You can also test the reverse direction of the relationship, so if you have the following bit of Puppet code
+
+```ruby
+notify { 'foo': }
+notify { 'bar':
+  before => Notify['foo'],
+}
+```
+
+You can test that **Notify[bar]** comes before **Notify[foo]**
+
+```ruby
+it { should contain_notify('bar').that_comes_before('Notify[foo]') }
+```
+Or, you can test that **Notify[foo]** requires **Notify[bar]**
+
+```ruby
+it { should contain_notify('foo').that_requires('Notify[bar]') }
+```
+
 ### Writing tests
 
 #### Basic test structure
