@@ -10,7 +10,12 @@ module RSpec::Puppet
     def load_catalogue(type)
       vardir = setup_puppet
 
-      code = [import_str, pre_cond, test_manifest(type)].join("\n")
+      if Puppet[:parser] == 'future'
+        code = [pre_cond, test_manifest(type)].join("\n")
+      else
+        code = [import_str, pre_cond, test_manifest(type)].join("\n")
+      end
+
       node_name = nodename(type)
 
       catalogue = build_catalog(node_name, facts_hash(node_name), code)
