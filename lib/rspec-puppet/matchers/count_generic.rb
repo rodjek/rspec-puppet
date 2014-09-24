@@ -57,9 +57,11 @@ module RSpec::Puppet
         "expected that the catalogue would not " + description + " but it does"
       end
 
-      # RSpec 2 compatibility:
-      alias_method :failure_message_for_should, :failure_message
-      alias_method :failure_message_for_should_not, :failure_message_when_negated
+      if RSpec::Version::STRING < '3'
+        # RSpec 2 compatibility:
+        alias_method :failure_message_for_should, :failure_message
+        alias_method :failure_message_for_should_not, :failure_message_when_negated
+      end
 
     private
 
