@@ -51,7 +51,7 @@ module RSpec::Puppet
         end
       end
 
-      def failure_message_for_should
+      def failure_message
         unless @cycles.empty?
           "dependency cycles found: #{@cycles.join('; ')}"
         else
@@ -63,9 +63,13 @@ module RSpec::Puppet
         end
       end
 
-      def failure_message_for_should_not
+      def failure_message_when_negated
         "expected that the catalogue would not compile but it does"
       end
+
+      # RSpec 2 compatibility:
+      alias_method :failure_message_for_should, :failure_message
+      alias_method :failure_message_for_should_not, :failure_message_when_negated
 
       private
       def missing_dependencies?

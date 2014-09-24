@@ -105,13 +105,17 @@ module RSpec::Puppet
         end
       end
 
-      def failure_message_for_should
+      def failure_message
         "expected that the catalogue would contain #{@referenced_type}[#{@title}]#{errors}"
       end
 
-      def failure_message_for_should_not
+      def failure_message_when_negated
         "expected that the catalogue would not contain #{@referenced_type}[#{@title}]#{errors}"
       end
+
+      # RSpec 2 compatibility:
+      alias_method :failure_message_for_should, :failure_message
+      alias_method :failure_message_for_should_not, :failure_message_when_negated
 
       def description
         values = []

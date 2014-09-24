@@ -49,13 +49,17 @@ module RSpec::Puppet
         desc.join(" ")
       end
 
-      def failure_message_for_should
+      def failure_message
         "expected that the catalogue would " + description + " but it contains #{@actual_number}"
       end
 
-      def failure_message_for_should_not
+      def failure_message_when_negated
         "expected that the catalogue would not " + description + " but it does"
       end
+
+      # RSpec 2 compatibility:
+      alias_method :failure_message_for_should, :failure_message
+      alias_method :failure_message_for_should_not, :failure_message_when_negated
 
     private
 
