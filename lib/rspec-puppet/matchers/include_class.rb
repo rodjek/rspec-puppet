@@ -12,9 +12,17 @@ module RSpec::Puppet
         "include Class[#{expected_class}]"
       end
 
-      failure_message do |actual|
-        "expected that the catalogue would include Class[#{expected_class}]"
+      if RSpec::Version::STRING < '3'
+        failure_message_for_should do |actual|
+          "expected that the catalogue would include Class[#{expected_class}]"
+        end
+      else
+        failure_message do |actual|
+          "expected that the catalogue would include Class[#{expected_class}]"
+        end
       end
+
     end
+
   end
 end
