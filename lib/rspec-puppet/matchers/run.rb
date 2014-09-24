@@ -89,9 +89,11 @@ module RSpec::Puppet
         failure_message_generic(:should_not, @func_obj)
       end
 
-      # RSpec 2 compatibility:
-      alias_method :failure_message_for_should, :failure_message
-      alias_method :failure_message_for_should_not, :failure_message_when_negated
+      if RSpec::Version::STRING < 3
+        # RSpec 2 compatibility:
+        alias_method :failure_message_for_should, :failure_message
+        alias_method :failure_message_for_should_not, :failure_message_when_negated
+      end
 
       def description
         "run #{func_name}(#{func_params}) and #{@desc}"
