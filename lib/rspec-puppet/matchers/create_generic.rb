@@ -113,12 +113,6 @@ module RSpec::Puppet
         "expected that the catalogue would not contain #{@referenced_type}[#{@title}]#{errors}"
       end
 
-      if RSpec::Version::STRING < '3'
-        # RSpec 2 compatibility:
-        alias_method :failure_message_for_should, :failure_message
-        alias_method :failure_message_for_should_not, :failure_message_when_negated
-      end
-
       def description
         values = []
         value_str_prefix = "with"
