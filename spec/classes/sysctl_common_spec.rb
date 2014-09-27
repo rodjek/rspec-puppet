@@ -7,11 +7,11 @@ describe 'sysctl::common' do
   describe 'when using with to specify a hash of parameters' do
     it 'should fail if the parameter is not contained in the resource' do
       expect do
-        subject.should contain_exec('sysctl/reload').with('foo' => 'bar')
+        expect(subject).to contain_exec('sysctl/reload').with('foo' => 'bar')
       end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
     it 'should pass if the parameters are contained in the resource' do
-      subject.should contain_exec('sysctl/reload').with(
+      expect(subject).to contain_exec('sysctl/reload').with(
         'refreshonly' => 'true',
         'returns' => [0, 2]
       )
@@ -19,24 +19,24 @@ describe 'sysctl::common' do
   end
   describe 'when using without to specify parameter name(s)' do
     it 'should pass if the parameter name is not contained in the resource' do
-      subject.should contain_exec('sysctl/reload').without('foo')
+      expect(subject).to contain_exec('sysctl/reload').without('foo')
     end
     it 'should pass if the parameter names are not contained in the resource' do
-      subject.should contain_exec('sysctl/reload').without(['foo', 'bar'])
+      expect(subject).to contain_exec('sysctl/reload').without(['foo', 'bar'])
     end
     it 'should fail if any of the parameter names are contained in the resource' do
       expect do
-        subject.should contain_exec('sysctl/reload').without(['foo', 'returns'])
+        expect(subject).to contain_exec('sysctl/reload').without(['foo', 'returns'])
       end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
   end
   describe 'when using without to specify parameter value(s)' do
     it 'should pass if the parameter value is not contained in the resource' do
-      subject.should contain_exec('sysctl/reload').without_refreshonly('false')
+      expect(subject).to contain_exec('sysctl/reload').without_refreshonly('false')
     end
     it 'should fail if the parameter value is contained in the resource' do
       expect do
-        subject.should contain_exec('sysctl/reload').without_refreshonly('true')
+        expect(subject).to contain_exec('sysctl/reload').without_refreshonly('true')
       end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
   end
@@ -65,7 +65,7 @@ describe 'sysctl::common' do
   }
   it 'should fail if not enough parameters are contained in the resource' do
     expect do
-      subject.should contain_exec('sysctl/reload').only_with(
+      expect(subject).to contain_exec('sysctl/reload').only_with(
         :command => '/sbin/sysctl -p /etc/sysctl.conf',
         :returns => [0, 2]
       )
@@ -73,7 +73,7 @@ describe 'sysctl::common' do
   end
   it 'should fail if different parameters are contained in the resource' do
     expect do
-      subject.should contain_exec('sysctl/reload').only_with(
+      expect(subject).to contain_exec('sysctl/reload').only_with(
         :command => '/sbin/sysctl -p /etc/sysctl.conf',
         :refreshonly => true,
         :creates => '/tmp/bla'
