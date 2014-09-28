@@ -14,4 +14,11 @@ module RSpec::Puppet
       super
     end
   end
+
+  module TypeMatchers
+    def method_missing(method, *args, &block)
+      return RSpec::Puppet::TypeMatchers::CreateGeneric.new(method, *args, &block) if method == :be_valid_type
+      super
+    end
+  end
 end
