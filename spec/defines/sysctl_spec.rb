@@ -9,13 +9,13 @@ describe 'sysctl' do
   let(:params) { {:value => '60'} }
   let(:pre_condition) { }
 
-  it { should contain_class('sysctl::common') }
-  it { should create_augeas('sysctl/vm.swappiness') \
+  it { is_expected.to contain_class('sysctl::common') }
+  it { is_expected.to create_augeas('sysctl/vm.swappiness') \
     .with_context('/files/etc/sysctl.conf') \
     .with_changes("set vm.swappiness '60'") \
     .with_changes(nodoublequotes) \
     .with_onlyif("match vm.swappiness[.='60'] size == 0") \
     .with_notify('Exec[sysctl/reload]')\
     .without_foo }
-  it { should have_sysctl_resource_count(1) }
+  it { is_expected.to have_sysctl_resource_count(1) }
 end

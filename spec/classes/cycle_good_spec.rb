@@ -1,5 +1,5 @@
 require 'spec_helper'
 
 describe 'cycle::good' do
-  it { should compile }
+  it { is_expected.to compile }
 end

@@ -7,7 +7,7 @@ describe 'structured_data' do
     end
 
     it {
-      should contain_structured_data__def('thing').with(
+      is_expected.to contain_structured_data__def('thing').with(
         {'data'  => {'foo' => 'bar', 'baz' => 'quux'}}
       )
     }
@@ -19,7 +19,7 @@ describe 'structured_data' do
     end
 
     it {
-      should contain_structured_data__def('thing').with(
+      is_expected.to contain_structured_data__def('thing').with(
         { 'data'  => {1 => 'uno', 2 => 'dos'}}
       )
     }
@@ -31,7 +31,7 @@ describe 'structured_data' do
     end
 
     it {
-      should contain_structured_data__def('thing').with(
+      is_expected.to contain_structured_data__def('thing').with(
         { 'data'  => {'first' => 1, 'second' => 2}}
       )
     }
@@ -51,7 +51,7 @@ describe 'structured_data' do
     end
 
     it {
-      should contain_structured_data__def('thing').with(
+      is_expected.to contain_structured_data__def('thing').with(
         { 'data'  => {
             'first'  => 1,
             'second' => 2,

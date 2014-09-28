@@ -11,5 +11,5 @@ describe 'someotherhost' do
     EOF
   }
 
-  it { should contain_foo('bar').with_param(['baz']) }
+  it { is_expected.to contain_foo('bar').with_param(['baz']) }
 end

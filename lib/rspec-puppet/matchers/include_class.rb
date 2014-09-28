@@ -12,7 +12,7 @@ module RSpec::Puppet
         "include Class[#{expected_class}]"
       end
 
-      failure_message_for_should do |actual|
+      failure_message do |actual|
         "expected that the catalogue would include Class[#{expected_class}]"
       end
     end

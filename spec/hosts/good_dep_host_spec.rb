@@ -1,5 +1,5 @@
 require 'spec_helper'
 
 describe 'good_dep_host' do
-  it { should compile.with_all_deps }
+  it { is_expected.to compile.with_all_deps }
 end
