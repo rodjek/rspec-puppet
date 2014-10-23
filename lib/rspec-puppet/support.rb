@@ -198,5 +198,13 @@ module RSpec::Puppet
       opts.merge!({:environment => node_environment})
       Puppet::Node.new(name, opts)
     end
+
+    def rspec_compatibility
+      if RSpec::Version::STRING < '3'
+        # RSpec 2 compatibility:
+        alias_method :failure_message_for_should, :failure_message
+        alias_method :failure_message_for_should_not, :failure_message_when_negated
+      end
+    end
   end
 end

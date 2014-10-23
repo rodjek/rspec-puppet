@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
 
   s.files = Dir['LICENSE.md', 'README.md', 'lib/**/*', 'bin/**/*']
 
-  s.add_dependency 'rspec', '< 3.0.0'
+  s.add_dependency 'rspec'
 
   s.authors = ['Tim Sharpe']
   s.email = 'tim@sharpe.id.au'
