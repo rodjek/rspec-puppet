@@ -2,7 +2,6 @@ language: ruby
 
 rvm:
   - 1.8.7
-  - 1.9.2
   - 1.9.3
   - 2.0.0
   - 2.1
@@ -10,47 +9,28 @@ rvm:
 sudo: false
 
 env:
-  - PUPPET_VERSION=2.6.18
-  - PUPPET_VERSION=2.7.23
-  - PUPPET_VERSION=3.0.2
-  - PUPPET_VERSION=3.1.1
-  - PUPPET_VERSION=3.2.4
-  - PUPPET_VERSION=3.3.2
-  - PUPPET_VERSION=3.4.3
-  - PUPPET_VERSION=3.5.1
-  - PUPPET_VERSION=4.0.0
+  - PUPPET_VERSION=2.7
+  - PUPPET_VERSION=3.2
+  - PUPPET_VERSION=3.4
+  - PUPPET_VERSION=3.6
+  - PUPPET_VERSION=3.7
+  - PUPPET_VERSION=4.0
   - RSPEC_VERSION=2.14
 
 matrix:
   exclude:
     - rvm: 1.8.7
-      env: PUPPET_VERSION=4.0.0
-    - rvm: 1.9.2
-      env: PUPPET_VERSION=2.6.18
-    - rvm: 1.9.2
-      env: PUPPET_VERSION=4.0.0
+      env: RSPEC_VERSION=2.14
+    - rvm: 1.8.7
+      env: PUPPET_VERSION=4.0
     - rvm: 1.9.3
-      env: PUPPET_VERSION=2.6.18
+      env: PUPPET_VERSION=2.7
     - rvm: 2.0.0
-      env: PUPPET_VERSION=2.6.18
-    - rvm: 2.0.0
-      env: PUPPET_VERSION=2.7.23
-    - rvm: 2.0.0
-      env: PUPPET_VERSION=3.0.2
-    - rvm: 2.0.0
-      env: PUPPET_VERSION=3.1.1
+      env: PUPPET_VERSION=2.7
     - rvm: 2.1
-      env: PUPPET_VERSION=2.6.18
+      env: PUPPET_VERSION=2.7
     - rvm: 2.1
-      env: PUPPET_VERSION=2.7.23
-    - rvm: 2.1
-      env: PUPPET_VERSION=3.0.2
-    - rvm: 2.1
-      env: PUPPET_VERSION=3.1.1
-    - rvm: 2.1
-      env: PUPPET_VERSION=3.2.4
-    - rvm: 2.1
-      env: PUPPET_VERSION=3.3.2
+      env: PUPPET_VERSION=3.2
 
 notifications:
   email:
