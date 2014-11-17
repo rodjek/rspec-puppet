@@ -42,24 +42,32 @@ module RSpec::Puppet
 
       def xml
 
-        lines = @modules.values.flatten!.collect{ |e| e['lines'].values }.flatten
-        rate = lines.select{ |e| not e.zero? }.length.to_f / lines.length
-
         output = <<eos
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+eos
+
+        unless @modules.values.empty?
+          lines = @modules.values.flatten!.collect{ |e| e['lines'].values }.flatten
+          rate = lines.select{ |e| not e.zero? }.length.to_f / lines.length
+
+          output += <<eos
 <coverage line-rate="#{rate}" timestamp="#{Time.now.to_i}" branch-rate="0" version="#{version}" complexity="0">
   <packages>
 eos
 
-        @modules.each do |k,v|
-          dump_packages(k,v,'  ').map{ |e| output << '  ' << e << "\n" }
-        end
+          @modules.each do |k,v|
+            dump_packages(k,v,'  ').map{ |e| output << '  ' << e << "\n" }
+          end
 
-        output += <<eos
+          output += <<eos
   </packages>
 </coverage>
 eos
+
+        else
+          output += '<coverage />'
+        end
 
       end
 
