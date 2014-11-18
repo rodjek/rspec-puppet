@@ -20,7 +20,7 @@ module RSpec::Puppet
       # Runs over the produced report to extract touched lines
 
       @modules = Hash.new{|h,k| h[k]=[]}
-      source_files.collect{ |e| e[:name].split('/')[0] }.uniq!.map{ |e| @modules[e] }
+      source_files.collect{ |e| e[:name].split('/')[0] }.uniq.map{ |e| @modules[e] }
 
       source_files.each do |source_file|
 
