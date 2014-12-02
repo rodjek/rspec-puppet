@@ -1,6 +1,10 @@
 source 'https://rubygems.org'
 
-puppetversion = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : ['>= 2.7']
+if ENV['PUPPET_VERSION']
+  puppetversion = "= #{ENV['PUPPET_VERSION']}"
+else
+  puppetversion = '~> 3.0'
+end
 
 if ENV['RSPEC_VERSION']
   rspecversion = "= #{ENV['RSPEC_VERSION']}"
