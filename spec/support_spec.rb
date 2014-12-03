@@ -18,5 +18,18 @@ describe RSpec::Puppet::Support do
       subject.setup_puppet
       expect(Puppet[:parser]).to eq("future")
     end
+    it 'updates the ruby $LOAD_PATH based on the current modulepath' do
+      basedir = '/mymodulepath'
+      RSpec.configuration.module_path = basedir
+
+      dira = File.join(basedir, 'a', 'lib')
+      dirb = File.join(basedir, 'b', 'lib')
+      allow(Dir).to receive(:[]).with("#{basedir}/*/lib").and_return([dira, dirb])
+
+      subject.setup_puppet
+
+      expect($LOAD_PATH).to include(dira)
+      expect($LOAD_PATH).to include(dirb)
+    end
   end
 end
