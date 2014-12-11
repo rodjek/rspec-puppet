@@ -1,6 +1,9 @@
 module RSpec::Puppet
   module FunctionMatchers
     class Run
+
+      @@expects_return = false
+
       def matches?(func_obj)
         @func_obj = func_obj
         if @params
@@ -28,7 +31,7 @@ module RSpec::Puppet
           end
           result
         else
-          unless @expected_return.nil?
+          if @@expects_return
             @actual_return = @func.call
             case @expected_return
             when Regexp
@@ -53,6 +56,7 @@ module RSpec::Puppet
       end
 
       def and_return(value)
+        @@expects_return = true
         @expected_return = value
         if value.is_a? Regexp
           @desc = "match #{value.inspect}"
@@ -106,7 +110,7 @@ module RSpec::Puppet
         message = "expected #{func_name}(#{func_params}) to "
         message << "not " if type == :should_not
 
-        if @expected_return
+        if @@expects_return
           message << "have returned #{@expected_return.inspect}"
           if type == :should
             message << " instead of #{@actual_return.inspect}"
