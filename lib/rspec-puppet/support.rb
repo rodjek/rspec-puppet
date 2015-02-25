@@ -20,11 +20,9 @@ module RSpec::Puppet
 
       catalogue = build_catalog(node_name, facts_hash(node_name), code)
 
-      RSpec::Puppet::Coverage.filters << "#{type.to_s.capitalize}[#{self.class.description.capitalize}]"
-
-      catalogue.to_a.each do |resource|
-        RSpec::Puppet::Coverage.add(resource)
-      end
+      test_module = self.class.top_level_description.downcase.split('::').first
+      RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
+      RSpec::Puppet::Coverage.add_from_catalog(catalogue, test_module)
 
       FileUtils.rm_rf(vardir) if File.directory?(vardir)
       catalogue
