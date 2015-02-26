@@ -20,7 +20,7 @@ module RSpec::Puppet
 
       catalogue = build_catalog(node_name, facts_hash(node_name), code)
 
-      test_module = self.class.top_level_description.downcase.split('::').first
+      test_module = class_name.split('::').first
       RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
       RSpec::Puppet::Coverage.add_from_catalog(catalogue, test_module)
 
@@ -29,13 +29,11 @@ module RSpec::Puppet
     end
 
     def import_str
-      klass_name = self.class.top_level_description.downcase
-
       if File.exists?(File.join(Puppet[:modulepath], 'manifests', 'init.pp'))
         path_to_manifest = File.join([
           Puppet[:modulepath],
           'manifests',
-          klass_name.split('::')[1..-1]
+          class_name.split('::')[1..-1]
         ].flatten)
         import_str = [
           "import '#{Puppet[:modulepath]}/manifests/init.pp'",
@@ -52,19 +50,17 @@ module RSpec::Puppet
     end
 
     def test_manifest(type)
-      klass_name = self.class.top_level_description.downcase
-
       if type == :class
         if !self.respond_to?(:params) || params == {}
-          "include #{klass_name}"
+          "include #{class_name}"
         else
-          "class { '#{klass_name}': #{param_str} }"
+          "class { '#{class_name}': #{param_str} }"
         end
       elsif type == :define
         if self.respond_to? :params
-          "#{klass_name} { '#{title}': #{param_str} }"
+          "#{class_name} { '#{title}': #{param_str} }"
         else
-          "#{klass_name} { '#{title}': }"
+          "#{class_name} { '#{title}': }"
         end
       elsif type == :host
         ""
@@ -76,10 +72,13 @@ module RSpec::Puppet
       if [:class, :define, :function].include? type
         Puppet[:certname]
       else
-        self.class.top_level_description.downcase
+        class_name
       end
     end
 
+    def class_name
+      self.class.top_level_description.downcase
+    end
 
     def pre_cond
       if self.respond_to?(:pre_condition) && !pre_condition.nil?
