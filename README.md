@@ -293,6 +293,11 @@ class foo::config {
 }
 ```
 
+#### Autorequires
+
+Autorequires are considered in dependency checks.
+
+
 ### Writing tests
 
 #### Basic test structure

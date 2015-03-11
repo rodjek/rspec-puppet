@@ -240,11 +240,24 @@ module RSpec::Puppet
       end
 
       def relationship_refs(resource, type)
+        # Canonize resource
+        resource = resource_from_ref(resource.to_ref)
         results = []
         Array[resource[type]].flatten.compact.each do |r|
           res = resource_from_ref(r)
           results << resource_ref(res)
           results << relationship_refs(res, type)
+        end
+
+        # Add autorequires if any
+        if type == :require and resource.resource_type.respond_to? :eachautorequire
+          resource.resource_type.eachautorequire do |t, b|
+            Array(resource.to_ral.instance_eval(&b)).each do |dep|
+              res = "#{t.to_s.capitalize}[#{dep}]"
+              results << res
+              results << relationship_refs(resource_from_ref(res), type)
+            end
+          end
         end
         results.flatten
       end
@@ -261,7 +274,7 @@ module RSpec::Puppet
             before_refs = relationship_refs(u, :before)
             require_refs = relationship_refs(v, :require)
 
-            if before_refs.include?(v.to_ref) || require_refs.include?(u.to_ref)
+            if before_refs.include?(v.to_ref) || require_refs.include?(u.to_ref) || (before_refs & require_refs).any?
               return true
             end
           end
