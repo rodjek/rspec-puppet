@@ -8,4 +8,15 @@ class relationships::before {
 
   Notify['foo'] -> Notify['baz']
   Notify['baz'] <- Notify['bar']
+
+  class { '::relationship::before::pre': } ->
+  class { '::relationship::before::post': }
+}
+
+class relationship::before::pre {
+  notify { 'pre': }
+}
+
+class relationship::before::post {
+  notify { 'post': }
 }

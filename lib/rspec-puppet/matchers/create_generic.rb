@@ -237,26 +237,45 @@ module RSpec::Puppet
         end
       end
 
-      def precedes?(first, second)
-        if first.nil? || second.nil?
-          false
-        else
-          before_refs = relationship_refs(first[:before])
-          require_refs = relationship_refs(second[:require])
+      def self_or_upstream(vertex)
+        [vertex] + @catalogue.upstream_from_vertex(vertex).keys
+      end
 
-          before_refs.include?(second.to_ref) || require_refs.include?(first.to_ref)
+      def precedes?(first, second)
+        return false if first.nil? || second.nil?
+
+        self_or_upstream(first).each do |u|
+          self_or_upstream(second).each do |v|
+            before_refs = relationship_refs(u[:before])
+            require_refs = relationship_refs(v[:require])
+
+            if before_refs.include?(v.to_ref) || require_refs.include?(u.to_ref)
+              return true
+            end
+          end
         end
+
+        # Nothing found
+        return false
       end
 
       def notifies?(first, second)
-        if first.nil? || second.nil?
-          false
-        else
-          notify_refs = relationship_refs(first[:notify])
-          subscribe_refs = relationship_refs(second[:subscribe])
+        return false if first.nil? || second.nil?
 
-          notify_refs.include?(second.to_ref) || subscribe_refs.include?(first.to_ref)
+        self_or_upstream(first).each do |u|
+          self_or_upstream(second).each do |v|
+
+            notify_refs = relationship_refs(u[:notify])
+            subscribe_refs = relationship_refs(v[:subscribe])
+
+            if notify_refs.include?(v.to_ref) || subscribe_refs.include?(u.to_ref)
+              return true
+            end
+          end
         end
+
+        # Nothing found
+        return false
       end
 
       # @param resource [Hash<Symbol, Object>] The resource in the catalog
