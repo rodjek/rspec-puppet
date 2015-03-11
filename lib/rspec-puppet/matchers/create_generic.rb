@@ -231,10 +231,22 @@ module RSpec::Puppet
         end
       end
 
-      def relationship_refs(array)
-        Array[array].flatten.map do |resource|
-          resource.respond_to?(:to_ref) ? resource.to_ref : resource
+      def resource_ref(resource)
+        resource.respond_to?(:to_ref) ? resource.to_ref : resource
+      end
+
+      def resource_from_ref(ref)
+        ref.is_a?(Puppet::Resource) ? ref : @catalogue.resource(ref)
+      end
+
+      def relationship_refs(resource, type)
+        results = []
+        Array[resource[type]].flatten.compact.each do |r|
+          res = resource_from_ref(r)
+          results << resource_ref(res)
+          results << relationship_refs(res, type)
         end
+        results.flatten
       end
 
       def self_or_upstream(vertex)
@@ -246,8 +258,8 @@ module RSpec::Puppet
 
         self_or_upstream(first).each do |u|
           self_or_upstream(second).each do |v|
-            before_refs = relationship_refs(u[:before])
-            require_refs = relationship_refs(v[:require])
+            before_refs = relationship_refs(u, :before)
+            require_refs = relationship_refs(v, :require)
 
             if before_refs.include?(v.to_ref) || require_refs.include?(u.to_ref)
               return true
@@ -264,9 +276,8 @@ module RSpec::Puppet
 
         self_or_upstream(first).each do |u|
           self_or_upstream(second).each do |v|
-
-            notify_refs = relationship_refs(u[:notify])
-            subscribe_refs = relationship_refs(v[:subscribe])
+            notify_refs = relationship_refs(u, :notify)
+            subscribe_refs = relationship_refs(v, :subscribe)
 
             if notify_refs.include?(v.to_ref) || subscribe_refs.include?(u.to_ref)
               return true

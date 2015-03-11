@@ -10,11 +10,16 @@ class relationships::before {
   Notify['baz'] <- Notify['bar']
 
   class { '::relationship::before::pre': } ->
+  class { '::relationship::before::middle': } ->
   class { '::relationship::before::post': }
 }
 
 class relationship::before::pre {
   notify { 'pre': }
+}
+
+class relationship::before::middle {
+  notify { 'middle': }
 }
 
 class relationship::before::post {
