@@ -5,7 +5,7 @@ module RSpec::Puppet
 
     class << self
       extend Forwardable
-      def_delegators :instance, :add, :cover!, :report!, :filters
+      def_delegators :instance, :add, :cover!, :report!, :filters, :coveralls!
     end
 
     include Singleton
@@ -64,7 +64,35 @@ module RSpec::Puppet
           }
         EOH
       end
+    end
 
+    def coveralls!
+      require 'coveralls'
+
+      source_files_hash = {}
+      source_files = []
+
+      @collection.each do |name, c|
+        r = c.resource
+        name = r.file
+        line = r.line
+        if name
+          source_files_hash[name] ||= []
+          source_files_hash[name][line-1] ||= 0
+          source_files_hash[name][line-1] += 1 if c.touched?
+        end
+      end
+
+      source_files_hash.each do |k, v|
+        source_files << {
+          :name     => k.gsub(%r{.*/spec/fixtures/modules/[^/]+/}, ''), # hack!
+          :source   => File.open(k).read,
+          :coverage => v,
+        }
+      end
+
+      ::Coveralls::API.post_json "jobs", { :source_files => source_files }
+      report!
     end
 
     private
