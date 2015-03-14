@@ -18,5 +18,14 @@ describe RSpec::Puppet::Support do
       subject.setup_puppet
       expect(Puppet[:parser]).to eq("future")
     end
+    it 'sets Puppet[:strict_variables] to false by default' do
+      subject.setup_puppet
+      expect(Puppet[:strict_variables]).to eq(false)
+    end
+    it 'reads the :strict_variables setting' do
+      allow(subject).to receive(:strict_variables).and_return(true)
+      subject.setup_puppet
+      expect(Puppet[:strict_variables]).to eq(true)
+    end
   end
 end
