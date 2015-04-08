@@ -10,10 +10,10 @@ module RSpec::Puppet
     def load_catalogue(type)
       vardir = setup_puppet
 
-      if Puppet[:parser] == 'future'
-        code = [pre_cond, test_manifest(type)].join("\n")
+      if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
+        code = [pre_cond, test_manifest(type)].compact.join("\n")
       else
-        code = [import_str, pre_cond, test_manifest(type)].join("\n")
+        code = [import_str, pre_cond, test_manifest(type)].compact.join("\n")
       end
 
       node_name = nodename(type)
@@ -69,7 +69,7 @@ module RSpec::Puppet
           "#{klass_name} { '#{title}': }"
         end
       elsif type == :host
-        ""
+        nil
       end
     end
 
@@ -86,12 +86,12 @@ module RSpec::Puppet
     def pre_cond
       if self.respond_to?(:pre_condition) && !pre_condition.nil?
         if pre_condition.is_a? Array
-          pre_condition.join("\n")
+          pre_condition.compact.join("\n")
         else
           pre_condition
         end
       else
-        ''
+        nil
       end
     end
 
@@ -124,16 +124,26 @@ module RSpec::Puppet
       vardir = Dir.mktmpdir
       Puppet[:vardir] = vardir
 
-      [
-        [:modulepath, :module_path],
-        [:manifestdir, :manifest_dir],
-        [:manifest, :manifest],
-        [:templatedir, :template_dir],
-        [:config, :config],
-        [:confdir, :confdir],
-        [:hiera_config, :hiera_config],
-        [:parser, :parser],
-      ].each do |a, b|
+      if Puppet.version.to_f >= 4.0
+        settings = [
+          [:environmentpath, :environmentpath],
+          [:config, :config],
+          [:confdir, :confdir],
+          [:hiera_config, :hiera_config],
+        ]
+      else
+        settings = [
+          [:modulepath, :module_path],
+          [:manifestdir, :manifest_dir],
+          [:manifest, :manifest],
+          [:templatedir, :template_dir],
+          [:config, :config],
+          [:confdir, :confdir],
+          [:hiera_config, :hiera_config],
+          [:parser, :parser],
+        ]
+      end
+      settings.each do |a,b|
         value = self.respond_to?(b) ? self.send(b) : RSpec.configuration.send(b)
         begin
           Puppet[a] = value
@@ -158,6 +168,16 @@ module RSpec::Puppet
       # trying to be compatible with 2.7 as well as 2.6
       if Puppet::Resource::Catalog.respond_to? :find
         Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
+      elsif Puppet.version.to_f >= 4.0
+        env = Puppet::Node::Environment.create(
+          node_obj.environment.name,
+          [File.join(Puppet[:environmentpath],'fixtures','modules')],
+          File.join(Puppet[:environmentpath],'fixtures','manifests'))
+        loader = Puppet::Environments::Static.new(env)
+        Puppet.override({:environments => loader}, 'fixtures') do
+          node_obj.environment = env
+          Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
+        end
       else
         Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
       end
@@ -199,7 +219,11 @@ module RSpec::Puppet
     end
 
     def build_node(name, opts = {})
-      node_environment = Puppet::Node::Environment.new('test')
+      if Puppet.version.to_f >= 4.0
+        node_environment = Puppet::Node::Environment.create('test', [])
+      else
+        node_environment = Puppet::Node::Environment.new('test')
+      end
       opts.merge!({:environment => node_environment})
       Puppet::Node.new(name, opts)
     end
