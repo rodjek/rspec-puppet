@@ -7,6 +7,10 @@ module RSpec::Puppet
       lambda { catalogue }
     end
 
+    def environment
+      'rp_env'
+    end
+
     def load_catalogue(type)
       vardir = setup_puppet
 
@@ -95,7 +99,7 @@ module RSpec::Puppet
     def facts_hash(node)
       facts_val = {
         'clientversion' => Puppet::PUPPETVERSION,
-        'environment'   => 'production',
+        'environment'   => environment,
         'hostname'      => node.split('.').first,
         'fqdn'          => node,
         'domain'        => node.split('.', 2).last,
@@ -168,7 +172,7 @@ module RSpec::Puppet
         Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
       elsif Puppet.version.to_f >= 4.0
         env = Puppet::Node::Environment.create(
-          node_obj.environment.name,
+          environment,
           [File.join(Puppet[:environmentpath],'fixtures','modules')],
           File.join(Puppet[:environmentpath],'fixtures','manifests'))
         loader = Puppet::Environments::Static.new(env)
@@ -219,11 +223,11 @@ module RSpec::Puppet
     def build_node(name, opts = {})
       if Puppet.version.to_f >= 4.0
         node_environment = Puppet::Node::Environment.create(
-          'test',
+          environment,
           [File.join(Puppet[:environmentpath],'fixtures','modules')],
           File.join(Puppet[:environmentpath],'fixtures','manifests'))
       else
-        node_environment = Puppet::Node::Environment.new('test')
+        node_environment = Puppet::Node::Environment.new(environment)
       end
       opts.merge!({:environment => node_environment})
       Puppet::Node.new(name, opts)
