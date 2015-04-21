@@ -40,10 +40,17 @@ module RSpec::Puppet
           # otherwise, the source file should be available, so make
           # sure the manifest declaring the resource is in
           # test_module's directory tree or the site manifest(s)
-          paths = Puppet[:modulepath].split(File::PATH_SEPARATOR).map do |dir|
-            (Pathname.new(dir) + test_module + 'manifests').to_s
+          if Puppet.version.to_f >= 4.0
+            paths = [
+              (Pathname.new(Puppet[:environmentpath]) + 'fixtures' + test_module + 'manifests').to_s,
+              (Pathname.new(Puppet[:environmentpath]) + 'fixtures' + 'manifests' + 'site.pp').to_s
+            ]
+          else
+            paths = Puppet[:modulepath].split(File::PATH_SEPARATOR).map do |dir|
+              (Pathname.new(dir) + test_module + 'manifests').to_s
+            end
+            paths << Puppet[:manifest]
           end
-          paths << Puppet[:manifest]
           next unless paths.any? { |path| resource.file.include?(path) }
         end
         add(resource)
