@@ -149,7 +149,9 @@ module RSpec::Puppet
         end
       end
 
-      Puppet[:libdir] = Dir["#{Puppet[:modulepath]}/*/lib"].entries.join(File::PATH_SEPARATOR)
+      Puppet[:libdir] = Puppet[:modulepath].split(File::PATH_SEPARATOR).map { |d|
+        Dir["#{d}/*/lib"].entries
+      }.flatten.join(File::PATH_SEPARATOR)
       vardir
     end
 
