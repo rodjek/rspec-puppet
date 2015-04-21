@@ -57,6 +57,9 @@ module RSpec::Puppet
 
       def with_params(*params)
         @params = params
+        # stringify immediatly to protect us from the params being changed by
+        # the subject, e.g. with params.shift
+        @func_args = @params.inspect[1..-2]
         self
       end
 
@@ -111,7 +114,7 @@ module RSpec::Puppet
       end
 
       def func_params
-        @func_args ||= @params.inspect[1..-2]
+        @func_args
       end
 
       def failure_message_generic(type, func_obj)
