@@ -4,9 +4,17 @@ module RSpec::Puppet
       def matches?(func_obj)
         @func_obj = func_obj
         if @params
-          @func = lambda { func_obj.call(@params) }
+          if Puppet.version.to_f >= 4.0 and ! @func_obj.respond_to?(:receiver)
+            @func = lambda { func_obj.call({}, *@params) }
+          else
+            @func = lambda { func_obj.call(@params) }
+          end
         else
-          @func = lambda { func_obj.call }
+          if Puppet.version.to_f >= 4.0 and ! @func_obj.respond_to?(:receiver)
+            @func = lambda { func_obj.call({}) }
+          else
+            @func = lambda { func_obj.call }
+          end
         end
 
         unless @expected_error.nil?
@@ -95,7 +103,11 @@ module RSpec::Puppet
 
       private
       def func_name
-        @func_name ||= @func_obj.name.to_s.gsub(/^function_/, '')
+        if Puppet.version.to_f >= 4.0
+          @func_name ||= @func_obj.class.name
+        else
+          @func_name ||= @func_obj.name.to_s.gsub(/^function_/, '')
+        end
       end
 
       def func_params

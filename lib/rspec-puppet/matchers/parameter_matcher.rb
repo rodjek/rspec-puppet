@@ -92,7 +92,7 @@ module RSpec::Puppet
         end
 
         expected.keys.all? do |key|
-          check(expected[key], actual[key.to_s])
+          check(expected[key], actual[key])
         end
       end
 

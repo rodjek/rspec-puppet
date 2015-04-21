@@ -11,6 +11,13 @@ module RSpec::Puppet
 
       node_name = nodename(:function)
 
+      if Puppet.version.to_f >= 4.0
+        env = Puppet::Node::Environment.create(:testing, [File.join(Puppet[:environmentpath],'fixtures','modules')], File.join(Puppet[:environmentpath],'fixtures','manifests'))
+        loader = Puppet::Pops::Loaders.new(env)
+        func = loader.private_environment_loader.load(:function,function_name)
+        return func if func
+      end
+
       function_scope = scope(compiler, node_name)
 
       # Return the method instance for the function.  This can be used with

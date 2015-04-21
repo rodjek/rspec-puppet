@@ -49,7 +49,13 @@ describe 'sysctl::common' do
     .with_test_param("yes") }
   it { should have_class_count(1) }
   it { should have_exec_resource_count(1) }
-  it { should have_resource_count(2) }
+  it {
+    if Puppet.version.to_f >= 4.0
+      should have_resource_count(1)
+    else
+      should have_resource_count(2)
+    end
+  }
 end
 
 describe 'sysctl::common' do

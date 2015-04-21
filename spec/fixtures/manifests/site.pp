@@ -46,6 +46,6 @@ node 'facts.acme.com' {
     path => $domain
   }
   file { 'clientcert':
-    path => $clientcert
+    path => "cert ${clientcert}"
   }
 }

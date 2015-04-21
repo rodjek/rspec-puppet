@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'boolean' do
+describe 'boolean_test' do
   let(:title) { 'bool.testing' }
   let(:params) { { :bool => false } }
   let(:message_re) { /bool is false/ }
