@@ -23,6 +23,7 @@ module RSpec::Puppet
             @func.call
           rescue Exception => e
             @actual_error = e.class
+            @actual_error_message = e.to_s
             if e.is_a?(@expected_error)
               case @expected_error_message
               when nil
@@ -128,6 +129,19 @@ module RSpec::Puppet
           end
         elsif @expected_error
           message << "have raised #{@expected_error.inspect}"
+          if @expected_error_message
+            message << " matching #{@expected_error_message.inspect}"
+          end
+          if type == :should
+            if @actual_error
+              message << " instead of raising #{@actual_error.inspect}"
+              if @expected_error_message
+                message << "(#{@actual_error_message})"
+              end
+            elsif @actual_return
+              message << " instead of returning #{@actual_return.inspect}"
+            end
+          end
         else
           message << "have run successfully"
         end
