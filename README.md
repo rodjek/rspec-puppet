@@ -260,6 +260,15 @@ you can specify this as follows
 let(:node) { 'testhost.example.com' }
 ```
 
+#### Specifying the environment name
+
+If the manifest you're testing expects to evaluate the environment name,
+you can specify this as follows
+
+```ruby
+let(:environment) { 'production' }
+```
+
 #### Specifying the facts that should be available to your manifest
 
 By default, the test environment contains no facts for your manifest to use.
