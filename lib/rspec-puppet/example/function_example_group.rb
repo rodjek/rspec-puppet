@@ -22,7 +22,11 @@ module RSpec::Puppet
 
       # Return the method instance for the function.  This can be used with
       # method.call
-      return nil unless Puppet::Parser::Functions.function(function_name)
+      if env
+        return nil unless Puppet::Parser::Functions.function(function_name,env)
+      else
+        return nil unless Puppet::Parser::Functions.function(function_name)
+      end
       FileUtils.rm_rf(vardir) if File.directory?(vardir)
       function_scope.method("function_#{function_name}".intern)
     end

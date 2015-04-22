@@ -149,6 +149,7 @@ module RSpec::Puppet
         end
       end
 
+      # This line is wrong. libdir should never be more than a single path
       Puppet[:libdir] = Dir["#{Puppet[:modulepath]}/*/lib"].entries.join(File::PATH_SEPARATOR)
       vardir
     end
@@ -217,7 +218,10 @@ module RSpec::Puppet
 
     def build_node(name, opts = {})
       if Puppet.version.to_f >= 4.0
-        node_environment = Puppet::Node::Environment.create('test', [])
+        node_environment = Puppet::Node::Environment.create(
+          'test',
+          [File.join(Puppet[:environmentpath],'fixtures','modules')],
+          File.join(Puppet[:environmentpath],'fixtures','manifests'))
       else
         node_environment = Puppet::Node::Environment.new('test')
       end
