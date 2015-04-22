@@ -58,7 +58,7 @@ module RSpec::Puppet
 
       def with_params(*params)
         @params = params
-        # stringify immediatly to protect us from the params being changed by
+        # stringify immediately to protect us from the params being changed by
         # the subject, e.g. with params.shift
         @func_args = @params.inspect[1..-2]
         self

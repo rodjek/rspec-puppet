@@ -1,4 +1,7 @@
 require 'puppet'
+if Puppet.version.to_f >= 4.0
+  require 'puppet/pops'
+end
 require 'fileutils'
 
 module RSpec::Puppet
