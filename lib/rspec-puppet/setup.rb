@@ -140,7 +140,11 @@ require 'rspec/core/rake_task'
 
 desc "Run all RSpec code examples"
 RSpec::Core::RakeTask.new(:rspec) do |t|
-  t.rspec_opts = File.read("spec/spec.opts").chomp || ""
+  begin
+    t.rspec_opts = File.read("spec/spec.opts").chomp
+  rescue Errno::ENOENT
+    t.rspec_opts = ""
+  end
 end
 
 SPEC_SUITES = (Dir.entries('spec') - ['.', '..','fixtures']).select {|e| File.directory? "spec/#{e}" }
