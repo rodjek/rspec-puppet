@@ -64,10 +64,12 @@ module RSpec::Puppet
         self
       end
 
-      def and_return(value)
+      def and_return(value=nil)
         @expected_return = value
         if value.is_a? Regexp
           @desc = "match #{value.inspect}"
+        elsif value.nil?
+          @desc = "return nothing"
         else
           @desc = "return #{value.inspect}"
         end
