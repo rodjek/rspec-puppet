@@ -35,23 +35,27 @@ module RSpec::Puppet
               end
             end
           end
-          result
+          return result
         else
-          unless @expected_return.nil?
-            @actual_return = @func.call
+          if @has_expected_return
+            begin
+              @actual_return = @func.call
+            rescue
+              return false
+            end
             case @expected_return
             when Regexp
-              @actual_return =~ @expected_return
+              return @actual_return =~ @expected_return
             else
-              @actual_return == @expected_return
+              return @actual_return == @expected_return
             end
           else
             begin
               @func.call
             rescue
-              false
+              return false
             end
-            true
+            return true
           end
         end
       end
@@ -65,6 +69,7 @@ module RSpec::Puppet
       end
 
       def and_return(value)
+        @has_expected_return = true
         @expected_return = value
         if value.is_a? Regexp
           @desc = "match #{value.inspect}"
@@ -122,7 +127,7 @@ module RSpec::Puppet
         message = "expected #{func_name}(#{func_params}) to "
         message << "not " if type == :should_not
 
-        if @expected_return
+        if @has_expected_return
           message << "have returned #{@expected_return.inspect}"
           if type == :should
             message << " instead of #{@actual_return.inspect}"
