@@ -107,7 +107,11 @@ module RSpec::Puppet
       end
 
       def description
-        "run #{func_name}(#{func_params}) and #{@desc}"
+        if @desc
+          "run #{func_name}(#{func_params}) and #{@desc}"
+        else
+          "run #{func_name}(#{func_params}) without error"
+        end
       end
 
       private
