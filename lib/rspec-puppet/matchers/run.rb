@@ -17,46 +17,41 @@ module RSpec::Puppet
           end
         end
 
-        unless @expected_error.nil?
-          result = false
-          begin
-            @func.call
-          rescue Exception => e
-            @actual_error = e.class
-            @actual_error_message = e.to_s
-            if e.is_a?(@expected_error)
-              case @expected_error_message
-              when nil
-                result = true
-              when Regexp
-                result = @expected_error_message =~ e.message
-              else
-                result = @expected_error_message == e.message
-              end
+        begin
+          @actual_return = @func.call
+          @has_returned = true
+        rescue Exception => e
+          @actual_error = e
+        end
+
+        if @has_expected_error
+          if @has_returned
+            return false
+          elsif @actual_error.is_a?(@expected_error)
+            case @expected_error_message
+            when nil
+              return true
+            when Regexp
+              return @actual_error.message =~ @expected_error_message
+            else
+              return @actual_error.message == @expected_error_message
             end
+          else # error did not match
+            return false
           end
-          return result
-        else
-          if @has_expected_return
-            begin
-              @actual_return = @func.call
-            rescue
-              return false
-            end
+        elsif @has_expected_return
+          if !@has_returned
+            return false
+          else
             case @expected_return
             when Regexp
               return @actual_return =~ @expected_return
             else
               return @actual_return == @expected_return
             end
-          else
-            begin
-              @func.call
-            rescue
-              return false
-            end
-            return true
           end
+        else
+          return @has_returned
         end
       end
 
@@ -80,6 +75,7 @@ module RSpec::Puppet
       end
 
       def and_raise_error(error_or_message, message=nil)
+        @has_expected_error = true
         case error_or_message
         when String, Regexp
           @expected_error, @expected_error_message = Exception, error_or_message
@@ -136,23 +132,25 @@ module RSpec::Puppet
           if type == :should
             message << " instead of #{@actual_return.inspect}"
           end
-        elsif @expected_error
-          message << "have raised #{@expected_error.inspect}"
-          if @expected_error_message
-            message << " matching #{@expected_error_message.inspect}"
+        else
+          if @has_expected_error
+            message << "have raised #{@expected_error.inspect}"
+            if @expected_error_message
+              message << " matching #{@expected_error_message.inspect}"
+            end
+          else
+            message << "have run successfully"
           end
           if type == :should
             if @actual_error
-              message << " instead of raising #{@actual_error.inspect}"
+              message << " instead of raising #{@actual_error.class.inspect}"
               if @expected_error_message
-                message << "(#{@actual_error_message})"
+                message << "(#{@actual_error})"
               end
-            elsif @actual_return
-              message << " instead of returning #{@actual_return.inspect}"
+            elsif @has_returned
+              message << " instead of returning #{@actual_return.class.inspect}"
             end
           end
-        else
-          message << "have run successfully"
         end
         message
       end
