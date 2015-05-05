@@ -123,15 +123,30 @@ module RSpec::Puppet
         @func_args
       end
 
+      def failure_message_actual(type)
+        if type != :should
+          ''
+        elsif @actual_error
+          if @has_expected_return
+            " instead of raising #{@actual_error.class.inspect}(#{@actual_error})"
+          else
+            " instead of #{@actual_error.class.inspect}(#{@actual_error})"
+          end
+        else # function has returned
+          if @has_expected_error
+            " instead of returning #{@actual_return.inspect}"
+          else
+            " instead of #{@actual_return.inspect}"
+          end
+        end
+      end
+
       def failure_message_generic(type, func_obj)
         message = "expected #{func_name}(#{func_params}) to "
         message << "not " if type == :should_not
 
         if @has_expected_return
           message << "have returned #{@expected_return.inspect}"
-          if type == :should
-            message << " instead of #{@actual_return.inspect}"
-          end
         else
           if @has_expected_error
             message << "have raised #{@expected_error.inspect}"
@@ -141,18 +156,8 @@ module RSpec::Puppet
           else
             message << "have run successfully"
           end
-          if type == :should
-            if @actual_error
-              message << " instead of raising #{@actual_error.class.inspect}"
-              if @expected_error_message
-                message << "(#{@actual_error})"
-              end
-            elsif @has_returned
-              message << " instead of returning #{@actual_return.class.inspect}"
-            end
-          end
         end
-        message
+        message << failure_message_actual(type)
       end
     end
   end
