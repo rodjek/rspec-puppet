@@ -207,7 +207,7 @@ module RSpec::Puppet
       string
     end
 
-    def scope(compiler, node_name)
+    def build_scope(compiler, node_name)
       if Puppet.version =~ /^2\.[67]/
         # loadall should only be necessary prior to 3.x
         # Please note, loadall needs to happen first when creating a scope, otherwise
