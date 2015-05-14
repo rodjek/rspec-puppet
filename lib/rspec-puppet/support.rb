@@ -127,6 +127,7 @@ module RSpec::Puppet
 
       if Puppet.version.to_f >= 4.0
         settings = [
+          [:modulepath, :module_path],
           [:environmentpath, :environmentpath],
           [:config, :config],
           [:confdir, :confdir],
@@ -153,8 +154,10 @@ module RSpec::Puppet
         end
       end
 
-      # This line is wrong. libdir should never be more than a single path
-      Puppet[:libdir] = Dir["#{Puppet[:modulepath]}/*/lib"].entries.join(File::PATH_SEPARATOR)
+      Dir["#{Puppet[:modulepath]}/*/lib"].entries.each do |lib|
+        $LOAD_PATH << lib
+      end
+
       vardir
     end
 
