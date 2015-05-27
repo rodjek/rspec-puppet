@@ -132,6 +132,7 @@ module RSpec::Puppet
           [:config, :config],
           [:confdir, :confdir],
           [:hiera_config, :hiera_config],
+          [:strict_variables, :strict_variables],
         ]
       else
         settings = [
@@ -146,6 +147,7 @@ module RSpec::Puppet
           [:trusted_node_data, :trusted_node_data],
           [:ordering, :ordering],
           [:stringify_facts, :stringify_facts],
+          [:strict_variables, :strict_variables],
         ]
       end
       settings.each do |a,b|
