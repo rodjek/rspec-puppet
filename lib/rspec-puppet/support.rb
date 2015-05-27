@@ -134,7 +134,7 @@ module RSpec::Puppet
           [:hiera_config, :hiera_config],
           [:strict_variables, :strict_variables],
         ]
-      else
+      elsif Puppet.version.to_f >= 3.0
         settings = [
           [:modulepath, :module_path],
           [:manifestdir, :manifest_dir],
@@ -148,6 +148,15 @@ module RSpec::Puppet
           [:ordering, :ordering],
           [:stringify_facts, :stringify_facts],
           [:strict_variables, :strict_variables],
+        ]
+      else
+        settings = [
+          [:modulepath, :module_path],
+          [:manifestdir, :manifest_dir],
+          [:manifest, :manifest],
+          [:templatedir, :template_dir],
+          [:config, :config],
+          [:confdir, :confdir],
         ]
       end
       settings.each do |a,b|
