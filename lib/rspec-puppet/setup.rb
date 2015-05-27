@@ -55,7 +55,11 @@ module RSpec::Puppet
     end
 
     def self.get_module_name_from_file(file)
-      p = Puppet::Parser::Lexer.new
+      if Puppet.version.to_f >= 4.0
+        p = Puppet::Pops::Parser::Lexer2.new
+      else
+        p = Puppet::Parser::Lexer.new
+      end
       module_name = nil
       p.string = File.read(file)
       tokens = p.fullscan
