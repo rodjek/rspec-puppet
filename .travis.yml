@@ -14,7 +14,9 @@ env:
   - PUPPET_VERSION=3.4
   - PUPPET_VERSION=3.6
   - PUPPET_VERSION=3.7
+  - PUPPET_VERSION=3.8
   - PUPPET_VERSION=4.0
+  - PUPPET_VERSION=4.1
   - RSPEC_VERSION=2.14
 
 matrix:
@@ -23,6 +25,8 @@ matrix:
       env: RSPEC_VERSION=2.14
     - rvm: 1.8.7
       env: PUPPET_VERSION=4.0
+    - rvm: 1.8.7
+      env: PUPPET_VERSION=4.1
     - rvm: 1.9.3
       env: PUPPET_VERSION=2.7
     - rvm: 2.0.0
