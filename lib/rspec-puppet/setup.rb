@@ -55,6 +55,8 @@ module RSpec::Puppet
     end
 
     def self.get_module_name_from_file(file)
+      # FIXME: see discussion at
+      # https://github.com/rodjek/rspec-puppet/issues/290
       if Puppet.version.to_f >= 4.0
         p = Puppet::Pops::Parser::Lexer2.new
       else
