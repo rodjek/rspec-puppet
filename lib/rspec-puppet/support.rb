@@ -22,7 +22,9 @@ module RSpec::Puppet
 
       node_name = nodename(type)
 
-      catalogue = build_catalog(node_name, facts_hash(node_name), code)
+      hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
+
+      catalogue = build_catalog(node_name, facts_hash(node_name), hiera_config_value, code)
 
       test_module = class_name.split('::').first
       RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
@@ -132,8 +134,9 @@ module RSpec::Puppet
           [:config, :config],
           [:confdir, :confdir],
           [:hiera_config, :hiera_config],
+          [:strict_variables, :strict_variables],
         ]
-      else
+      elsif Puppet.version.to_f >= 3.0
         settings = [
           [:modulepath, :module_path],
           [:manifestdir, :manifest_dir],
@@ -143,6 +146,19 @@ module RSpec::Puppet
           [:confdir, :confdir],
           [:hiera_config, :hiera_config],
           [:parser, :parser],
+          [:trusted_node_data, :trusted_node_data],
+          [:ordering, :ordering],
+          [:stringify_facts, :stringify_facts],
+          [:strict_variables, :strict_variables],
+        ]
+      else
+        settings = [
+          [:modulepath, :module_path],
+          [:manifestdir, :manifest_dir],
+          [:manifest, :manifest],
+          [:templatedir, :template_dir],
+          [:config, :config],
+          [:confdir, :confdir],
         ]
       end
       settings.each do |a,b|
@@ -161,7 +177,17 @@ module RSpec::Puppet
       vardir
     end
 
-    def build_catalog_without_cache(nodename, facts_val, code)
+    def build_catalog_without_cache(nodename, facts_val, hiera_config_val, code)
+
+      # If we're going to rebuild the catalog, we should clear the cached instance
+      # of Hiera that Puppet is using.  This opens the possibility of the catalog
+      # now being rebuilt against a differently configured Hiera (i.e. :hiera_config
+      # set differently in one example group vs. another).
+      # It would be nice if Puppet offered a public API for invalidating their
+      # cached instance of Hiera, but que sera sera.  We will go directly against
+      # the implementation out of absolute necessity.
+      HieraPuppet.instance_variable_set('@hiera', nil) if defined? HieraPuppet
+
       Puppet[:code] = code
 
       stub_facts! facts_val
@@ -207,7 +233,7 @@ module RSpec::Puppet
       string
     end
 
-    def scope(compiler, node_name)
+    def build_scope(compiler, node_name)
       if Puppet.version =~ /^2\.[67]/
         # loadall should only be necessary prior to 3.x
         # Please note, loadall needs to happen first when creating a scope, otherwise

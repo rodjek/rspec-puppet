@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.2.0]
+### Added
+- Settings for ordering, strict_variables, stringify_facts, and trusted_node_data
+- Expose the scope in function example groups
+
+### Fixed
+- rspec-puppet-init now works with Puppet 4
+- Several fixes and enhancements for the `run` matcher
+- Recompile the catalog when the hiera config changes
+
 ## [2.1.0] - 2015-04-21
 ### Added
 - Puppet 4 support
