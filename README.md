@@ -402,6 +402,16 @@ it 'something' do
 end
 ```
 
+#### Accessing the parser scope where the function is running
+
+Some complex functions require access to the current parser's scope, e.g. for
+stubbing other parts of the system.
+
+```ruby
+before(:each) { scope.expects(:lookupvar).with('some_variable').returns('some_value') }
+it { should run.with_params('...').and_return('...') }
+```
+
 ## Hiera integration
 
 ### Configuration
