@@ -27,7 +27,7 @@ module RSpec::Puppet
           elsif @check_deps == true && missing_dependencies?
             false
           else
-            true
+            @expected_error.nil?
           end
         rescue Puppet::Error => e
           @error_msg = e.message
@@ -58,13 +58,24 @@ module RSpec::Puppet
           unless @error_msg.empty?
             "error during compilation: #{@error_msg}"
           else
-            "expected that the catalogue would include #{@failed_resource}"
+            case @expected_error
+            when nil
+              "expected that the catalogue would include #{@failed_resource}"
+            when Regexp
+              "expected that the catalogue would fail to compile and raise an error matching #{@expected_error.inspect}"
+            else
+              "expected that the catalogue would fail to compile and raise the error #{@expected_error.inspect}"
+            end
           end
         end
       end
 
       def failure_message_when_negated
-        "expected that the catalogue would not compile but it does"
+        if @expected_error.nil?
+          "expected that the catalogue would not compile but it does"
+        else
+          "expected that the catalogue would compile but it does not"
+        end
       end
 
       private
