@@ -198,20 +198,23 @@ module RSpec::Puppet
 
       # trying to be compatible with 2.7 as well as 2.6
       if Puppet::Resource::Catalog.respond_to? :find
-        Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
+        catalog = Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
       elsif Puppet.version.to_f >= 4.0
         env = Puppet::Node::Environment.create(
           environment,
           [File.join(Puppet[:environmentpath],'fixtures','modules')],
           File.join(Puppet[:environmentpath],'fixtures','manifests'))
         loader = Puppet::Environments::Static.new(env)
-        Puppet.override({:environments => loader}, 'fixtures') do
+        catalog = Puppet.override({:environments => loader}, 'fixtures') do
           node_obj.environment = env
           Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
         end
       else
-        Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
+        catalog = Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
       end
+      generator = Puppet::Transaction::AdditionalResourceGenerator.new(catalog, catalog.relationship_graph, nil)
+      catalog.vertices.each { |resource| generator.generate_additional_resources(resource) }
+      catalog
     end
 
     def stub_facts!(facts)
