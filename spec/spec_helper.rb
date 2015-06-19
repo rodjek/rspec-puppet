@@ -1,3 +1,8 @@
+if ENV['COVERAGE'] == 'yes'
+  require 'coveralls'
+  Coveralls.wear!
+end
+
 require 'rspec-puppet'
 
 RSpec.configure do |c|
