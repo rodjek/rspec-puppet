@@ -465,6 +465,18 @@ RSpec.configure do |c|
 end
 ```
 
+spec/fixtures/hiera/hiera.yaml
+```yaml
+---
+:backends:
+  - yaml
+:yaml:
+  :datadir: spec/fixtures/hieradata
+:hierarchy:
+  - common
+```
+
+
 ## Producing coverage reports
 
 You can output a basic resource coverage report with the following in
