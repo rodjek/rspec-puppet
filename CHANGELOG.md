@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.0]
+### Fixed
+- Fix #276: `compile.and_raise_error` now correctly considers successful compilation an error
+- Puppet's `modulepath` can now contain multiple entries and rspec-puppet will configure puppet to load code from all of them
+- `contain_file(...).with_content(...)` will now only show the diff and not the full contents of the file
+- improved documentation for hiera integration, added example spec
+- document the `scope` property
+- unbreak rspec 2.99 support
+
 ## [2.2.0]
 ### Added
 - Settings for ordering, strict_variables, stringify_facts, and trusted_node_data
@@ -47,6 +56,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 ## 1.0.1 and earlier
 For changelog of versions 1.0.1 and earlier, see http://rspec-puppet.com/changelog/
 
+[2.3.0]: https://github.com/rodjek/rspec-puppet/compare/v2.2.0...v2.3.0
+[2.2.0]: https://github.com/rodjek/rspec-puppet/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/rodjek/rspec-puppet/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/rodjek/rspec-puppet/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/rodjek/rspec-puppet/compare/v1.0.1...v2.0.0
