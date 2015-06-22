@@ -35,22 +35,25 @@ module RSpec::Puppet
     end
 
     def import_str
-      if File.exists?(File.join(Puppet[:modulepath], 'manifests', 'init.pp'))
-        path_to_manifest = File.join([
-          Puppet[:modulepath],
-          'manifests',
-          class_name.split('::')[1..-1]
-        ].flatten)
-        import_str = [
-          "import '#{Puppet[:modulepath]}/manifests/init.pp'",
-          "import '#{path_to_manifest}.pp'",
-          '',
-        ].join("\n")
-      elsif File.exists?(Puppet[:modulepath])
-        import_str = "import '#{Puppet[:manifest]}'\n"
-      else
-        import_str = ""
-      end
+      import_str = ""
+      Puppet[:modulepath].split(File::PATH_SEPARATOR).each { |d|
+        if File.exists?(File.join(d, 'manifests', 'init.pp'))
+          path_to_manifest = File.join([
+            d,
+            'manifests',
+            class_name.split('::')[1..-1]
+          ].flatten)
+          import_str = [
+            "import '#{d}/manifests/init.pp'",
+            "import '#{path_to_manifest}.pp'",
+            '',
+          ].join("\n")
+          break
+        elsif File.exists?(d)
+          import_str = "import '#{Puppet[:manifest]}'\n"
+          break
+        end
+      }
 
       import_str
     end
@@ -170,7 +173,9 @@ module RSpec::Puppet
         end
       end
 
-      Dir["#{Puppet[:modulepath]}/*/lib"].entries.each do |lib|
+      Puppet[:modulepath].split(File::PATH_SEPARATOR).map do |d|
+        Dir["#{d}/*/lib"].entries
+      end.flatten.each do |lib|
         $LOAD_PATH << lib
       end
 

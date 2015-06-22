@@ -17,6 +17,7 @@ module RSpec::Puppet
           end
         end
 
+        @has_returned = false
         begin
           @actual_return = @func.call
           @has_returned = true
@@ -32,7 +33,7 @@ module RSpec::Puppet
             when nil
               return true
             when Regexp
-              return @actual_error.message =~ @expected_error_message
+              return !!(@actual_error.message =~ @expected_error_message)
             else
               return @actual_error.message == @expected_error_message
             end
@@ -45,7 +46,7 @@ module RSpec::Puppet
           else
             case @expected_return
             when Regexp
-              return @actual_return =~ @expected_return
+              return !!(@actual_return =~ @expected_return)
             else
               return @actual_return == @expected_return
             end

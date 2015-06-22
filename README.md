@@ -402,6 +402,16 @@ it 'something' do
 end
 ```
 
+#### Accessing the parser scope where the function is running
+
+Some complex functions require access to the current parser's scope, e.g. for
+stubbing other parts of the system.
+
+```ruby
+before(:each) { scope.expects(:lookupvar).with('some_variable').returns('some_value') }
+it { should run.with_params('...').and_return('...') }
+```
+
 ## Hiera integration
 
 ### Configuration
@@ -454,6 +464,18 @@ RSpec.configure do |c|
   c.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
 end
 ```
+
+spec/fixtures/hiera/hiera.yaml
+```yaml
+---
+:backends:
+  - yaml
+:yaml:
+  :datadir: spec/fixtures/hieradata
+:hierarchy:
+  - common
+```
+
 
 ## Producing coverage reports
 
