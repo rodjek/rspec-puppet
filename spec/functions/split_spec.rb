@@ -23,4 +23,9 @@ describe 'split' do
   it { should run.with_params('foo').and_raise_error(expected_error_message) }
 
   it { expect { should run.with_params('foo').and_raise_error(/definitely no match/) }.to raise_error RSpec::Expectations::ExpectationNotMetError }
+
+  context 'after including a class' do
+    let(:pre_condition) { 'include ::sysctl::common' }
+    it { should run.with_params('aoeu', 'o').and_return(['a', 'eu']) }
+  end
 end
