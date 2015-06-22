@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.3.0]
+## [2.x]
 ### Fixed
 - Fix #276: `compile.and_raise_error` now correctly considers successful compilation an error
 - Puppet's `modulepath` can now contain multiple entries and rspec-puppet will configure puppet to load code from all of them
@@ -56,7 +56,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 ## 1.0.1 and earlier
 For changelog of versions 1.0.1 and earlier, see http://rspec-puppet.com/changelog/
 
-[2.3.0]: https://github.com/rodjek/rspec-puppet/compare/v2.2.0...v2.3.0
+[2.x]: https://github.com/rodjek/rspec-puppet/compare/v2.2.0...master
 [2.2.0]: https://github.com/rodjek/rspec-puppet/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/rodjek/rspec-puppet/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/rodjek/rspec-puppet/compare/v2.0.0...v2.0.1
