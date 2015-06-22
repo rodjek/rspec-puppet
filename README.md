@@ -489,3 +489,16 @@ at_exit { RSpec::Puppet::Coverage.report! }
 This checks which Puppet resources have been explicitly checked as part
 of the current test run and outputs both a coverage percentage and a
 list of untouched resources.
+
+## Related projects
+
+* [rspec-puppet-augeas](https://github.com/domcleal/rspec-puppet-augeas): RSpec tests for Augeas resources inside Puppet manifests
+* [jimdo-rspec-puppet-helpers](https://github.com/Jimdo/jimdo-rspec-puppet-helpers): Tests the contents of a file with a source
+
+* Fact providers
+  * [rspec-puppet-facts](https://github.com/mcanevet/rspec-puppet-facts): Simplify your unit tests by looping on every supported Operating System and populating facts.
+  * [rspec-puppet-osmash](https://github.com/Aethylred/rspec-puppet-osmash): Provides Operation System hashes and validations for rspec-puppet
+  * [puppet_spec_facts](https://github.com/danieldreier/puppet_spec_facts): Gem to provide puppet fact hashes for rspec-puppet testing
+
+
+
