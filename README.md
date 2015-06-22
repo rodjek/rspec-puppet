@@ -4,6 +4,10 @@
 
     gem install rspec-puppet
 
+> Note for ruby 1.8 users:  while rspec-puppet itself supports ruby 1.8, you'll
+> need to pin rspec itself to `~> 3.1.0`, as later rspec versions do not work
+> on old rubies anymore.
+
 ## Naming conventions
 
 For clarity and consistency, I recommend that you use the following directory
