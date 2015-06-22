@@ -63,6 +63,20 @@ end
 
 ### Matchers
 
+#### Checking if the catalog compiles
+
+You can test whether the subject catalog compiles cleanly with `compile`.
+
+```ruby
+it { should compile }
+```
+
+To check the error messages of your class, you can check for raised error messages.
+
+```ruby
+it { should compile.and_raise_error(/error message match/) }
+```
+
 #### Checking if a resource exists
 
 You can test if a resource exists in the catalogue with the generic
