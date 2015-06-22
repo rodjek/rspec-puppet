@@ -21,4 +21,6 @@ describe 'split' do
   it { should run.with_params('foo').and_raise_error(expected_error, expected_error_message) }
 
   it { should run.with_params('foo').and_raise_error(expected_error_message) }
+
+  it { expect { should run.with_params('foo').and_raise_error(/definitely no match/) }.to raise_error RSpec::Expectations::ExpectationNotMetError }
 end
