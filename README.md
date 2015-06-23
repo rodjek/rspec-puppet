@@ -1,8 +1,14 @@
-# RSpec tests for your Puppet manifests & modules [![Build Status](https://travis-ci.org/rodjek/rspec-puppet.png)](https://travis-ci.org/rodjek/rspec-puppet)
+# RSpec tests for your Puppet manifests & modules
+[![Build Status](https://travis-ci.org/rodjek/rspec-puppet.png)](https://travis-ci.org/rodjek/rspec-puppet)
+[![Coverage Status](https://coveralls.io/repos/rodjek/rspec-puppet/badge.svg?branch=master)](https://coveralls.io/r/rodjek/rspec-puppet?branch=master)
 
 ## Installation
 
     gem install rspec-puppet
+
+> Note for ruby 1.8 users:  while rspec-puppet itself supports ruby 1.8, you'll
+> need to pin rspec itself to `~> 3.1.0`, as later rspec versions do not work
+> on old rubies anymore.
 
 ## Naming conventions
 
@@ -62,6 +68,20 @@ end
 ## Defined Types & Classes
 
 ### Matchers
+
+#### Checking if the catalog compiles
+
+You can test whether the subject catalog compiles cleanly with `compile`.
+
+```ruby
+it { should compile }
+```
+
+To check the error messages of your class, you can check for raised error messages.
+
+```ruby
+it { should compile.and_raise_error(/error message match/) }
+```
 
 #### Checking if a resource exists
 
@@ -489,3 +509,16 @@ at_exit { RSpec::Puppet::Coverage.report! }
 This checks which Puppet resources have been explicitly checked as part
 of the current test run and outputs both a coverage percentage and a
 list of untouched resources.
+
+## Related projects
+
+* [rspec-puppet-augeas](https://github.com/domcleal/rspec-puppet-augeas): RSpec tests for Augeas resources inside Puppet manifests
+* [jimdo-rspec-puppet-helpers](https://github.com/Jimdo/jimdo-rspec-puppet-helpers): Tests the contents of a file with a source
+
+* Fact providers
+  * [rspec-puppet-facts](https://github.com/mcanevet/rspec-puppet-facts): Simplify your unit tests by looping on every supported Operating System and populating facts.
+  * [rspec-puppet-osmash](https://github.com/Aethylred/rspec-puppet-osmash): Provides Operation System hashes and validations for rspec-puppet
+  * [puppet_spec_facts](https://github.com/danieldreier/puppet_spec_facts): Gem to provide puppet fact hashes for rspec-puppet testing
+
+
+
