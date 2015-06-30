@@ -42,7 +42,7 @@ module RSpec::Puppet
           # test_module's directory tree or the site manifest(s)
           if Puppet.version.to_f >= 4.0
             paths = [
-              (Pathname.new(Puppet[:environmentpath]) + 'fixtures' + test_module + 'manifests').to_s,
+              (Pathname.new(Puppet[:environmentpath]) + 'fixtures' + 'modules' + test_module + 'manifests').to_s,
               (Pathname.new(Puppet[:environmentpath]) + 'fixtures' + 'manifests' + 'site.pp').to_s
             ]
           else
