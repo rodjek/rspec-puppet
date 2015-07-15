@@ -9,9 +9,9 @@ describe RSpec::Puppet::Support do
   end
 
   describe '#setup_puppet' do
+
     it 'updates the ruby $LOAD_PATH based on the current modulepath' do
-      basedir = '/mymodulepath'
-      RSpec.configuration.module_path = basedir
+      basedir = RSpec.configuration.module_path
 
       dira = File.join(basedir, 'a', 'lib')
       dirb = File.join(basedir, 'b', 'lib')
