@@ -37,6 +37,10 @@ structure and naming convention.
            |     |
            |     +-- <function_name>_spec.rb
            |
+           +-- types
+           |     |
+           |     +-- <type_name>_spec.rb
+           |
            +-- hosts
                  |
                  +-- <host_name>_spec.rb
@@ -57,6 +61,10 @@ describe 'mydefine', :type => :define do
 end
 
 describe 'myfunction', :type => :puppet_function do
+  ...
+end
+
+describe 'mytype', :type => :type do
   ...
 end
 
@@ -231,6 +239,16 @@ Or, you can test that **Notify[foo]** requires **Notify[bar]**
 ```ruby
 it { should contain_notify('foo').that_requires('Notify[bar]') }
 ```
+
+#### Type matcher
+
+When testing custom types, the `be_valid_type` matcher provides a range of expectations:
+
+* `with_provider(<provider_name>)`: check that the right provider was selected
+* `with_properties(<property_list>)`: check that the specified properties are available
+* `with_parameters(<parameter_list>)`: check that the specified parameters are available
+* `with_features(<feature_list>)`: check that the specified features are available
+* `with_set_attributes(<param_value_hash>)`: check that the specified attributes are set 
 
 ### Writing tests
 
@@ -519,6 +537,3 @@ list of untouched resources.
   * [rspec-puppet-facts](https://github.com/mcanevet/rspec-puppet-facts): Simplify your unit tests by looping on every supported Operating System and populating facts.
   * [rspec-puppet-osmash](https://github.com/Aethylred/rspec-puppet-osmash): Provides Operation System hashes and validations for rspec-puppet
   * [puppet_spec_facts](https://github.com/danieldreier/puppet_spec_facts): Gem to provide puppet fact hashes for rspec-puppet testing
-
-
-
