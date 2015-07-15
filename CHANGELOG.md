@@ -2,7 +2,10 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.x]
+## [2.3.0]
+### Added
+- Custom type testing example group and matcher
+
 ### Fixed
 - Fix #276: `compile.and_raise_error` now correctly considers successful compilation an error
 - Puppet's `modulepath` can now contain multiple entries and rspec-puppet will configure puppet to load code from all of them
