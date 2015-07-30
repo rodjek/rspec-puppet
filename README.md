@@ -250,6 +250,54 @@ When testing custom types, the `be_valid_type` matcher provides a range of expec
 * `with_features(<feature_list>)`: check that the specified features are available
 * `with_set_attributes(<param_value_hash>)`: check that the specified attributes are set 
 
+#### Recursive dependencies
+
+The relationship matchers are recursive in two directions:
+
+* vertical recursion, which checks for dependencies with parents of the resource
+ (i.e. the resource is contained, directly or not, in the class involved in the relationship).
+ E.g. where `Package['foo']` comes before `File['/foo']`:
+
+```puppet
+class { 'foo::install': } ->
+class { 'foo::config': }
+
+class foo::install {
+  package { 'foo': }
+}
+
+class foo::config {
+  file { '/foo': }
+}
+```
+
+
+* horizontal recursion, which follows indirect dependencies (dependencies of dependencies).
+ E.g. where `Yumrepo['foo']` comes before `File['/foo']`:
+
+```puppet
+class { 'foo::repo': } ->
+class { 'foo::install': } ->
+class { 'foo::config': }
+
+class foo::repo {
+  yumrepo { 'foo': }
+}
+
+class foo::install {
+  package { 'foo': }
+}
+
+class foo::config {
+  file { '/foo': }
+}
+```
+
+#### Autorequires
+
+Autorequires are considered in dependency checks.
+
+
 ### Writing tests
 
 #### Basic test structure
