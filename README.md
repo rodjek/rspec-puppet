@@ -364,6 +364,14 @@ You can set them with a hash
 let(:facts) { {:operatingsystem => 'Debian', :kernel => 'Linux', ...} }
 ```
 
+Facts may be expressed as a value (shown in the previous example) or a structure.  Fact keys
+may be expressed as either symbols or strings.  A key will be converted to a lower case
+string to align with the Facter standard 
+
+```ruby
+let(:facts) { {:os => { :family => 'RedHat', :release => { :major => '7', :minor => '1', :full => '7.1.1503' } } } }
+```
+
 You can also create a set of default facts provided to all specs in your spec_helper:
 
 ``` ruby
