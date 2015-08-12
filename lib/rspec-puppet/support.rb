@@ -197,9 +197,9 @@ module RSpec::Puppet
 
       stub_facts! facts_val
 
-      node_obj = Puppet::Node.new(nodename)
+      node_facts = Puppet::Node::Facts.new(nodename, facts_val)
 
-      node_obj.merge(facts_val)
+      node_obj = Puppet::Node.new(nodename, { :parameters => facts_val, :facts => node_facts })
 
       # trying to be compatible with 2.7 as well as 2.6
       if Puppet::Resource::Catalog.respond_to? :find
@@ -227,10 +227,18 @@ module RSpec::Puppet
       @@cache[args] ||= self.build_catalog_without_cache(*args)
     end
 
+    # Facter currently supports lower case facts.  Bug FACT-777 has been submitted to support case sensitive
+    # facts.
     def munge_facts(facts)
-      output = {}
-      facts.keys.each { |key| output[key.to_s] = facts[key] }
-      output
+      return facts.reduce({}) do | memo, (k, v)|
+        memo.tap { |m| m[k.to_s.downcase] = munge_facts(v) }
+      end if facts.is_a? Hash
+
+      return facts.reduce([]) do |memo, v|
+        memo << munge_facts(v); memo
+      end if facts.is_a? Array
+
+      facts
     end
 
     def escape_special_chars(string)

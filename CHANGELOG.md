@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Fixed
+- Support structured facts with keys as symbols or strings
+
 ## [2.3.0]
 ### Added
 - Custom type testing example group and matcher
