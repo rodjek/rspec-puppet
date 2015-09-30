@@ -250,6 +250,7 @@ module RSpec::Puppet
       def relationship_refs(resource, type)
         resource = canonicalize_resource(resource)
         results = []
+        return results unless resource
         Array[resource[type]].flatten.compact.each do |r|
           results << canonicalize_resource_ref(r)
           results << relationship_refs(r, type)
@@ -260,8 +261,10 @@ module RSpec::Puppet
           resource.resource_type.eachautorequire do |t, b|
             Array(resource.to_ral.instance_eval(&b)).each do |dep|
               res = "#{t.to_s.capitalize}[#{dep}]"
-              results << res
-              results << relationship_refs(res, type)
+              if r = relationship_refs(res, type)
+                results << res
+                results << r
+              end
             end
           end
         end
