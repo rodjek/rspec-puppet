@@ -7,7 +7,7 @@ class relationships::before {
   notify { 'baz': }
 
   file { '/tmp/foo': ensure => directory }
-  file { '/tmp/foo/bar': ensure => file }
+  file { '/tmp/foo/bar': ensure => file, group => 'foo' }
 
   notify { 'bazz': before => File['/tmp/foo'] }
   notify { 'qux': require => File['/tmp/foo/bar'] }
