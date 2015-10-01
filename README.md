@@ -239,6 +239,18 @@ Or, you can test that **Notify[foo]** requires **Notify[bar]**
 ```ruby
 it { should contain_notify('foo').that_requires('Notify[bar]') }
 ```
+##### Match target syntax
+
+Note that this notation does not support any of the features you're used from the puppet language. Only a single resource with a single, unquoted title can be referenced here. Class names need to be always fully qualified and not have the leading `::`. It currently does not support inline arrays or quoting.
+
+These work
+* `Notify[foo]`
+* `Class[profile::apache]`
+
+These will not work
+* `Notify['foo']`
+* `Notify[foo, bar]`
+* `Class[::profile::apache]`
 
 #### Type matcher
 
@@ -248,7 +260,7 @@ When testing custom types, the `be_valid_type` matcher provides a range of expec
 * `with_properties(<property_list>)`: check that the specified properties are available
 * `with_parameters(<parameter_list>)`: check that the specified parameters are available
 * `with_features(<feature_list>)`: check that the specified features are available
-* `with_set_attributes(<param_value_hash>)`: check that the specified attributes are set 
+* `with_set_attributes(<param_value_hash>)`: check that the specified attributes are set
 
 #### Recursive dependencies
 
@@ -366,7 +378,7 @@ let(:facts) { {:operatingsystem => 'Debian', :kernel => 'Linux', ...} }
 
 Facts may be expressed as a value (shown in the previous example) or a structure.  Fact keys
 may be expressed as either symbols or strings.  A key will be converted to a lower case
-string to align with the Facter standard 
+string to align with the Facter standard
 
 ```ruby
 let(:facts) { {:os => { :family => 'RedHat', :release => { :major => '7', :minor => '1', :full => '7.1.1503' } } } }
