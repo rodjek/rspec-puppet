@@ -10,6 +10,10 @@
 > need to pin rspec itself to `~> 3.1.0`, as later rspec versions do not work
 > on old rubies anymore.
 
+## Starting out with a new module
+
+When you start out on a new module, run `rspec-puppet-init` to create the necessary files to configure rspec-puppet for your module's tests.
+
 ## Naming conventions
 
 For clarity and consistency, I recommend that you use the following directory
@@ -82,13 +86,13 @@ end
 You can test whether the subject catalog compiles cleanly with `compile`.
 
 ```ruby
-it { should compile }
+it { is_expected.to compile }
 ```
 
 To check the error messages of your class, you can check for raised error messages.
 
 ```ruby
-it { should compile.and_raise_error(/error message match/) }
+it { is_expected.to compile.and_raise_error(/error message match/) }
 ```
 
 #### Checking if a resource exists
@@ -97,70 +101,76 @@ You can test if a resource exists in the catalogue with the generic
 `contain_<resource type>` matcher.
 
 ```ruby
-it { should contain_augeas('bleh') }
+it { is_expected.to contain_augeas('bleh') }
 ```
 
 You can also test if a class has been included in the catalogue with the
 same matcher.
 
 ```ruby
-it { should contain_class('foo') }
+it { is_expected.to contain_class('foo') }
 ```
+
+Note that rspec-puppet does none of the class name parsing and lookup that the puppet parser would do for you. The matcher only accepts fully qualified classnames without any leading colons. That is a class `foo::bar` will only be matched by `foo::bar`, but not by `::foo::bar`, or `bar` alone.
 
 If your resource type includes :: (e.g.
 `foo::bar` simply replace the :: with __ (two underscores).
 
 ```ruby
-it { should contain_foo__bar('baz') }
+it { is_expected.to contain_foo__bar('baz') }
 ```
 
 You can further test the parameters that have been passed to the resources with
 the generic `with_<parameter>` chains.
 
 ```ruby
-it { should contain_package('mysql-server').with_ensure('present') }
+it { is_expected.to contain_package('mysql-server').with_ensure('present') }
 ```
 
 If you want to specify that the given parameters should be the only ones passed
 to the resource, use the `only_with_<parameter>` chains.
 
 ```ruby
-it { should contain_package('httpd').only_with_ensure('latest') }
+it { is_expected.to contain_package('httpd').only_with_ensure('latest') }
 ```
 
 You can use the `with` method to verify the value of multiple parameters.
 
 ```ruby
-it do should contain_service('keystone').with(
-  'ensure'     => 'running',
-  'enable'     => 'true',
-  'hasstatus'  => 'true',
-  'hasrestart' => 'true'
-) end
+it do
+  is_expected.to contain_service('keystone').with(
+    'ensure'     => 'running',
+    'enable'     => 'true',
+    'hasstatus'  => 'true',
+    'hasrestart' => 'true'
+  )
+end
 ```
 
 The same holds for the `only_with` method, which in addition verifies the exact
 set of parameters and values for the resource in the catalogue.
 
 ```ruby
-it do should contain_user('luke').only_with(
-  'ensure'    => 'present',
-  'uid'    => '501'
-) end
+it do
+  is_expected.to contain_user('luke').only_with(
+    'ensure' => 'present',
+    'uid'    => '501'
+  )
+end
 ```
 
 You can also test that specific parameters have been left undefined with the
 generic `without_<parameter>` chains.
 
 ```ruby
-it { should contain_file('/foo/bar').without_mode }
+it { is_expected.to contain_file('/foo/bar').without_mode }
 ```
 
 You can use the without method to verify that a list of parameters have not been
 defined
 
 ```ruby
-it { should contain_service('keystone').without(
+it { is_expected.to contain_service('keystone').without(
   ['restart', 'status']
 )}
 ```
@@ -171,28 +181,28 @@ You can test the number of resources in the catalogue with the
 `have_resource_count` matcher.
 
 ```ruby
-it { should have_resource_count(2) }
+it { is_expected.to have_resource_count(2) }
 ```
 
 The number of classes in the catalogue can be checked with the
 `have_class_count` matcher.
 
 ```ruby
-it { should have_class_count(2) }
+it { is_expected.to have_class_count(2) }
 ```
 
 You can also test the number of a specific resource type, by using the generic
 `have_<resource type>_resource_count` matcher.
 
 ```ruby
-it { should have_exec_resource_count(1) }
+it { is_expected.to have_exec_resource_count(1) }
 ```
 
 This last matcher also works for defined types. If the resource type contains
 ::, you can replace it with __ (two underscores).
 
 ```ruby
-it { should have_logrotate__rule_resource_count(3) }
+it { is_expected.to have_logrotate__rule_resource_count(3) }
 ```
 
 *NOTE*: when testing a class, the catalogue generated will always contain at
@@ -205,19 +215,19 @@ catalogue generated when testing a defined type will have at least one resource
 The following methods will allow you to test the relationships between the resources in your catalogue, regardless of how the relationship is defined. This means that it doesn’t matter if you prefer to define your relationships with the metaparameters (**require**, **before**, **notify** and **subscribe**) or the chaining arrows (**->**, **~>**, **<-** and **<~**), they’re all tested the same.
 
 ```ruby
-it { should contain_file('foo').that_requires('File[bar]') }
-it { should contain_file('foo').that_comes_before('File[bar]') }
-it { should contain_file('foo').that_notifies('File[bar]') }
-it { should contain_file('foo').that_subscribes_to('File[bar]') }
+it { is_expected.to contain_file('foo').that_requires('File[bar]') }
+it { is_expected.to contain_file('foo').that_comes_before('File[bar]') }
+it { is_expected.to contain_file('foo').that_notifies('File[bar]') }
+it { is_expected.to contain_file('foo').that_subscribes_to('File[bar]') }
 ```
 
 An array can be used to test a resource for multiple relationships
 
 ```ruby
-it { should contain_file('foo').that_requires(['File[bar]', 'File[baz]']) }
-it { should contain_file('foo').that_comes_before(['File[bar]','File[baz]']) }
-it { should contain_file('foo').that_notifies(['File[bar]', 'File[baz]']) }
-it { should contain_file('foo').that_subscribes_to(['File[bar]', 'File[baz]']) }
+it { is_expected.to contain_file('foo').that_requires(['File[bar]', 'File[baz]']) }
+it { is_expected.to contain_file('foo').that_comes_before(['File[bar]','File[baz]']) }
+it { is_expected.to contain_file('foo').that_notifies(['File[bar]', 'File[baz]']) }
+it { is_expected.to contain_file('foo').that_subscribes_to(['File[bar]', 'File[baz]']) }
 ```
 
 You can also test the reverse direction of the relationship, so if you have the following bit of Puppet code
@@ -232,13 +242,14 @@ notify { 'bar':
 You can test that **Notify[bar]** comes before **Notify[foo]**
 
 ```ruby
-it { should contain_notify('bar').that_comes_before('Notify[foo]') }
+it { is_expected.to contain_notify('bar').that_comes_before('Notify[foo]') }
 ```
 Or, you can test that **Notify[foo]** requires **Notify[bar]**
 
 ```ruby
-it { should contain_notify('foo').that_requires('Notify[bar]') }
+it { is_expected.to contain_notify('foo').that_requires('Notify[bar]') }
 ```
+
 ##### Match target syntax
 
 Note that this notation does not support any of the features you're used from the puppet language. Only a single resource with a single, unquoted title can be referenced here. Class names need to be always fully qualified and not have the leading `::`. It currently does not support inline arrays or quoting.
@@ -252,17 +263,7 @@ These will not work
 * `Notify[foo, bar]`
 * `Class[::profile::apache]`
 
-#### Type matcher
-
-When testing custom types, the `be_valid_type` matcher provides a range of expectations:
-
-* `with_provider(<provider_name>)`: check that the right provider was selected
-* `with_properties(<property_list>)`: check that the specified properties are available
-* `with_parameters(<parameter_list>)`: check that the specified parameters are available
-* `with_features(<feature_list>)`: check that the specified features are available
-* `with_set_attributes(<param_value_hash>)`: check that the specified attributes are set
-
-#### Recursive dependencies
+##### Recursive dependencies
 
 The relationship matchers are recursive in two directions:
 
@@ -282,7 +283,6 @@ class foo::config {
   file { '/foo': }
 }
 ```
-
 
 * horizontal recursion, which follows indirect dependencies (dependencies of dependencies).
  E.g. where `Yumrepo['foo']` comes before `File['/foo']`:
@@ -305,10 +305,19 @@ class foo::config {
 }
 ```
 
-#### Autorequires
+##### Autorequires
 
 Autorequires are considered in dependency checks.
 
+#### Type matcher
+
+When testing custom types, the `be_valid_type` matcher provides a range of expectations:
+
+* `with_provider(<provider_name>)`: check that the right provider was selected
+* `with_properties(<property_list>)`: check that the specified properties are available
+* `with_parameters(<parameter_list>)`: check that the specified parameters are available
+* `with_features(<feature_list>)`: check that the specified features are available
+* `with_set_attributes(<param_value_hash>)`: check that the specified attributes are set
 
 ### Writing tests
 
@@ -333,7 +342,7 @@ describe 'sysctl' do
   let(:title) { 'baz' }
   let(:params) { { :value => 'foo' } }
 
-  it { should contain_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf") }
+  it { is_expected.to contain_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf") }
 end
 ```
 
@@ -343,7 +352,7 @@ end
 let(:title) { 'foo' }
 ```
 
-#### Specifying the parameters to pass to a resources or parametised class
+#### Specifying the parameters to pass to a resources or parameterised class
 
 ```ruby
 let(:params) { {:ensure => 'present', ...} }
@@ -437,7 +446,7 @@ For your convenience though, a `run` matcher exists to provide easier to
 understand test cases.
 
 ```ruby
-it { should run.with_params('foo').and_return('bar') }
+it { is_expected.to run.with_params('foo').and_return('bar') }
 ```
 
 ### Writing tests
@@ -466,7 +475,7 @@ You can specify the arguments to pass to your function during the test(s) using
 either the `with_params` chain method in the `run` matcher
 
 ```ruby
-it { should run.with_params('foo', 'bar', ['baz']) }
+it { is_expected.to run.with_params('foo', 'bar', ['baz']) }
 ```
 
 Or by using the `call` method on the subject directly
@@ -483,7 +492,7 @@ You can test the result of a function (if it produces one) using either the
 `and_returns` chain method in the `run` matcher
 
 ```ruby
-it { should run.with_params('foo').and_return('bar') }
+it { is_expected.to run.with_params('foo').and_return('bar') }
 ```
 
 Or by using any of the existing RSpec matchers on the subject directly
@@ -501,8 +510,8 @@ You can test whether the function throws an exception using either the
 `and_raises_error` chain method in the `run` matcher
 
 ```ruby
-it { should run.with_params('a', 'b').and_raise_error(Puppet::ParseError) }
-it { should_not run.with_params('a').and_raise_error(Puppet::ParseError) }
+it { is_expected.to run.with_params('a', 'b').and_raise_error(Puppet::ParseError) }
+it { is_expected.not_to run.with_params('a').and_raise_error(Puppet::ParseError) }
 ```
 
 Or by using the existing `raises_error` RSpec matcher
@@ -521,7 +530,7 @@ stubbing other parts of the system.
 
 ```ruby
 before(:each) { scope.expects(:lookupvar).with('some_variable').returns('some_value') }
-it { should run.with_params('...').and_return('...') }
+it { is_expected.to run.with_params('...').and_return('...') }
 ```
 
 ## Hiera integration
@@ -612,3 +621,5 @@ list of untouched resources.
   * [rspec-puppet-facts](https://github.com/mcanevet/rspec-puppet-facts): Simplify your unit tests by looping on every supported Operating System and populating facts.
   * [rspec-puppet-osmash](https://github.com/Aethylred/rspec-puppet-osmash): Provides Operation System hashes and validations for rspec-puppet
   * [puppet_spec_facts](https://github.com/danieldreier/puppet_spec_facts): Gem to provide puppet fact hashes for rspec-puppet testing
+
+For a list of other module development tools see https://puppet.community/plugins/
