@@ -197,7 +197,7 @@ module RSpec::Puppet
 
       stub_facts! facts_val
 
-      node_facts = Puppet::Node::Facts.new(nodename, facts_val)
+      node_facts = Puppet::Node::Facts.new(nodename, facts_val.dup)
 
       node_obj = Puppet::Node.new(nodename, { :parameters => facts_val, :facts => node_facts })
 
