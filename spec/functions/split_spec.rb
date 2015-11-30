@@ -10,7 +10,9 @@ describe 'split' do
     expected_error = Puppet::ParseError
   end
 
-  if Puppet.version.to_f >= 4.0
+  if Puppet.version.to_f >= 4.3
+    expected_error_message = /expects \d+ arguments/
+  elsif Puppet.version.to_f >= 4.0
     expected_error_message = /mis-matched arguments/
   else
     expected_error_message = /number of arguments/
