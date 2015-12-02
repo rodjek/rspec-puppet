@@ -349,6 +349,12 @@ let(:title) { 'foo' }
 let(:params) { {:ensure => 'present', ...} }
 ```
 
+##### Passing Puppet's `undef` as a parameter value
+
+```ruby
+let(:params) { {:user => nil, ...} }
+```
+
 #### Specifying the FQDN of the test node
 
 If the manifest you're testing expects to run on host with a particular name,
