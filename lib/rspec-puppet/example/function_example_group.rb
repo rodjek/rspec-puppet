@@ -10,7 +10,7 @@ module RSpec::Puppet
       vardir = setup_puppet
 
       if Puppet.version.to_f >= 4.0
-        env = Puppet::Node::Environment.create(environment, [File.join(Puppet[:environmentpath],'fixtures','modules')], File.join(Puppet[:environmentpath],'fixtures','manifests'))
+        env = build_4x_environment(environment)
         loader = Puppet::Pops::Loaders.new(env)
         func = loader.private_environment_loader.load(:function,function_name)
         return func if func
@@ -82,10 +82,7 @@ module RSpec::Puppet
 
     def build_node(name, opts = {})
       if Puppet.version.to_f >= 4.0
-        node_environment = Puppet::Node::Environment.create(
-          environment,
-          [File.join(Puppet[:environmentpath],'fixtures','modules')],
-          File.join(Puppet[:environmentpath],'fixtures','manifests'))
+        node_environment = build_4x_environment(environment)
       else
         node_environment = Puppet::Node::Environment.new(environment)
       end
