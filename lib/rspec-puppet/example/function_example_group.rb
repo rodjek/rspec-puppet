@@ -63,5 +63,34 @@ module RSpec::Puppet
       compiler.compile
       compiler
     end
+
+    def build_scope(compiler, node_name)
+      if Puppet.version =~ /^2\.[67]/
+        # loadall should only be necessary prior to 3.x
+        # Please note, loadall needs to happen first when creating a scope, otherwise
+        # you might receive undefined method `function_*' errors
+        Puppet::Parser::Functions.autoloader.loadall
+        scope = Puppet::Parser::Scope.new(:compiler => compiler)
+      else
+        scope = Puppet::Parser::Scope.new(compiler)
+      end
+
+      scope.source = Puppet::Resource::Type.new(:node, node_name)
+      scope.parent = compiler.topscope
+      scope
+    end
+
+    def build_node(name, opts = {})
+      if Puppet.version.to_f >= 4.0
+        node_environment = Puppet::Node::Environment.create(
+          environment,
+          [File.join(Puppet[:environmentpath],'fixtures','modules')],
+          File.join(Puppet[:environmentpath],'fixtures','manifests'))
+      else
+        node_environment = Puppet::Node::Environment.new(environment)
+      end
+      opts.merge!({:environment => node_environment})
+      Puppet::Node.new(name, opts)
+    end
   end
 end
