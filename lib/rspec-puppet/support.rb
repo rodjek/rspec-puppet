@@ -1,8 +1,8 @@
+require 'rspec-puppet/cache'
 module RSpec::Puppet
   module Support
 
-    @@cache = {}
-    @@cache_lra = []
+    @@cache = RSpec::Puppet::Cache.new
 
     def subject
       lambda { catalogue }
@@ -225,19 +225,9 @@ module RSpec::Puppet
     end
 
     def build_catalog(*args)
-      unless @@cache.has_key? args
-        @@cache[args] = self.build_catalog_without_cache(*args)
-        @@cache_lra << args
-
-        # Keep only the most recently added 16 entries to prevent high memory consumption
-        expire_cache(@@cache, @@cache_lra, 16)
+      @@cache.get(*args) do |*args|
+        build_catalog_without_cache(*args)
       end
-      @@cache[args]
-    end
-
-    def expire_cache(cache, lra, max)
-      expired = lra.slice!(0, lra.size - max)
-      expired.each { |key| cache.delete(key) } if expired
     end
 
     # Facter currently supports lower case facts.  Bug FACT-777 has been submitted to support case sensitive
