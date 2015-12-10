@@ -122,8 +122,13 @@ module RSpec::Puppet
 
     def param_str
       params.keys.map do |r|
-        param_val = escape_special_chars(params[r].inspect)
-        "#{r.to_s} => #{param_val}"
+        param_val = params[r]
+        param_val_str = if param_val == :undef
+                          'undef'  # verbatim undef keyword
+                        else
+                          escape_special_chars(param_val.inspect)
+                        end
+        "#{r.to_s} => #{param_val_str}"
       end.join(', ')
     end
 
