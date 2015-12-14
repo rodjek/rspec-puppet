@@ -6,5 +6,9 @@ module RSpec::Puppet
     def catalogue
       @catalogue ||= load_catalogue(:define)
     end
+
+    def rspec_puppet_cleanup
+      @catalogue = nil
+    end
   end
 end

@@ -40,4 +40,7 @@ RSpec::configure do |c|
     c.include RSpec::Puppet::ProviderExampleGroup, :type => :provider, :file_path => c.escaped_path(%w[spec providers])
   end
 
+  # Hook for each example group type to remove any caches or instance variables, since they will remain
+  # and cause a memory leak.  Can't be assigned per type by :file_path, so check for its presence.
+  c.after(:each) { rspec_puppet_cleanup if respond_to?(:rspec_puppet_cleanup) }
 end

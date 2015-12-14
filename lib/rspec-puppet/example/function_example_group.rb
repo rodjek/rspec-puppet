@@ -35,6 +35,12 @@ module RSpec::Puppet
       @catalogue ||= compiler.catalog
     end
 
+    def rspec_puppet_cleanup
+      @catalogue = nil
+      @compiler = nil
+      @scope = nil
+    end
+
     private
 
     def compiler

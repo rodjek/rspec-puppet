@@ -19,5 +19,8 @@ module RSpec::Puppet
       end
     end
 
+    def rspec_puppet_cleanup
+      @type_and_resource = nil
+    end
   end
 end
