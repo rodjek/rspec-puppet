@@ -105,39 +105,38 @@ module RSpec::Puppet
 
     private
 
-      def find(resource)
-        @collection[resource.to_s]
+    def find(resource)
+      @collection[resource.to_s]
+    end
+
+    def exists?(resource)
+      !find(resource).nil?
+    end
+
+    class ResourceWrapper
+      attr_reader :resource
+
+      def initialize(resource = nil)
+        @resource = resource
       end
 
-      def exists?(resource)
-        !find(resource).nil?
+      def to_s
+        @resource.to_s
       end
 
-      class ResourceWrapper
-        attr_reader :resource
-
-        def initialize(resource = nil)
-          @resource = resource
-        end
-
-        def to_s
-          @resource.to_s
-        end
-
-        def to_hash
-          {
-            'touched' => touched?,
-          }
-        end
-
-        def touch!
-          @touched = true
-        end
-
-        def touched?
-          !!@touched
-        end
+      def to_hash
+        {
+          'touched' => touched?,
+        }
       end
 
+      def touch!
+        @touched = true
+      end
+
+      def touched?
+        !!@touched
+      end
+    end
   end
 end
