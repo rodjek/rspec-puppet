@@ -26,6 +26,10 @@ module RSpec::Puppet
       def catalog(node, _)
         Puppet::Resource::Catalog.indirection.find(node.name, :use_node => node)
       end
+
+      def environment(name)
+        Puppet::Node::Environment.new(name)
+      end
     end
 
     class Adapter4X < Base
@@ -40,8 +44,8 @@ module RSpec::Puppet
         ]
       end
 
-      def catalog(node, environment)
-        env = build_4x_environment(environment)
+      def catalog(node, environment_name)
+        env = environment(environment_name)
         loader = Puppet::Environments::Static.new(env)
         Puppet.override({:environments => loader}, 'Setup test environment') do
           node.environment = env
@@ -49,9 +53,7 @@ module RSpec::Puppet
         end
       end
 
-      private
-
-      def build_4x_environment(name)
+      def environment(name)
         modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
         manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
         Puppet::Node::Environment.create(name, [modulepath], manifest)

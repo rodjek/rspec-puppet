@@ -208,12 +208,6 @@ module RSpec::Puppet
       end
     end
 
-    def build_4x_environment(name)
-      modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
-      manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
-      Puppet::Node::Environment.create(name, [modulepath], manifest)
-    end
-
     def adapter
       @adapter ||= RSpec::Puppet::Adapters.get
     end
