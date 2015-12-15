@@ -30,18 +30,23 @@ module RSpec::Puppet
       def environment(name)
         Puppet::Node::Environment.new(name)
       end
+
+      def settings_map
+        [
+          [:modulepath, :module_path],
+          [:config, :config],
+          [:confdir, :confdir],
+        ]
+      end
     end
 
     class Adapter4X < Base
       def settings_map
-        [
-          [:modulepath, :module_path],
+        super.concat([
           [:environmentpath, :environmentpath],
-          [:config, :config],
-          [:confdir, :confdir],
           [:hiera_config, :hiera_config],
           [:strict_variables, :strict_variables],
-        ]
+        ])
       end
 
       def catalog(node, environment_name)
@@ -62,33 +67,27 @@ module RSpec::Puppet
 
     class Adapter3X < Base
       def settings_map
-        [
-          [:modulepath, :module_path],
+        super.concat([
           [:manifestdir, :manifest_dir],
           [:manifest, :manifest],
           [:templatedir, :template_dir],
-          [:config, :config],
-          [:confdir, :confdir],
           [:hiera_config, :hiera_config],
           [:parser, :parser],
           [:trusted_node_data, :trusted_node_data],
           [:ordering, :ordering],
           [:stringify_facts, :stringify_facts],
           [:strict_variables, :strict_variables],
-        ]
+        ])
       end
     end
 
     class Adapter27 < Base
       def settings_map
-        [
-          [:modulepath, :module_path],
+        super.concat([
           [:manifestdir, :manifest_dir],
           [:manifest, :manifest],
           [:templatedir, :template_dir],
-          [:config, :config],
-          [:confdir, :confdir],
-        ]
+        ])
       end
     end
 
