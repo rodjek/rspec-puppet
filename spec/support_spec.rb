@@ -35,7 +35,7 @@ describe RSpec::Puppet::Support do
       end
     end
 
-    context 'when running on puppet 3.x, with x >= 5', :if => Puppet.version.to_f >= 3.5 && Puppet.version.to_f < 4.0 do
+    context 'when running on puppet 3.x, with x >= 5', :if => (3.5 ... 4.0).include?(Puppet.version.to_f) do
       it 'sets Puppet[:trusted_node_data] to false by default' do
         subject.setup_puppet
         expect(Puppet[:trusted_node_data]).to eq(false)
@@ -47,29 +47,36 @@ describe RSpec::Puppet::Support do
       end
     end
 
-    context 'when running on puppet 3', :if => Puppet.version.to_f >= 3.0 && Puppet.version.to_f < 4.0 do
+    context 'when running on puppet ~> 3.2', :if => (3.2 ... 4.0).include?(Puppet.version.to_f) do
       it 'sets Puppet[:parser] to "current" by default' do
         subject.setup_puppet
         expect(Puppet[:parser]).to eq("current")
       end
+
       it 'reads the :parser setting' do
         allow(subject).to receive(:parser).and_return("future")
         subject.setup_puppet
         expect(Puppet[:parser]).to eq("future")
       end
+    end
+
+    context 'when running on puppet ~> 3.3', :if => (3.3 ... 4.0).include?(Puppet.version.to_f) do
       it 'sets Puppet[:stringify_facts] to true by default' do
         subject.setup_puppet
         expect(Puppet[:stringify_facts]).to eq(true)
       end
+
       it 'reads the :stringify_facts setting' do
         allow(subject).to receive(:stringify_facts).and_return(false)
         subject.setup_puppet
         expect(Puppet[:stringify_facts]).to eq(false)
       end
+
       it 'sets Puppet[:ordering] to title-hash by default' do
         subject.setup_puppet
         expect(Puppet[:ordering]).to eq('title-hash')
       end
+
       it 'reads the :ordering setting' do
         allow(subject).to receive(:ordering).and_return('manifest')
         subject.setup_puppet

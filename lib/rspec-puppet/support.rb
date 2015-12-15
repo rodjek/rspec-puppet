@@ -1,4 +1,6 @@
 require 'rspec-puppet/cache'
+require 'rspec-puppet/adapters'
+
 module RSpec::Puppet
   module Support
 
@@ -136,48 +138,7 @@ module RSpec::Puppet
       vardir = Dir.mktmpdir
       Puppet[:vardir] = vardir
 
-      if Puppet.version.to_f >= 4.0
-        settings = [
-          [:modulepath, :module_path],
-          [:environmentpath, :environmentpath],
-          [:config, :config],
-          [:confdir, :confdir],
-          [:hiera_config, :hiera_config],
-          [:strict_variables, :strict_variables],
-        ]
-      elsif Puppet.version.to_f >= 3.0
-        settings = [
-          [:modulepath, :module_path],
-          [:manifestdir, :manifest_dir],
-          [:manifest, :manifest],
-          [:templatedir, :template_dir],
-          [:config, :config],
-          [:confdir, :confdir],
-          [:hiera_config, :hiera_config],
-          [:parser, :parser],
-          [:trusted_node_data, :trusted_node_data],
-          [:ordering, :ordering],
-          [:stringify_facts, :stringify_facts],
-          [:strict_variables, :strict_variables],
-        ]
-      else
-        settings = [
-          [:modulepath, :module_path],
-          [:manifestdir, :manifest_dir],
-          [:manifest, :manifest],
-          [:templatedir, :template_dir],
-          [:config, :config],
-          [:confdir, :confdir],
-        ]
-      end
-      settings.each do |a,b|
-        value = self.respond_to?(b) ? self.send(b) : RSpec.configuration.send(b)
-        begin
-          Puppet[a] = value
-        rescue ArgumentError
-          Puppet.settings.setdefaults(:main, {a => {:default => value, :desc => a.to_s}})
-        end
-      end
+      adapter.setup_puppet(self)
 
       Puppet[:modulepath].split(File::PATH_SEPARATOR).map do |d|
         Dir["#{d}/*/lib"].entries
@@ -263,6 +224,10 @@ module RSpec::Puppet
       modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
       manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
       Puppet::Node::Environment.create(name, [modulepath], manifest)
+    end
+
+    def adapter
+      @adapter ||= RSpec::Puppet::Adapters.get
     end
   end
 end
