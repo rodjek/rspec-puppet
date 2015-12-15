@@ -22,6 +22,10 @@ module RSpec::Puppet
           # are ignored. This may lead to suprising behavior for users.
         end
       end
+
+      def catalog(node, _)
+        Puppet::Resource::Catalog.indirection.find(node.name, :use_node => node)
+      end
     end
 
     class Adapter4X < Base
@@ -34,6 +38,23 @@ module RSpec::Puppet
           [:hiera_config, :hiera_config],
           [:strict_variables, :strict_variables],
         ]
+      end
+
+      def catalog(node, environment)
+        env = build_4x_environment(environment)
+        loader = Puppet::Environments::Static.new(env)
+        Puppet.override({:environments => loader}, 'Setup test environment') do
+          node.environment = env
+          super
+        end
+      end
+
+      private
+
+      def build_4x_environment(name)
+        modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
+        manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
+        Puppet::Node::Environment.create(name, [modulepath], manifest)
       end
     end
 
