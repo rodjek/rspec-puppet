@@ -7,9 +7,13 @@ module RSpec::Puppet
       extend Forwardable
       def_delegators(:instance, :add, :cover!, :report!,
                      :filters, :add_filter, :add_from_catalog)
-    end
 
-    include Singleton
+      attr_writer :instance
+
+      def instance
+        @instance ||= new
+      end
+    end
 
     def initialize
       @collection = {}
@@ -45,17 +49,7 @@ module RSpec::Puppet
     end
 
     def report!
-      report = {}
-
-      report[:total] = @collection.size
-      report[:touched] = @collection.count { |_, resource| resource.touched? }
-      report[:untouched] = report[:total] - report[:touched]
-      report[:coverage] = sprintf("%5.2f", ((report[:touched].to_f/report[:total].to_f)*100))
-
-      report[:detailed] = Hash[*@collection.map do |name, wrapper|
-        [name, wrapper.to_hash]
-      end.flatten]
-
+      report = results
       puts <<-EOH.gsub(/^ {8}/, '')
 
         Total resources:   #{report[:total]}
@@ -68,8 +62,8 @@ module RSpec::Puppet
           Untouched resources:
 
           #{
-            untouched_resources = report[:detailed].reject do |_,rsrc|
-              rsrc["touched"]
+            untouched_resources = report[:resources].reject do |_,rsrc|
+              rsrc[:touched]
             end
             untouched_resources.inject([]) do |memo, (name,_)|
               memo << "  #{name}"
@@ -77,7 +71,21 @@ module RSpec::Puppet
           }
         EOH
       end
+    end
 
+    def results
+      report = {}
+
+      report[:total] = @collection.size
+      report[:touched] = @collection.count { |_, resource| resource.touched? }
+      report[:untouched] = report[:total] - report[:touched]
+      report[:coverage] = "%5.2f" % ((report[:touched].to_f / report[:total].to_f) * 100)
+
+      report[:resources] = Hash[*@collection.map do |name, wrapper|
+        [name, wrapper.to_hash]
+      end.flatten]
+
+      report
     end
 
     private
@@ -156,7 +164,7 @@ module RSpec::Puppet
 
       def to_hash
         {
-          'touched' => touched?,
+          :touched => touched?,
         }
       end
 
