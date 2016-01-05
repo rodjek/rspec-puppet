@@ -1,4 +1,6 @@
 require 'rspec-puppet/cache'
+require 'rspec-puppet/adapters'
+
 module RSpec::Puppet
   module Support
 
@@ -136,48 +138,7 @@ module RSpec::Puppet
       vardir = Dir.mktmpdir
       Puppet[:vardir] = vardir
 
-      if Puppet.version.to_f >= 4.0
-        settings = [
-          [:modulepath, :module_path],
-          [:environmentpath, :environmentpath],
-          [:config, :config],
-          [:confdir, :confdir],
-          [:hiera_config, :hiera_config],
-          [:strict_variables, :strict_variables],
-        ]
-      elsif Puppet.version.to_f >= 3.0
-        settings = [
-          [:modulepath, :module_path],
-          [:manifestdir, :manifest_dir],
-          [:manifest, :manifest],
-          [:templatedir, :template_dir],
-          [:config, :config],
-          [:confdir, :confdir],
-          [:hiera_config, :hiera_config],
-          [:parser, :parser],
-          [:trusted_node_data, :trusted_node_data],
-          [:ordering, :ordering],
-          [:stringify_facts, :stringify_facts],
-          [:strict_variables, :strict_variables],
-        ]
-      else
-        settings = [
-          [:modulepath, :module_path],
-          [:manifestdir, :manifest_dir],
-          [:manifest, :manifest],
-          [:templatedir, :template_dir],
-          [:config, :config],
-          [:confdir, :confdir],
-        ]
-      end
-      settings.each do |a,b|
-        value = self.respond_to?(b) ? self.send(b) : RSpec.configuration.send(b)
-        begin
-          Puppet[a] = value
-        rescue ArgumentError
-          Puppet.settings.setdefaults(:main, {a => {:default => value, :desc => a.to_s}})
-        end
-      end
+      adapter.setup_puppet(self)
 
       Puppet[:modulepath].split(File::PATH_SEPARATOR).map do |d|
         Dir["#{d}/*/lib"].entries
@@ -207,19 +168,7 @@ module RSpec::Puppet
 
       node_obj = Puppet::Node.new(nodename, { :parameters => facts_val, :facts => node_facts })
 
-      # trying to be compatible with 2.7 as well as 2.6
-      if Puppet::Resource::Catalog.respond_to? :find
-        Puppet::Resource::Catalog.find(node_obj.name, :use_node => node_obj)
-      elsif Puppet.version.to_f >= 4.0
-        env = build_4x_environment(environment)
-        loader = Puppet::Environments::Static.new(env)
-        Puppet.override({:environments => loader}, 'Setup test environment') do
-          node_obj.environment = env
-          Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
-        end
-      else
-        Puppet::Resource::Catalog.indirection.find(node_obj.name, :use_node => node_obj)
-      end
+      adapter.catalog(node_obj, environment)
     end
 
     def stub_facts!(facts)
@@ -259,10 +208,8 @@ module RSpec::Puppet
       end
     end
 
-    def build_4x_environment(name)
-      modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
-      manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
-      Puppet::Node::Environment.create(name, [modulepath], manifest)
+    def adapter
+      @adapter ||= RSpec::Puppet::Adapters.get
     end
   end
 end
