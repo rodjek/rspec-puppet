@@ -2,12 +2,54 @@ module RSpec::Puppet
   module Adapters
 
     class Base
+      # Set up all Puppet settings applicable for this Puppet version
+      #
+      # @param example_group [RSpec::Core::ExampleGroup] The RSpec context to use for local settings
+      # @return [void]
       def setup_puppet(example_group)
         settings_map.each do |puppet_setting, rspec_setting|
           set_setting(example_group, puppet_setting, rspec_setting)
         end
       end
 
+      # Set up a specific Puppet setting.
+      # configuration setting.
+      #
+      # Puppet setting values can be taken from the global RSpec configuration, or from the currently
+      # executing RSpec context. When a setting is specified both in the global configuration and in
+      # the example group, the setting in the example group is preferred.
+      #
+      # @example Configuring a Puppet setting from a global RSpec configuration value
+      #   RSpec.configure do |config|
+      #     config.parser = "future"
+      #   end
+      #   # => Puppet[:parser] will be future
+      #
+      # @example Configuring a Puppet setting from within an RSpec example group
+      #   RSpec.describe 'my_module::my_class', :type => :class do
+      #     let(:module_path) { "/Users/luke/modules" }
+      #     #=> Puppet[:modulepath] will be "/Users/luke/modules" 
+      #   end
+      #
+      # @example Configuring a Puppet setting with both a global RSpec configuration and local context
+      #   RSpec.configure do |config|
+      #     config.confdir = "/etc/puppet"
+      #   end
+      #   RSpec.describe 'my_module', :type => :class do
+      #     # Puppet[:confdir] will be "/etc/puppet"
+      #   end
+      #   RSpec.describe 'my_module::my_class', :type => :class do
+      #     let(:confdir) { "/etc/puppetlabs/puppet" }
+      #     # => Puppet[:confdir] will be "/etc/puppetlabs/puppet" in this example group
+      #   end
+      #   RSpec.describe 'my_module::my_define', :type => :define do
+      #     # Puppet[:confdir] will be "/etc/puppet" again
+      #   end
+      #
+      # @param example_group [RSpec::Core::ExampleGroup] The RSpec context to use for local settings
+      # @param puppet_setting [Symbol] The name of the Puppet setting to configure
+      # @param rspec_setting [Symbol] The name of the RSpec context specific or global setting to use
+      # @return [void]
       def set_setting(example_group, puppet_setting, rspec_setting)
         if example_group.respond_to?(rspec_setting)
           value = example_group.send(rspec_setting)
