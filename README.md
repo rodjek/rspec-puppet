@@ -601,10 +601,14 @@ spec/fixtures/hiera/hiera.yaml
 ## Producing coverage reports
 
 You can output a basic resource coverage report with the following in
-you spec file.
+your `spec_helper.rb`
 
 ```ruby
-at_exit { RSpec::Puppet::Coverage.report! }
+RSpec.configure do |c|
+  c.after(:suite) do
+    RSpec::Puppet::Coverage.report!
+  end
+end
 ```
 
 This checks which Puppet resources have been explicitly checked as part
