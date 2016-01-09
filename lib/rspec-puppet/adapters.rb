@@ -81,15 +81,41 @@ module RSpec::Puppet
           [:confdir, :confdir],
         ]
       end
+
+      def modulepath
+        Puppet[:modulepath].split(File::PATH_SEPARATOR)
+      end
+
+      def manifest
+        Puppet[:manifest]
+      end
     end
 
     class Adapter4X < Base
       def setup_puppet(example_group)
         super
-        modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
-        manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
-        env = Puppet::Node::Environment.create(@environment_name, [modulepath], manifest)
+
+        if rspec_modulepath = RSpec.configuration.module_path
+          modulepath = rspec_modulepath.split(File::PATH_SEPARATOR)
+        else
+          modulepath = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
+            File.join(path, 'fixtures', 'modules')
+          end
+        end
+
+        if rspec_manifest = RSpec.configuration.manifest
+          manifest = rspec_manifest
+        else
+          manifest = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
+            File.join(path, 'fixtures', 'manifests')
+          end.find do |path|
+            File.exist?(path)
+          end
+        end
+
+        env = Puppet::Node::Environment.create(@environment_name, modulepath, manifest)
         loader = Puppet::Environments::Static.new(env)
+
         Puppet.push_context(
           {
             :environments => loader,
@@ -108,12 +134,20 @@ module RSpec::Puppet
       end
 
       def catalog(node)
-        node.environment = env
+        node.environment = current_environment
         super
       end
 
       def current_environment
         Puppet.lookup(:current_environment)
+      end
+
+      def modulepath
+        current_environment.modulepath
+      end
+
+      def manifest
+        current_environment.manifest
       end
     end
 

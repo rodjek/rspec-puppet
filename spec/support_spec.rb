@@ -8,7 +8,9 @@ describe RSpec::Puppet::Support do
 
   describe '#setup_puppet' do
     before do
-      RSpec::Puppet::Adapters.get.setup_puppet(subject)
+      adapter = RSpec::Puppet::Adapters.get
+      adapter.setup_puppet(subject)
+      subject.adapter = adapter
     end
 
     it 'updates the ruby $LOAD_PATH based on the current modulepath' do

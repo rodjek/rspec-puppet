@@ -39,7 +39,7 @@ module RSpec::Puppet
 
     def import_str
       import_str = ""
-      Puppet[:modulepath].split(File::PATH_SEPARATOR).each { |d|
+      adapter.modulepath.each { |d|
         if File.exists?(File.join(d, 'manifests', 'init.pp'))
           path_to_manifest = File.join([
             d,
@@ -53,7 +53,7 @@ module RSpec::Puppet
           ].join("\n")
           break
         elsif File.exists?(d)
-          import_str = "import '#{Puppet[:manifest]}'\n"
+          import_str = "import '#{adapter.manifest}'\n"
           break
         end
       }
@@ -138,7 +138,7 @@ module RSpec::Puppet
       vardir = Dir.mktmpdir
       Puppet[:vardir] = vardir
 
-      Puppet[:modulepath].split(File::PATH_SEPARATOR).map do |d|
+      adapter.modulepath.map do |d|
         Dir["#{d}/*/lib"].entries
       end.flatten.each do |lib|
         $LOAD_PATH << lib
@@ -206,6 +206,9 @@ module RSpec::Puppet
       end
     end
 
-    attr_reader :adapter
+    # @!attribute [r] adapter
+    #   @api private
+    #   @return [Class < RSpec::Puppet::Adapters::Base]
+    attr_accessor :adapter
   end
 end
