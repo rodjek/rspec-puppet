@@ -7,6 +7,7 @@ require 'rspec-puppet/matchers'
 require 'rspec-puppet/example'
 require 'rspec-puppet/setup'
 require 'rspec-puppet/coverage'
+require 'rspec-puppet/adapters'
 
 begin
   require 'puppet/test/test_helper'
@@ -62,6 +63,13 @@ RSpec.configure do |c|
         Puppet::Test::TestHelper.after_each_test
       rescue
       end
+    end
+  end
+
+  c.before :each do
+    if self.class.ancestors.include? RSpec::Puppet::Support
+      @adapter = RSpec::Puppet::Adapters.get
+      @adapter.setup_puppet(self)
     end
   end
 end

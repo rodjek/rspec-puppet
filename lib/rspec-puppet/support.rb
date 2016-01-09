@@ -138,8 +138,6 @@ module RSpec::Puppet
       vardir = Dir.mktmpdir
       Puppet[:vardir] = vardir
 
-      adapter.setup_puppet(self)
-
       Puppet[:modulepath].split(File::PATH_SEPARATOR).map do |d|
         Dir["#{d}/*/lib"].entries
       end.flatten.each do |lib|
@@ -208,8 +206,6 @@ module RSpec::Puppet
       end
     end
 
-    def adapter
-      @adapter ||= RSpec::Puppet::Adapters.get
-    end
+    attr_reader :adapter
   end
 end

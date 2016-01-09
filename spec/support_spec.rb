@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'rspec-puppet/adapters'
 
 describe RSpec::Puppet::Support do
   subject do
@@ -6,6 +7,10 @@ describe RSpec::Puppet::Support do
   end
 
   describe '#setup_puppet' do
+    before do
+      RSpec::Puppet::Adapters.get.setup_puppet(self)
+    end
+
     it 'updates the ruby $LOAD_PATH based on the current modulepath' do
       basedir = RSpec.configuration.module_path
 
