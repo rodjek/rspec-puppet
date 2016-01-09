@@ -84,6 +84,21 @@ module RSpec::Puppet
     end
 
     class Adapter4X < Base
+      def setup_puppet(example_group)
+        super
+        modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
+        manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
+        env = Puppet::Node::Environment.create(@environment_name, [modulepath], manifest)
+        loader = Puppet::Environments::Static.new(env)
+        Puppet.push_context(
+          {
+            :environments => loader,
+            :current_environment => env
+          },
+          "Setup rspec-puppet environments"
+        )
+      end
+
       def settings_map
         super.concat([
           [:environmentpath, :environmentpath],
@@ -93,18 +108,12 @@ module RSpec::Puppet
       end
 
       def catalog(node)
-        env = current_environment
-        loader = Puppet::Environments::Static.new(env)
-        Puppet.override({:environments => loader}, 'Setup test environment') do
-          node.environment = env
-          super
-        end
+        node.environment = env
+        super
       end
 
       def current_environment
-        modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
-        manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
-        Puppet::Node::Environment.create(@environment_name, [modulepath], manifest)
+        Puppet.lookup(:current_environment)
       end
     end
 
