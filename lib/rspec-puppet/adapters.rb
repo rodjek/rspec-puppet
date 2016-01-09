@@ -10,6 +10,7 @@ module RSpec::Puppet
         settings_map.each do |puppet_setting, rspec_setting|
           set_setting(example_group, puppet_setting, rspec_setting)
         end
+        @environment_name = example_group.environment
       end
 
       # Set up a specific Puppet setting.
@@ -65,12 +66,12 @@ module RSpec::Puppet
         end
       end
 
-      def catalog(node, _)
+      def catalog(node)
         Puppet::Resource::Catalog.indirection.find(node.name, :use_node => node)
       end
 
-      def environment(name)
-        Puppet::Node::Environment.new(name)
+      def current_environment
+        Puppet::Node::Environment.new(@environment_name)
       end
 
       def settings_map
@@ -91,8 +92,8 @@ module RSpec::Puppet
         ])
       end
 
-      def catalog(node, environment_name)
-        env = environment(environment_name)
+      def catalog(node)
+        env = current_environment
         loader = Puppet::Environments::Static.new(env)
         Puppet.override({:environments => loader}, 'Setup test environment') do
           node.environment = env
@@ -100,10 +101,10 @@ module RSpec::Puppet
         end
       end
 
-      def environment(name)
+      def current_environment
         modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
         manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
-        Puppet::Node::Environment.create(name, [modulepath], manifest)
+        Puppet::Node::Environment.create(@environment_name, [modulepath], manifest)
       end
     end
 

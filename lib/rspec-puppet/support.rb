@@ -166,7 +166,7 @@ module RSpec::Puppet
 
       node_obj = Puppet::Node.new(nodename, { :parameters => facts_val, :facts => node_facts })
 
-      adapter.catalog(node_obj, environment)
+      adapter.catalog(node_obj)
     end
 
     def stub_facts!(facts)
