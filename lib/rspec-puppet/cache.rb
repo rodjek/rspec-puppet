@@ -11,10 +11,10 @@ module RSpec::Puppet
     end
 
     def get(*args, &blk)
+      expire!
       if !@cache.has_key? args
         @cache[args] = (blk || @default_proc).call(*args)
         @lra << args
-        expire!
       end
 
       @cache[args]
