@@ -14,7 +14,7 @@ module RSpec::Puppet
       if @cache.has_key? args
         # Cache hit
         # move that entry last to make it "most recenty used"
-        @ira.insert(-1, @ira.delete_at(@ira.index(args)))
+        @lra.insert(-1, @lra.delete_at(@lra.index(args)))
       else
         # Cache miss
         # Ensure room by evicting least recently used if no space left
