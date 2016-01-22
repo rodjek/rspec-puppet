@@ -11,10 +11,16 @@ module RSpec::Puppet
     end
 
     def get(*args, &blk)
-      if !@cache.has_key? args
+      if @cache.has_key? args
+        # Cache hit
+        # move that entry last to make it "most recenty used"
+        @ira.insert(-1, @ira.delete_at(@ira.index(args)))
+      else
+        # Cache miss
+        # Ensure room by evicting least recently used if no space left
+        expire!
         @cache[args] = (blk || @default_proc).call(*args)
         @lra << args
-        expire!
       end
 
       @cache[args]
@@ -23,8 +29,8 @@ module RSpec::Puppet
     private
 
     def expire!
-      expired = @lra.slice!(0, @lra.size - MAX_ENTRIES)
-      expired.each { |key| @cache.delete(key) } if expired
+      # delete one entry (the oldest) when there is no room in cache
+      @cache.delete(@lra.shift) if @cached.size == MAX_ENTRIES
     end
   end
 end
