@@ -30,7 +30,7 @@ module RSpec::Puppet
 
     def expire!
       # delete one entry (the oldest) when there is no room in cache
-      @cache.delete(@lra.shift) if @cached.size == MAX_ENTRIES
+      @cache.delete(@lra.shift) if @cache.size == MAX_ENTRIES
     end
   end
 end
