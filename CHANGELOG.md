@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.1]
+
+A quick workaround to re-enable testing with the recently released puppet 3.8.5 and the soon to be released puppet 4.3.2. See PUP-5743 for the gritty details. Upgrade to this version if you hit the "undefined method \`resource' for nil:NilClass" error.
+
 ## [2.3.0]
 
 Rspec-puppet now supports testing custom types, `:undef` values in params, structured facts, and checks resource dependencies recursively.
