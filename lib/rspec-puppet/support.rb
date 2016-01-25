@@ -9,7 +9,18 @@ module RSpec::Puppet
     end
 
     def environment
-      'rp_env'
+      # unfreeze PUPPETVERSION because of https://github.com/bundler/bundler/issues/3187
+      ver = Gem::Version.new("#{Puppet::PUPPETVERSION}")
+      # Since applying a fix for PUP-5522 (puppet 3.8.5 and 4.3.2) puppet symbolizes environment names
+      # internally. The catalog cache needs to assume that the facts and other args do not change between
+      # runs, so we have to mirror this here. Puppet versions before the change require a string as environment
+      # name, or they fail with "Unsupported data type: 'Symbol' on node xyz"
+      # See https://github.com/rodjek/rspec-puppet/pull/354 and PUP-5743 for discussion of this
+      if (Gem::Version.new('3.8.5') <= ver && ver < Gem::Version.new('4.0.0')) || Gem::Version.new('4.3.2') <= ver
+        :rp_env
+      else
+        'rp_env'
+      end
     end
 
     def load_catalogue(type)
