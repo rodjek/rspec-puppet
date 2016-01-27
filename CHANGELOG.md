@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.2]
+
+Properly fix yesterday's issue by unsharing the cache key before passing the data to puppet. This also contains a new test matrix to avoid missing a half-baked fix like yesterday.
+
 ## [2.3.1]
 
 A quick workaround to re-enable testing with the recently released puppet 3.8.5 and the soon to be released puppet 4.3.2. See PUP-5743 for the gritty details. Upgrade to this version if you hit the "undefined method \`resource' for nil:NilClass" error.
@@ -92,6 +96,8 @@ Thanks to Adrien Thebo, Alex Harvey, Brian, Dan Bode, Dominic Cleal, Javier Pala
 For changelog of versions 1.0.1 and earlier, see http://rspec-puppet.com/changelog/
 
 [2.x]: https://github.com/rodjek/rspec-puppet/compare/v2.3.0...master
+[2.3.2]: https://github.com/rodjek/rspec-puppet/compare/v2.3.1...v2.3.2
+[2.3.1]: https://github.com/rodjek/rspec-puppet/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/rodjek/rspec-puppet/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/rodjek/rspec-puppet/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/rodjek/rspec-puppet/compare/v2.0.1...v2.1.0
