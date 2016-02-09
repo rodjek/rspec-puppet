@@ -29,7 +29,7 @@ module RSpec::Puppet
       # @example Configuring a Puppet setting from within an RSpec example group
       #   RSpec.describe 'my_module::my_class', :type => :class do
       #     let(:module_path) { "/Users/luke/modules" }
-      #     #=> Puppet[:modulepath] will be "/Users/luke/modules" 
+      #     #=> Puppet[:modulepath] will be "/Users/luke/modules"
       #   end
       #
       # @example Configuring a Puppet setting with both a global RSpec configuration and local context
@@ -86,6 +86,7 @@ module RSpec::Puppet
         Puppet[:modulepath].split(File::PATH_SEPARATOR)
       end
 
+      # @return [String, nil] The path to the Puppet manifest if it is present and set, nil otherwise.
       def manifest
         Puppet[:manifest]
       end
@@ -106,11 +107,15 @@ module RSpec::Puppet
         if rspec_manifest = RSpec.configuration.manifest
           manifest = rspec_manifest
         else
-          manifest = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
+          manifest_paths = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
             File.join(path, 'fixtures', 'manifests')
-          end.find do |path|
+          end
+
+          manifest = manifest_paths.find do |path|
             File.exist?(path)
           end
+
+          manifest ||= Puppet::Node::Environment::NO_MANIFEST
         end
 
         env = Puppet::Node::Environment.create(@environment_name, modulepath, manifest)
@@ -146,8 +151,17 @@ module RSpec::Puppet
         current_environment.modulepath
       end
 
+      # Puppet 4.0 specially handles environments that don't have a manifest set, so we check for the no manifest value
+      # and return nil when it is set.
+      #
+      # @return [String, nil] The path to the Puppet manifest if it is present and set, nil otherwise.
       def manifest
-        current_environment.manifest
+        m = current_environment.manifest
+        if m == Puppet::Node::Environment::NO_MANIFEST
+          nil
+        else
+          m
+        end
       end
     end
 

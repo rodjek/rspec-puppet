@@ -134,7 +134,7 @@ module RSpec::Puppet
       paths = adapter.modulepath.map do |dir|
         File.join(dir, test_module, 'manifests')
       end
-      paths << adapter.manifest
+      paths << adapter.manifest if adapter.manifest
       paths
     end
 

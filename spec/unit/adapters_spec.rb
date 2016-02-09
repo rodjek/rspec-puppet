@@ -142,4 +142,19 @@ describe RSpec::Puppet::Adapters::Adapter4X, :if => Puppet.version.to_f >= 4.0 d
     subject.setup_puppet(test_context)
     expect(Puppet[:strict_variables]).to eq(true)
   end
+
+  describe '#manifest' do
+    it 'returns the configured environment manifest when set' do
+      allow(RSpec.configuration).to receive(:manifest).and_return("/path/to/manifest")
+      subject.setup_puppet(double(:environment => 'rp_puppet'))
+      expect(subject.manifest).to eq "/path/to/manifest"
+    end
+
+    it 'returns nil when the configured environment manifest is not set' do
+      allow(RSpec.configuration).to receive(:manifest)
+      allow(RSpec.configuration).to receive(:environmentpath).and_return("/some/missing/path:/another/missing/path")
+      subject.setup_puppet(double(:environment => 'rp_puppet'))
+      expect(subject.manifest).to be_nil
+    end
+  end
 end
