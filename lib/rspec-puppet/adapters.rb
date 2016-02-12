@@ -10,6 +10,7 @@ module RSpec::Puppet
         settings_map.each do |puppet_setting, rspec_setting|
           set_setting(example_group, puppet_setting, rspec_setting)
         end
+        @environment_name = example_group.environment
       end
 
       # Set up a specific Puppet setting.
@@ -28,7 +29,7 @@ module RSpec::Puppet
       # @example Configuring a Puppet setting from within an RSpec example group
       #   RSpec.describe 'my_module::my_class', :type => :class do
       #     let(:module_path) { "/Users/luke/modules" }
-      #     #=> Puppet[:modulepath] will be "/Users/luke/modules" 
+      #     #=> Puppet[:modulepath] will be "/Users/luke/modules"
       #   end
       #
       # @example Configuring a Puppet setting with both a global RSpec configuration and local context
@@ -65,12 +66,12 @@ module RSpec::Puppet
         end
       end
 
-      def catalog(node, _)
+      def catalog(node)
         Puppet::Resource::Catalog.indirection.find(node.name, :use_node => node)
       end
 
-      def environment(name)
-        Puppet::Node::Environment.new(name)
+      def current_environment
+        Puppet::Node::Environment.new(@environment_name)
       end
 
       def settings_map
@@ -80,9 +81,55 @@ module RSpec::Puppet
           [:confdir, :confdir],
         ]
       end
+
+      def modulepath
+        Puppet[:modulepath].split(File::PATH_SEPARATOR)
+      end
+
+      # @return [String, nil] The path to the Puppet manifest if it is present and set, nil otherwise.
+      def manifest
+        Puppet[:manifest]
+      end
     end
 
     class Adapter4X < Base
+      def setup_puppet(example_group)
+        super
+
+        if rspec_modulepath = RSpec.configuration.module_path
+          modulepath = rspec_modulepath.split(File::PATH_SEPARATOR)
+        else
+          modulepath = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
+            File.join(path, 'fixtures', 'modules')
+          end
+        end
+
+        if rspec_manifest = RSpec.configuration.manifest
+          manifest = rspec_manifest
+        else
+          manifest_paths = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
+            File.join(path, 'fixtures', 'manifests')
+          end
+
+          manifest = manifest_paths.find do |path|
+            File.exist?(path)
+          end
+
+          manifest ||= Puppet::Node::Environment::NO_MANIFEST
+        end
+
+        env = Puppet::Node::Environment.create(@environment_name, modulepath, manifest)
+        loader = Puppet::Environments::Static.new(env)
+
+        Puppet.push_context(
+          {
+            :environments => loader,
+            :current_environment => env
+          },
+          "Setup rspec-puppet environments"
+        )
+      end
+
       def settings_map
         super.concat([
           [:environmentpath, :environmentpath],
@@ -91,19 +138,30 @@ module RSpec::Puppet
         ])
       end
 
-      def catalog(node, environment_name)
-        env = environment(environment_name)
-        loader = Puppet::Environments::Static.new(env)
-        Puppet.override({:environments => loader}, 'Setup test environment') do
-          node.environment = env
-          super
-        end
+      def catalog(node)
+        node.environment = current_environment
+        super
       end
 
-      def environment(name)
-        modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
-        manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests')
-        Puppet::Node::Environment.create(name, [modulepath], manifest)
+      def current_environment
+        Puppet.lookup(:current_environment)
+      end
+
+      def modulepath
+        current_environment.modulepath
+      end
+
+      # Puppet 4.0 specially handles environments that don't have a manifest set, so we check for the no manifest value
+      # and return nil when it is set.
+      #
+      # @return [String, nil] The path to the Puppet manifest if it is present and set, nil otherwise.
+      def manifest
+        m = current_environment.manifest
+        if m == Puppet::Node::Environment::NO_MANIFEST
+          nil
+        else
+          m
+        end
       end
     end
 

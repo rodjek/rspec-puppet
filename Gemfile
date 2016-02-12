@@ -21,3 +21,7 @@ gem 'pry', :group => :development
 if ENV['COVERAGE'] == 'yes'
   gem 'coveralls', :require => false
 end
+
+if File.exist?('Gemfile.local')
+  eval_gemfile('Gemfile.local')
+end

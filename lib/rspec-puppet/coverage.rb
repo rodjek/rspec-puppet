@@ -130,16 +130,11 @@ module RSpec::Puppet
     #
     # @return [Array<String>]
     def module_paths(test_module)
-      if Puppet.version.to_f >= 4.0
-        modulepath = RSpec.configuration.module_path || File.join(Puppet[:environmentpath], 'fixtures', 'modules')
-        manifest = RSpec.configuration.manifest || File.join(Puppet[:environmentpath], 'fixtures', 'manifests', 'site.pp')
-        paths = [File.join(modulepath, test_module, 'manifests'), manifest]
-      else
-        paths = Puppet[:modulepath].split(File::PATH_SEPARATOR).map do |dir|
-          File.join(dir, test_module, 'manifests')
-        end
-        paths << Puppet[:manifest]
+      adapter = RSpec.configuration.adapter
+      paths = adapter.modulepath.map do |dir|
+        File.join(dir, test_module, 'manifests')
       end
+      paths << adapter.manifest if adapter.manifest
       paths
     end
 

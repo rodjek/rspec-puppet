@@ -7,6 +7,7 @@ require 'rspec-puppet/matchers'
 require 'rspec-puppet/example'
 require 'rspec-puppet/setup'
 require 'rspec-puppet/coverage'
+require 'rspec-puppet/adapters'
 
 begin
   require 'puppet/test/test_helper'
@@ -28,6 +29,7 @@ RSpec.configure do |c|
   c.add_setting :ordering, :default => 'title-hash'
   c.add_setting :stringify_facts, :default => true
   c.add_setting :strict_variables, :default => false
+  c.add_setting :adapter
 
   if defined?(Puppet::Test::TestHelper)
     begin
@@ -62,6 +64,14 @@ RSpec.configure do |c|
         Puppet::Test::TestHelper.after_each_test
       rescue
       end
+    end
+  end
+
+  c.before :each do
+    if self.class.ancestors.include? RSpec::Puppet::Support
+      @adapter = RSpec::Puppet::Adapters.get
+      @adapter.setup_puppet(self)
+      c.adapter = adapter
     end
   end
 end

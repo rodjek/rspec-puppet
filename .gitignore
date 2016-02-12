@@ -1,5 +1,6 @@
 *.gem
 /Gemfile.lock
+/Gemfile.local
 /.bundle/
 /vendor/
 .ruby-version

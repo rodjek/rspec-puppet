@@ -10,7 +10,7 @@ module RSpec::Puppet
       vardir = setup_puppet
 
       if Puppet.version.to_f >= 4.0
-        env = adapter.environment(environment)
+        env = adapter.current_environment
         loader = Puppet::Pops::Loaders.new(env)
         func = loader.private_environment_loader.load(:function,function_name)
         return func if func
@@ -87,7 +87,7 @@ module RSpec::Puppet
     end
 
     def build_node(name, opts = {})
-      node_environment = adapter.environment(environment)
+      node_environment = adapter.current_environment
       opts.merge!({:environment => node_environment})
       Puppet::Node.new(name, opts)
     end
