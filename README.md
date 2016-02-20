@@ -615,6 +615,16 @@ This checks which Puppet resources have been explicitly checked as part
 of the current test run and outputs both a coverage percentage and a
 list of untouched resources.
 
+A desired code coverage level can be provided. If this level is not achieved, a test failure will be raised.  This can be used with a CI service, such as Jenkins or Bamboo, to enforce code coverage.  The following example requires the code coverage to be at least 95%.
+
+```ruby
+RSpec.configure do |c|
+  c.after(:suite) do
+    RSpec::Puppet::Coverage.report!(95)
+  end
+end
+```
+
 ## Related projects
 
 * [puppetlabs_spec_helper](https://github.com/puppetlabs/puppetlabs_spec_helper): shared spec helpers to setup puppet

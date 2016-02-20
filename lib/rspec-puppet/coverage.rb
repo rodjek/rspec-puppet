@@ -48,7 +48,7 @@ module RSpec::Puppet
       end
     end
 
-    def report!
+    def report!(coverage_desired = nil)
       report = results
       puts <<-EOH.gsub(/^ {8}/, '')
 
@@ -70,6 +70,24 @@ module RSpec::Puppet
             end.sort.join("\n")
           }
         EOH
+        if coverage_desired
+          coverage_test(coverage_desired, report[:coverage])
+        end
+      end
+    end
+
+    def coverage_test(coverage_desired, coverage_actual)
+      if coverage_desired.is_a?(Numeric) && coverage_desired.to_f <= 100.00 && coverage_desired.to_f >= 0.0
+        coverage_test = RSpec.describe("Code coverage.")
+        coverage_results = coverage_test.example("Must be at least #{coverage_desired}% of code coverage") {
+          expect( coverage_actual.to_f ).to be >= coverage_desired.to_f
+        }
+        coverage_test.run
+        passed = coverage_results.execution_result.status == :passed
+
+        RSpec.configuration.reporter.example_failed coverage_results unless passed
+      else
+        puts "The desired coverage must be 0 <= x <= 100, not '#{coverage_desired.inspect}'"
       end
     end
 
