@@ -429,6 +429,27 @@ However, if you want to specify it in each example, you can do so
 let(:module_path) { '/path/to/your/module/dir' }
 ```
 
+#### Testing Exported Resources
+
+You can test if a resource was exported from the catalogue by using the
+`exported_resources` accessor in combination with any of the standard matchers.
+
+You can use `exported_resources` as the subject of a child context:
+
+```ruby
+context 'exported resources' do
+  subject { exported_resources }
+
+  it { is_expected.to contain_file('foo') }
+end
+```
+
+You can also use `exported_resources` directly in a test:
+
+```ruby
+it { expect(exported_resources).to contain_file('foo') }
+```
+
 ## Functions
 
 ### Matchers
