@@ -1,6 +1,5 @@
 require 'rspec-puppet/cache'
 require 'rspec-puppet/adapters'
-require 'rspec-puppet/support/exported_resources_accessor'
 
 module RSpec::Puppet
   module Support
@@ -15,7 +14,7 @@ module RSpec::Puppet
       'rp_env'
     end
 
-    def load_catalogue(type)
+    def load_catalogue(type, exported = false)
       vardir = setup_puppet
 
       if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
@@ -28,7 +27,7 @@ module RSpec::Puppet
 
       hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
 
-      catalogue = build_catalog(node_name, facts_hash(node_name), hiera_config_value, code)
+      catalogue = build_catalog(node_name, facts_hash(node_name), hiera_config_value, code, exported)
 
       test_module = class_name.split('::').first
       RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
@@ -148,7 +147,7 @@ module RSpec::Puppet
       vardir
     end
 
-    def build_catalog_without_cache(nodename, facts_val, hiera_config_val, code)
+    def build_catalog_without_cache(nodename, facts_val, hiera_config_val, code, exported)
 
       # If we're going to rebuild the catalog, we should clear the cached instance
       # of Hiera that Puppet is using.  This opens the possibility of the catalog
@@ -167,7 +166,7 @@ module RSpec::Puppet
 
       node_obj = Puppet::Node.new(nodename, { :parameters => facts_val, :facts => node_facts })
 
-      adapter.catalog(node_obj)
+      adapter.catalog(node_obj, exported)
     end
 
     def stub_facts!(facts)

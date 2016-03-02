@@ -24,4 +24,11 @@ describe 'export_resource' do
       should have_file_resource_count(1)
     end
   end
+
+  describe 'normal catalogue tests' do
+    it 'should not match exported resources' do
+      should_not contain_file('/exported/resource')
+      should have_file_resource_count(0)
+    end
+  end
 end

@@ -7,6 +7,10 @@ module RSpec::Puppet
       @catalogue ||= load_catalogue(:class)
     end
 
+    def exported_resources
+      lambda { load_catalogue(:class, true) }
+    end
+
     def rspec_puppet_cleanup
       @catalogue = nil
     end
