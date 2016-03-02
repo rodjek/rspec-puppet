@@ -67,7 +67,7 @@ module RSpec::Puppet
       end
 
       def catalog(node)
-        Puppet::Resource::Catalog.indirection.find(node.name, :use_node => node)
+        Puppet::Parser::Compiler.compile(node)
       end
 
       def current_environment

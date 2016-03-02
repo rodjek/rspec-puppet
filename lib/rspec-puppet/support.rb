@@ -1,5 +1,6 @@
 require 'rspec-puppet/cache'
 require 'rspec-puppet/adapters'
+require 'rspec-puppet/support/exported_resources_accessor'
 
 module RSpec::Puppet
   module Support
