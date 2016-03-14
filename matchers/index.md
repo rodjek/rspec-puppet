@@ -10,7 +10,7 @@ This is the most basic test you can do on your manifest
  * Are there no dependency cycles in the graph?
 
 {% highlight ruby %}
-it { should compile }
+it { is_expected.to compile }
 {% endhighlight %}
 
 This matcher also has an optional method that you may want to use,
@@ -19,7 +19,7 @@ relationships to (with `require`, `notify`, `subscribe`, `before` or the
 chaining arrows) also exist in the catalogue.
 
 {% highlight ruby %}
-it { should compile.with_all_deps }
+it { is_expected.to compile.with_all_deps }
 {% endhighlight %}
 
 You'll probably want to use this when testing host or role catalogues, but
@@ -30,7 +30,7 @@ In order to test that your manifest contains a particular Puppet resource, you
 should use the generic `contain_<resource>` class.
 
 {% highlight ruby %}
-it { should contain_service('apache') }
+it { is_expected.to contain_service('apache') }
 {% endhighlight %}
 
 If the resource type you're testing for contains `::` in it, replace the `::`
@@ -38,13 +38,13 @@ with `__` (two underscores).  For example, to test that your manifest contains
 `apache::vhost` you would do
 
 {% highlight ruby %}
-it { should contain_apache__vhost('my awesome vhost') }
+it { is_expected.to contain_apache__vhost('my awesome vhost') }
 {% endhighlight %}
 
 You can also test for the presence of Puppet classes in the same manner.
 
 {% highlight ruby %}
-it { should contain_class('apache') }
+it { is_expected.to contain_class('apache') }
 {% endhighlight %}
 
 #### with\_\* and without\_\*
@@ -54,9 +54,9 @@ these resources by chaining any number of `.with_<parameter>` or
 either take an exact value, a regular expression or a Ruby Proc.
 
 {% highlight ruby %}
-it { should contain_service('mysql-server').with_ensure('present') }
-it { should contain_file('/etc/logrotate.d/apache').with_content(/compress/) }
-it { should contain_file('/etc/logrotate.d/apache').without_owner('root') }
+it { is_expected.to contain_service('mysql-server').with_ensure('present') }
+it { is_expected.to contain_file('/etc/logrotate.d/apache').with_content(/compress/) }
+it { is_expected.to contain_file('/etc/logrotate.d/apache').without_owner('root') }
 {% endhighlight %}
 
 #### only_with\_\*
@@ -65,7 +65,7 @@ resources, you can do so by chaining the `.only_with_<parameter>` methods.
 These methods also take an exact value or a regular expression.
 
 {% highlight ruby %}
-it { should contain_service('httpd').only_with_ensure('running') }
+it { is_expected.to contain_service('httpd').only_with_ensure('running') }
 {% endhighlight %}
 
 #### with and without
@@ -75,7 +75,7 @@ and pass it a hash of parameters.
 
 {% highlight ruby %}
 it do
-  should contain_service('apache').with(
+  is_expected.to contain_service('apache').with(
     'ensure'     => 'running',
     'enable'     => 'true',
     'hasrestart' => 'true',
@@ -90,7 +90,7 @@ contain for that resource or class.
 
 {% highlight ruby %}
 it do
-  should contain_user('luke').only_with(
+  is_expected.to contain_user('luke').only_with(
     'ensure' => 'present',
     'uid'    => '501',
   )
@@ -102,7 +102,7 @@ To test for an exact number of resources in the manifest, you can use the
 `have_resource_count` matcher.
 
 {% highlight ruby %}
-it { should have_resource_count(2) }
+it { is_expected.to have_resource_count(2) }
 {% endhighlight %}
 
 ### have_class_count
@@ -110,7 +110,7 @@ It is also possible to test the number of classes in a manifest. Use the
 `have_class_count` matcher for this.
 
 {% highlight ruby %}
-it { should have_class_count(1) }
+it { is_expected.to have_class_count(1) }
 {% endhighlight %}
 
 ### have\_\*\_resource\_count
@@ -123,7 +123,7 @@ with `__` (two underscores).  For example, to test that your manifest contains
 a single `logrotate::rule` resource you would do
 
 {% highlight ruby %}
-it { should have_logrotate__rule_resource_count(1) }
+it { is_expected.to have_logrotate__rule_resource_count(1) }
 {% endhighlight %}
 
 *NOTE*: when testing a class, the catalogue generated will always contain at
@@ -139,10 +139,10 @@ with the metaparameters (`require`, `before`, `notify` and `subscribe`) or the
 chaining arrows (`->`, `~>`, `<-` and `<~`), they're all tested the same.
 
 {% highlight ruby %}
-it { should contain_file('foo').that_requires('File[bar]') }
-it { should contain_file('foo').that_comes_before('File[bar]') }
-it { should contain_file('foo').that_notifies('File[bar]') }
-it { should contain_file('foo').that_subscribes_to('File[bar]') }
+it { is_expected.to contain_file('foo').that_requires('File[bar]') }
+it { is_expected.to contain_file('foo').that_comes_before('File[bar]') }
+it { is_expected.to contain_file('foo').that_notifies('File[bar]') }
+it { is_expected.to contain_file('foo').that_subscribes_to('File[bar]') }
 {% endhighlight %}
 
 You can also test the reverse direction of the relationship, so if you have the
@@ -158,13 +158,13 @@ notify { 'bar':
 You can test that `Notify[bar]` comes before `Notify[foo]`
 
 {% highlight ruby %}
-it { should contain_notify('bar').that_comes_before('Notify[foo]') }
+it { is_expected.to contain_notify('bar').that_comes_before('Notify[foo]') }
 {% endhighlight %}
 
 Or, you can test that `Notify[foo]` requires `Notify[bar]`
 
 {% highlight ruby %}
-it { should contain_notify('foo').that_requires('Notify[bar]') }
+it { is_expected.to contain_notify('foo').that_requires('Notify[bar]') }
 {% endhighlight %}
 
 ## Testing for errors
@@ -177,7 +177,7 @@ describe 'my::type' do
   context 'with foo => true' do
     let(:params) { {:foo => true} }
 
-    it { should compile }
+    it { is_expected.to compile }
   end
 
   context 'with foo => bar' do
@@ -185,7 +185,7 @@ describe 'my::type' do
 
     it do
       expect {
-        should compile
+        is_expected.to compile
       }.to raise_error(Puppet::Error, /foo must be a boolean/)
     end
   end
@@ -198,7 +198,7 @@ In order to test that a Puppet function works correctly, you should use the
 `run` matcher.
 
 {% highlight ruby %}
-it { should run.with_params('foo').and_return('bar') }
+it { is_expected.to run.with_params('foo').and_return('bar') }
 {% endhighlight %}
 
 You can also test how your Puppet function fails under certain conditions using
@@ -208,18 +208,18 @@ You can test the message raised with the exception by passing a string or
 regular expression to `and_raise_error`
 
 {% highlight ruby %}
-it { should run.with_params().and_raise_error(/incorrect number of arguments) }
+it { is_expected.to run.with_params().and_raise_error(/incorrect number of arguments) }
 {% endhighlight %}
 
 Or, you can test for just the type of exception raised
 
 {% highlight ruby %}
-it { should run.with_params().and_raise_error(ArgumentError) }
+it { is_expected.to run.with_params().and_raise_error(ArgumentError) }
 {% endhighlight %}
 
 If you want to be thorough, you can also test for the exception type and the
 message
 
 {% highlight ruby %}
-it { should run.with_params().and_raise_error(ArgumentError, /number of arguments/) }
+it { is_expected.to run.with_params().and_raise_error(ArgumentError, /number of arguments/) }
 {% endhighlight %}
