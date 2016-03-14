@@ -91,7 +91,7 @@ As this is a defined type, the first thing we need to do is give it a title
 Now, lets test that we're including that `logrotate::setup` class
 
 {% highlight ruby %}
-  it { should contain_class('logrotate::setup') }
+  it { is_expected.to contain_class('logrotate::setup') }
 {% endhighlight %}
 
 Remember, we don't want to test what `logrotate::setup` does, we'll leave that
@@ -105,7 +105,7 @@ require 'spec_helper'
 describe 'logrotate::rule' do
   let(:title) { 'nginx' }
 
-  it { should contain_class('logrotate::setup') }
+  it { is_expected.to contain_class('logrotate::setup') }
 end
 {% endhighlight %}
 
@@ -114,7 +114,7 @@ OK, on to dealing with that `file` resource, lets use the title of the
 `/etc/logrotate.d/`.
 
 {% highlight ruby %}
-  it { should contain_file('/etc/logrotate.d/nginx') }
+  it { is_expected.to contain_file('/etc/logrotate.d/nginx') }
 {% endhighlight %}
 
 As it currently stands, this test is pretty useless as it doesn't actually
@@ -125,7 +125,7 @@ values: present, owned by root and read only:
 
 {% highlight ruby %}
   it do 
-    should contain_file('/etc/logrotate.d/nginx').with({
+    is_expected.to contain_file('/etc/logrotate.d/nginx').with({
       'ensure' => 'present',
       'owner'  => 'root',
       'group'  => 'root',
@@ -142,10 +142,10 @@ require 'spec_helper'
 describe 'logrotate::rule' do
   let(:title) { 'nginx' }
 
-  it { should contain_class('logrotate::rule') }
+  it { is_expected.to contain_class('logrotate::rule') }
 
   it do
-    should contain_file('/etc/logrotate.d/nginx').with({
+    is_expected.to contain_file('/etc/logrotate.d/nginx').with({
       'ensure' => 'present',
       'owner'  => 'root',
       'group'  => 'root',
@@ -166,7 +166,7 @@ should exist in the file.
     let(:params) { {:compress => true} }
 
     it do
-      should contain_file('/etc/logrotate.d/nginx') \
+      is_expected.to contain_file('/etc/logrotate.d/nginx') \
         .with_content(/^\s*compress$/)
     end
   end
@@ -175,7 +175,7 @@ should exist in the file.
     let(:params) { {:compress => false} }
 
     it do
-      should contain_file('/etc/logrotate.d/nginx') \
+      is_expected.to contain_file('/etc/logrotate.d/nginx') \
         .with_content(/^\s*nocompress$/)
     end
   end
@@ -198,7 +198,7 @@ it.
 
     it do
       expect {
-        should contain_file('/etc/logrotate.d/nginx')
+        is_expected.to contain_file('/etc/logrotate.d/nginx')
       }.to raise_error(Puppet::Error, /compress must be true or false/)
     end
   end
@@ -212,10 +212,10 @@ require 'spec_helper'
 describe 'logrotate::rule' do
   let(:title) { 'nginx' }
 
-  it { should contain_class('logrotate::rule') }
+  it { is_expected.to contain_class('logrotate::rule') }
 
   it do
-    should contain_file('/etc/logrotate.d/nginx').with({
+    is_expected.to contain_file('/etc/logrotate.d/nginx').with({
       'ensure' => 'present',
       'owner'  => 'root',
       'group'  => 'root',
@@ -227,7 +227,7 @@ describe 'logrotate::rule' do
     let(:params) { {:compress => true} }
 
     it do
-      should contain_file('/etc/logrotate.d/nginx') \
+      is_expected.to contain_file('/etc/logrotate.d/nginx') \
         .with_content(/^\s*compress$/)
     end
   end
@@ -236,7 +236,7 @@ describe 'logrotate::rule' do
     let(:params) { {:compress => false} }
 
     it do
-      should contain_file('/etc/logrotate.d/nginx') \
+      is_expected.to contain_file('/etc/logrotate.d/nginx') \
         .with_content(/^\s*nocompress$/)
     end
   end
@@ -246,7 +246,7 @@ describe 'logrotate::rule' do
 
     it do
       expect {
-        should contain_file('/etc/logrotate.d/nginx')
+        is_expected.to contain_file('/etc/logrotate.d/nginx')
       }.to raise_error(Puppet::Error, /compress must be true or false/)
     end
   end
@@ -322,7 +322,7 @@ As with all other rspec-puppet tests, you have access to to all the standard
 RSpec matchers, however a `run` matcher has been provided for your convenience.
 
 {% highlight ruby %}
-it { should run.with_params('foo').and_return('bar') }
+it { is_expected.to run.with_params('foo').and_return('bar') }
 {% endhighlight %}
 
 A very basic example spec file for testing a `to_lower` function would be
@@ -330,6 +330,6 @@ A very basic example spec file for testing a `to_lower` function would be
 require 'spec_helper'
 
 describe 'to_lower' do
-  it { should run.with_params('FOO').and_return('foo') }
+  it { is_expected.to run.with_params('FOO').and_return('foo') }
 end
 {% endhighlight %}
