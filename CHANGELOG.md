@@ -2,6 +2,25 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.0]
+
+This release now supports testing exported resources in the same way that normal resources in the catalog are tested. Access them in your examples using `exported_resources`. See "Testing Exported Resources" in the README for examples.
+
+### Changed
+
+* This release pulls out much of the version-specific code into separate classes to reduce complexity and enable easier maintenance going forward.
+
+### Added
+
+* Support colon-separated module_path and environmentpath values.
+* Support a threshold for the code coverage test, that can fail the whole run.
+* Ensure a consistent environment for all examples by adding a forced initialization of puppet before each.
+
+### Credits
+
+Thanks to Adrien Thebo, Arthur Gautier, Brett Gray, and Nicholas Hinds, as well as all the folks helping out on github for their contributions to this release.
+
+
 ## [2.3.2]
 
 Properly fix yesterday's issue by unsharing the cache key before passing the data to puppet. This also contains a new test matrix to avoid missing a half-baked fix like yesterday.
@@ -95,7 +114,8 @@ Thanks to Adrien Thebo, Alex Harvey, Brian, Dan Bode, Dominic Cleal, Javier Pala
 ## 1.0.1 and earlier
 For changelog of versions 1.0.1 and earlier, see http://rspec-puppet.com/changelog/
 
-[2.x]: https://github.com/rodjek/rspec-puppet/compare/v2.3.0...master
+[2.x]: https://github.com/rodjek/rspec-puppet/compare/v2.4.0...master
+[2.4.0]: https://github.com/rodjek/rspec-puppet/compare/v2.3.2...v2.4.0
 [2.3.2]: https://github.com/rodjek/rspec-puppet/compare/v2.3.1...v2.3.2
 [2.3.1]: https://github.com/rodjek/rspec-puppet/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/rodjek/rspec-puppet/compare/v2.2.0...v2.3.0
