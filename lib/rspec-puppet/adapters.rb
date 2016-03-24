@@ -66,8 +66,13 @@ module RSpec::Puppet
         end
       end
 
-      def catalog(node)
-        Puppet::Resource::Catalog.indirection.find(node.name, :use_node => node)
+      def catalog(node, exported)
+        if exported
+          # Use the compiler directly to skip the filtering done by the indirector
+          Puppet::Parser::Compiler.compile(node).filter { |r| !r.exported? }
+        else
+          Puppet::Resource::Catalog.indirection.find(node.name, :use_node => node)
+        end
       end
 
       def current_environment
@@ -138,7 +143,7 @@ module RSpec::Puppet
         ])
       end
 
-      def catalog(node)
+      def catalog(node, exported)
         node.environment = current_environment
         super
       end
