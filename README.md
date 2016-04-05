@@ -554,6 +554,20 @@ before(:each) { scope.expects(:lookupvar).with('some_variable').returns('some_va
 it { is_expected.to run.with_params('...').and_return('...') }
 ```
 
+Note that this does not work when testing manifests which use custom functions. Instead,
+you'll need to create a replacement function directly.
+
+```ruby
+before(:each) do
+    Puppet::Parser::Functions.newfunction(:custom_function, :type => :rvalue) { |args|
+        raise ArgumentError, 'expected foobar' unless args[0] == 'foobar'
+        'expected value'
+    }
+end
+
+```
+
+
 ## Hiera integration
 
 ### Configuration
