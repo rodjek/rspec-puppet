@@ -4,6 +4,7 @@ title: setup
 ---
 
 # Setup
+
 ## Automatic setup
 
 rspec-puppet ships with a small script that will automate the setup process for

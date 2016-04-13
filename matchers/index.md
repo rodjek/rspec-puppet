@@ -3,7 +3,9 @@ layout: minimal
 ---
 
 # Matchers
+
 ## Classes, Defined Types and Hosts
+
 ### compile
 This is the most basic test you can do on your manifest
  * Does it compile?
@@ -193,6 +195,7 @@ end
 {% endhighlight %}
 
 ## Functions
+
 ### run
 In order to test that a Puppet function works correctly, you should use the
 `run` matcher.
