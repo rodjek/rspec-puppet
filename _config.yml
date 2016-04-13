@@ -1,3 +1,2 @@
-pygments: true
-markdown: maruku
+markdown: kramdown
 exclude: ['vendor']
