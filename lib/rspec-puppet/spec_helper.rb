@@ -14,7 +14,7 @@ RSpec.configure do |c|
       require 'puppet/provider/confine/exists'
       Puppet::Provider::Confine::Exists.any_instance.stubs(:which => '')
     else
-      # ONLY WORKING WITH PUPPET > 3.2 !!
+      # ONLY WORKING WITH PUPPET >= 3.2 !!
       require 'puppet/confine/exists'
       Puppet::Confine::Exists.any_instance.stubs(:which => '')
     end
