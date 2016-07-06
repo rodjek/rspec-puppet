@@ -53,6 +53,7 @@ matrix:
 
   allowed_failures:
     - env: PUPPET_GEM_VERSION='git:https://github.com/puppetlabs/puppet.git#master'
+    - rvm: 1.8.7
 
 notifications:
   email:
