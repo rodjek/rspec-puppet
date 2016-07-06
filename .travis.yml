@@ -51,7 +51,7 @@ matrix:
     - rvm: 2.0.0
       env: PUPPET_GEM_VERSION='~> 4.3.0' COVERAGE=yes
 
-  allowed_failures:
+  allow_failures:
     - env: PUPPET_GEM_VERSION='git:https://github.com/puppetlabs/puppet.git#master'
     - rvm: 1.8.7
 
