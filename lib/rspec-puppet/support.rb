@@ -18,7 +18,7 @@ module RSpec::Puppet
       vardir = setup_puppet
 
       if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
-        code = [pre_cond, test_manifest(type)].compact.join("\n")
+        code = [site_pp_str, pre_cond, test_manifest(type)].compact.join("\n")
       else
         code = [import_str, pre_cond, test_manifest(type)].compact.join("\n")
       end
@@ -59,6 +59,15 @@ module RSpec::Puppet
       }
 
       import_str
+    end
+
+    def site_pp_str
+      site_pp_str = ''
+      filepath = File.absolute_path(File.join([Puppet[:modulepath],'..','manifests','site.pp'].flatten))
+      if File.exists?(filepath)
+        site_pp_str = File.open(filepath).read
+      end
+      site_pp_str
     end
 
     def test_manifest(type)
