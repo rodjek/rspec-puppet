@@ -12,9 +12,14 @@ end
 
 gemspec
 
-gem 'rake'
+if RUBY_VERSION <= '1.8.7'
+  gem 'rake', '<= 10.5.0'
+else
+  gem 'rake'
+end
 gem 'rspec', *location_for(ENV['RSPEC_GEM_VERSION'] || '~> 3.0')
 gem 'puppet', *location_for(ENV['PUPPET_GEM_VERSION'] || '~> 4.0')
+gem 'json_pure', '<= 2.0.1', :require => false if RUBY_VERSION < '2.0.0'
 
 gem 'pry', :group => :development
 
