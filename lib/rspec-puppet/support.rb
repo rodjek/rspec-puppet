@@ -63,8 +63,9 @@ module RSpec::Puppet
 
     def site_pp_str
       site_pp_str = ''
-      filepath = File.absolute_path(File.join([Puppet[:modulepath],'..','manifests','site.pp'].flatten))
-      if File.exists?(filepath)
+      filepath = adapter.manifest
+
+      if (!filepath.nil?) && File.file?(filepath)
         site_pp_str = File.open(filepath).read
       end
       site_pp_str
