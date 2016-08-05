@@ -24,6 +24,13 @@ module RSpec::Puppet
       end
 
       node_name = nodename(type)
+      Puppet.push_context(
+        {
+          :trusted_information =>
+            Puppet::Context::TrustedInformation.new('local', node_name, {}),
+        },
+        "Context for specs"
+      )
 
       hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
 
