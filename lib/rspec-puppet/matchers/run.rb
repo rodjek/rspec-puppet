@@ -113,7 +113,7 @@ module RSpec::Puppet
 
       private
       def func_name
-        if Puppet.version.to_f >= 4.0 and ! @func_ob and ! @func_obj.respond_to?(:receiver)
+        if Puppet.version.to_f >= 4.0 and ! @func_obj.respond_to?(:receiver)
           @func_name ||= @func_obj.class.name
         else
           @func_name ||= @func_obj.name.to_s.gsub(/^function_/, '')
