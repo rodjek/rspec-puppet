@@ -123,9 +123,16 @@ module RSpec::Puppet
     end
 
     def param_str
-      params.keys.map do |r|
-        param_val = params[r]
-        param_val_str = if param_val == :undef
+      param_str_from_hash(params)
+    end
+
+    def param_str_from_hash(params_hash)
+      params_hash.keys.map do |r|
+        param_val = params_hash[r]
+        param_val_str = case param_val 
+                        when Hash
+                          "{ #{param_str_from_hash(param_val)} }"
+                        when :undef
                           'undef'  # verbatim undef keyword
                         else
                           escape_special_chars(param_val.inspect)
