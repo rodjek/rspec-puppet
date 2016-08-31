@@ -47,10 +47,11 @@ describe 'structured_data' do
   end
 
   describe 'with nested hashes' do
+    # the key "sec.ond" needs quoting, otherwise it would be a syntax error in the manifest
     let(:params) do
       { 'data'  => {
           'first'  => 1,
-          'second' => 2,
+          'sec.ond' => 2,
           'third'  => {
             'alpha' => 'a',
             'beta'  => 'b',
@@ -63,7 +64,7 @@ describe 'structured_data' do
       should contain_structured_data__def('thing').with(
         { 'data'  => {
             'first'  => 1,
-            'second' => 2,
+            'sec.ond' => 2,
             'third'  => {
               'alpha' => 'a',
               'beta'  => 'b',
@@ -74,4 +75,3 @@ describe 'structured_data' do
     }
   end
 end
-

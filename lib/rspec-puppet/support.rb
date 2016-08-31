@@ -126,18 +126,25 @@ module RSpec::Puppet
       param_str_from_hash(params)
     end
 
+    def str_from_value(value)
+      case value
+      when Hash
+        kvs = value.collect do |k,v|
+          "#{str_from_value(k)} => #{str_from_value(v)}"
+        end.join(", ")
+        "{ #{kvs} }"
+      when :undef
+        'undef'  # verbatim undef keyword
+      else
+        escape_special_chars(value.inspect)
+      end
+    end
+
     def param_str_from_hash(params_hash)
-      params_hash.keys.map do |r|
-        param_val = params_hash[r]
-        param_val_str = case param_val 
-                        when Hash
-                          "{ #{param_str_from_hash(param_val)} }"
-                        when :undef
-                          'undef'  # verbatim undef keyword
-                        else
-                          escape_special_chars(param_val.inspect)
-                        end
-        "#{r.to_s} => #{param_val_str}"
+      # the param_str has special quoting rules, because the top-level keys are the Puppet
+      # params, which may not be quoted
+      params_hash.collect do |k,v|
+        "#{k.to_s} => #{str_from_value(v)}"
       end.join(', ')
     end
 
