@@ -1,18 +1,47 @@
 require 'spec_helper'
 
 describe 'undef_test' do
-  it { should compile.with_all_deps }
+  context "with required_attribute => 'some_string'" do
+    context 'and defaults_to_undef unspecified' do
+      let(:params) { { :required_attribute => 'some_string' } }
 
-  shared_examples 'exec echo' do
-    it { should contain_exec('/bin/echo foo').with_user(nil) }
+      it { should compile.with_all_deps }
+
+      it { should contain_class('undef_test').with(:required_attribute => 'some_string') }
+
+      it { should contain_class('undef_test').without_defaults_to_undef }
+    end
+
+    context 'and defaults_to_undef => :undef' do
+      let(:params) { { :required_attribute => 'some_string', :defaults_to_undef => :undef } }
+
+      it { should compile.with_all_deps }
+
+      it { should contain_class('undef_test').with(:required_attribute => 'some_string') }
+
+      it { should contain_class('undef_test').without_defaults_to_undef }
+    end
   end
 
-  context 'with user => undef' do
-    let(:params) { { :user => :undef } }
-    include_examples 'exec echo'
-  end
+  context "with required_attribute => :undef", :unless => Puppet.version =~ /^2/ do
+    context 'and defaults_to_undef unspecified' do
+      let(:params) { { :required_attribute => :undef } }
 
-  context 'with params unset' do
-    include_examples 'exec echo'
+      it { should compile.with_all_deps }
+
+      it { should contain_class('undef_test').without_required_attribute }
+
+      it { should contain_class('undef_test').without_defaults_to_undef }
+    end
+
+    context 'and defaults_to_undef => :undef' do
+      let(:params) { { :required_attribute => :undef, :defaults_to_undef => :undef } }
+
+      it { should compile.with_all_deps }
+
+      it { should contain_class('undef_test').without_required_attribute }
+
+      it { should contain_class('undef_test').without_defaults_to_undef }
+    end
   end
 end

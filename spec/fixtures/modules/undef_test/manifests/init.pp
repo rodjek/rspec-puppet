@@ -1,5 +1,4 @@
-class undef_test($user = undef) {
-  exec { '/bin/echo foo':
-    user => $user,
-  }
-}
+class undef_test(
+  $required_attribute,
+  $defaults_to_undef = undef,
+) { }
