@@ -7,23 +7,23 @@ module RSpec::Puppet
     def subject
       function_name = self.class.top_level_description.downcase
 
-      vardir = setup_puppet
+      with_vardir do
+        if Puppet.version.to_f >= 4.0
+          env = adapter.current_environment
+          loader = Puppet::Pops::Loaders.new(env)
+          func = loader.private_environment_loader.load(:function, function_name)
+          return func if func
+        end
 
-      if Puppet.version.to_f >= 4.0
-        env = adapter.current_environment
-        loader = Puppet::Pops::Loaders.new(env)
-        func = loader.private_environment_loader.load(:function,function_name)
-        return func if func
+        # Return the method instance for the function.  This can be used with
+        # method.call
+        if env
+          return nil unless Puppet::Parser::Functions.function(function_name, env)
+        else
+          return nil unless Puppet::Parser::Functions.function(function_name)
+        end
       end
 
-      # Return the method instance for the function.  This can be used with
-      # method.call
-      if env
-        return nil unless Puppet::Parser::Functions.function(function_name,env)
-      else
-        return nil unless Puppet::Parser::Functions.function(function_name)
-      end
-      FileUtils.rm_rf(vardir) if File.directory?(vardir)
       scope.method("function_#{function_name}".intern)
     end
 
