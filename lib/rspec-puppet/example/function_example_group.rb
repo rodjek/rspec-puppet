@@ -13,10 +13,17 @@ module RSpec::Puppet
         @overrides = overrides
       end
 
-      def call(*args)
+      # This method is used by the `run` matcher to trigger the function execution, and provides a uniform interface across all puppet versions.
+      def execute(*args)
         Puppet.override(@overrides, "rspec-test scope") do
           @func.call(@overrides[:global_scope], *args)
         end
+      end
+
+      # compatibility alias for existing tests
+      def call(scope, *args)
+        RSpec.deprecate("subject.call", :replacement => "is_expected.to run.with().and_raise_error(), or execute()")
+        execute(*args)
       end
     end
 
@@ -28,11 +35,22 @@ module RSpec::Puppet
         @func = func
       end
 
-      def call(*args)
+      # This method is used by the `run` matcher to trigger the function execution, and provides a uniform interface across all puppet versions.
+      def execute(*args)
         if args.nil?
           @func.call
         else
           @func.call(args)
+        end
+      end
+
+      # This method was formerly used by the `run` matcher to trigger the function execution, and provides puppet versions dependant interface.
+      def call(*args)
+        RSpec.deprecate("subject.call", :replacement => "is_expected.to run.with().and_raise_error(), or execute()")
+        if args.nil?
+          @func.call
+        else
+          @func.call(*args)
         end
       end
     end
