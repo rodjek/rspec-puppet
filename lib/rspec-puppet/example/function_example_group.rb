@@ -4,27 +4,69 @@ module RSpec::Puppet
     include RSpec::Puppet::ManifestMatchers
     include RSpec::Puppet::Support
 
+    class V4FunctionWrapper
+      attr_reader :func, :func_name
+
+      def initialize(name, func, overrides)
+        @func_name = name
+        @func = func
+        @overrides = overrides
+      end
+
+      def call(*args)
+        Puppet.override(@overrides, "rspec-test scope") do
+          @func.call(@overrides[:global_scope], *args)
+        end
+      end
+    end
+
+    class V3FunctionWrapper
+      attr_accessor :func_name
+
+      def initialize(name, func)
+        @func_name = name
+        @func = func
+      end
+
+      def call(*args)
+        if args.nil?
+          @func.call
+        else
+          @func.call(args)
+        end
+      end
+    end
+
+    # (at least) rspec 3.5 doesn't seem to memoize `subject` when called from
+    # a before(:each) hook, so we need to memoize it ourselves.
     def subject
+      @subject ||= find_function
+    end
+
+    def find_function
       function_name = self.class.top_level_description.downcase
 
       with_vardir do
+        env = adapter.current_environment
+
         if Puppet.version.to_f >= 4.0
-          env = adapter.current_environment
-          loader = Puppet::Pops::Loaders.new(env)
-          func = loader.private_environment_loader.load(:function, function_name)
-          return func if func
+          context_overrides = compiler.context_overrides
+          func = nil
+          Puppet.override(context_overrides, "rspec-test scope") do
+            loader = Puppet::Pops::Loaders.new(env)
+            func = V4FunctionWrapper.new(function_name, loader.private_environment_loader.load(:function, function_name), context_overrides)
+            @scope = context_overrides[:global_scope]
+          end
+
+          return func if func.func
         end
 
-        # Return the method instance for the function.  This can be used with
-        # method.call
-        if env
-          return nil unless Puppet::Parser::Functions.function(function_name, env)
+        if Puppet::Parser::Functions.function(function_name)
+          V3FunctionWrapper.new(function_name, scope.method("function_#{function_name}".intern))
         else
-          return nil unless Puppet::Parser::Functions.function(function_name)
+          nil
         end
       end
-
-      scope.method("function_#{function_name}".intern)
     end
 
     def scope
@@ -36,6 +78,7 @@ module RSpec::Puppet
     end
 
     def rspec_puppet_cleanup
+      @subject = nil
       @catalogue = nil
       @compiler = nil
       @scope = nil
@@ -71,7 +114,9 @@ module RSpec::Puppet
     end
 
     def build_scope(compiler, node_name)
-      if Puppet.version =~ /^2\.[67]/
+      if Puppet.version.to_f >= 4.0
+        return compiler.context_overrides[:global_scope]
+      elsif Puppet.version =~ /^2\.[67]/
         # loadall should only be necessary prior to 3.x
         # Please note, loadall needs to happen first when creating a scope, otherwise
         # you might receive undefined method `function_*' errors
