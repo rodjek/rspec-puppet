@@ -26,4 +26,10 @@ describe RSpec::Puppet::Support do
       expect($LOAD_PATH).to include(dirb)
     end
   end
+
+  describe "#ref" do
+    it 'should return a new RawString with the type/title format' do
+      expect(subject.ref('Package','tomcat').inspect).to eq("Package['tomcat']")
+    end
+  end
 end

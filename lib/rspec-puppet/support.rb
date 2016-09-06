@@ -1,5 +1,6 @@
 require 'rspec-puppet/cache'
 require 'rspec-puppet/adapters'
+require 'rspec-puppet/raw_string'
 
 module RSpec::Puppet
   module Support
@@ -68,6 +69,12 @@ module RSpec::Puppet
         else
           "class { '#{class_name}': #{param_str} }"
         end
+      elsif type == :application
+        if self.respond_to? :params
+          "site { #{class_name} { '#{title}': #{param_str} } }"
+        else
+          raise ArgumentException, "You need to provide params for an application"
+        end
       elsif type == :define
         if self.respond_to? :params
           "#{class_name} { '#{title}': #{param_str} }"
@@ -81,7 +88,7 @@ module RSpec::Puppet
 
     def nodename(type)
       return node if self.respond_to?(:node)
-      if [:class, :define, :function].include? type
+      if [:class, :define, :function, :application].include? type
         Puppet[:certname]
       else
         class_name
@@ -152,6 +159,11 @@ module RSpec::Puppet
       vardir = Dir.mktmpdir
       Puppet[:vardir] = vardir
 
+      # Enable app_management by default for Puppet versions that support it
+      if Puppet.version.to_f >= 4.3
+        Puppet[:app_management] = true
+      end
+
       adapter.modulepath.map do |d|
         Dir["#{d}/*/lib"].entries
       end.flatten.each do |lib|
@@ -218,6 +230,16 @@ module RSpec::Puppet
         alias_method :failure_message_for_should, :failure_message
         alias_method :failure_message_for_should_not, :failure_message_when_negated
       end
+    end
+
+    # Helper to return a resource/node reference, so it gets translated in params to a raw string
+    # without quotes.
+    #
+    # @param [String] type reference type
+    # @param [String] title reference title
+    # @return [RSpec::Puppet::RawString] return a new RawString with the type/title populated correctly
+    def ref(type, title)
+      return RSpec::Puppet::RawString.new("#{type}['#{title}']")
     end
 
     # @!attribute [r] adapter
