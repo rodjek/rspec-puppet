@@ -16,26 +16,25 @@ module RSpec::Puppet
     end
 
     def load_catalogue(type, exported = false)
-      vardir = setup_puppet
+      with_vardir do
+        if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
+          code = [pre_cond, test_manifest(type)].compact.join("\n")
+        else
+          code = [import_str, pre_cond, test_manifest(type)].compact.join("\n")
+        end
 
-      if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
-        code = [pre_cond, test_manifest(type)].compact.join("\n")
-      else
-        code = [import_str, pre_cond, test_manifest(type)].compact.join("\n")
+        node_name = nodename(type)
+
+        hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
+
+        catalogue = build_catalog(node_name, facts_hash(node_name), hiera_config_value, code, exported)
+
+        test_module = class_name.split('::').first
+        RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
+        RSpec::Puppet::Coverage.add_from_catalog(catalogue, test_module)
+
+        catalogue
       end
-
-      node_name = nodename(type)
-
-      hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
-
-      catalogue = build_catalog(node_name, facts_hash(node_name), hiera_config_value, code, exported)
-
-      test_module = class_name.split('::').first
-      RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
-      RSpec::Puppet::Coverage.add_from_catalog(catalogue, test_module)
-
-      FileUtils.rm_rf(vardir) if File.directory?(vardir)
-      catalogue
     end
 
     def import_str
@@ -171,6 +170,15 @@ module RSpec::Puppet
       end
 
       vardir
+    end
+
+    def with_vardir
+      begin
+        vardir = setup_puppet
+        return yield(vardir) if block_given?
+      ensure
+        FileUtils.rm_rf(vardir) if File.directory?(vardir)
+      end
     end
 
     def build_catalog_without_cache(nodename, facts_val, hiera_config_val, code, exported)

@@ -3,23 +3,11 @@ module RSpec::Puppet
     class Run
       def matches?(func_obj)
         @func_obj = func_obj
-        if @params
-          if Puppet.version.to_f >= 4.0 and ! @func_obj.respond_to?(:receiver)
-            @func = lambda { func_obj.call({}, *@params) }
-          else
-            @func = lambda { func_obj.call(@params) }
-          end
-        else
-          if Puppet.version.to_f >= 4.0 and ! @func_obj.respond_to?(:receiver)
-            @func = lambda { func_obj.call({}) }
-          else
-            @func = lambda { func_obj.call }
-          end
-        end
 
         @has_returned = false
         begin
-          @actual_return = @func.call
+          # `*nil` does not evaluate to "no params" on ruby 1.8 :-(
+          @actual_return = @params.nil? ? @func_obj.execute : @func_obj.execute(*@params)
           @has_returned = true
         rescue Exception => e
           @actual_error = e
@@ -113,11 +101,7 @@ module RSpec::Puppet
 
       private
       def func_name
-        if Puppet.version.to_f >= 4.0 and ! @func_obj.respond_to?(:receiver)
-          @func_name ||= @func_obj.class.name
-        else
-          @func_name ||= @func_obj.name.to_s.gsub(/^function_/, '')
-        end
+        @func_obj.func_name
       end
 
       def func_params
@@ -129,9 +113,9 @@ module RSpec::Puppet
           ''
         elsif @actual_error
           if @has_expected_return
-            " instead of raising #{@actual_error.class.inspect}(#{@actual_error})"
+            " instead of raising #{@actual_error.class.inspect}(#{@actual_error})\n#{@actual_error.backtrace.join("\n")}"
           else
-            " instead of #{@actual_error.class.inspect}(#{@actual_error})"
+            " instead of #{@actual_error.class.inspect}(#{@actual_error})\n#{@actual_error.backtrace.join("\n")}"
           end
         else # function has returned
           if @has_expected_error
