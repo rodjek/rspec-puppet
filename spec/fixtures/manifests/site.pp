@@ -23,12 +23,6 @@ node 'good_dep_host' {
   }
 }
 
-node 'bad_dep_host' {
-  file { '/tmp':
-    require => File['/'],
-  }
-}
-
 node 'facts.acme.com' {
   file { 'environment':
     path => $environment
