@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'rspec-puppet'
-  s.version = '2.4.0'
+  s.version = '2.5.0'
   s.homepage = 'https://github.com/rodjek/rspec-puppet/'
   s.summary = 'RSpec tests for your Puppet manifests'
   s.description = 'RSpec tests for your Puppet manifests'
