@@ -2,6 +2,25 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.5.0]
+
+Headline features are app management, nested hashes in params, and testing for "internal" functions.
+
+Thanks to everyone who contributed: Leo Arnold, Matt Schuchard, and Si Wilkins
+
+### Changed
+
+* Updates to the README
+* Improve Gemfile to work with older rubies
+
+### Added
+
+* Add support for app management testing
+* Enable nested hashes in params
+* After refactoring the function test code, puppet 4 "internal" functions can now be tested too
+* Link functions and types on setup
+* Increased test coverage
+
 ## [2.4.0]
 
 This release now supports testing exported resources in the same way that normal resources in the catalog are tested. Access them in your examples using `exported_resources`. See "Testing Exported Resources" in the README for examples.
@@ -114,7 +133,8 @@ Thanks to Adrien Thebo, Alex Harvey, Brian, Dan Bode, Dominic Cleal, Javier Pala
 ## 1.0.1 and earlier
 For changelog of versions 1.0.1 and earlier, see http://rspec-puppet.com/changelog/
 
-[2.x]: https://github.com/rodjek/rspec-puppet/compare/v2.4.0...master
+[2.x]: https://github.com/rodjek/rspec-puppet/compare/v2.5.0...master
+[2.5.0]: https://github.com/rodjek/rspec-puppet/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/rodjek/rspec-puppet/compare/v2.3.2...v2.4.0
 [2.3.2]: https://github.com/rodjek/rspec-puppet/compare/v2.3.1...v2.3.2
 [2.3.1]: https://github.com/rodjek/rspec-puppet/compare/v2.3.0...v2.3.1
