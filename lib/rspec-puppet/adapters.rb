@@ -140,6 +140,7 @@ module RSpec::Puppet
           [:environmentpath, :environmentpath],
           [:hiera_config, :hiera_config],
           [:strict_variables, :strict_variables],
+          [:manifest, :manifest],
         ])
       end
 

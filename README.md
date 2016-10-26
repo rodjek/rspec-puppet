@@ -14,6 +14,28 @@
 
 When you start out on a new module, run `rspec-puppet-init` to create the necessary files to configure rspec-puppet for your module's tests.
 
+## Configurate manifests for Puppet 4
+
+By default in Puppet 3, the manifest is set to $manifestdir/site.pp. However as in Puppet 4 the default is now empty value
+to test manifests you will need to configurate your setting.
+
+Puppet 3: https://docs.puppet.com/puppet/3.8/reference/configuration.html#manifest
+Puppet 4: https://docs.puppet.com/puppet/4.5/reference/configuration.html#manifest
+
+Example code:
+```
+RSpec.configure do |c|
+  c.module_path     = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'modules')
+  c.manifest_dir    = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests')
+  c.manifest        = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests', 'site.pp')
+  c.environmentpath = File.join(Dir.pwd, 'spec')
+
+  c.after(:suite) do
+    RSpec::Puppet::Coverage.report!
+  end
+end
+```
+
 ## Naming conventions
 
 For clarity and consistency, I recommend that you use the following directory
