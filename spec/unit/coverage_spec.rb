@@ -24,7 +24,13 @@ describe RSpec::Puppet::Coverage do
 
     it "can add additional filters" do
       subject.add_filter("notify", "ignore me")
-      expect(subject.filters).to include("Notify[Ignore me]")
+      expect(subject.filters).to include("Notify[ignore me]")
+
+      subject.add_filter("foo::bar", "ignore me")
+      expect(subject.filters).to include("Foo::Bar[ignore me]")
+
+      subject.add_filter("class", "foo::bar")
+      expect(subject.filters).to include("Class[Foo::Bar]")
     end
 
     it "filters resources based on the resource title" do
@@ -41,7 +47,13 @@ describe RSpec::Puppet::Coverage do
 
     it "ignores resources that have been filtered" do
       subject.add_filter("notify", "ignore me")
-      expect(subject.add("Notify[Ignore me]")).to_not be
+      expect(subject.add("Notify[ignore me]")).to_not be
+
+      subject.add_filter("foo::bar", "ignore me")
+      expect(subject.add("Foo::Bar[ignore me]")).to_not be
+
+      subject.add_filter("class", "foo::bar")
+      expect(subject.add("Class[Foo::Bar]")).to_not be
     end
 
     it "ignores resources that have already been added" do
