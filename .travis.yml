@@ -10,7 +10,7 @@ rvm:
 sudo: false
 
 env:
-  - PUPPET_GEM_VERSION='~> 4.3.0' COVERAGE=yes
+  - PUPPET_GEM_VERSION='~> 4.7.0' COVERAGE=yes
   - PUPPET_GEM_VERSION='~> 2.7.0'
   - PUPPET_GEM_VERSION='~> 3.7.0'
   - PUPPET_GEM_VERSION='~> 3.8.0'
@@ -18,6 +18,7 @@ env:
   - PUPPET_GEM_VERSION='~> 4.1.0'
   - PUPPET_GEM_VERSION='~> 4.2.0'
   - PUPPET_GEM_VERSION='~> 4.3.0'
+  - PUPPET_GEM_VERSION='~> 4.7.0'
   - PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#master'
   - PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#stable'
   - PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#3.x'
@@ -47,9 +48,9 @@ matrix:
       env: PUPPET_GEM_VERSION='~> 2.7.0'
     # run Coveralls exactly once
     - rvm: 1.9.3
-      env: PUPPET_GEM_VERSION='~> 4.3.0' COVERAGE=yes
+      env: PUPPET_GEM_VERSION='~> 4.7.0' COVERAGE=yes
     - rvm: 2.0.0
-      env: PUPPET_GEM_VERSION='~> 4.3.0' COVERAGE=yes
+      env: PUPPET_GEM_VERSION='~> 4.7.0' COVERAGE=yes
 
   allowed_failures:
     - env: PUPPET_GEM_VERSION='git:https://github.com/puppetlabs/puppet.git#master'

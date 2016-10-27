@@ -4,6 +4,7 @@ require 'rspec-puppet/example/class_example_group'
 require 'rspec-puppet/example/function_example_group'
 require 'rspec-puppet/example/host_example_group'
 require 'rspec-puppet/example/type_example_group'
+require 'rspec-puppet/example/type_alias_example_group'
 require 'rspec-puppet/example/provider_example_group'
 require 'rspec-puppet/example/application_example_group'
 
@@ -23,6 +24,7 @@ RSpec::configure do |c|
   c.rspec_puppet_include RSpec::Puppet::FunctionExampleGroup, :puppet_function, %w[spec functions]
   c.rspec_puppet_include RSpec::Puppet::HostExampleGroup, :host, %w[spec hosts]
   c.rspec_puppet_include RSpec::Puppet::TypeExampleGroup, :type, %w[spec types]
+  c.rspec_puppet_include RSpec::Puppet::TypeAliasExampleGroup, :type_alias, %w[spec type_aliases]
   c.rspec_puppet_include RSpec::Puppet::ProviderExampleGroup, :provider, %w[spec providers]
   c.rspec_puppet_include RSpec::Puppet::ApplicationExampleGroup, :application, %w[spec applications]
 

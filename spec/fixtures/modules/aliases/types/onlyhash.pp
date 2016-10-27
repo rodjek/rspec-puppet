@@ -1,0 +1,1 @@
+type Aliases::OnlyHash = Hash

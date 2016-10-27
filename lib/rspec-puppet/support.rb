@@ -15,12 +15,12 @@ module RSpec::Puppet
       'rp_env'
     end
 
-    def load_catalogue(type, exported = false)
+    def load_catalogue(type, exported = false, manifest_opts = {})
       with_vardir do
         if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
-          code = [site_pp_str, pre_cond, test_manifest(type)].compact.join("\n")
+          code = [site_pp_str, pre_cond, test_manifest(type, manifest_opts)].compact.join("\n")
         else
-          code = [import_str, pre_cond, test_manifest(type)].compact.join("\n")
+          code = [import_str, pre_cond, test_manifest(type, manifest_opts)].compact.join("\n")
         end
 
         node_name = nodename(type)
@@ -71,27 +71,31 @@ module RSpec::Puppet
       site_pp_str
     end
 
-    def test_manifest(type)
+    def test_manifest(type, opts = {})
+      opts[:params] = params if self.respond_to?(:params)
+
       if type == :class
-        if !self.respond_to?(:params) || params == {}
+        if opts[:params].nil? || opts[:params] == {}
           "include #{class_name}"
         else
-          "class { '#{class_name}': #{param_str} }"
+          "class { '#{class_name}': #{param_str(opts[:params])} }"
         end
       elsif type == :application
-        if self.respond_to? :params
-          "site { #{class_name} { '#{title}': #{param_str} } }"
+        if opts.has_key?(:params)
+          "site { #{class_name} { '#{title}': #{param_str(opts[:params])} } }"
         else
           raise ArgumentException, "You need to provide params for an application"
         end
       elsif type == :define
-        if self.respond_to? :params
-          "#{class_name} { '#{title}': #{param_str} }"
+        if opts.has_key?(:params)
+          "#{class_name} { '#{title}': #{param_str(opts[:params])} }"
         else
           "#{class_name} { '#{title}': }"
         end
       elsif type == :host
         nil
+      elsif type == :type_alias
+        "$test = #{str_from_value(opts[:test_value])}\nassert_type(#{self.class.top_level_description}, $test)"
       end
     end
 
@@ -138,7 +142,7 @@ module RSpec::Puppet
       facts_val
     end
 
-    def param_str
+    def param_str(params)
       param_str_from_hash(params)
     end
 
