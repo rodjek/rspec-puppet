@@ -27,7 +27,10 @@ module RSpec::Puppet
     end
 
     def add_filter(type, title)
-      @filters << "#{type.capitalize}[#{title.capitalize}]"
+      def capitalize_name(name)
+        name.split('::').map { |subtitle| subtitle.capitalize }.join('::')
+      end
+      @filters << "#{capitalize_name(type)}[#{capitalize_name(title)}]"
     end
 
     # add all resources from catalog declared in module test_module
