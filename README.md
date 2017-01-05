@@ -471,6 +471,21 @@ end
 Any facts you provide with `let(:facts)` in a spec will automatically be merged on top
 of the default facts.
 
+#### Specifying extra code to load (pre-conditions)
+
+If the manifest being tested relies on another class or variables to be set, these can be added via
+a pre-condition. This code will be evaluated before the tested class.
+
+```ruby
+let(:pre_condition) { 'include other_class' }
+```
+
+This may be useful when testing classes that are modular, e.g. testing `apache::mod::foo` which
+relies on a top-level `apache` class being included first.
+
+The value may be a raw string to be inserted into the Puppet manifest, or an array of strings
+(manifest fragments) that will be concatenated.
+
 #### Specifying the path to find your modules
 
 I recommend setting a default module path by adding the following code to your
