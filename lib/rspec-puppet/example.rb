@@ -9,41 +9,22 @@ require 'rspec-puppet/example/application_example_group'
 
 RSpec::configure do |c|
 
-  def c.escaped_path(*parts)
-    Regexp.compile(parts.join('[\\\/]'))
+  def c.rspec_puppet_include(group, type, file_path)
+    escaped_file_path = Regexp.compile(file_path.join('[\\\/]'))
+    if RSpec::Version::STRING < '3'
+      self.include group, :type => type, :example_group => { :file_path => escaped_file_path }
+    else
+      self.include group, :type => type, :file_path => lambda { |file_path, metadata| metadata[:type].nil? && escaped_file_path =~ file_path }
+    end
   end
 
-  if RSpec::Version::STRING < '3'
-    c.include RSpec::Puppet::DefineExampleGroup, :type => :define, :example_group => {
-      :file_path => c.escaped_path(%w[spec defines])
-    }
-    c.include RSpec::Puppet::ClassExampleGroup, :type => :class, :example_group => {
-      :file_path => c.escaped_path(%w[spec classes])
-    }
-    c.include RSpec::Puppet::FunctionExampleGroup, :type => :puppet_function, :example_group => {
-      :file_path => c.escaped_path(%w[spec functions])
-    }
-    c.include RSpec::Puppet::HostExampleGroup, :type => :host, :example_group => {
-      :file_path => c.escaped_path(%w[spec hosts])
-    }
-    c.include RSpec::Puppet::TypeExampleGroup, :type => :type, :example_group => {
-      :file_path => c.escaped_path(%w[spec types])
-    }
-    c.include RSpec::Puppet::ProviderExampleGroup, :type => :provider, :example_group => {
-      :file_path => c.escaped_path(%w[spec providers])
-    }
-    c.include RSpec::Puppet::ApplicationExampleGroup, :type => :application, :example_group => {
-      :file_path => c.escaped_path(%w[spec applications])
-    }
-  else
-    c.include RSpec::Puppet::DefineExampleGroup, :type => :define, :file_path => c.escaped_path(%w[spec defines])
-    c.include RSpec::Puppet::ClassExampleGroup, :type => :class, :file_path => c.escaped_path(%w[spec classes])
-    c.include RSpec::Puppet::FunctionExampleGroup, :type => :puppet_function, :file_path => c.escaped_path(%w[spec functions])
-    c.include RSpec::Puppet::HostExampleGroup, :type => :host, :file_path => c.escaped_path(%w[spec hosts])
-    c.include RSpec::Puppet::TypeExampleGroup, :type => :type, :file_path => c.escaped_path(%w[spec types])
-    c.include RSpec::Puppet::ProviderExampleGroup, :type => :provider, :file_path => c.escaped_path(%w[spec providers])
-    c.include RSpec::Puppet::ApplicationExampleGroup, :type => :application, :file_path => c.escaped_path(%w[spec applications])
-  end
+  c.rspec_puppet_include RSpec::Puppet::DefineExampleGroup, :define, %w[spec defines]
+  c.rspec_puppet_include RSpec::Puppet::ClassExampleGroup, :class, %w[spec classes]
+  c.rspec_puppet_include RSpec::Puppet::FunctionExampleGroup, :puppet_function, %w[spec functions]
+  c.rspec_puppet_include RSpec::Puppet::HostExampleGroup, :host, %w[spec hosts]
+  c.rspec_puppet_include RSpec::Puppet::TypeExampleGroup, :type, %w[spec types]
+  c.rspec_puppet_include RSpec::Puppet::ProviderExampleGroup, :provider, %w[spec providers]
+  c.rspec_puppet_include RSpec::Puppet::ApplicationExampleGroup, :application, %w[spec applications]
 
   # Hook for each example group type to remove any caches or instance variables, since they will remain
   # and cause a memory leak.  Can't be assigned per type by :file_path, so check for its presence.
