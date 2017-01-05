@@ -71,6 +71,10 @@ structure and naming convention.
            |     |
            |     +-- <type_name>_spec.rb
            |
+           +-- type_aliases
+           |     |
+           |     +-- <type_alias_name>_spec.rb
+           |
            +-- hosts
                  |
                  +-- <host_name>_spec.rb
@@ -99,6 +103,10 @@ describe 'myfunction', :type => :puppet_function do
 end
 
 describe 'mytype', :type => :type do
+  ...
+end
+
+describe 'My::TypeAlias', :type => :type_alias do
   ...
 end
 
@@ -348,6 +356,20 @@ When testing custom types, the `be_valid_type` matcher provides a range of expec
 * `with_parameters(<parameter_list>)`: check that the specified parameters are available
 * `with_features(<feature_list>)`: check that the specified features are available
 * `with_set_attributes(<param_value_hash>)`: check that the specified attributes are set
+
+#### Type alias matchers
+
+When testing type aliases, the `allow_value` and `allow_values` matchers are used to check if the
+alias accepts particular values or not:
+
+
+```ruby
+describe 'MyModule::Shape' do
+  it { is_expected.to allow_value('square') }
+  it { is_expected.to allow_values('circle', 'triangle') }
+  it { is_expected.not_to allow_value('blue') }
+end
+```
 
 ### Writing tests
 

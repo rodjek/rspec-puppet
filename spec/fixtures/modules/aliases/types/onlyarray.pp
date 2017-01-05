@@ -1,0 +1,1 @@
+type Aliases::OnlyArray = Array
