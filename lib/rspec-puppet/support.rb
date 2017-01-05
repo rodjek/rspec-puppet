@@ -149,6 +149,8 @@ module RSpec::Puppet
           "#{str_from_value(k)} => #{str_from_value(v)}"
         end.join(", ")
         "{ #{kvs} }"
+      when :default
+        'default'  # verbatim default keyword
       when :undef
         'undef'  # verbatim undef keyword
       else
