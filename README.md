@@ -41,43 +41,32 @@ end
 For clarity and consistency, I recommend that you use the following directory
 structure and naming convention.
 
-    module
-      |
-      +-- manifests
-      |
-      +-- lib
-      |
-      +-- spec
-           |
-           +-- spec_helper.rb
-           |
-           +-- classes
-           |     |
-           |     +-- <class_name>_spec.rb
-           |
-           +-- defines
-           |     |
-           |     +-- <define_name>_spec.rb
-           |
-           +-- applications
-           |     |
-           |     +-- <application_name>_spec.rb
-           |
-           +-- functions
-           |     |
-           |     +-- <function_name>_spec.rb
-           |
-           +-- types
-           |     |
-           |     +-- <type_name>_spec.rb
-           |
-           +-- type_aliases
-           |     |
-           |     +-- <type_alias_name>_spec.rb
-           |
-           +-- hosts
-                 |
-                 +-- <host_name>_spec.rb
+    module/
+      ├── manifests/
+      ├── lib/
+      └── spec/
+           ├── spec_helper.rb
+           │
+           ├── classes/
+           │     └── <class_name>_spec.rb
+           │
+           ├── defines/
+           │     └── <define_name>_spec.rb
+           │
+           ├── applications/
+           │     └── <application_name>_spec.rb
+           │
+           ├── functions/
+           │     └── <function_name>_spec.rb
+           │
+           ├── types/
+           │     └── <type_name>_spec.rb
+           │
+           ├── type_aliases/
+           │     └── <type_alias_name>_spec.rb
+           │
+           └── hosts/
+                 └── <host_name>_spec.rb
 
 ## Example groups
 
