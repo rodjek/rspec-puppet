@@ -57,7 +57,7 @@ describe RSpec::Puppet::Support do
     it "should handle Hashes recursively" do
       expect(subject.str_from_value({:k1=>'v1'})).to eq('{ "k1" => "v1" }')
       expect(subject.str_from_value({'k2'=>'v2'})).to eq('{ "k2" => "v2" }')
-      if RUBY_VERSION >= Gem::Version.new('1.9') # Syntax not valid in Ruby 1.8.7
+      if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9') # Syntax not valid in Ruby 1.8.7
         expect(subject.str_from_value({k3: 'v3'})).to eq('{ "k3" => "v3" }')
       end
     end
