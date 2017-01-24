@@ -153,10 +153,17 @@ module RSpec::Puppet
           "#{str_from_value(k)} => #{str_from_value(v)}"
         end.join(", ")
         "{ #{kvs} }"
+      when Array
+        vals = value.map do |v|
+          str_from_value(v)
+        end.join(", ")
+        "[ #{vals} ]"
       when :default
         'default'  # verbatim default keyword
       when :undef
         'undef'  # verbatim undef keyword
+      when Symbol
+        str_from_value(value.to_s)
       else
         escape_special_chars(value.inspect)
       end
