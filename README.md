@@ -519,6 +519,31 @@ However, if you want to specify it in each example, you can do so
 let(:module_path) { '/path/to/your/module/dir' }
 ```
 
+#### Specifying trusted facts
+
+When testing with Puppet >= 4.3 the trusted facts hash will have the standard trusted fact keys
+(certname, domain, and hostname) populated based on the node name (as set with `:node`).
+
+By default, the test environment contains no custom trusted facts (as usually obtained
+from certificate extensions) and found in the `extensions` key. If you need to test against
+specific custom certificate extensions you can set those with a hash. The hash will then
+be available in `$trusted['extensions']`
+
+```ruby
+let(:trusted_facts) { {'pp_uuid' => 'ED803750-E3C7-44F5-BB08-41A04433FE2E', '1.3.6.1.4.1.34380.1.2.1' => 'ssl-termination'} }
+```
+
+You can also create a set of default certificate extensions provided to all specs in your spec_helper:
+
+```ruby
+RSpec.configure do |c|
+  c.default_trusted_facts = {
+    'pp_uuid'                 => 'ED803750-E3C7-44F5-BB08-41A04433FE2E',
+    '1.3.6.1.4.1.34380.1.2.1' => 'ssl-termination'
+  }
+end
+```
+
 #### Testing Exported Resources
 
 You can test if a resource was exported from the catalogue by using the

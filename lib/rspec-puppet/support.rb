@@ -27,7 +27,7 @@ module RSpec::Puppet
 
         hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
 
-        catalogue = build_catalog(node_name, facts_hash(node_name), hiera_config_value, code, exported)
+        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value, code, exported)
 
         test_module = class_name.split('::').first
         RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
@@ -146,6 +146,19 @@ module RSpec::Puppet
       param_str_from_hash(params)
     end
 
+    def trusted_facts_hash(node_name)
+      return {} unless Puppet.version.to_f >= 4.3
+
+      extensions = {}
+
+      if RSpec.configuration.default_trusted_facts.any?
+        extensions.merge!(RSpec.configuration.default_trusted_facts)
+      end
+
+      extensions.merge!(trusted_facts) if self.respond_to?(:trusted_facts)
+      extensions
+    end
+
     def str_from_value(value)
       case value
       when Hash
@@ -204,7 +217,7 @@ module RSpec::Puppet
       end
     end
 
-    def build_catalog_without_cache(nodename, facts_val, hiera_config_val, code, exported)
+    def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported)
 
       # If we're going to rebuild the catalog, we should clear the cached instance
       # of Hiera that Puppet is using.  This opens the possibility of the catalog
@@ -222,6 +235,15 @@ module RSpec::Puppet
       node_facts = Puppet::Node::Facts.new(nodename, facts_val.dup)
 
       node_obj = Puppet::Node.new(nodename, { :parameters => facts_val, :facts => node_facts })
+
+      if Puppet.version.to_f >= 4.3
+        Puppet.push_context(
+	  {
+            :trusted_information => Puppet::Context::TrustedInformation.new('remote', nodename, trusted_facts_val)
+	  },
+	  "Context for spec trusted hash"
+	)
+      end
 
       adapter.catalog(node_obj, exported)
     end
