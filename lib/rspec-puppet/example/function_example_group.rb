@@ -132,6 +132,9 @@ module RSpec::Puppet
       fact_values = facts_hash(node_name)
       trusted_values = trusted_facts_hash(node_name)
 
+      # Allow different Hiera configurations:
+      HieraPuppet.instance_variable_set('@hiera', nil) if defined? HieraPuppet
+
       # if we specify a pre_condition, we should ensure that we compile that
       # code into a catalog that is accessible from the scope where the
       # function is called
