@@ -6,5 +6,9 @@ describe 'test_function', :if => Puppet.version.to_f >= 4.0 do
 end
 
 describe 'frozen_function', :if => Puppet.version.to_f >= 4.0 do
-  it { is_expected.to run.with_params('foo').and_raise_error(RuntimeError, %r{can't modify frozen}) }
+  it { is_expected.to run.with_params('foo').and_return(true) }
+  it { is_expected.to run.with_params(String).and_return(false) }
+  it { is_expected.to run.with_params(true).and_return(true) }
+  it { is_expected.to run.with_params(['foo']).and_return(true) }
+  it { is_expected.to run.with_params('foo' => 'bar').and_return(true) }
 end

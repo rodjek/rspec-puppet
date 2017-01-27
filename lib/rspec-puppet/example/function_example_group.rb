@@ -15,10 +15,8 @@ module RSpec::Puppet
 
       # This method is used by the `run` matcher to trigger the function execution, and provides a uniform interface across all puppet versions.
       def execute(*args)
-        # puppet 4 arguments are immutable
-        args.map(&:freeze)
         Puppet.override(@overrides, "rspec-test scope") do
-          @func.call(@overrides[:global_scope], *args)
+          @func.call(@overrides[:global_scope], *freeze_arg(args))
         end
       end
 
@@ -26,6 +24,24 @@ module RSpec::Puppet
       def call(scope, *args)
         RSpec.deprecate("subject.call", :replacement => "is_expected.to run.with().and_raise_error(), or execute()")
         execute(*args)
+      end
+
+      private
+
+      # Facts, keywords, single-quoted strings etc. are usually frozen in Puppet manifests, so freeze arguments to ensure functions are tested
+      # under worst-case conditions.
+      def freeze_arg(arg)
+        case arg
+        when Array
+          arg.each { |a| freeze_arg(a) }
+          arg.freeze
+        when Hash
+          arg.each { |k,v| freeze_arg(k); freeze_arg(v) }
+          arg.freeze
+        when String
+          arg.freeze
+        end
+        arg
       end
     end
 
