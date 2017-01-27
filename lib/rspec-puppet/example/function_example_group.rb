@@ -114,6 +114,7 @@ module RSpec::Puppet
     def build_compiler
       node_name   = nodename(:function)
       fact_values = facts_hash(node_name)
+      trusted_values = trusted_facts_hash(node_name)
 
       # if we specify a pre_condition, we should ensure that we compile that
       # code into a catalog that is accessible from the scope where the
@@ -127,6 +128,15 @@ module RSpec::Puppet
       stub_facts! fact_values
 
       node = build_node(node_name, node_options)
+
+      if Puppet.version.to_f >= 4.3
+	Puppet.push_context(
+          {
+            :trusted_information => Puppet::Context::TrustedInformation.new('remote', node_name, trusted_values)
+          },
+          "Context for spec trusted hash"
+        )
+      end
 
       compiler = Puppet::Parser::Compiler.new(node)
       compiler.compile
