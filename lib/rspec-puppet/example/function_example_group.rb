@@ -146,7 +146,7 @@ module RSpec::Puppet
       node = build_node(node_name, node_options)
 
       if Puppet.version.to_f >= 4.3
-	Puppet.push_context(
+        Puppet.push_context(
           {
             :trusted_information => Puppet::Context::TrustedInformation.new('remote', node_name, trusted_values)
           },
