@@ -16,7 +16,7 @@ module RSpec::Puppet
       # This method is used by the `run` matcher to trigger the function execution, and provides a uniform interface across all puppet versions.
       def execute(*args)
         # puppet 4 arguments are immutable
-        args.map(&:freeze)
+        args.reject { |a| a.is_a?(Class) }.each(&:freeze)
         Puppet.override(@overrides, "rspec-test scope") do
           @func.call(@overrides[:global_scope], *args)
         end
