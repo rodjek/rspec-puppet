@@ -137,8 +137,11 @@ module RSpec::Puppet
       # function is called
       Puppet[:code] = pre_cond
 
+      node_facts = Puppet::Node::Facts.new(node_name, fact_values.dup)
+
       node_options = {
         :parameters => fact_values,
+        :facts => node_facts
       }
 
       stub_facts! fact_values
