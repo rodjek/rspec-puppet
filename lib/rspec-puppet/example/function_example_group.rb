@@ -132,13 +132,19 @@ module RSpec::Puppet
       fact_values = facts_hash(node_name)
       trusted_values = trusted_facts_hash(node_name)
 
+      # Allow different Hiera configurations:
+      HieraPuppet.instance_variable_set('@hiera', nil) if defined? HieraPuppet
+
       # if we specify a pre_condition, we should ensure that we compile that
       # code into a catalog that is accessible from the scope where the
       # function is called
       Puppet[:code] = pre_cond
 
+      node_facts = Puppet::Node::Facts.new(node_name, fact_values.dup)
+
       node_options = {
         :parameters => fact_values,
+        :facts => node_facts
       }
 
       stub_facts! fact_values
@@ -146,7 +152,7 @@ module RSpec::Puppet
       node = build_node(node_name, node_options)
 
       if Puppet.version.to_f >= 4.3
-	Puppet.push_context(
+        Puppet.push_context(
           {
             :trusted_information => Puppet::Context::TrustedInformation.new('remote', node_name, trusted_values)
           },

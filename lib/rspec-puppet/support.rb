@@ -238,11 +238,11 @@ module RSpec::Puppet
 
       if Puppet.version.to_f >= 4.3
         Puppet.push_context(
-	  {
+          {
             :trusted_information => Puppet::Context::TrustedInformation.new('remote', nodename, trusted_facts_val)
-	  },
-	  "Context for spec trusted hash"
-	)
+          },
+          "Context for spec trusted hash"
+        )
       end
 
       adapter.catalog(node_obj, exported)
