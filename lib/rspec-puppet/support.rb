@@ -84,7 +84,7 @@ module RSpec::Puppet
         if opts.has_key?(:params)
           "site { #{class_name} { '#{title}': #{param_str(opts[:params])} } }"
         else
-          raise ArgumentException, "You need to provide params for an application"
+          raise ArgumentError, "You need to provide params for an application"
         end
       elsif type == :define
         if opts.has_key?(:params)
