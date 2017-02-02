@@ -7,5 +7,6 @@ describe 'facts.acme.com' do
   context 'when specifying an explicit environment' do
     let(:environment) { 'test_env' }
     it { should contain_file('environment').with_path('test_env') }
+    it { should contain_file('conditional_file') }
   end
 end

@@ -27,6 +27,11 @@ node 'facts.acme.com' {
   file { 'environment':
     path => $environment
   }
+  if $::environment == 'test_env' {
+    file { 'conditional_file':
+      path => 'ignored'
+    }
+  }
   file { 'clientversion':
     path => $clientversion
   }
