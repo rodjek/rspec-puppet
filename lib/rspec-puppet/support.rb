@@ -195,7 +195,7 @@ module RSpec::Puppet
       Puppet[:vardir] = vardir
 
       # Enable app_management by default for Puppet versions that support it
-      if Puppet.version.to_f >= 4.3
+      if Puppet.version.to_f >= 4.3 && Puppet.version.to_i < 5
         Puppet[:app_management] = true
       end
 
