@@ -213,7 +213,7 @@ module RSpec::Puppet
         vardir = setup_puppet
         return yield(vardir) if block_given?
       ensure
-        FileUtils.rm_rf(vardir) if File.directory?(vardir)
+        FileUtils.rm_rf(vardir) if vardir && File.directory?(vardir)
       end
     end
 
