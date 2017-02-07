@@ -146,6 +146,9 @@ module RSpec::Puppet
 
       def catalog(node, exported)
         node.environment = current_environment
+        # Override $::environment to workaround PUP-5835, where Puppet otherwise
+        # stores a symbol for the parameter
+        node.parameters['environment'] = current_environment.name.to_s if node.parameters['environment'] != node.parameters['environment'].to_s
         super
       end
 
