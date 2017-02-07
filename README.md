@@ -662,6 +662,16 @@ it 'something' do
 end
 ```
 
+#### Passing lambdas to the function
+
+A lambda (block) can be passed to functions that support either a required or
+optional lambda by passing a block to the `with_lambda` chain method in the
+`run` matcher.
+
+```ruby
+it { is_expected.to run.with_lambda { |x| x * 2 }
+```
+
 #### Testing the results of the function
 
 You can test the result of a function (if it produces one) using either the

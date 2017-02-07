@@ -14,9 +14,9 @@ module RSpec::Puppet
       end
 
       # This method is used by the `run` matcher to trigger the function execution, and provides a uniform interface across all puppet versions.
-      def execute(*args)
+      def execute(*args, &block)
         Puppet.override(@overrides, "rspec-test scope") do
-          @func.call(@overrides[:global_scope], *freeze_arg(args))
+          @func.call(@overrides[:global_scope], *freeze_arg(args), &block)
         end
       end
 
