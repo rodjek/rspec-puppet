@@ -1,6 +1,7 @@
 require 'rspec-puppet/cache'
 require 'rspec-puppet/adapters'
 require 'rspec-puppet/raw_string'
+require 'rspec-puppet/sensitive'
 
 module RSpec::Puppet
   module Support
@@ -460,6 +461,14 @@ module RSpec::Puppet
     # @return [RSpec::Puppet::RawString] return a new RawString with the type/title populated correctly
     def ref(type, title)
       return RSpec::Puppet::RawString.new("#{type}['#{title}']")
+    end
+
+    # Helper to return value wrapped in Sensitive type.
+    #
+    # @param [Object] value to wrap
+    # @return [RSpec::Puppet::Sensitive] a new Sensitive wrapper with the new value
+    def sensitive(value)
+      return RSpec::Puppet::Sensitive.new(value)
     end
 
     # @!attribute [r] adapter

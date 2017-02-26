@@ -33,6 +33,14 @@ describe RSpec::Puppet::Support do
     end
   end
 
+  describe "#sensitive" do
+    it 'should return a new Sensitive with the given contents' do
+      sens = subject.sensitive('test content')
+      expect(sens).to be_sensitive
+      expect(sens.unwrap).to eq 'test content'
+    end
+  end
+
   describe '#str_from_value' do
     it "should quote strings" do
       expect(subject.str_from_value('a string')).to eq('"a string"')
