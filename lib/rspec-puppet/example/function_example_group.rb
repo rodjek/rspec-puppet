@@ -80,7 +80,7 @@ module RSpec::Puppet
     end
 
     def find_function
-      function_name = self.class.top_level_description.downcase
+      function_name = self.class.top_level_description
 
       with_vardir do
         env = adapter.current_environment
