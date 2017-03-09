@@ -7,7 +7,7 @@ module RSpec::Puppet
         @has_returned = false
         begin
           # `*nil` does not evaluate to "no params" on ruby 1.8 :-(
-          @actual_return = @params.nil? ? @func_obj.execute : @func_obj.execute(*@params)
+          @actual_return = @params.nil? ? @func_obj.execute(&@block) : @func_obj.execute(*@params, &@block)
           @has_returned = true
         rescue Exception => e
           @actual_error = e
@@ -49,6 +49,11 @@ module RSpec::Puppet
         # stringify immediately to protect us from the params being changed by
         # the subject, e.g. with params.shift
         @func_args = @params.inspect[1..-2]
+        self
+      end
+
+      def with_lambda(&block)
+        @block = block
         self
       end
 
