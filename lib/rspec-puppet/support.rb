@@ -88,9 +88,9 @@ module RSpec::Puppet
         end
       elsif type == :define
         if opts.has_key?(:params)
-          "#{class_name} { '#{title}': #{param_str(opts[:params])} }"
+          "#{class_name} { #{title.inspect}: #{param_str(opts[:params])} }"
         else
-          "#{class_name} { '#{title}': }"
+          "#{class_name} { #{title.inspect}: }"
         end
       elsif type == :host
         nil
