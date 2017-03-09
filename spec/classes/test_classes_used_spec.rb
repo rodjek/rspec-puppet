@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe 'test::classes_used' do
   it {
-    RSpec.should receive(:deprecate).with(:include_class, :contain_class)
+    expect(RSpec).to receive(:deprecate).with(:include_class, {:replacement => :contain_class})
     should include_class('test::bare_class')
   }
   it {
-    RSpec.should receive(:deprecate).with(:include_class, :contain_class)
+    expect(RSpec).to receive(:deprecate).with(:include_class, {:replacement => :contain_class})
     should include_class('test::parameterised_class')
   }
 

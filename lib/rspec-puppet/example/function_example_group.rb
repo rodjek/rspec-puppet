@@ -9,19 +9,36 @@ module RSpec::Puppet
 
       vardir = setup_puppet
 
-      node_name = nodename(:function)
-
-      function_scope = scope(compiler, node_name)
+      if Puppet.version.to_f >= 4.0
+        env = build_4x_environment(environment)
+        loader = Puppet::Pops::Loaders.new(env)
+        func = loader.private_environment_loader.load(:function,function_name)
+        return func if func
+      end
 
       # Return the method instance for the function.  This can be used with
       # method.call
-      return nil unless Puppet::Parser::Functions.function(function_name)
+      if env
+        return nil unless Puppet::Parser::Functions.function(function_name,env)
+      else
+        return nil unless Puppet::Parser::Functions.function(function_name)
+      end
       FileUtils.rm_rf(vardir) if File.directory?(vardir)
-      function_scope.method("function_#{function_name}".intern)
+      scope.method("function_#{function_name}".intern)
+    end
+
+    def scope
+      @scope ||= build_scope(compiler, nodename(:function))
     end
 
     def catalogue
       @catalogue ||= compiler.catalog
+    end
+
+    def rspec_puppet_cleanup
+      @catalogue = nil
+      @compiler = nil
+      @scope = nil
     end
 
     private
@@ -51,6 +68,32 @@ module RSpec::Puppet
       compiler = Puppet::Parser::Compiler.new(node)
       compiler.compile
       compiler
+    end
+
+    def build_scope(compiler, node_name)
+      if Puppet.version =~ /^2\.[67]/
+        # loadall should only be necessary prior to 3.x
+        # Please note, loadall needs to happen first when creating a scope, otherwise
+        # you might receive undefined method `function_*' errors
+        Puppet::Parser::Functions.autoloader.loadall
+        scope = Puppet::Parser::Scope.new(:compiler => compiler)
+      else
+        scope = Puppet::Parser::Scope.new(compiler)
+      end
+
+      scope.source = Puppet::Resource::Type.new(:node, node_name)
+      scope.parent = compiler.topscope
+      scope
+    end
+
+    def build_node(name, opts = {})
+      if Puppet.version.to_f >= 4.0
+        node_environment = build_4x_environment(environment)
+      else
+        node_environment = Puppet::Node::Environment.new(environment)
+      end
+      opts.merge!({:environment => node_environment})
+      Puppet::Node.new(name, opts)
     end
   end
 end

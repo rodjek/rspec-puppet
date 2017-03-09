@@ -39,22 +39,22 @@ module RSpec::Puppet
       end
 
       def that_notifies(resource)
-        @notifies << resource
+        @notifies.concat(Array(resource))
         self
       end
 
       def that_subscribes_to(resource)
-        @subscribes << resource
+        @subscribes.concat(Array(resource))
         self
       end
 
       def that_requires(resource)
-        @requires << resource
+        @requires.concat(Array(resource))
         self
       end
 
       def that_comes_before(resource)
-        @befores << resource
+        @befores.concat(Array(resource))
         self
       end
 
@@ -105,16 +105,17 @@ module RSpec::Puppet
         end
       end
 
-      def failure_message_for_should
+      def failure_message
         "expected that the catalogue would contain #{@referenced_type}[#{@title}]#{errors}"
       end
 
-      def failure_message_for_should_not
+      def failure_message_when_negated
         "expected that the catalogue would not contain #{@referenced_type}[#{@title}]#{errors}"
       end
 
       def description
         values = []
+        value_str_prefix = "with"
 
         if @expected_params_count
           values << "exactly #{@expected_params_count} parameters"
@@ -128,11 +129,31 @@ module RSpec::Puppet
           values.concat(generate_param_list(@expected_undef_params, :not))
         end
 
+        if @notifies.any?
+          value_str_prefix = "that notifies"
+          values = @notifies
+        end
+
+        if @subscribes.any?
+          value_str_prefix = "that subscribes to"
+          values = @subscribes
+        end
+
+        if @requires.any?
+          value_str_prefix = "that requires"
+          values = @requires
+        end
+
+        if @befores.any?
+          value_str_prefix = "that comes before"
+          values = @befores
+        end
+
         unless values.empty?
           if values.length == 1
-            value_str = " with #{values.first}"
+            value_str = " #{value_str_prefix} #{values.first}"
           else
-            value_str = " with #{values[0..-2].join(", ")} and #{values[-1]}"
+            value_str = " #{value_str_prefix} #{values[0..-2].join(", ")} and #{values[-1]}"
           end
         end
 
@@ -168,7 +189,11 @@ module RSpec::Puppet
           else
             a = type == :not ? '!' : '='
             b = value.is_a?(Regexp) ? '~' : '>'
-            output << "#{param.to_s} #{a}#{b} #{value.inspect}"
+            if param.to_s == 'content' and value.is_a?( String )
+              output << "#{param.to_s} #{type == :not ? 'not ' : ''} supplied string"
+            else
+              output << "#{param.to_s} #{a}#{b} #{value.inspect}"
+            end
           end
         end
         output
@@ -206,32 +231,84 @@ module RSpec::Puppet
         end
       end
 
-      def relationship_refs(array)
-        Array[array].flatten.map do |resource|
-          resource.respond_to?(:to_ref) ? resource.to_ref : resource
+      def resource_ref(resource)
+        resource.respond_to?(:to_ref) ? resource.to_ref : resource
+      end
+
+      def resource_from_ref(ref)
+        ref.is_a?(Puppet::Resource) ? ref : @catalogue.resource(ref)
+      end
+
+      def canonicalize_resource(resource)
+        resource_from_ref(resource_ref(resource))
+      end
+
+      def canonicalize_resource_ref(ref)
+        resource_ref(resource_from_ref(ref))
+      end
+
+      def relationship_refs(resource, type)
+        resource = canonicalize_resource(resource)
+        results = []
+        return results unless resource
+        Array[resource[type]].flatten.compact.each do |r|
+          results << canonicalize_resource_ref(r)
+          results << relationship_refs(r, type)
         end
+
+        # Add autorequires if any
+        if type == :require and resource.resource_type.respond_to? :eachautorequire
+          resource.resource_type.eachautorequire do |t, b|
+            Array(resource.to_ral.instance_eval(&b)).each do |dep|
+              res = "#{t.to_s.capitalize}[#{dep}]"
+              if r = relationship_refs(res, type)
+                results << res
+                results << r
+              end
+            end
+          end
+        end
+        results.flatten
+      end
+
+      def self_or_upstream(vertex)
+        [vertex] + @catalogue.upstream_from_vertex(vertex).keys
       end
 
       def precedes?(first, second)
-        if first.nil? || second.nil?
-          false
-        else
-          before_refs = relationship_refs(first[:before])
-          require_refs = relationship_refs(second[:require])
+        return false if first.nil? || second.nil?
 
-          before_refs.include?(second.to_ref) || require_refs.include?(first.to_ref)
+        self_or_upstream(first).each do |u|
+          self_or_upstream(second).each do |v|
+            before_refs = relationship_refs(u, :before)
+            require_refs = relationship_refs(v, :require)
+
+            if before_refs.include?(v.to_ref) || require_refs.include?(u.to_ref) || (before_refs & require_refs).any?
+              return true
+            end
+          end
         end
+
+        # Nothing found
+        return false
       end
 
       def notifies?(first, second)
-        if first.nil? || second.nil?
-          false
-        else
-          notify_refs = relationship_refs(first[:notify])
-          subscribe_refs = relationship_refs(second[:subscribe])
+        return false if first.nil? || second.nil?
 
-          notify_refs.include?(second.to_ref) || subscribe_refs.include?(first.to_ref)
+        self_or_upstream(first).each do |u|
+          self_or_upstream(second).each do |v|
+            notify_refs = relationship_refs(u, :notify)
+            subscribe_refs = relationship_refs(v, :subscribe)
+
+            if notify_refs.include?(v.to_ref) || subscribe_refs.include?(u.to_ref)
+              return true
+            end
+          end
         end
+
+        # Nothing found
+        return false
       end
 
       # @param resource [Hash<Symbol, Object>] The resource in the catalog

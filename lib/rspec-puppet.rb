@@ -14,7 +14,8 @@ rescue LoadError
 end
 
 RSpec.configure do |c|
-  c.add_setting :module_path, :default => '/etc/puppet/modules'
+  c.add_setting :environmentpath, :default => '/etc/puppetlabs/code/environments'
+  c.add_setting :module_path, :default => nil
   c.add_setting :manifest_dir, :default => nil
   c.add_setting :manifest, :default => nil
   c.add_setting :template_dir, :default => nil
@@ -23,6 +24,10 @@ RSpec.configure do |c|
   c.add_setting :default_facts, :default => {}
   c.add_setting :hiera_config, :default => '/dev/null'
   c.add_setting :parser, :default => 'current'
+  c.add_setting :trusted_node_data, :default => false
+  c.add_setting :ordering, :default => 'title-hash'
+  c.add_setting :stringify_facts, :default => true
+  c.add_setting :strict_variables, :default => false
 
   if defined?(Puppet::Test::TestHelper)
     begin

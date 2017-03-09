@@ -1,4 +1,7 @@
 require 'puppet'
+if Puppet.version.to_f >= 4.0
+  require 'puppet/pops'
+end
 require 'fileutils'
 
 module RSpec::Puppet
@@ -31,7 +34,7 @@ module RSpec::Puppet
 
       safe_touch('spec/fixtures/manifests/site.pp')
 
-      ['manifests','lib','files','templates'].each do |dir|
+      %w(data manifests lib files templates).each do |dir|
         if File.exist? dir
           safe_make_symlink("../../../../#{dir}", "spec/fixtures/modules/#{module_name}/#{dir}")
         end
@@ -52,7 +55,13 @@ module RSpec::Puppet
     end
 
     def self.get_module_name_from_file(file)
-      p = Puppet::Parser::Lexer.new
+      # FIXME: see discussion at
+      # https://github.com/rodjek/rspec-puppet/issues/290
+      if Puppet.version.to_f >= 4.0
+        p = Puppet::Pops::Parser::Lexer2.new
+      else
+        p = Puppet::Parser::Lexer.new
+      end
       module_name = nil
       p.string = File.read(file)
       tokens = p.fullscan
@@ -106,17 +115,8 @@ module RSpec::Puppet
     end
 
     def self.safe_create_spec_helper
-      content = <<-EOF
-require 'rspec-puppet'
-
-fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
-
-RSpec.configure do |c|
-  c.module_path = File.join(fixture_path, 'modules')
-  c.manifest_dir = File.join(fixture_path, 'manifests')
-end
-EOF
-    safe_create_file('spec/spec_helper.rb', content)
+      content = "require 'rspec-puppet/spec_helper'\n"
+      safe_create_file('spec/spec_helper.rb', content)
     end
 
     def self.safe_make_symlink(source, target)
@@ -132,25 +132,7 @@ EOF
 
     def self.safe_create_rakefile
       content = <<-'EOF'
-require 'rake'
-require 'rspec/core/rake_task'
-
-desc "Run all RSpec code examples"
-RSpec::Core::RakeTask.new(:rspec) do |t|
-  t.rspec_opts = File.read("spec/spec.opts").chomp || ""
-end
-
-SPEC_SUITES = (Dir.entries('spec') - ['.', '..','fixtures']).select {|e| File.directory? "spec/#{e}" }
-namespace :rspec do
-  SPEC_SUITES.each do |suite|
-    desc "Run #{suite} RSpec code examples"
-    RSpec::Core::RakeTask.new(suite) do |t|
-      t.pattern = "spec/#{suite}/**/*_spec.rb"
-      t.rspec_opts = File.read("spec/spec.opts").chomp || ""
-    end
-  end
-end
-task :default => :rspec
+require 'rspec-puppet/rake_task'
 
 begin
   if Gem::Specification::find_by_name('puppet-lint')
@@ -159,9 +141,10 @@ begin
     task :default => [:rspec, :lint]
   end
 rescue Gem::LoadError
+  task :default => :rspec
 end
 EOF
-    safe_create_file('Rakefile', content)
+      safe_create_file('Rakefile', content)
     end
   end
 end

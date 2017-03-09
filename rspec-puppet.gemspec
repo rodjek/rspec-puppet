@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'rspec-puppet'
-  s.version = '1.0.1'
+  s.version = '2.3.0'
   s.homepage = 'https://github.com/rodjek/rspec-puppet/'
   s.summary = 'RSpec tests for your Puppet manifests'
   s.description = 'RSpec tests for your Puppet manifests'
@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
 
   s.executables = ['rspec-puppet-init']
 
-  s.files = Dir['LICENSE.md', 'README.md', 'lib/**/*', 'bin/**/*']
+  s.files = Dir['CHANGELOG.md', 'LICENSE.md', 'README.md', 'lib/**/*', 'bin/**/*']
 
   s.add_dependency 'rspec'
 
