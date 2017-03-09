@@ -40,7 +40,7 @@ First thing's first, if you haven't setup your module for rspec-puppet, follow
 
 ### Basic structure of a test file
 Whether you're testing classes, defined types, hosts or functions the structure
-of a your test file is always the same
+of your test file is always the same.
 
 {% highlight ruby %}
 require 'spec_helper'
