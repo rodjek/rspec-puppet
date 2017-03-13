@@ -172,7 +172,7 @@ it { is_expected.to contain_notify('foo').that_requires('Notify[bar]') }
 ## Testing for errors
 Sometimes you want to test that a particular situation will cause Puppet to
 raise an error, such as paramater validation.  You can accomplish this using
-a combination of rspec-puppet and RSpec matchers.
+the `and_raise_error` method on the `compile` matcher.
 
 {% highlight ruby %}
 describe 'my::type' do
@@ -185,11 +185,7 @@ describe 'my::type' do
   context 'with foo => bar' do
     let(:params) { {:foo => 'bar'} }
 
-    it do
-      expect {
-        is_expected.to compile
-      }.to raise_error(Puppet::Error, /foo must be a boolean/)
-    end
+    it { is_expected.to compile.and_raise_error(/foo must be a boolean/) }
   end
 end
 {% endhighlight %}
