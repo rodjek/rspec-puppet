@@ -30,7 +30,7 @@ module RSpec::Puppet
         # Puppet flattens an array with a single value into just the value and
         # this can cause confusion when testing as people expect when you put
         # an array in, you'll get an array out.
-        actual = [*actual] if expected.is_a?(Array)
+        actual = [actual] if expected.is_a?(Array) && !actual.is_a?(Array)
 
         retval = check(expected, actual)
 
