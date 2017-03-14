@@ -55,7 +55,7 @@ module RSpec::Puppet
       #
       # @return [true, false] If the resource matched
       def check(expected, actual)
-        return false if actual.nil? && !expected.nil?
+        return false if !expected.is_a?(Proc) && actual.nil? && !expected.nil?
         case expected
         when Proc
           check_proc(expected, actual)
