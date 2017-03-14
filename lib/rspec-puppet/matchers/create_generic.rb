@@ -79,7 +79,7 @@ module RSpec::Puppet
 
       def matches?(catalogue)
         ret = true
-        @catalogue = catalogue.call
+        @catalogue = catalogue.is_a?(Puppet::Resource::Catalog) ? catalogue : catalogue.call
         resource = @catalogue.resource(@referenced_type, @title)
 
         if resource.nil?
