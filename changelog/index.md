@@ -4,6 +4,190 @@ layout: minimal
 
 # Changelog
 
+## 2.5.0
+
+Headline features are app management, nested hashes in params, and testing for
+"internal" functions.
+
+Thanks to everyone who contributed: Leo Arnold, Matt Schuchard, and Si Wilkins.
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.4.0...v2.5.0)
+
+### Changed
+
+ * Updates to the README
+ * Improved Gemfile to work with older versions of Ruby
+
+### Added
+
+ * Added support for app management testing
+ * Added support for nested hashes in params
+ * Added support for testing Puppet 4.x "internal" functions
+ * Link functions and types into test dir on setup
+ * Increased test coverage
+
+## 2.4.0
+
+This release now supports testing exported resources in the same way that
+normal resources in the catalogue are tested. Access them in your examples
+using `exported_resources`. See "Testing Exported Resources" in the README for
+examples.
+
+Thanks to Adrien Thebo, Arthur Gautier, Brett Gray and Nicholas Hinds, as well
+as all the folks helping out on github for the contributions to this release.
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.3.2...v2.4.0)
+
+### Changed
+
+ * Pulled a lot of the version specific code into separate classes to reduce
+   complexity and enable easier maintenance going forward.
+
+### Added
+
+ * Added support for colon separated module_path and environmentpath values
+ * Added support for setting a minimum threshold for the code coverage test
+ * Added code to reinitialise Puppet before each example in order to ensure
+   a consistent test environment.
+
+## 2.3.2
+
+Properly fix yesterday's issue by unsharing the cache key before passing the
+data to Puppet. This also contains a new test matrix to avoid missing
+a half-baked fix.
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.3.1...v2.3.2)
+
+## 2.3.1
+
+A quick workaround to re-enable testing with the recently released Puppet 3.8.5
+and the soon to be released Puppet 4.3.2. See PUP-5743 for the gritty details.
+Upgrade to this version if you hit the "undefined method \`resource' for
+nil:NilClass" error.
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.3.0...v2.3.1)
+
+## 2.3.0
+
+rspec-puppet now supports testing custom types, `:undef` values in params,
+structured facts, and checks resource dependencies recursively.
+
+The settings in `module_path` and `manifest` are now respected throughout the
+code base. The former default for `module_path` (`/etc/puppet/modules`) was
+dropped to avoid accidentally poisoning the test environment with unrelated
+code.
+
+To reduce the maintenance overhead of boilerplate code, rspec-puppet now
+provides some of the code that rspec-puppet-init deployed in helper files that
+you can just `require` instead.
+
+This release also reduces memory usage on bigger testsuites drastically by
+reducing the caching of compiled catalogues.
+
+Thanks to Adrien Thebo, Alex Harvey, Brian, Dan Bode, Dominic Cleal, Javier
+Palacios, Jeff McCune, Jordan Moldow, Peter van Zetten, Raphael Pinson, Simon
+Kohlmeyer, and Tristan Colgate for their contibutions to this release.
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.2.0...v2.3.0)
+
+### Changed
+
+ * Limit the catalogue cache to 16 entries. Significant memory savings and
+   reduced runtime were observed in testing this.
+ * Prevent Puppet 3.x \_timestamp fact from invalidating the cache.
+ * Extracted catalogue cache from RSpec::Puppet::Support.
+ * Updates README to use the rspec 3 expect syntax, and additional
+   explanations.
+ * `contain_file(...).with_content(...)` will now only show the diff and not
+   the full contents of the file.
+
+### Added
+
+ * Custom type testing example group and matcher
+ * before/require/subscribe/notify checking now searches recursively through
+   all dependencies. `File[a] -> File[b] -> File[c]` is now matched by
+   `contain_file('a').that_comes_before('File[c]')`, whereas earlier versions
+   would have missed that.
+ * Support structured facts with keys as symbols or strings
+ * rspec-puppet-init now creates smaller files, using rspec-puppet helpers,
+   instead of pasting code into the module.
+ * Added a list of related projects to the README.
+
+### Fixed
+
+ * `compile.and_raise_error` now correctly considers successful compilation an
+   error.
+ * Puppet's `module_path` can now contain multiple entries and rspec-puppet
+   will configure Puppet to load code from all of them.
+ * Support running with rspec 2.99 again
+ * Non-class resources are now covered by the coverage code
+ * Autorequires checking doesn't abort on "undefined method \`[]' for
+   nil:NilClass"
+ * Improved documentation for hiera integration, added example spec
+ * Document the `scope` property.
+
+## 2.2.0
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.1.0...v2.2.0)
+
+### Added
+
+ * Added setting for ordering, strict\_variables, stringify\_facts, and
+   trusted\_node\_data.
+ * Exposed the scope in function example groups.
+
+### Fixed
+
+ * rspec-puppet-init now works with Puppet 4
+ * Several fixes and enhancements for the `run` matcher
+ * Recompile the catalogue when the hiera config changes
+
+## 2.1.0
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.0.1...v2.1.0)
+
+### Added
+
+ * Puppet 4 support
+ * Ability to set `environment` with a let block
+ * Better function failure messages
+
+### Fixed
+
+ * Filter fixtures out of coverage reports
+ * Fix functions accidentally modifying rspec function arguments
+ * Restructured TravisCI matrix (NB: Puppet 2.6 is no longer tested)
+
+## 2.0.1
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.0.0...v2.0.1)
+
+### Fixed
+
+ * Allow RSpec 2 to still be used
+
+## 2.0.0
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v1.0.1...v2.0.0)
+
+### Changed
+
+ * `subject` is now a lambda to enable catching of compilation failures.
+
+### Added
+
+ * Ability to use RSpec 3
+ * Hiera integration
+ * Coverage reports
+ * Ability to test on the future parser
+ * Function tests now have access to the catalogue
+ * Add array of references support to the relationship matchers
+
+### Fixed
+
+ * Better error messages and handling for parameters (`nil` and friends) and
+   dependency cycles
+
 ## 1.0.1
 
  * Fixed bug where under certain circumstances a newline isn't added after the
