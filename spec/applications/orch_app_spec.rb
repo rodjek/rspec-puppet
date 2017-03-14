@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'orch_app', :if => Puppet.version.to_f >= 4.3 do
+describe 'orch_app', :if => Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 do
   let(:node) { 'my_node' }
   let(:title) { 'my_awesome_app' }
 

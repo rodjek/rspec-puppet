@@ -4,15 +4,15 @@ describe 'split' do
   it { should run.with_params('aoeu', 'o').and_return(['a', 'eu']) }
   it { should_not run.with_params('foo').and_raise_error(Puppet::DevError) }
 
-  if (Puppet.version.split('.').map { |s| s.to_i } <=> [3, 1]) >= 0
+  if Puppet::Util::Package.versioncmp(Puppet.version, '3.1.0') >= 0
     expected_error = ArgumentError
   else
     expected_error = Puppet::ParseError
   end
 
-  if Puppet.version.to_f >= 4.3
+  if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
     expected_error_message = /expects \d+ arguments/
-  elsif Puppet.version.to_f >= 4.0
+  elsif Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0
     expected_error_message = /mis-matched arguments/
   else
     expected_error_message = /number of arguments/
