@@ -147,7 +147,7 @@ module RSpec::Puppet
     end
 
     def trusted_facts_hash(node_name)
-      return {} unless Puppet.version.to_f >= 4.3
+      return {} unless Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
 
       extensions = {}
 
@@ -195,7 +195,7 @@ module RSpec::Puppet
       Puppet[:vardir] = vardir
 
       # Enable app_management by default for Puppet versions that support it
-      if Puppet.version.to_f >= 4.3 && Puppet.version.to_i < 5
+      if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 && Puppet.version.to_i < 5
         Puppet[:app_management] = true
       end
 
@@ -236,7 +236,7 @@ module RSpec::Puppet
 
       node_obj = Puppet::Node.new(nodename, { :parameters => facts_val, :facts => node_facts })
 
-      if Puppet.version.to_f >= 4.3
+      if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
         Puppet.push_context(
           {
             :trusted_information => Puppet::Context::TrustedInformation.new('remote', nodename, trusted_facts_val)

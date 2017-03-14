@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'trusted_facts::lookup', :if => Puppet.version.to_f >= 4.3 do
+describe 'trusted_facts::lookup', :if => Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 do
   let(:node) { 'trusted.example.com' }
 
   context 'without trusted fact extensions' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'trusted_facts', :if => Puppet.version.to_f >= 4.3 do
+describe 'trusted_facts', :if => Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 do
   context 'without node set' do
     it { should contain_class('trusted_facts') }
     it { should compile.with_all_deps }

@@ -202,15 +202,15 @@ module RSpec::Puppet
 
     def self.get
       [
-        [4.0, Adapter4X],
-        [3.0, Adapter3X],
-        [2.7, Adapter27]
+        ['4.0', Adapter4X],
+        ['3.0', Adapter3X],
+        ['2.7', Adapter27]
       ].each do |(version, klass)|
-        if Puppet.version.to_f >= version
+        if Puppet::Util::Package.versioncmp(Puppet.version, version) >= 0
           return klass.new
         end
       end
-      raise "Puppet version #{Puppet.version.to_f} is not supported."
+      raise "Puppet version #{Puppet.version} is not supported."
     end
   end
 end
