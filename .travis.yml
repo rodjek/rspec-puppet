@@ -40,7 +40,8 @@ matrix:
       env: PUPPET_GEM_VERSION='~> 4.8.0' COVERAGE=yes
 
   allowed_failures:
-    - env: PUPPET_GEM_VERSION='git:https://github.com/puppetlabs/puppet.git#master'
+    # Don't fail for puppet.git#master because it may be to blame for any failures
+    - env: PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#master'
 
 notifications:
   email:
