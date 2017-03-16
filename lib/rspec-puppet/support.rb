@@ -265,6 +265,20 @@ module RSpec::Puppet
     end
 
     def stub_facts!(facts)
+      if facts['operatingsystem'] && facts['operatingsystem'] == 'windows'
+        Puppet.settings[:autosign] = false
+        allow(Puppet::Util::Platform).to receive(:windows?).and_return(true)
+        begin
+          require 'puppet/util/windows'
+        rescue LoadError
+          allow_any_instance_of(Kernel).to receive(:require).with(anything).and_call_original
+          allow_any_instance_of(Kernel).to receive(:require).with('puppet/util/windows').and_return(true)
+        end
+      else
+        allow(Puppet::Util::Platform).to receive(:windows?).and_return(false)
+        RSpec::Mocks.space.proxy_for(Kernel).reset
+      end
+
       Facter.flush
       Facter.reset
       facts.each do |k, v|
