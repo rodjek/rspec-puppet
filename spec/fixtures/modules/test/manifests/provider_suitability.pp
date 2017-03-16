@@ -1,4 +1,4 @@
-class test::foo {
+class test::provider_suitability {
   $my_managehome = $::osfamily ? {
     'Darwin' => 'false',
     default  => true,

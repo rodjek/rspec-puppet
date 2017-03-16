@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'test::foo' do
+describe 'test::provider_suitability' do
   [
     {
       :operatingsystem => 'Darwin',
@@ -20,7 +20,7 @@ describe 'test::foo' do
   ].each do |f|
     context "On #{f[:operatingsystem]}" do
       let(:facts) { f }
-      it { should compile }
+      it { should compile.with_all_deps }
       it { should contain_user('testuser') }
     end
   end
