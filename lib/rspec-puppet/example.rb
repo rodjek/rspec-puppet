@@ -30,5 +30,8 @@ RSpec::configure do |c|
 
   # Hook for each example group type to remove any caches or instance variables, since they will remain
   # and cause a memory leak.  Can't be assigned per type by :file_path, so check for its presence.
-  c.after(:each) { rspec_puppet_cleanup if respond_to?(:rspec_puppet_cleanup) }
+  c.after(:each) do
+    rspec_puppet_cleanup if respond_to?(:rspec_puppet_cleanup)
+    reset_providers if respond_to?(:reset_providers)
+  end
 end
