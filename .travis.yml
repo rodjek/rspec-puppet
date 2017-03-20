@@ -3,9 +3,9 @@ cache: bundler
 bundler_args: --without development
 
 rvm:
+  - 2.3.0
   - 2.1
   - 1.9.3
-  - 2.0.0
 
 sudo: false
 
@@ -36,7 +36,7 @@ matrix:
     # run Coveralls exactly once
     - rvm: 1.9.3
       env: PUPPET_GEM_VERSION='~> 4.8.0' COVERAGE=yes
-    - rvm: 2.0.0
+    - rvm: 2.3.0
       env: PUPPET_GEM_VERSION='~> 4.8.0' COVERAGE=yes
 
   allowed_failures:
