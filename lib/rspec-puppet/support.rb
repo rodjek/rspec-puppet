@@ -231,7 +231,11 @@ module RSpec::Puppet
       # that providers might do. This is necessary because we convert the
       # resource catalogue to a RAL catalogue in order to evaluate all the
       # automatic graph edges, which requires evaluating the providers.
-      allow_any_instance_of(Puppet::Confine::Feature).to receive(:pass?).with(anything).and_return(true)
+      if Puppet::Util::Package.versioncmp(Puppet.version, '3.0.0') < 0
+        allow_any_instance_of(Puppet::Provider::Confine::Feature).to receive(:pass?).with(anything).and_return(true)
+      else
+        allow_any_instance_of(Puppet::Confine::Feature).to receive(:pass?).with(anything).and_return(true)
+      end
       allow_any_instance_of(Puppet::Util).to receive(:which).with(anything).and_return(true)
       allow_any_instance_of(Puppet::Provider::Command).to receive(:execute).with(any_args).and_return("")
 
