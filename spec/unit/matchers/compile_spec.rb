@@ -62,8 +62,9 @@ if Puppet.version.to_f >= 3.0
         before(:each) { subject.matches? catalogue }
 
         it { is_expected.to have_attributes(
-          :failure_message => a_string_starting_with("error during compilation: Could not retrieve dependency 'File[/tmp/missing]'")
-        )}
+          :failure_message => a_string_starting_with("error during compilation: Could not retrieve dependency 'File[/tmp/missing]'")).or have_attributes(
+          :failure_message => a_string_starting_with("error during compilation: Could not find resource 'File[/tmp/missing]'"))
+        }
       end
     end
 
