@@ -1,0 +1,94 @@
+{
+  "tags": ["settings","test::bare_class","test","bare_class","default","class","node"],
+  "name": "cyndane.localdomain",
+  "version": 1490573573,
+  "code_id": null,
+  "catalog_uuid": "86ed634c-19c7-48d6-8058-04f0e45bdb3f",
+  "catalog_format": 1,
+  "environment": "rp_env",
+  "resources": [
+    {
+      "type": "Stage",
+      "title": "main",
+      "tags": ["stage"],
+      "exported": false,
+      "parameters": {
+        "name": "main"
+      }
+    },
+    {
+      "type": "Class",
+      "title": "Settings",
+      "tags": ["class","settings"],
+      "exported": false
+    },
+    {
+      "type": "Class",
+      "title": "main",
+      "tags": ["class"],
+      "exported": false,
+      "parameters": {
+        "name": "main"
+      }
+    },
+    {
+      "type": "Class",
+      "title": "Test::Bare_class",
+      "tags": ["class","test::bare_class","test","bare_class"],
+      "exported": false
+    },
+    {
+      "type": "Notify",
+      "title": "foo",
+      "tags": ["notify","foo","class","test::bare_class","test","bare_class"],
+      "file": "/home/tsharpe/code/rspec-puppet/spec/fixtures/modules/test/manifests/bare_class.pp",
+      "line": 2,
+      "exported": false
+    },
+    {
+      "type": "Node",
+      "title": "default",
+      "tags": ["node","default","class"],
+      "exported": false
+    },
+    {
+      "type": "Notify",
+      "title": "test",
+      "tags": ["notify","test","node","default","class"],
+      "file": "",
+      "line": 2,
+      "exported": false
+    }
+  ],
+  "edges": [
+    {
+      "source": "Stage[main]",
+      "target": "Class[Settings]"
+    },
+    {
+      "source": "Stage[main]",
+      "target": "Class[main]"
+    },
+    {
+      "source": "Stage[main]",
+      "target": "Class[Test::Bare_class]"
+    },
+    {
+      "source": "Class[Test::Bare_class]",
+      "target": "Notify[foo]"
+    },
+    {
+      "source": "Class[main]",
+      "target": "Node[default]"
+    },
+    {
+      "source": "Node[default]",
+      "target": "Notify[test]"
+    }
+  ],
+  "classes": [
+    "settings",
+    "test::bare_class",
+    "default"
+  ]
+}

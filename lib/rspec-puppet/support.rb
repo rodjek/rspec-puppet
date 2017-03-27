@@ -37,6 +37,21 @@ module RSpec::Puppet
       end
     end
 
+    def load_catalogue_from_file
+      catalogue_file = File.join(Dir.pwd, 'spec', 'fixtures', 'catalogue', self.class.top_level_description)
+      unless File.exists?(catalogue_file)
+        raise ArgumentError, "The specified catalogue '#{catalogue_file}' does not exist"
+      end
+
+      unless File.readable?(catalogue_file)
+        raise ArgumentError, "The specified catalogue '#{catalogue_file}' is not readable"
+      end
+
+      catalogue_hash = PSON.load(File.read(catalogue_file))
+
+      Puppet::Resource::Catalog.from_data_hash(catalogue_hash)
+    end
+
     def import_str
       import_str = ""
       adapter.modulepath.each { |d|
