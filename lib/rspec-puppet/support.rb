@@ -235,9 +235,9 @@ module RSpec::Puppet
         allow_any_instance_of(Puppet::Provider::Confine::Feature).to receive(:pass?).with(anything).and_return(true)
       else
         allow_any_instance_of(Puppet::Confine::Feature).to receive(:pass?).with(anything).and_return(true)
+        allow_any_instance_of(Puppet::Provider::Command).to receive(:execute).with(any_args).and_return("")
       end
       allow_any_instance_of(Puppet::Util).to receive(:which).with(anything).and_return(true)
-      allow_any_instance_of(Puppet::Provider::Command).to receive(:execute).with(any_args).and_return("")
 
       # If we're going to rebuild the catalog, we should clear the cached instance
       # of Hiera that Puppet is using.  This opens the possibility of the catalog
