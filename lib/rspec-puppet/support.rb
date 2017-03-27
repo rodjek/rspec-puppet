@@ -217,7 +217,27 @@ module RSpec::Puppet
       end
     end
 
+    def reset_providers
+      Puppet::Type.eachtype do |type|
+        # Unset the default provider for each type as this is cached in a class
+        # instance method and so doesn't get re-evaluated when we change facts
+        # and compile a new catalogue.
+        type.defaultprovider = nil
+      end
+    end
+
     def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported)
+      # Blindly stub out any feature and command Puppet::Confine evaluations
+      # that providers might do. This is necessary because we convert the
+      # resource catalogue to a RAL catalogue in order to evaluate all the
+      # automatic graph edges, which requires evaluating the providers.
+      if Puppet::Util::Package.versioncmp(Puppet.version, '3.0.0') < 0
+        allow_any_instance_of(Puppet::Provider::Confine::Feature).to receive(:pass?).with(anything).and_return(true)
+      else
+        allow_any_instance_of(Puppet::Confine::Feature).to receive(:pass?).with(anything).and_return(true)
+        allow_any_instance_of(Puppet::Provider::Command).to receive(:execute).with(any_args).and_return("")
+      end
+      allow_any_instance_of(Puppet::Util).to receive(:which).with(anything).and_return(true)
 
       # If we're going to rebuild the catalog, we should clear the cached instance
       # of Hiera that Puppet is using.  This opens the possibility of the catalog
@@ -249,7 +269,25 @@ module RSpec::Puppet
     end
 
     def stub_facts!(facts)
-      facts.each { |k, v| Facter.add(k) { setcode { v } } }
+      if facts['operatingsystem'] && facts['operatingsystem'] == 'windows'
+        Puppet.settings[:autosign] = false
+        allow(Puppet::Util::Platform).to receive(:windows?).and_return(true)
+        begin
+          require 'puppet/util/windows'
+        rescue LoadError
+          allow_any_instance_of(Kernel).to receive(:require).with(anything).and_call_original
+          allow_any_instance_of(Kernel).to receive(:require).with('puppet/util/windows').and_return(true)
+        end
+      else
+        allow(Puppet::Util::Platform).to receive(:windows?).and_return(false)
+        RSpec::Mocks.space.proxy_for(Kernel).reset
+      end
+
+      Facter.flush
+      Facter.reset
+      facts.each do |k, v|
+        Facter.add(k) { setcode { v } }
+      end
     end
 
     def build_catalog(*args)
