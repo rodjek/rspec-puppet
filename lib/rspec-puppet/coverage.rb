@@ -1,3 +1,6 @@
+require 'rspec-puppet/coverage/coveralls'
+require 'rspec-puppet/coverage/cobertura'
+
 module RSpec::Puppet
   class Coverage
 
@@ -98,6 +101,33 @@ module RSpec::Puppet
       else
         puts "The desired coverage must be 0 <= x <= 100, not '#{coverage_desired.inspect}'"
       end
+    end
+
+    def coverage
+
+      source_files_hash = {}
+      source_files = []
+
+      @collection.each do |name, c|
+        r = c.resource
+        name = r.file
+        line = r.line
+        if name
+          source_files_hash[name] ||= []
+          source_files_hash[name][line-1] ||= 0
+          source_files_hash[name][line-1] += 1 if c.touched?
+        end
+      end
+
+      source_files_hash.each do |k, v|
+        source_files << {
+          :name     => k.gsub(%r{.*/spec/fixtures/modules/([^/]+)/manifests}, '\1'),
+          :source   => File.open(k).read,
+          :coverage => v,
+        }
+      end
+
+      source_files
     end
 
     def results
