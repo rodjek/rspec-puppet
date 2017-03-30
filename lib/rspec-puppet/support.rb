@@ -26,8 +26,9 @@ module RSpec::Puppet
         node_name = nodename(type)
 
         hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
+        hiera_data_value = self.respond_to?(:hiera_data) ? hiera_data : nil
 
-        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value, code, exported)
+        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value, code, exported, hiera_data_value)
 
         test_module = class_name.split('::').first
         RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
@@ -217,7 +218,7 @@ module RSpec::Puppet
       end
     end
 
-    def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported)
+    def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported, hiera_data_value)
 
       # If we're going to rebuild the catalog, we should clear the cached instance
       # of Hiera that Puppet is using.  This opens the possibility of the catalog
