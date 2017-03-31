@@ -17,7 +17,7 @@ module RSpec::Puppet
 
     def initialize
       @collection = {}
-      @filters = ['Stage[main]', 'Class[Settings]', 'Class[main]']
+      @filters = ['Stage[main]', 'Class[Settings]', 'Class[main]', 'Node[default]']
     end
 
     def add(resource)
