@@ -12,5 +12,9 @@ describe 'sysctl' do
     it 'subject should return a catalogue' do
       expect(subject.call).to be_a(Puppet::Resource::Catalog)
     end
+
+    it 'should be included in the coverage filter' do
+      expect(RSpec::Puppet::Coverage.filters).to include('Sysctl[vm.swappiness]')
+    end
   end
 end
