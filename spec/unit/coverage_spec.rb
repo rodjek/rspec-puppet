@@ -19,7 +19,7 @@ describe RSpec::Puppet::Coverage do
 
   describe "filtering" do
     it "filters boilerplate catalog resources by default" do
-      expect(subject.filters).to eq %w[Stage[main] Class[Settings] Class[main]]
+      expect(subject.filters).to eq %w[Stage[main] Class[Settings] Class[main] Node[default]]
     end
 
     it "can add additional filters" do
