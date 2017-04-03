@@ -17,7 +17,7 @@ module RSpec::Puppet
 
     def initialize
       @collection = {}
-      @filters = ['Stage[main]', 'Class[Settings]', 'Class[main]']
+      @filters = ['Stage[main]', 'Class[Settings]', 'Class[main]', 'Node[default]']
     end
 
     def add(resource)
@@ -41,7 +41,7 @@ module RSpec::Puppet
 
     # add all resources from catalog declared in module test_module
     def add_from_catalog(catalog, test_module)
-      coverable_resources = catalog.to_a.select { |resource| !filter_resource?(resource, test_module) }
+      coverable_resources = catalog.to_a.reject { |resource| !test_module.nil? && filter_resource?(resource, test_module) }
       coverable_resources.each do |resource|
         add(resource)
       end

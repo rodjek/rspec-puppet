@@ -29,7 +29,7 @@ module RSpec::Puppet
 
         catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value, code, exported)
 
-        test_module = class_name.split('::').first
+        test_module = type == :host ? nil : class_name.split('::').first
         RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
         RSpec::Puppet::Coverage.add_from_catalog(catalogue, test_module)
 
