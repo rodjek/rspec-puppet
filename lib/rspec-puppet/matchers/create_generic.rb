@@ -320,7 +320,7 @@ module RSpec::Puppet
 
           if value.nil? then
             unless resource[param].nil?
-              @errors << "#{param} undefined"
+              @errors << "#{param} undefined but it is set to #{resource[param].inspect}"
             end
           else
             m = ParameterMatcher.new(param, value, type)
