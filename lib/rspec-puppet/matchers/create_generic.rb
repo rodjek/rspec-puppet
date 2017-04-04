@@ -87,6 +87,17 @@ module RSpec::Puppet
         else
           RSpec::Puppet::Coverage.cover!(resource)
           rsrc_hsh = resource.to_hash
+
+          if resource.builtin_type?
+            namevar = resource.resource_type.key_attributes.first.to_s
+          else
+            namevar = 'name'
+          end
+
+          unless @expected_params.any? { |param| param.first.to_s == namevar }
+            rsrc_hsh.delete(namevar.to_sym) if rsrc_hsh.has_key?(namevar.to_sym)
+          end
+
           if @expected_params_count
             unless rsrc_hsh.size == @expected_params_count
               ret = false
