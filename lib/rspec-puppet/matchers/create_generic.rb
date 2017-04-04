@@ -88,10 +88,10 @@ module RSpec::Puppet
           RSpec::Puppet::Coverage.cover!(resource)
           rsrc_hsh = resource.to_hash
 
-          if resource.resource_type.is_a?(Puppet::Resource::Type)
-            namevar = 'name'
-          else
+          if resource.builtin_type?
             namevar = resource.resource_type.key_attributes.first.to_s
+          else
+            namevar = 'name'
           end
 
           unless @expected_params.any? { |param| param.first.to_s == namevar }
