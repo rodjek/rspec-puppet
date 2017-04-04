@@ -87,6 +87,11 @@ module RSpec::Puppet
         else
           RSpec::Puppet::Coverage.cover!(resource)
           rsrc_hsh = resource.to_hash
+
+          unless @expected_params.any? { |param| param.first == 'name' }
+            rsrc_hsh.delete(:name) if rsrc_hsh.has_key?(:name)
+          end
+
           if @expected_params_count
             unless rsrc_hsh.size == @expected_params_count
               ret = false
