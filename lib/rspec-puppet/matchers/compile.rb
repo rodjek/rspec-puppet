@@ -108,6 +108,10 @@ module RSpec::Puppet
               if vertex[:alias]
                 res_hash["#{vertex.type.to_s}[#{vertex[:alias]}]"] = 1
               end
+
+              if vertex.uniqueness_key != [vertex.title]
+                res_hash["#{vertex.type.to_s}[#{vertex.uniqueness_key.first}]"] = 1
+              end
             end
           end
           res_hash
