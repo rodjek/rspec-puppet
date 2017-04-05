@@ -115,7 +115,7 @@ module RSpec::Puppet
     end
 
     def self.safe_create_spec_helper
-      content = "require 'rspec-puppet/spec_helper'\n"
+      content = File.read(File.expand_path(File.join(__FILE__, '..', 'spec_helper.rb')))
       safe_create_file('spec/spec_helper.rb', content)
     end
 
