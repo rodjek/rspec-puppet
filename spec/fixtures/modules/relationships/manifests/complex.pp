@@ -10,5 +10,5 @@ class relationships::complex {
   notify { 'baz':
   }
 
-  Notify['baz'] -> Notify['foo']
+  Notify['baz'] <- Notify['foo']
 }
