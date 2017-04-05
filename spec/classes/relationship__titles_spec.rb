@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'relationships::titles' do
+  let(:facts) { {:operatingsystem => 'Debian', :kernel => 'Linux'} }
+
   it { should compile }
   it { should compile.with_all_deps }
 
