@@ -260,19 +260,18 @@ module RSpec::Puppet
 
       def relationship_refs(resource, type)
         resource = canonicalize_resource(resource)
-        results = []
+        results = Set.new
         return results unless resource
-
-        if resource.builtin_type?
-          name_var = resource.key_attributes.first
-          if resource.title != resource[name_var]
-            results << "#{resource.type}[#{resource[name_var]}]"
-          end
-        end
 
         Array[resource[type]].flatten.compact.each do |r|
           results << canonicalize_resource_ref(r)
           results << relationship_refs(r, type)
+
+          res = canonicalize_resource(r)
+          if res.builtin_type?
+            results << res.to_ref
+            results << "#{res.type.to_s.capitalize}[#{res.uniqueness_key}]"
+          end
         end
 
         # Add autorequires if any
