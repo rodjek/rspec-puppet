@@ -298,8 +298,8 @@ module RSpec::Puppet
 
         self_or_upstream(first).each do |u|
           self_or_upstream(second).each do |v|
-            before_refs = relationship_refs(u, :before)
-            require_refs = relationship_refs(v, :require)
+            before_refs = relationship_refs(u, :before) + relationship_refs(u, :notify)
+            require_refs = relationship_refs(v, :require) + relationship_refs(u, :subscribe)
 
             if before_refs.include?(v.to_ref) || require_refs.include?(u.to_ref) || (before_refs & require_refs).any?
               return true
