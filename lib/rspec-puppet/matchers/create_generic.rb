@@ -1,4 +1,6 @@
+require 'set'
 require 'rspec-puppet/matchers/parameter_matcher'
+
 module RSpec::Puppet
   module ManifestMatchers
     class CreateGeneric
@@ -258,14 +260,21 @@ module RSpec::Puppet
         resource_ref(resource_from_ref(ref))
       end
 
-      def relationship_refs(resource, type)
+      def relationship_refs(resource, type, visited = Set.new)
         resource = canonicalize_resource(resource)
         results = Set.new
         return results unless resource
 
+        # guard to prevent infinite recursion
+        if visited.include?(resource.object_id)
+          return [canonicalize_resource_ref(resource)]
+        else
+          visited << resource.object_id
+        end
+
         Array[resource[type]].flatten.compact.each do |r|
           results << canonicalize_resource_ref(r)
-          results << relationship_refs(r, type)
+          results << relationship_refs(r, type, visited)
 
           res = canonicalize_resource(r)
           if res.builtin_type?
@@ -279,7 +288,7 @@ module RSpec::Puppet
           resource.resource_type.eachautorequire do |t, b|
             Array(resource.to_ral.instance_eval(&b)).each do |dep|
               res = "#{t.to_s.capitalize}[#{dep}]"
-              if r = relationship_refs(res, type)
+              if r = relationship_refs(res, type, visited)
                 results << res
                 results << r
               end
