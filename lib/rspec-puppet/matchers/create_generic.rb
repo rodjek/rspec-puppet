@@ -277,6 +277,7 @@ module RSpec::Puppet
           results << relationship_refs(r, type, visited)
         end
 
+        Puppet::Type.suppress_provider
         # Add autorequires if any
         if type == :require and resource.resource_type.respond_to? :eachautorequire
           resource.resource_type.eachautorequire do |t, b|
@@ -289,6 +290,8 @@ module RSpec::Puppet
             end
           end
         end
+        Puppet::Type.unsuppress_provider
+
         results.flatten
       end
 

@@ -14,6 +14,8 @@ begin
 rescue LoadError
 end
 
+require 'rspec-puppet/monkey_patches'
+
 RSpec.configure do |c|
   c.add_setting :environmentpath, :default => '/etc/puppetlabs/code/environments'
   c.add_setting :module_path, :default => nil
