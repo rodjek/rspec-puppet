@@ -10,7 +10,7 @@ module Puppet
 
     define_method(:set_default) do |attr|
       return if attr == :provider && self.class.suppress_provider?
-      old_set_default.bind(self).(attr)
+      old_set_default.bind(self).call(attr)
     end
 
     def self.suppress_provider?
