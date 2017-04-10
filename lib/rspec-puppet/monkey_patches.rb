@@ -26,7 +26,7 @@ module Puppet
     end
   end
 
-  # If Puppet::Node::Environment has a validet_dirs instance method (i.e.
+  # If Puppet::Node::Environment has a validate_dirs instance method (i.e.
   # Puppet < 3.x), wrap the method to check if rspec-puppet is pretending to be
   # running under windows. The original method uses Puppet::Util.absolute_path?
   # (which in turn calls Puppet::Util::Platform.windows?) to validate the path
