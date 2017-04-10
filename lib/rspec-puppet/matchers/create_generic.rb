@@ -262,7 +262,7 @@ module RSpec::Puppet
 
       def relationship_refs(resource, type, visited = Set.new)
         resource = canonicalize_resource(resource)
-        results = []
+        results = Set.new
         return results unless resource
 
         # guard to prevent infinite recursion
@@ -275,6 +275,12 @@ module RSpec::Puppet
         Array[resource[type]].flatten.compact.each do |r|
           results << canonicalize_resource_ref(r)
           results << relationship_refs(r, type, visited)
+
+          res = canonicalize_resource(r)
+          if res.builtin_type?
+            results << res.to_ref
+            results << "#{res.type.to_s.capitalize}[#{res.uniqueness_key}]"
+          end
         end
 
         # Add autorequires if any
@@ -301,8 +307,8 @@ module RSpec::Puppet
 
         self_or_upstream(first).each do |u|
           self_or_upstream(second).each do |v|
-            before_refs = relationship_refs(u, :before)
-            require_refs = relationship_refs(v, :require)
+            before_refs = relationship_refs(u, :before) + relationship_refs(u, :notify)
+            require_refs = relationship_refs(v, :require) + relationship_refs(u, :subscribe)
 
             if before_refs.include?(v.to_ref) || require_refs.include?(u.to_ref) || (before_refs & require_refs).any?
               return true
