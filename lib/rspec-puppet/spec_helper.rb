@@ -1,6 +1,6 @@
 require 'rspec-puppet'
 
-fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
+fixture_path = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures')
 
 RSpec.configure do |c|
   c.module_path     = File.join(fixture_path, 'modules')
