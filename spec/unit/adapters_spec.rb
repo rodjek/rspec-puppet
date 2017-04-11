@@ -1,13 +1,16 @@
 require 'spec_helper'
 require 'rspec-puppet/adapters'
 
+def context_double(options = {})
+  double({:environment => 'rp_puppet'}.merge(options))
+end
+
 describe RSpec::Puppet::Adapters::Base do
   describe '#setup_puppet' do
     it "sets up all settings listed in the settings map" do
-      context = double :environment => 'rp_puppet'
-      subject.settings_map.each do |puppet_setting, rspec_setting|
-        expect(subject).to receive(:set_setting).with(context, puppet_setting, rspec_setting)
-      end
+      context = context_double
+      expected_settings = Hash[*subject.settings_map.map { |r| [r.first, anything] }.flatten]
+      expect(Puppet.settings).to receive(:initialize_app_defaults).with(hash_including(expected_settings))
       subject.setup_puppet(context)
     end
   end
@@ -15,17 +18,17 @@ describe RSpec::Puppet::Adapters::Base do
   describe '#set_setting' do
     describe "with a context specific setting" do
       it "sets the Puppet setting based on the example group setting" do
-        context = double :confdir => "/etc/fingerpuppet"
-        subject.set_setting(context, :confdir, :confdir)
+        context = context_double :confdir => "/etc/fingerpuppet"
+        subject.setup_puppet(context)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/fingerpuppet})
       end
 
       it "does not persist settings between example groups" do
-        context1 = double :confdir => "/etc/fingerpuppet"
-        context2 = double
-        subject.set_setting(context1, :confdir, :confdir)
+        context1 = context_double :confdir => "/etc/fingerpuppet"
+        context2 = context_double
+        subject.setup_puppet(context1)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/fingerpuppet})
-        subject.set_setting(context2, :confdir, :confdir)
+        subject.setup_puppet(context2)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/puppet})
       end
     end
@@ -36,7 +39,7 @@ describe RSpec::Puppet::Adapters::Base do
       end
 
       it "sets the Puppet setting based on the global configuration value" do
-        subject.set_setting(double, :confdir, :confdir)
+        subject.setup_puppet(context_double)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/bunraku})
       end
     end
@@ -47,8 +50,8 @@ describe RSpec::Puppet::Adapters::Base do
       end
 
       it "prefers the context specific setting" do
-        context = double :confdir => "/etc/sockpuppet"
-        subject.set_setting(context, :confdir, :confdir)
+        context = context_double :confdir => "/etc/sockpuppet"
+        subject.setup_puppet(context)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/sockpuppet})
       end
     end
@@ -61,11 +64,11 @@ describe RSpec::Puppet::Adapters::Base do
   end
 end
 
-describe RSpec::Puppet::Adapters::Adapter3X do
+describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).include?(Puppet.version.to_f) do
 
   let(:test_context) { double :environment => 'rp_env' }
 
-  context 'when running on puppet 3.5 or later', :if => Puppet.version.to_f >= 3.5 do
+  context 'when running on puppet 3.5 or later', :if => (3.5 ... 4.0).include?(Puppet.version.to_f) do
     it 'sets Puppet[:strict_variables] to false by default' do
       subject.setup_puppet(test_context)
       expect(Puppet[:strict_variables]).to eq(false)

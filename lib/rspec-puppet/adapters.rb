@@ -2,19 +2,8 @@ module RSpec::Puppet
   module Adapters
 
     class Base
-      # Set up all Puppet settings applicable for this Puppet version
-      #
-      # @param example_group [RSpec::Core::ExampleGroup] The RSpec context to use for local settings
-      # @return [void]
-      def setup_puppet(example_group)
-        settings_map.each do |puppet_setting, rspec_setting|
-          set_setting(example_group, puppet_setting, rspec_setting)
-        end
-        @environment_name = example_group.environment
-      end
-
-      # Set up a specific Puppet setting.
-      # configuration setting.
+      # Set up all Puppet settings applicable for this Puppet version as
+      # application defaults.
       #
       # Puppet setting values can be taken from the global RSpec configuration, or from the currently
       # executing RSpec context. When a setting is specified both in the global configuration and in
@@ -48,21 +37,36 @@ module RSpec::Puppet
       #   end
       #
       # @param example_group [RSpec::Core::ExampleGroup] The RSpec context to use for local settings
-      # @param puppet_setting [Symbol] The name of the Puppet setting to configure
-      # @param rspec_setting [Symbol] The name of the RSpec context specific or global setting to use
       # @return [void]
-      def set_setting(example_group, puppet_setting, rspec_setting)
-        if example_group.respond_to?(rspec_setting)
-          value = example_group.send(rspec_setting)
-        else
-          value = RSpec.configuration.send(rspec_setting)
+      def setup_puppet(example_group)
+        settings = settings_map.map do |puppet_setting, rspec_setting|
+          [puppet_setting, get_setting(example_group, rspec_setting)]
+        end.flatten
+        default_hash = {:confdir => '/dev/null', :vardir => '/dev/null' }
+        if defined?(Puppet::Test::TestHelper) && Puppet::Test::TestHelper.respond_to?(:app_defaults_for_tests, true)
+          default_hash.merge!(Puppet::Test::TestHelper.send(:app_defaults_for_tests))
         end
-        begin
-          Puppet[puppet_setting] = value
-        rescue ArgumentError
-          # TODO: this silently swallows errors when applying settings that the current
-          # Puppet version does not accept, which means that user specified settings
-          # are ignored. This may lead to suprising behavior for users.
+        settings_hash = default_hash.merge(Hash[*settings])
+
+        if Puppet.settings.respond_to?(:initialize_app_defaults)
+          Puppet.settings.initialize_app_defaults(settings_hash)
+        else
+          # Set settings the old way for Puppet 2.x, because that's how
+          # they're defaulted in that version of Puppet::Test::TestHelper and
+          # we won't be able to override them otherwise.
+          settings_hash.each do |setting, value|
+            Puppet.settings[setting] = value
+          end
+        end
+
+        @environment_name = example_group.environment
+      end
+
+      def get_setting(example_group, rspec_setting)
+        if example_group.respond_to?(rspec_setting)
+          example_group.send(rspec_setting)
+        else
+          RSpec.configuration.send(rspec_setting)
         end
       end
 
