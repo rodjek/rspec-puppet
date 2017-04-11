@@ -828,6 +828,13 @@ RSpec.configure do |c|
 end
 ```
 
+Resources declared outside of the module being tested (i.e. forge dependencies)
+are automatically removed from the coverage report. There is one exception for
+this though: **prior to Puppet 4.6.0**, resources created by functions
+(create\_resources(), ensure\_package(), etc) did not have the required
+information in them to determine which manifest they came from and so can not
+be excluded from the coverage report.
+
 ## Related projects
 
 * [puppetlabs_spec_helper](https://github.com/puppetlabs/puppetlabs_spec_helper): shared spec helpers to setup puppet
