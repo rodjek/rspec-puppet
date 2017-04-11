@@ -250,13 +250,7 @@ module RSpec::Puppet
         )
       end
 
-      cat = adapter.catalog(node_obj, exported)
-      cat.resources.each do |resource|
-        if resource.uniqueness_key != [resource.title]
-          cat.alias(resource, resource.uniqueness_key.first)
-        end
-      end
-      cat
+      adapter.catalog(node_obj, exported)
     end
 
     def stub_facts!(facts)
