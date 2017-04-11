@@ -214,7 +214,7 @@ module RSpec::Puppet
 
       def check_befores(catalogue, resource)
         @befores.each do |ref|
-          unless precedes?(resource, catalogue.resource(ref))
+          unless precedes?(resource, canonicalize_resource(ref))
             @errors << BeforeRelationshipError.new(resource.to_ref, ref)
           end
         end
@@ -222,7 +222,7 @@ module RSpec::Puppet
 
       def check_requires(catalogue, resource)
         @requires.each do |ref|
-          unless precedes?(catalogue.resource(ref), resource)
+          unless precedes?(canonicalize_resource(ref), resource)
             @errors << RequireRelationshipError.new(resource.to_ref, ref)
           end
         end
@@ -230,7 +230,7 @@ module RSpec::Puppet
 
       def check_notifies(catalogue, resource)
         @notifies.each do |ref|
-          unless notifies?(resource, catalogue.resource(ref))
+          unless notifies?(resource, canonicalize_resource(ref))
             @errors << NotifyRelationshipError.new(resource.to_ref, ref)
           end
         end
@@ -238,7 +238,7 @@ module RSpec::Puppet
 
       def check_subscribes(catalogue, resource)
         @subscribes.each do |ref|
-          unless notifies?(catalogue.resource(ref), resource)
+          unless notifies?(canonicalize_resource(ref), resource)
             @errors << SubscribeRelationshipError.new(resource.to_ref, ref)
           end
         end
@@ -253,7 +253,18 @@ module RSpec::Puppet
       end
 
       def canonicalize_resource(resource)
-        resource_from_ref(resource_ref(resource))
+        res = resource_from_ref(resource_ref(resource))
+        if res.nil?
+          resource = Struct.new(:type, :title).new(*@catalogue.title_key_for_ref(resource)) if resource.is_a?(String)
+          res = @catalogue.resource_keys.select { |type, name|
+            type == resource.type
+          }.map { |type, name|
+            @catalogue.resource(type, name)
+          }.first { |cat_res|
+            cat_res.builtin_type? && cat_res.uniqueness_key.first == resource.title
+          }
+        end
+        res
       end
 
       def canonicalize_resource_ref(ref)
@@ -277,9 +288,9 @@ module RSpec::Puppet
           results << relationship_refs(r, type, visited)
 
           res = canonicalize_resource(r)
-          if res.builtin_type?
+          if res && res.builtin_type?
             results << res.to_ref
-            results << "#{res.type.to_s.capitalize}[#{res.uniqueness_key}]"
+            results << "#{res.type.to_s.capitalize}[#{res.uniqueness_key.first}]"
           end
         end
 
