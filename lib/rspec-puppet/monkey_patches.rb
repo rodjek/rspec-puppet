@@ -9,8 +9,32 @@ module Puppet
     old_set_default = instance_method(:set_default)
 
     define_method(:set_default) do |attr|
-      return if attr == :provider && self.class.suppress_provider?
-      old_set_default.bind(self).call(attr)
+      old_posix = nil
+      old_microsoft_windows = nil
+
+      if attr == :provider
+        old_posix = Puppet.features.posix?
+        old_microsoft_windows = Puppet.features.microsoft_windows?
+
+        if Puppet::Util::Platform.pretend_windows?
+          Puppet.features.add(:posix) { false }
+          Puppet.features.add(:microsoft_windows) { true }
+        else
+          Puppet.features.add(:posix) { true }
+          Puppet.features.add(:microsoft_windows) { false }
+        end
+      end
+
+      retval = old_set_default.bind(self).call(attr)
+
+      unless old_posix.nil?
+        Puppet.features.add(:posix) { old_posix }
+      end
+      unless old_microsoft_windows.nil?
+        Puppet.features.add(:microsoft_windows) { old_microsoft_windows }
+      end
+
+      retval
     end
 
     def self.suppress_provider?
@@ -37,16 +61,15 @@ module Puppet
       old_validate_dirs = instance_method(:validate_dirs)
 
       define_method(:validate_dirs) do |dirs|
-        pretending = false
+        pretending = Puppet::Util::Platform.pretend_platform
 
-        if Puppet::Util::Platform.pretend_windows?
-          pretending = true
-          Puppet::Util::Platform.unpretend_windows
+        if pretending
+          Puppet::Util::Platform.pretend_to_be nil
         end
 
         output = old_validate_dirs.bind(self).call(dirs)
 
-        Puppet::Util::Platform.pretend_windows if pretending
+        Puppet::Util::Platform.pretend_to_be pretending
 
         output
       end
@@ -54,30 +77,48 @@ module Puppet
   end
 
   module Util
-    # Allow rspec-puppet to pretend to be windows.
+    # Allow rspec-puppet to pretend to be different platforms.
     module Platform
       def windows?
-        pretend_windows? || !!File::ALT_SEPARATOR
+        pretend_platform.nil? ? (actual_platform == :windows) : pretend_windows?
       end
       module_function :windows?
 
+      def actual_platform
+        @actual_platform ||= !!File::ALT_SEPARATOR ? :windows : :posix
+      end
+      module_function :actual_platform
+
       def pretend_windows?
-        @pretend_windows ||= false
+        pretend_platform == :windows
       end
       module_function :pretend_windows?
 
-      def pretend_windows
-        @pretend_windows = true
-      end
-      module_function :pretend_windows
+      def pretend_to_be(platform)
+        # Ensure that we cache the real platform before pretending to be
+        # a different one
+        actual_platform
 
-      def unpretend_windows
-        @pretend_windows = false
+        @pretend_platform = platform
       end
-      module_function :unpretend_windows
+      module_function :pretend_to_be
+
+      def pretend_platform
+        @pretend_platform ||= nil
+      end
+      module_function :pretend_platform
     end
   end
 end
+
+# Prevent the File type from munging paths (which uses File.expand_path to
+# normalise paths, which does very bad things to *nix paths on Windows.
+Puppet::Type.type(:file).paramclass(:path).munge { |value| value }
+
+# Prevent the Exec type from validating the user. This parameter isn't
+# supported under Windows at all and only under *nix when the current user is
+# root.
+Puppet::Type.type(:exec).paramclass(:user).validate { |value| true }
 
 # Prevent Puppet from requiring 'puppet/util/windows' if we're pretending to be
 # windows, otherwise it will require other libraries that probably won't be
