@@ -37,16 +37,15 @@ module Puppet
       old_validate_dirs = instance_method(:validate_dirs)
 
       define_method(:validate_dirs) do |dirs|
-        pretending = false
+        pretending = Puppet::Util::Platform.pretend_platform
 
-        if Puppet::Util::Platform.pretend_windows?
-          pretending = true
-          Puppet::Util::Platform.unpretend_windows
+        if pretending
+          Puppet::Util::Platform.pretend_to_be nil
         end
 
         output = old_validate_dirs.bind(self).call(dirs)
 
-        Puppet::Util::Platform.pretend_windows if pretending
+        Puppet::Util::Platform.pretend_to_be pretending
 
         output
       end
@@ -57,24 +56,24 @@ module Puppet
     # Allow rspec-puppet to pretend to be windows.
     module Platform
       def windows?
-        pretend_windows? || !!File::ALT_SEPARATOR
+        pretend_platform.nil? ? !!File::ALT_SEPARATOR : pretend_windows?
       end
       module_function :windows?
 
       def pretend_windows?
-        @pretend_windows ||= false
+        pretend_platform == :windows
       end
       module_function :pretend_windows?
 
-      def pretend_windows
-        @pretend_windows = true
+      def pretend_to_be(platform)
+        @pretend_platform = platform
       end
-      module_function :pretend_windows
+      module_function :pretend_to_be
 
-      def unpretend_windows
-        @pretend_windows = false
+      def pretend_platform
+        @pretend_platform ||= nil
       end
-      module_function :unpretend_windows
+      module_function :pretend_platform
     end
   end
 end
