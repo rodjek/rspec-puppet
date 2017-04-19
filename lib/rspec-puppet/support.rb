@@ -15,6 +15,27 @@ module RSpec::Puppet
       'rp_env'
     end
 
+    def stub_file_consts(example)
+      munged_facts = facts_hash(nodename(example.metadata[:type]))
+
+      if munged_facts['operatingsystem'] && munged_facts['operatingsystem'].to_s.downcase == 'windows'
+        stub_const_wrapper('PATH_SEPARATOR', ';')
+        stub_const_wrapper('ALT_SEPARATOR', "\\")
+      else
+        stub_const_wrapper('PATH_SEPARATOR', ':')
+        stub_const_wrapper('ALT_SEPARATOR', nil)
+      end
+    end
+
+    def stub_const_wrapper(const, value)
+      if defined?(RSpec::Core::MockingAdapters::RSpec) && RSpec.configuration.mock_framework == RSpec::Core::MockingAdapters::RSpec
+        stub_const("File::#{const}", value)
+      else
+        File.send(:remove_const, const) if File.const_defined?(const)
+        File.const_set(const, value)
+      end
+    end
+
     def load_catalogue(type, exported = false, manifest_opts = {})
       with_vardir do
         if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
@@ -26,11 +47,16 @@ module RSpec::Puppet
         node_name = nodename(type)
 
         hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
+        hiera_data_value = self.respond_to?(:hiera_data) ? hiera_data : nil
 
-        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value, code, exported)
+        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value, code, exported, hiera_data_value)
 
-        test_module = class_name.split('::').first
-        RSpec::Puppet::Coverage.add_filter(type.to_s, self.class.description)
+        test_module = type == :host ? nil : class_name.split('::').first
+        if type == :define
+          RSpec::Puppet::Coverage.add_filter(class_name, title)
+        else
+          RSpec::Puppet::Coverage.add_filter(type.to_s, class_name)
+        end
         RSpec::Puppet::Coverage.add_from_catalog(catalogue, test_module)
 
         catalogue
@@ -217,7 +243,7 @@ module RSpec::Puppet
       end
     end
 
-    def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported)
+    def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported, hiera_data_value)
 
       # If we're going to rebuild the catalog, we should clear the cached instance
       # of Hiera that Puppet is using.  This opens the possibility of the catalog
@@ -249,6 +275,12 @@ module RSpec::Puppet
     end
 
     def stub_facts!(facts)
+      if facts['operatingsystem'] && facts['operatingsystem'].to_s.downcase == 'windows'
+        Puppet::Util::Platform.pretend_to_be :windows
+      else
+        Puppet::Util::Platform.pretend_to_be :linux
+      end
+      Puppet.settings[:autosign] = false
       facts.each { |k, v| Facter.add(k) { setcode { v } } }
     end
 

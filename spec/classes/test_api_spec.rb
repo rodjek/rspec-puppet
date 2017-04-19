@@ -10,6 +10,10 @@ describe 'test::bare_class' do
       expect(subject.call).to be_a(Puppet::Resource::Catalog)
     end
 
+    it 'should be included in the coverage filter' do
+      expect(RSpec::Puppet::Coverage.filters).to include('Class[Test::Bare_class]')
+    end
+
     describe 'derivative group' do
       subject { catalogue.resource('Notify', 'foo') }
 

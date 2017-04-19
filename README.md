@@ -797,6 +797,9 @@ spec/fixtures/hiera/hiera.yaml
   - common
 ```
 
+**Please note:** In-module hiera data depends on having a correct metadata.json file. It is
+strongly recommended that you use [metadata-json-lint](https://github.com/voxpupuli/metadata-json-lint)
+to automatically check your metadata.json file before running rspec.
 
 ## Producing coverage reports
 

@@ -1,4 +1,6 @@
+require 'set'
 require 'rspec-puppet/matchers/parameter_matcher'
+
 module RSpec::Puppet
   module ManifestMatchers
     class CreateGeneric
@@ -87,6 +89,17 @@ module RSpec::Puppet
         else
           RSpec::Puppet::Coverage.cover!(resource)
           rsrc_hsh = resource.to_hash
+
+          if resource.builtin_type?
+            namevar = resource.resource_type.key_attributes.first.to_s
+          else
+            namevar = 'name'
+          end
+
+          unless @expected_params.any? { |param| param.first.to_s == namevar }
+            rsrc_hsh.delete(namevar.to_sym) if rsrc_hsh.has_key?(namevar.to_sym)
+          end
+
           if @expected_params_count
             unless rsrc_hsh.size == @expected_params_count
               ret = false
@@ -247,27 +260,38 @@ module RSpec::Puppet
         resource_ref(resource_from_ref(ref))
       end
 
-      def relationship_refs(resource, type)
+      def relationship_refs(resource, type, visited = Set.new)
         resource = canonicalize_resource(resource)
         results = []
         return results unless resource
-        Array[resource[type]].flatten.compact.each do |r|
-          results << canonicalize_resource_ref(r)
-          results << relationship_refs(r, type)
+
+        # guard to prevent infinite recursion
+        if visited.include?(resource.object_id)
+          return [canonicalize_resource_ref(resource)]
+        else
+          visited << resource.object_id
         end
 
+        Array[resource[type]].flatten.compact.each do |r|
+          results << canonicalize_resource_ref(r)
+          results << relationship_refs(r, type, visited)
+        end
+
+        Puppet::Type.suppress_provider
         # Add autorequires if any
         if type == :require and resource.resource_type.respond_to? :eachautorequire
           resource.resource_type.eachautorequire do |t, b|
             Array(resource.to_ral.instance_eval(&b)).each do |dep|
               res = "#{t.to_s.capitalize}[#{dep}]"
-              if r = relationship_refs(res, type)
+              if r = relationship_refs(res, type, visited)
                 results << res
                 results << r
               end
             end
           end
         end
+        Puppet::Type.unsuppress_provider
+
         results.flatten
       end
 
@@ -320,7 +344,7 @@ module RSpec::Puppet
 
           if value.nil? then
             unless resource[param].nil?
-              @errors << "#{param} undefined"
+              @errors << "#{param} undefined but it is set to #{resource[param].inspect}"
             end
           else
             m = ParameterMatcher.new(param, value, type)
