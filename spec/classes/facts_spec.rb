@@ -36,8 +36,8 @@ describe 'structured_facts::hash' do
   # See note concerning mixed case in facts at the beginning of the file
   context 'mixed case symbols in facts', :if => Puppet.version.to_f >= 4.0 do
     let(:facts) {{
-      :os => {
-        :FaMiLy => family
+      :oS => {
+        :family => family
       }
     }}
 
@@ -63,8 +63,8 @@ describe 'structured_facts::hash' do
   # See note concerning mixed case in facts at the beginning of the file
   context 'mixed case strings in facts', :if => Puppet.version.to_f >= 4.0 do
     let(:facts) {{
-      'os' => {
-        'FaMiLy' => family
+      'oS' => {
+        'family' => family
       }
     }}
 
@@ -106,8 +106,8 @@ describe 'structured_facts::top_scope' do
   # See note concerning mixed case in facts at the beginning of the file
   context 'mixed case in facts' do
     let(:facts) {{
-      :os => {
-        :FaMiLy => family
+      :Os => {
+        :family => family
       }
     }}
 
@@ -133,8 +133,8 @@ describe 'structured_facts::top_scope' do
   # See note concerning mixed case in facts at the beginning of the file
   context 'mixed case in facts' do
     let(:facts) {{
-      'os' => {
-        'FaMiLy' => family
+      'Os' => {
+        'family' => family
       }
     }}
 
@@ -142,5 +142,20 @@ describe 'structured_facts::top_scope' do
     it { should compile.with_all_deps }
 
     it { should contain_notify(family) }
+  end
+end
+
+describe 'structured_facts::case_check' do
+  context 'mixed case in structure fact nested keys', :if => Puppet.version.to_f >= 4.0 do
+    let(:facts) {{
+      'custom_fact' => {
+        'MixedCase' => 'value'
+      }
+    }}
+
+    it { should contain_class('structured_facts::case_check') }
+    it { should compile.with_all_deps }
+
+    it { should contain_notify('value') }
   end
 end
