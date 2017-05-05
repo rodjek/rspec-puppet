@@ -260,7 +260,7 @@ module RSpec::Puppet
             type == resource.type
           }.map { |type, name|
             @catalogue.resource(type, name)
-          }.first { |cat_res|
+          }.compact.find { |cat_res|
             cat_res.builtin_type? && cat_res.uniqueness_key.first == resource.title
           }
         end
