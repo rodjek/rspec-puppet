@@ -199,24 +199,36 @@ module RSpec::Puppet
     end
 
     def facts_hash(node)
-      facts_val = {
+      base_facts = {
         'clientversion' => Puppet::PUPPETVERSION,
         'environment'   => environment,
+      }
+
+      node_facts = {
         'hostname'      => node.split('.').first,
         'fqdn'          => node,
         'domain'        => node.split('.', 2).last,
-        'clientcert'    => node
+        'clientcert'    => node,
+        'networking'    => {
+          'fqdn'          => node,
+          'domain'        => node.split('.', 2).last,
+          'hostname'      => node.split('.').first
+        }
       }
 
-      if RSpec.configuration.default_facts.any?
-        facts_val.merge!(munge_facts(RSpec.configuration.default_facts))
-      end
+      result_facts = if RSpec.configuration.default_facts.any?
+                       munge_facts(RSpec.configuration.default_facts)
+                     else
+                       {}
+                     end
 
-      facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
+      result_facts.merge!(munge_facts(base_facts))
+      result_facts.merge!(munge_facts(facts)) if self.respond_to?(:facts)
+      result_facts.merge!(munge_facts(node_facts))
 
       # Facter currently supports lower case facts.  Bug FACT-777 has been submitted to support case sensitive
       # facts.
-      downcase_facts = Hash[facts_val.map { |k, v| [k.downcase, v] }]
+      downcase_facts = Hash[result_facts.map { |k, v| [k.downcase, v] }]
       downcase_facts
     end
 
