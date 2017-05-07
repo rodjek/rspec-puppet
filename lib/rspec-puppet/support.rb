@@ -136,14 +136,19 @@ module RSpec::Puppet
         'hostname'      => node.split('.').first,
         'fqdn'          => node,
         'domain'        => node.split('.', 2).last,
-        'clientcert'    => node
+        'clientcert'    => node,
+        'networking'    => {
+          'fqdn'          => node,
+          'domain'        => node.split('.', 2).last,
+          'hostname'      => node.split('.').first
+        }
       }
 
       if RSpec.configuration.default_facts.any?
-        facts_val.merge!(munge_facts(RSpec.configuration.default_facts))
+        facts_val = munge_facts(RSpec.configuration.default_facts).merge(facts_val)
       end
 
-      facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
+      facts_val = munge_facts(facts).merge(facts_val) if self.respond_to?(:facts)
       facts_val
     end
 
