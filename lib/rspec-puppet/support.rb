@@ -15,20 +15,22 @@ module RSpec::Puppet
       'rp_env'
     end
 
+    def build_code(type, manifest_opts)
+      if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
+        [site_pp_str, pre_cond, test_manifest(type, manifest_opts), post_cond].compact.join("\n")
+      else
+        [import_str, pre_cond, test_manifest(type, manifest_opts), post_cond].compact.join("\n")
+      end
+    end
+
     def load_catalogue(type, exported = false, manifest_opts = {})
       with_vardir do
-        if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
-          code = [site_pp_str, pre_cond, test_manifest(type, manifest_opts)].compact.join("\n")
-        else
-          code = [import_str, pre_cond, test_manifest(type, manifest_opts)].compact.join("\n")
-        end
-
         node_name = nodename(type)
 
         hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
         hiera_data_value = self.respond_to?(:hiera_data) ? hiera_data : nil
 
-        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value, code, exported, hiera_data_value)
+        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value, build_code(type, manifest_opts), exported, hiera_data_value)
 
         test_module = type == :host ? nil : class_name.split('::').first
         if type == :define
@@ -123,6 +125,18 @@ module RSpec::Puppet
           pre_condition.compact.join("\n")
         else
           pre_condition
+        end
+      else
+        nil
+      end
+    end
+
+    def post_cond
+      if self.respond_to?(:post_condition) && !post_condition.nil?
+        if post_condition.is_a? Array
+          post_condition.compact.join("\n")
+        else
+          post_condition
         end
       else
         nil
