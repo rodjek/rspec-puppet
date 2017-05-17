@@ -99,6 +99,10 @@ module RSpec::Puppet
       def check_array(expected, actual)
         op = @should_match ? :"==" : :"!="
 
+        # fix also the case where actual is nil (to have more explicit error
+        # message than NoMethodError: undefined method `size' for nil:NilClass)
+        return false if actual.nil?
+        
         unless expected.size.send(op, actual.size)
           return false
         end
