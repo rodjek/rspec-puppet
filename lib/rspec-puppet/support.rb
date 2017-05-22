@@ -30,7 +30,8 @@ module RSpec::Puppet
         hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
         hiera_data_value = self.respond_to?(:hiera_data) ? hiera_data : nil
 
-        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value, build_code(type, manifest_opts), exported, hiera_data_value)
+        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value,
+                                  build_code(type, manifest_opts), exported, node_params_hash, hiera_data_value)
 
         test_module = type == :host ? nil : class_name.split('::').first
         if type == :define
@@ -165,6 +166,15 @@ module RSpec::Puppet
       downcase_facts
     end
 
+    def node_params_hash
+      params = RSpec.configuration.default_node_params
+      if respond_to?(:node_params)
+        params.merge(node_params)
+      else
+        params.dup
+      end
+    end
+
     def param_str(params)
       param_str_from_hash(params)
     end
@@ -240,7 +250,7 @@ module RSpec::Puppet
       end
     end
 
-    def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported, hiera_data_value)
+    def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported, node_params, *_)
 
       # If we're going to rebuild the catalog, we should clear the cached instance
       # of Hiera that Puppet is using.  This opens the possibility of the catalog
@@ -256,8 +266,9 @@ module RSpec::Puppet
       stub_facts! facts_val
 
       node_facts = Puppet::Node::Facts.new(nodename, facts_val.dup)
+      node_params = facts_val.merge(node_params)
 
-      node_obj = Puppet::Node.new(nodename, { :parameters => facts_val, :facts => node_facts })
+      node_obj = Puppet::Node.new(nodename, { :parameters => node_params, :facts => node_facts })
 
       if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
         Puppet.push_context(
