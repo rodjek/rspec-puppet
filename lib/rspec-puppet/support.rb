@@ -144,7 +144,11 @@ module RSpec::Puppet
       end
 
       facts_val.merge!(munge_facts(facts)) if self.respond_to?(:facts)
-      facts_val
+
+      # Facter currently supports lower case facts.  Bug FACT-777 has been submitted to support case sensitive
+      # facts.
+      downcase_facts = Hash[facts_val.map { |k, v| [k.downcase, v] }]
+      downcase_facts
     end
 
     def param_str(params)
@@ -263,11 +267,9 @@ module RSpec::Puppet
       end
     end
 
-    # Facter currently supports lower case facts.  Bug FACT-777 has been submitted to support case sensitive
-    # facts.
     def munge_facts(facts)
       return facts.reduce({}) do | memo, (k, v)|
-        memo.tap { |m| m[k.to_s.downcase] = munge_facts(v) }
+        memo.tap { |m| m[k.to_s] = munge_facts(v) }
       end if facts.is_a? Hash
 
       return facts.reduce([]) do |memo, v|
