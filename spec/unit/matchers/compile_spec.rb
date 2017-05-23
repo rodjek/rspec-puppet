@@ -12,7 +12,6 @@ if Puppet.version.to_f >= 3.0
 
     describe "a valid manifest" do
       let (:pre_condition) { 'file { "/tmp/resource": }' }
-      let (:post_condition) { 'file { "/tmp/resource2": }' }
 
       it ("matches") { is_expected.to be_matches catalogue }
       it { is_expected.to have_attributes(
@@ -56,7 +55,6 @@ if Puppet.version.to_f >= 3.0
 
     describe "a manifest with missing dependencies" do
       let (:pre_condition) { 'file { "/tmp/resource": require => File["/tmp/missing"] }' }
-      let (:post_condition) { 'file { "/tmp/resource2": }' }
 
       it ("doesn't match") { is_expected.to_not be_matches catalogue }
 
@@ -71,7 +69,6 @@ if Puppet.version.to_f >= 3.0
 
     describe "a manifest with syntax error" do
       let (:pre_condition) { 'file { "/tmp/resource": ' }
-      let (:post_condition) { 'file { "/tmp/resource2": }' }
 
       it ("doesn't match") { is_expected.to_not be_matches catalogue }
 
@@ -90,7 +87,6 @@ if Puppet.version.to_f >= 3.0
         file { "/tmp/b": require => File["/tmp/a"] }
         EOS
       }
-      let (:post_condition) { 'file { "/tmp/resource2": }' }
 
       it ("doesn't match") { is_expected.to_not be_matches catalogue }
 
@@ -135,7 +131,6 @@ if Puppet.version.to_f >= 3.0
 
     describe "a manifest with a real failure" do
       let (:pre_condition) { 'fail("failure")' }
-      let (:post_condition) { 'file { "/tmp/resource2": }' }
 
       it ("doesn't match") { is_expected.to_not be_matches catalogue }
 
