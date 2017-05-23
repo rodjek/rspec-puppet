@@ -14,6 +14,8 @@ begin
 rescue LoadError
 end
 
+require 'rspec-puppet/monkey_patches'
+
 RSpec.configure do |c|
   c.add_setting :environmentpath, :default => '/etc/puppetlabs/code/environments'
   c.add_setting :module_path, :default => nil
@@ -56,6 +58,8 @@ RSpec.configure do |c|
     c.before :each do
       begin
         Puppet::Test::TestHelper.before_each_test
+      rescue Puppet::Context::DuplicateRollbackMarkError
+        Puppet::Test::TestHelper.send(:initialize_settings_before_each)
       rescue
       end
     end
@@ -74,5 +78,9 @@ RSpec.configure do |c|
       @adapter.setup_puppet(self)
       c.adapter = adapter
     end
+  end
+
+  c.before :each do |example|
+    stub_file_consts(example) if self.respond_to?(:stub_file_consts)
   end
 end
