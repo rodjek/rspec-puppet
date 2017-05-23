@@ -59,4 +59,54 @@ describe RSpec::Puppet::Support do
       expect(subject.str_from_value({'k2'=>'v2'})).to eq('{ "k2" => "v2" }')
     end
   end
+
+  describe '#build_code' do
+    before do
+      class << subject
+        def class_name
+          "class_name"
+        end
+        def site_pp_str
+          ""
+        end
+        def import_str
+          ""
+        end
+      end
+    end
+
+    context "without any properties" do
+      it "builds a test manifest" do
+        expect(subject.build_code(:class, {})).to eq "\ninclude class_name"
+      end
+    end
+
+    context "with a pre_condition available" do
+      before do
+        class << subject
+          def pre_condition
+            "pre_condition"
+          end
+        end
+      end
+
+      it "builds a test manifest" do
+        expect(subject.build_code(:class, {})).to eq "\npre_condition\ninclude class_name"
+      end
+    end
+
+    context "with a post_condition available" do
+      before do
+        class << subject
+          def post_condition
+            "post_condition"
+          end
+        end
+      end
+
+      it "builds a test manifest" do
+        expect(subject.build_code(:class, {})).to eq "\ninclude class_name\npost_condition"
+      end
+    end
+  end
 end

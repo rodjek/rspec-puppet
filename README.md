@@ -502,6 +502,23 @@ relies on a top-level `apache` class being included first.
 The value may be a raw string to be inserted into the Puppet manifest, or an array of strings
 (manifest fragments) that will be concatenated.
 
+#### Specifying extra code to load (post-conditions)
+
+In some cases, you may need to ensure that the code that you are testing comes
+**before** another set of code. Similar to the `:pre_condition` hook, you can add
+a `:post_condition` hook that will ensure that the added code is evaluated
+**after** the tested class.
+
+```ruby
+let(:post_condition) { 'include other_class' }
+```
+
+This may be useful when testing classes that are modular, e.g. testing class
+`do_strange_things::to_the_catalog` which must come before class ``foo``.
+
+The value may be a raw string to be inserted into the Puppet manifest, or an
+array of strings (manifest fragments) that will be concatenated.
+
 #### Specifying the path to find your modules
 
 I recommend setting a default module path by adding the following code to your
