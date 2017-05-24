@@ -138,6 +138,7 @@ module RSpec::Puppet
       end
 
       def cycles_found?
+        Puppet::Type.suppress_provider
         cat = @catalogue.to_ral.relationship_graph
         cat.write_graph(:resources)
         if cat.respond_to? :find_cycles_in_graph
@@ -145,6 +146,8 @@ module RSpec::Puppet
         else
           find_cycles_legacy(cat)
         end
+        Puppet::Type.unsuppress_provider
+
         !@cycles.empty?
       end
 

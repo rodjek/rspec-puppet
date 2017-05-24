@@ -13,7 +13,7 @@ RSpec::configure do |c|
   def c.rspec_puppet_include(group, type, file_path)
     escaped_file_path = Regexp.compile(file_path.join('[\\\/]'))
     if RSpec::Version::STRING < '3'
-      self.include group, :type => type, :example_group => { :file_path => escaped_file_path }
+      self.include group, :type => type, :example_group => { :file_path => escaped_file_path }, :spec_type => type
     else
       self.include group, :type => type, :file_path => lambda { |file_path, metadata| metadata[:type].nil? && escaped_file_path =~ file_path }
     end
