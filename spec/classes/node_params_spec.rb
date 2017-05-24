@@ -24,4 +24,8 @@ describe 'node_params', :if => Puppet::Util::Package.versioncmp(Puppet.version, 
       is_expected.to contain_notify(title.to_s).with(:message => message)
     end
   end
+
+  it "doesn't leak to the facts hash", :if => Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0 do
+    is_expected.to contain_notify('stringfact').with(:message => '')
+  end
 end

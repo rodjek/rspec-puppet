@@ -3,6 +3,12 @@ class node_params {
     message => $::string,
   }
 
+  if $facts { # protect against puppet 3 not having $facts hash
+    notify { 'stringfact':
+      message => "${facts['string']}",
+    }
+  }
+
   notify { 'hash':
     message => $::hash,
   }
