@@ -487,6 +487,29 @@ end
 Any facts you provide with `let(:facts)` in a spec will automatically be merged on top
 of the default facts.
 
+#### Specifying top-scope variables that should be available to your manifest
+
+You can create top-scope variables much in the same way as an ENC.
+
+
+```ruby
+let(:node_params) { { :hostgroup => 'webservers', :rack => 'KK04', :status => 'maintenance' } }
+```
+
+You can also create a set of default top-scope variables provided to all specs in your spec_helper:
+
+``` ruby
+RSpec.configure do |c|
+  c.default_node_params = {
+    :owner => 'itprod',
+    :site => 'ams4',
+    :status => 'live'
+  }
+end
+```
+
+**NOTE** Setting top-scope variables is not supported in Puppet < 3.0.
+
 #### Specifying extra code to load (pre-conditions)
 
 If the manifest being tested relies on another class or variables to be set, these can be added via
