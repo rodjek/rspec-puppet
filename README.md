@@ -777,6 +777,12 @@ end
 
 ### Configuration
 
+```ruby
+# spec/spec_helper.rb 
+require 'rspec-puppet'
+require 'hiera'
+```
+
 Set the hiera config symbol properly in your spec files:
 
 ```ruby
@@ -812,7 +818,7 @@ user:
 
 ```ruby
   ntpserver = hiera.lookup('ntpserver', nil, nil)
-  let(:params) { :ntpserver => ntpserver }
+  let(:hiera_data) { :ntpserver => ntpserver }
 ```
 
 ### Enabling hiera lookups
