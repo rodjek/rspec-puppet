@@ -18,7 +18,8 @@ module RSpec::Puppet
     class << self
       extend Forwardable
       def_delegators(:instance, :add, :cover!, :report!,
-                     :filters, :add_filter, :add_from_catalog)
+                     :filters, :add_filter, :add_from_catalog,
+                     :results)
 
       attr_writer :instance
 
