@@ -12,6 +12,6 @@ RSpec.configure do |c|
   c.environmentpath = File.join(Dir.pwd, 'spec')
 
   c.after(:suite) do
-    RSpec::Puppet::Coverage.report!
+    RSpec::Puppet::Coverage.report!(0)
   end
 end
