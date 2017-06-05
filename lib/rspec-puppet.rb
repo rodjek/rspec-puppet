@@ -35,6 +35,10 @@ RSpec.configure do |c|
   c.add_setting :strict_variables, :default => false
   c.add_setting :adapter
 
+  c.before(:all) do
+    RSpec::Puppet::Setup.safe_setup_directories
+  end
+
   if defined?(Puppet::Test::TestHelper)
     begin
       Puppet::Test::TestHelper.initialize

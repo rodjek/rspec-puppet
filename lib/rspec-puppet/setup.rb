@@ -44,7 +44,7 @@ module RSpec::Puppet
         if File.exist?(dir)
           source = File.expand_path(File.join('..', '..', '..', '..', dir))
           target = File.expand_path(File.join('spec', 'fixtures', 'modules', module_name, dir))
-          safe_make_symlink(source, target)
+          safe_make_link(source, target)
         end
       end
     end
