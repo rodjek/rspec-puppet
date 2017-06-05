@@ -37,16 +37,10 @@ module RSpec::Puppet
         File.join('spec', 'fixtures'),
         File.join('spec', 'fixtures', 'manifests'),
         File.join('spec', 'fixtures', 'modules'),
-        File.join('spec', 'fixtures', 'modules', module_name),
       ].each { |dir| safe_mkdir(dir) }
 
-      %w(data manifests lib files templates functions types).each do |dir|
-        if File.exist?(dir)
-          source = File.expand_path(File.join('..', '..', '..', '..', dir))
-          target = File.expand_path(File.join('spec', 'fixtures', 'modules', module_name, dir))
-          safe_make_link(source, target)
-        end
-      end
+      target = File.join('spec', 'fixtures', 'modules', module_name, dir)
+      safe_make_link('.', target)
     end
   protected
     def self.get_module_name
@@ -125,12 +119,16 @@ module RSpec::Puppet
 
     def self.safe_make_link(source, target, verbose=true)
       if File.exists?(target)
-        unless File.symlink?(target) && File.readline(target) == source
+        unless File.symlink?(target) && File.readlink(target) == source
           $stderr.puts "!! #{target} already exists and is not a symlink"
         end
       else
         if Puppet::Util::Platform.windows?
-          system('mklink', '/J', target, source)
+          output = `call mklink /J "#{target.gsub('/', '\\')}" "#{source}"`
+          unless $?.success?
+            puts output
+            abort
+          end
         else
           FileUtils.ln_s(source, target)
         end
