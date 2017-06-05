@@ -12,6 +12,14 @@ module RSpec::Puppet
         return false
       end
 
+      safe_setup_directories(module_name)
+      safe_touch(File.join('spec', 'fixtures', 'manifests', 'site.pp'))
+
+      safe_create_spec_helper
+      safe_create_rakefile
+    end
+
+    def self.safe_setup_directories(module_name=nil)
       if module_name.nil?
         module_name = get_module_name
         if module_name.nil?
@@ -22,28 +30,24 @@ module RSpec::Puppet
 
       [
         'spec',
-        'spec/classes',
-        'spec/defines',
-        'spec/functions',
-        'spec/hosts',
-        'spec/fixtures',
-        'spec/fixtures/manifests',
-        'spec/fixtures/modules',
-        "spec/fixtures/modules/#{module_name}",
+        File.join('spec', 'classes'),
+        File.join('spec', 'defines'),
+        File.join('spec', 'functions'),
+        File.join('spec', 'hosts'),
+        File.join('spec', 'fixtures'),
+        File.join('spec', 'fixtures', 'manifests'),
+        File.join('spec', 'fixtures', 'modules'),
+        File.join('spec', 'fixtures', 'modules', module_name),
       ].each { |dir| safe_mkdir(dir) }
 
-      safe_touch('spec/fixtures/manifests/site.pp')
-
       %w(data manifests lib files templates functions types).each do |dir|
-        if File.exist? dir
-          safe_make_symlink("../../../../#{dir}", "spec/fixtures/modules/#{module_name}/#{dir}")
+        if File.exist?(dir)
+          source = File.expand_path(File.join('..', '..', '..', '..', dir))
+          target = File.expand_path(File.join('spec', 'fixtures', 'modules', module_name, dir))
+          safe_make_symlink(source, target)
         end
       end
-
-      safe_create_spec_helper
-      safe_create_rakefile
     end
-
   protected
     def self.get_module_name
       module_name = nil
@@ -119,14 +123,18 @@ module RSpec::Puppet
       safe_create_file('spec/spec_helper.rb', content)
     end
 
-    def self.safe_make_symlink(source, target)
-      if File.exists? target
-        unless File.symlink? target
+    def self.safe_make_link(source, target, verbose=true)
+      if File.exists?(target)
+        unless File.symlink?(target) && File.readline(target) == source
           $stderr.puts "!! #{target} already exists and is not a symlink"
         end
       else
-        FileUtils.ln_s(source, target)
-        puts " + #{target}"
+        if Puppet::Util::Platform.windows?
+          system('mklink', '/J', target, source)
+        else
+          FileUtils.ln_s(source, target)
+        end
+        puts " + #{target}" if verbose
       end
     end
 
