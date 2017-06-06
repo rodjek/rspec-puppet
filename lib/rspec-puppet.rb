@@ -36,7 +36,11 @@ RSpec.configure do |c|
   c.add_setting :adapter
 
   c.before(:all) do
-    RSpec::Puppet::Setup.safe_setup_directories
+    RSpec::Puppet::Setup.safe_setup_directories(nil, false)
+  end
+
+  c.after(:all) do
+    RSpec::Puppet::Setup.safe_teardown_links
   end
 
   if defined?(Puppet::Test::TestHelper)

@@ -19,7 +19,7 @@ module RSpec::Puppet
       safe_create_rakefile
     end
 
-    def self.safe_setup_directories(module_name=nil)
+    def self.safe_setup_directories(module_name=nil, verbose=true)
       if module_name.nil?
         module_name = get_module_name
         if module_name.nil?
@@ -37,10 +37,25 @@ module RSpec::Puppet
         File.join('spec', 'fixtures'),
         File.join('spec', 'fixtures', 'manifests'),
         File.join('spec', 'fixtures', 'modules'),
-      ].each { |dir| safe_mkdir(dir) }
+      ].each { |dir| safe_mkdir(dir, verbose) }
 
-      target = File.join('spec', 'fixtures', 'modules', module_name, dir)
-      safe_make_link('.', target)
+      target = File.join('spec', 'fixtures', 'modules', module_name)
+      safe_make_link('.', target, verbose)
+    end
+
+    def self.safe_teardown_links(module_name=nil)
+      if module_name.nil?
+        module_name = get_module_name
+        if module_name.nil?
+          $stderr.puts "Unable to determine module name.  Aborting"
+          return false
+        end
+      end
+
+      target = File.join('spec', 'fixtures', 'modules', module_name)
+      if File.symlink?(target) && File.readlink(target) == File.expand_path('.')
+        File.unlink(target)
+      end
     end
   protected
     def self.get_module_name
@@ -76,14 +91,14 @@ module RSpec::Puppet
       Dir["*"].entries.include? "manifests"
     end
 
-    def self.safe_mkdir(dir)
+    def self.safe_mkdir(dir, verbose=true)
       if File.exists? dir
         unless File.directory? dir
           $stderr.puts "!! #{dir} already exists and is not a directory"
         end
       else
         FileUtils.mkdir dir
-        puts " + #{dir}/"
+        puts " + #{dir}/" if verbose
       end
     end
 
@@ -119,7 +134,7 @@ module RSpec::Puppet
 
     def self.safe_make_link(source, target, verbose=true)
       if File.exists?(target)
-        unless File.symlink?(target) && File.readlink(target) == source
+        unless File.symlink?(target) && File.readlink(target) == File.expand_path(source)
           $stderr.puts "!! #{target} already exists and is not a symlink"
         end
       else
@@ -130,7 +145,7 @@ module RSpec::Puppet
             abort
           end
         else
-          FileUtils.ln_s(source, target)
+          FileUtils.ln_s(File.expand_path(source), target)
         end
         puts " + #{target}" if verbose
       end
