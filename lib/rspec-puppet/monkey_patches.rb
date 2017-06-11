@@ -1,3 +1,5 @@
+require 'pathname'
+
 module Puppet
   # Allow rspec-puppet to prevent Puppet::Type from automatically picking
   # a provider for a resource. We need to do this because in order to fully
@@ -107,6 +109,34 @@ module Puppet
         @pretend_platform ||= nil
       end
       module_function :pretend_platform
+    end
+  end
+end
+
+class Pathname
+  def rspec_puppet_basename(path)
+    raise ArgumentError, 'pathname stubbing not enabled' unless RSpec.configuration.enable_pathname_stubbing
+
+    if path =~ /\A[a-zA-Z]:(#{SEPARATOR_PAT}.*)\z/
+      path = path[2..-1]
+    end
+    path.split(SEPARATOR_PAT).last || path[/(#{SEPARATOR_PAT})/, 1] || path
+  end
+
+  if instance_methods.include?("chop_basename")
+    old_chop_basename = instance_method(:chop_basename)
+
+    define_method(:chop_basename) do |path|
+      if RSpec.configuration.enable_pathname_stubbing
+        base = rspec_puppet_basename(path)
+        if /\A#{SEPARATOR_PAT}?\z/o =~ base
+          return nil
+        else
+          return path[0, path.rindex(base)], base
+        end
+      else
+        old_chop_basename.bind(self).call(path)
+      end
     end
   end
 end

@@ -72,7 +72,7 @@ module RSpec::Puppet
       else
         klass_name, const_name = const.split('::', 2)
         klass = Object.const_get(klass_name)
-        klass.send(:remove_const, const_name) if File.const_defined?(const_name)
+        klass.send(:remove_const, const_name) if klass.const_defined?(const_name)
         klass.const_set(const_name, value)
       end
     end

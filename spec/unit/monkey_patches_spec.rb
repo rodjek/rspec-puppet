@@ -18,10 +18,117 @@ end
 
 describe 'Pathname constants' do
   context 'on windows', :if => WINDOWS do
-    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT).to eq(/[\\\/]/) }
+    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT.to_s).to eq(%r{[\\\/]}.to_s) }
   end
 
   context 'on linux', :unless => WINDOWS do
-    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT).to eq(/\//) }
+    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT.to_s).to eq(%r{\/}.to_s) }
+  end
+end
+
+# These specs taken from the official ruby spec for File.basename
+describe 'Pathname#rspec_puppet_basename' do
+  subject { Pathname.new('test') }
+
+  it 'is not enabled by default' do
+    test_pathname = Pathname.new('test')
+    expect(test_pathname).not_to receive(:rspec_puppet_basename).with(anything)
+    test_pathname.absolute?
+  end
+
+  context 'when enabled' do
+    before do
+      RSpec.configuration.enable_pathname_stubbing = true
+    end
+
+    it 'returns the basename of a path (basic cases)' do
+      expect(subject.rspec_puppet_basename('/Some/path/to/test.txt')).to eq('test.txt')
+      expect(subject.rspec_puppet_basename(File.join('/tmp'))).to eq('tmp')
+      expect(subject.rspec_puppet_basename(File.join(*%w( g f d s a b)))).to eq('b')
+      expect(subject.rspec_puppet_basename(File.join('/tmp/'))).to eq('tmp')
+      expect(subject.rspec_puppet_basename('/')).to eq('/')
+      expect(subject.rspec_puppet_basename('//')).to eq('/')
+      expect(subject.rspec_puppet_basename('dir///base///')).to eq('base')
+      expect(subject.rspec_puppet_basename('dir///base')).to eq('base')
+    end
+
+    it 'returns the last component of the filename' do
+      expect(subject.rspec_puppet_basename('a')).to eq('a')
+      expect(subject.rspec_puppet_basename('/a')).to eq('a')
+      expect(subject.rspec_puppet_basename('/a/b')).to eq('b')
+      expect(subject.rspec_puppet_basename('/ab/ba/bag')).to eq('bag')
+      expect(subject.rspec_puppet_basename('/ab/ba/bag.txt')).to eq('bag.txt')
+      expect(subject.rspec_puppet_basename('/')).to eq('/')
+    end
+
+    it 'returns a string' do
+      expect(subject.rspec_puppet_basename('foo')).to be_a(String)
+    end
+
+    it 'returns the basename for unix format' do
+      expect(subject.rspec_puppet_basename('/foo/bar')).to eq('bar')
+      expect(subject.rspec_puppet_basename('/foo/bar.txt')).to eq('bar.txt')
+      expect(subject.rspec_puppet_basename('bar.c')).to eq('bar.c')
+      expect(subject.rspec_puppet_basename('/bar')).to eq('bar')
+      expect(subject.rspec_puppet_basename('/bar/')).to eq('bar')
+    end
+
+    it 'returns the basename for edgecases' do
+      expect(subject.rspec_puppet_basename('')).to eq('')
+      expect(subject.rspec_puppet_basename('.')).to eq('.')
+      expect(subject.rspec_puppet_basename('..')).to eq('..')
+    end
+
+    context 'on posix' do
+      before do
+        stub_const('Pathname::SEPARATOR_PAT', /\//)
+      end
+
+      it 'returns the basename for edgecases' do
+        expect(subject.rspec_puppet_basename('//foo/')).to eq('foo')
+        expect(subject.rspec_puppet_basename('//foo//')).to eq('foo')
+      end
+
+      it 'takes into consideration the platform path separators' do
+        expect(subject.rspec_puppet_basename('c:\\foo\\bar')).to eq('c:\\foo\\bar')
+        expect(subject.rspec_puppet_basename('c:/foo/bar')).to eq('bar')
+        expect(subject.rspec_puppet_basename('/foo/bar\\baz')).to eq('bar\\baz')
+      end
+    end
+
+    context 'on windows' do
+      before do
+        stub_const('Pathname::SEPARATOR_PAT', /[\\\/]/)
+      end
+
+      it 'handles UNC pathnames' do
+        expect(subject.rspec_puppet_basename('baz//foo')).to eq('foo')
+        expect(subject.rspec_puppet_basename('//foo/bar/baz')).to eq('baz')
+        expect(subject.rspec_puppet_basename('\\\\foo\\bar\\baz.txt')).to eq('baz.txt')
+        expect(subject.rspec_puppet_basename('\\\\foo\\bar\\baz')).to eq('baz')
+      end
+
+      it 'takes into consideration the platform path separators' do
+        expect(subject.rspec_puppet_basename('C:\\foo\\bar')).to eq('bar')
+        expect(subject.rspec_puppet_basename('C:/foo/bar')).to eq('bar')
+        expect(subject.rspec_puppet_basename('/foo/bar\\baz')).to eq('baz')
+      end
+
+      it 'returns the basename for windows' do
+        expect(subject.rspec_puppet_basename('C:\\foo\\bar\\baz.txt')).to eq('baz.txt')
+        expect(subject.rspec_puppet_basename('C:\\foo\\bar')).to eq('bar')
+        expect(subject.rspec_puppet_basename('C:\\foo\\bar\\')).to eq('bar')
+        expect(subject.rspec_puppet_basename('C:\\foo')).to eq('foo')
+        expect(subject.rspec_puppet_basename('C:\\')).to eq('\\')
+      end
+
+      it 'returns the basename for windows with forward slash' do
+        expect(subject.rspec_puppet_basename('C:/')).to eq('/')
+        expect(subject.rspec_puppet_basename('C:/foo')).to eq('foo')
+        expect(subject.rspec_puppet_basename('C:/foo/bar')).to eq('bar')
+        expect(subject.rspec_puppet_basename('C:/foo/bar/')).to eq('bar')
+        expect(subject.rspec_puppet_basename('C:/foo/bar//')).to eq('bar')
+      end
+    end
   end
 end

@@ -14,6 +14,10 @@ begin
 rescue LoadError
 end
 
+RSpec.configure do |c|
+  c.add_setting :enable_pathname_stubbing, :default => false
+end
+
 require 'rspec-puppet/monkey_patches'
 
 RSpec.configure do |c|
