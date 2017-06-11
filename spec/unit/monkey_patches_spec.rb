@@ -6,12 +6,22 @@ WINDOWS = defined?(RSpec::Support) ? RSpec::Support::OS.windows? : !!File::ALT_S
 
 describe 'File constants' do
   context 'on windows', :if => WINDOWS do
-    specify('PATH_SEPARATOR') { expect(File::PATH_SEPARATOR).to eq(';') }
-    specify('ALT_SEPARATOR') { expect(File::ALT_SEPARATOR).to eq("\\") }
+    specify('File::PATH_SEPARATOR') { expect(File::PATH_SEPARATOR).to eq(';') }
+    specify('File::ALT_SEPARATOR') { expect(File::ALT_SEPARATOR).to eq("\\") }
   end
 
   context 'on posix', :unless => WINDOWS do
-    specify('PATH_SEPARATOR') { expect(File::PATH_SEPARATOR).to eq(':') }
-    specify('ALT_SEPARATOR') { expect(File::ALT_SEPARATOR).to be_nil }
+    specify('File::PATH_SEPARATOR') { expect(File::PATH_SEPARATOR).to eq(':') }
+    specify('File::ALT_SEPARATOR') { expect(File::ALT_SEPARATOR).to be_nil }
+  end
+end
+
+describe 'Pathname constants' do
+  context 'on windows', :if => WINDOWS do
+    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT).to eq(/[\\\/]/) }
+  end
+
+  context 'on linux', :unless => WINDOWS do
+    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT).to eq(/\//) }
   end
 end
