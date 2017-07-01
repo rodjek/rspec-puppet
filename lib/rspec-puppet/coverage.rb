@@ -1,11 +1,10 @@
 unless defined?(RSpec::Core::NullReporter)
   module RSpec::Core
     class NullReporter
-    private
-
-      def method_missing(_method, *_args, &_block)
-        #noop
+      def self.method_missing(*)
+        # ignore
       end
+      private_class_method :method_missing
     end
   end
 end
@@ -18,7 +17,8 @@ module RSpec::Puppet
     class << self
       extend Forwardable
       def_delegators(:instance, :add, :cover!, :report!,
-                     :filters, :add_filter, :add_from_catalog)
+                     :filters, :add_filter, :add_from_catalog,
+                     :results)
 
       attr_writer :instance
 
@@ -103,8 +103,12 @@ module RSpec::Puppet
         coverage_results = coverage_test.example("Must be at least #{coverage_desired}% of code coverage") {
           expect( coverage_actual.to_f ).to be >= coverage_desired.to_f
         }
-        coverage_test.run(RSpec::Core::NullReporter.new)
-        passed = coverage_results.execution_result.status == :passed
+        coverage_test.run(RSpec::Core::NullReporter)
+        passed = if coverage_results.execution_result.respond_to? :status then
+                   coverage_results.execution_result.status == :passed
+                 else
+                   coverage_results.execution_result[:status] == 'passed'
+                 end
 
         RSpec.configuration.reporter.example_failed coverage_results unless passed
       else
