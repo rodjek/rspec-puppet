@@ -56,20 +56,24 @@ module RSpec::Puppet
       munged_facts = facts_hash(nodename(type))
 
       if munged_facts['operatingsystem'] && munged_facts['operatingsystem'].to_s.downcase == 'windows'
-        stub_const_wrapper('PATH_SEPARATOR', ';')
-        stub_const_wrapper('ALT_SEPARATOR', "\\")
+        stub_const_wrapper('File::PATH_SEPARATOR', ';')
+        stub_const_wrapper('File::ALT_SEPARATOR', "\\")
+        stub_const_wrapper('Pathname::SEPARATOR_PAT', /[#{Regexp.quote(File::ALT_SEPARATOR)}#{Regexp.quote(File::SEPARATOR)}]/)
       else
-        stub_const_wrapper('PATH_SEPARATOR', ':')
-        stub_const_wrapper('ALT_SEPARATOR', nil)
+        stub_const_wrapper('File::PATH_SEPARATOR', ':')
+        stub_const_wrapper('File::ALT_SEPARATOR', nil)
+        stub_const_wrapper('Pathname::SEPARATOR_PAT', /#{Regexp.quote(File::SEPARATOR)}/)
       end
     end
 
     def stub_const_wrapper(const, value)
       if defined?(RSpec::Core::MockingAdapters::RSpec) && RSpec.configuration.mock_framework == RSpec::Core::MockingAdapters::RSpec
-        stub_const("File::#{const}", value)
+        stub_const(const, value)
       else
-        File.send(:remove_const, const) if File.const_defined?(const)
-        File.const_set(const, value)
+        klass_name, const_name = const.split('::', 2)
+        klass = Object.const_get(klass_name)
+        klass.send(:remove_const, const_name) if klass.const_defined?(const_name)
+        klass.const_set(const_name, value)
       end
     end
 
