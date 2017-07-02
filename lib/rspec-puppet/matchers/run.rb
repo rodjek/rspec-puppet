@@ -122,12 +122,10 @@ module RSpec::Puppet
           else
             " instead of #{@actual_error.class.inspect}(#{@actual_error})\n#{@actual_error.backtrace.join("\n")}"
           end
-        else # function has returned
-          if @has_expected_error
-            " instead of returning #{@actual_return.inspect}"
-          else
-            " instead of #{@actual_return.inspect}"
-          end
+        elsif @has_expected_error
+          " instead of returning #{@actual_return.inspect}"
+        else
+          " instead of #{@actual_return.inspect}"
         end
       end
 
@@ -137,15 +135,13 @@ module RSpec::Puppet
 
         if @has_expected_return
           message << "have returned #{@expected_return.inspect}"
-        else
-          if @has_expected_error
-            message << "have raised #{@expected_error.inspect}"
-            if @expected_error_message
-              message << " matching #{@expected_error_message.inspect}"
-            end
-          else
-            message << "have run successfully"
+        elsif @has_expected_error
+          message << "have raised #{@expected_error.inspect}"
+          if @expected_error_message
+            message << " matching #{@expected_error_message.inspect}"
           end
+        else
+          message << "have run successfully"
         end
         message << failure_message_actual(type)
       end

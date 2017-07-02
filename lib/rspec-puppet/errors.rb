@@ -17,12 +17,10 @@ module RSpec::Puppet
           else
             "#{param} set to supplied string"
           end
+        elsif negative == true
+          "#{param} not set to #{expected.inspect} but it is set to #{actual.inspect}"
         else
-          if negative == true
-            "#{param} not set to #{expected.inspect} but it is set to #{actual.inspect}"
-          else
-            "#{param} set to #{expected.inspect} but it is set to #{actual.inspect}"
-          end
+          "#{param} set to #{expected.inspect} but it is set to #{actual.inspect}"
         end
       end
 
