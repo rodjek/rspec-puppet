@@ -27,7 +27,7 @@ module RSpec::Puppet
       end
 
       if module_name.nil?
-        module_name = get_module_name
+        module_name = find_module_name
         if module_name.nil?
           $stderr.puts "Unable to determine module name.  Aborting" if verbose
           return false
@@ -51,7 +51,7 @@ module RSpec::Puppet
 
     def self.safe_teardown_links(module_name=nil)
       if module_name.nil?
-        module_name = get_module_name
+        module_name = find_module_name
         if module_name.nil?
           $stderr.puts "Unable to determine module name.  Aborting"
           return false
@@ -68,7 +68,7 @@ module RSpec::Puppet
       !File.exist?('metadata.json')
     end
 
-    def self.get_module_name
+    def self.find_module_name
       module_name = nil
       Dir["manifests/*.pp"].entries.each do |manifest|
         module_name = get_module_name_from_file(manifest)
