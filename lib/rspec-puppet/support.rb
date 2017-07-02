@@ -350,7 +350,7 @@ module RSpec::Puppet
       node_facts = Puppet::Node::Facts.new(nodename, facts_val.dup)
       node_params = facts_val.merge(node_params)
 
-      node_obj = Puppet::Node.new(nodename, { :parameters => node_params, :facts => node_facts })
+      node_obj = Puppet::Node.new(nodename, :parameters => node_params, :facts => node_facts)
 
       if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
         Puppet.push_context(

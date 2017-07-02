@@ -8,7 +8,7 @@ describe 'structured_data' do
 
     it {
       should contain_structured_data__def('thing').with(
-        {'data'  => {'foo' => 'bar', 'baz' => 'quux'}}
+        'data'  => {'foo' => 'bar', 'baz' => 'quux'}
       )
     }
   end
@@ -21,14 +21,14 @@ describe 'structured_data' do
     context "puppet less than 4", :unless => Puppet.version.to_f >= 4.0 do
       it {
         should contain_structured_data__def('thing').with(
-          { 'data'  => {"1" => 'uno', "2" => 'dos'}}
+          'data'  => {"1" => 'uno', "2" => 'dos'}
         )
       }
     end
     context "puppet 4 or greater", :if => Puppet.version.to_f >= 4.0 do
       it {
         should contain_structured_data__def('thing').with(
-          { 'data'  => {1 => 'uno', 2 => 'dos'}}
+          'data'  => {1 => 'uno', 2 => 'dos'}
         )
       }
     end
@@ -41,7 +41,7 @@ describe 'structured_data' do
 
     it {
       should contain_structured_data__def('thing').with(
-        { 'data'  => {'first' => 1, 'second' => 2}}
+        'data'  => {'first' => 1, 'second' => 2}
       )
     }
   end
@@ -62,13 +62,12 @@ describe 'structured_data' do
 
     it {
       should contain_structured_data__def('thing').with(
-        { 'data'  => {
-            'first'  => 1,
-            'sec.ond' => 2,
-            'third'  => {
-              'alpha' => 'a',
-              'beta'  => 'b',
-            },
+        'data' => {
+          'first'   => 1,
+          'sec.ond' => 2,
+          'third'   => {
+            'alpha' => 'a',
+            'beta'  => 'b',
           },
         }
       )

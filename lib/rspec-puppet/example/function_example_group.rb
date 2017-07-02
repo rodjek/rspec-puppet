@@ -199,7 +199,7 @@ module RSpec::Puppet
 
     def build_node(name, opts = {})
       node_environment = adapter.current_environment
-      opts.merge!({:environment => node_environment})
+      opts.merge!(:environment => node_environment)
       Puppet::Node.new(name, opts)
     end
   end

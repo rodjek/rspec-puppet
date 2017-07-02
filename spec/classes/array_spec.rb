@@ -8,7 +8,7 @@ describe 'structured_data' do
 
     it {
       should contain_structured_data__def('thing').with(
-        { 'data'  => %w(foo bar baz quux) }
+        'data'  => %w(foo bar baz quux)
       )
     }
   end
@@ -20,14 +20,15 @@ describe 'structured_data' do
 
     it {
       should contain_structured_data__def('thing').with(
-        { 'data' => ['first', 1, 'second', 2] }
+        'data' => ['first', 1, 'second', 2]
       )
     }
   end
 
   describe 'with nested arrays' do
     let(:params) do
-      { 'data'  => [
+      {
+        'data' => [
           'first',
           'second',
           %w(third fourth),
@@ -43,15 +44,14 @@ describe 'structured_data' do
     describe 'on Puppet 2.6', :if => Puppet.version =~ /^2\.6/ do
       it {
         should contain_structured_data__def('thing').with(
-          { 'data'  => [
-              'first',
-              'second',
-              'third',
-              'fourth',
-              5,
-              6,
-            ],
-          }
+          'data' => [
+            'first',
+            'second',
+            'third',
+            'fourth',
+            5,
+            6,
+          ]
         )
       }
     end
@@ -59,14 +59,13 @@ describe 'structured_data' do
     describe 'on Puppet 2.7 and later', :unless => Puppet.version =~ /^2\.6/ do
       it {
         should contain_structured_data__def('thing').with(
-          { 'data'  => [
-              'first',
-              'second',
-              %w(third fourth),
-              5,
-              6,
-            ],
-          }
+          'data' => [
+            'first',
+            'second',
+            %w(third fourth),
+            5,
+            6,
+          ]
         )
       }
     end
