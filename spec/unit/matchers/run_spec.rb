@@ -17,7 +17,7 @@ describe RSpec::Puppet::FunctionMatchers::Run do
     expect(subject.matches?(wrapper)).to be false
   end
 
-  [ [true], [false], [''], ['string'], [nil], [0], [1.1], [[]], ['one', 'two'], [{}], [{ 'key' => 'value' }], [:undef] ].each do |supplied_params|
+  [ [true], [false], [''], ['string'], [nil], [0], [1.1], [[]], %w(one two), [{}], [{ 'key' => 'value' }], [:undef] ].each do |supplied_params|
     context "with_params(#{supplied_params.collect { |p| p.inspect }.join(', ')})" do
       before(:each) { subject.with_params(*supplied_params) }
 

@@ -22,11 +22,11 @@ describe 'sysctl::common' do
       expect(subject).to contain_exec('sysctl/reload').without('foo')
     end
     it 'should pass if the parameter names are not contained in the resource' do
-      expect(subject).to contain_exec('sysctl/reload').without(['foo', 'bar'])
+      expect(subject).to contain_exec('sysctl/reload').without(%w(foo bar))
     end
     it 'should fail if any of the parameter names are contained in the resource' do
       expect do
-        expect(subject).to contain_exec('sysctl/reload').without(['foo', 'returns'])
+        expect(subject).to contain_exec('sysctl/reload').without(%w(foo returns))
       end.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
   end

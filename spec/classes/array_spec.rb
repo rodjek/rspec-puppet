@@ -3,12 +3,12 @@ require 'spec_helper'
 describe 'structured_data' do
   describe "with a single level array of strings" do
     let(:params) do
-      {'data'  => ['foo', 'bar', 'baz', 'quux']}
+      {'data'  => %w(foo bar baz quux)}
     end
 
     it {
       should contain_structured_data__def('thing').with(
-        { 'data'  => ['foo', 'bar', 'baz', 'quux'] }
+        { 'data'  => %w(foo bar baz quux) }
       )
     }
   end
@@ -30,7 +30,7 @@ describe 'structured_data' do
       { 'data'  => [
           'first',
           'second',
-          ['third', 'fourth'],
+          %w(third fourth),
           5,
           6
         ]
@@ -62,7 +62,7 @@ describe 'structured_data' do
           { 'data'  => [
               'first',
               'second',
-              ['third', 'fourth'],
+              %w(third fourth),
               5,
               6
             ]

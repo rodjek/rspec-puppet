@@ -12,11 +12,11 @@ describe 'fake' do
 
     {
       :parameters =>
-        {:baddies => ['one', 'two'], :goodies => ['three', 'four']},
+        {:baddies => %w(one two), :goodies => %w(three four)},
       :properties =>
-        {:baddies => ['five', 'fix'], :goodies => ['seven', 'eight']},
+        {:baddies => %w(five fix), :goodies => %w(seven eight)},
       :features   =>
-        {:baddies => ['nine', 'ten'], :goodies => ['eleven', 'twelve']}
+        {:baddies => %w(nine ten), :goodies => %w(eleven twelve)}
     }.each do |k, v|
 
       describe "#{k} checks" do

@@ -10,7 +10,7 @@ describe 'split' do
       expect(catalogue).to be_a(Puppet::Resource::Catalog)
       pre_id = catalogue.object_id
 
-      should run.with_params('aoeu', 'o').and_return(['a', 'eu'])
+      should run.with_params('aoeu', 'o').and_return(%w(a eu))
 
       post_id = catalogue.object_id
 

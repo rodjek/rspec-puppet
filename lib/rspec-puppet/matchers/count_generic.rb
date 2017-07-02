@@ -16,7 +16,7 @@ module RSpec::Puppet
 
         if @type == "resource"
           @actual_number = @catalogue.resources.count do |res|
-            !(['Class', 'Node'].include? res.type)
+            !(%w(Class Node).include? res.type)
           end
 
           # Puppet automatically adds Stage[main]
