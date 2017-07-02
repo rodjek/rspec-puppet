@@ -256,11 +256,16 @@ module RSpec::Puppet
         res = resource_from_ref(resource_ref(resource))
         if res.nil?
           resource = Struct.new(:type, :title).new(*@catalogue.title_key_for_ref(resource)) if resource.is_a?(String)
-          res = @catalogue.resource_keys.select { |type, name|
+
+          resource_keys = @catalogue.resource_keys.select { |type, name|
             type == resource.type
-          }.map { |type, name|
+          }
+
+          resources = resource_keys.map { |type, name|
             @catalogue.resource(type, name)
-          }.compact.find { |cat_res|
+          }.compact
+
+          res = resources.find { |cat_res|
             cat_res.builtin_type? && cat_res.uniqueness_key.first == resource.title
           }
         end

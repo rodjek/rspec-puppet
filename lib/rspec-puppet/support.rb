@@ -312,9 +312,11 @@ module RSpec::Puppet
         Puppet[:app_management] = true
       end
 
-      adapter.modulepath.map do |d|
+      lib_dirs = adapter.modulepath.map do |d|
         Dir["#{d}/*/lib"].entries
-      end.flatten.each do |lib|
+      end
+
+      lib_dirs.flatten.each do |lib|
         $LOAD_PATH << lib
       end
 
