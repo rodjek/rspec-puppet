@@ -72,9 +72,11 @@ module RSpec::Puppet
         @has_expected_error = true
         case error_or_message
         when String, Regexp
-          @expected_error, @expected_error_message = Exception, error_or_message
+          @expected_error = Exception
+          @expected_error_message = error_or_message
         else
-          @expected_error, @expected_error_message = error_or_message, message
+          @expected_error = error_or_message
+          @expected_error_message = message
         end
 
         if @expected_error_message.is_a? Regexp

@@ -7,7 +7,9 @@ module RSpec::Puppet
       # @param value [Object] The expected data to match the parameter against
       # @param type [:should, :not] Whether the given parameter should match
       def initialize(parameter, value, type)
-        @parameter, @value, @type = parameter, value, type
+        @parameter = parameter
+        @value = value
+        @type = parameter
 
         @should_match = (type == :should)
 
