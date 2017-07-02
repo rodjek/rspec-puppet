@@ -104,7 +104,7 @@ module RSpec::Puppet
           expect( coverage_actual.to_f ).to be >= coverage_desired.to_f
         }
         coverage_test.run(RSpec::Core::NullReporter)
-        passed = if coverage_results.execution_result.respond_to? :status then
+        passed = if coverage_results.execution_result.respond_to? :status
                    coverage_results.execution_result.status == :passed
                  else
                    coverage_results.execution_result[:status] == 'passed'

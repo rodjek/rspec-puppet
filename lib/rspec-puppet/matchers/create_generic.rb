@@ -359,7 +359,7 @@ module RSpec::Puppet
         list.each do |param, value|
           param = param.to_sym
 
-          if value.nil? then
+          if value.nil?
             unless resource[param].nil?
               @errors << "#{param} undefined but it is set to #{resource[param].inspect}"
             end
