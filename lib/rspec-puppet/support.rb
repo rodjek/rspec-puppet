@@ -149,10 +149,15 @@ module RSpec::Puppet
           raise ArgumentError, "You need to provide params for an application"
         end
       elsif type == :define
+        title_str = if title.is_a?(Array)
+                      '[' + title.map { |r| "'#{r}'" }.join(', ') + ']'
+                    else
+                      "'#{title}'"
+                    end
         if opts.has_key?(:params)
-          "#{class_name} { #{title.inspect}: #{param_str(opts[:params])} }"
+          "#{class_name} { #{title_str}: #{param_str(opts[:params])} }"
         else
-          "#{class_name} { #{title.inspect}: }"
+          "#{class_name} { #{title_str}: }"
         end
       elsif type == :host
         nil
