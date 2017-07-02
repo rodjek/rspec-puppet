@@ -19,24 +19,22 @@ module RSpec::Puppet
       end
 
       def matches?(catalogue)
-        begin
-          @catalogue = catalogue.call
+        @catalogue = catalogue.call
 
-          if cycles_found?
-            false
-          elsif @check_deps == true && missing_dependencies?
-            false
-          else
-            @expected_error.nil?
-          end
-        rescue Puppet::Error => e
-          @error_msg = e.message
-          if @expected_error.nil?
-            false
-          else
-            method = @expected_error.is_a?(Regexp) ? :=~ : :==
-            e.message.send(method, @expected_error)
-          end
+        if cycles_found?
+          false
+        elsif @check_deps == true && missing_dependencies?
+          false
+        else
+          @expected_error.nil?
+        end
+      rescue Puppet::Error => e
+        @error_msg = e.message
+        if @expected_error.nil?
+          false
+        else
+          method = @expected_error.is_a?(Regexp) ? :=~ : :==
+          e.message.send(method, @expected_error)
         end
       end
 
@@ -162,11 +160,9 @@ module RSpec::Puppet
       end
 
       def find_cycles_legacy(catalogue)
-        begin
-          catalogue.topsort
-        rescue Puppet::Error => e
-          @cycles = [e.message.rpartition(';').first.partition(':').last]
-        end
+        catalogue.topsort
+      rescue Puppet::Error => e
+        @cycles = [e.message.rpartition(';').first.partition(':').last]
       end
     end
   end

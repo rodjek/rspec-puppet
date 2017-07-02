@@ -326,12 +326,10 @@ module RSpec::Puppet
     end
 
     def with_vardir
-      begin
-        vardir = setup_puppet
-        return yield(vardir) if block_given?
-      ensure
-        FileUtils.rm_rf(vardir) if vardir && File.directory?(vardir)
-      end
+      vardir = setup_puppet
+      return yield(vardir) if block_given?
+    ensure
+      FileUtils.rm_rf(vardir) if vardir && File.directory?(vardir)
     end
 
     def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported, node_params, *_)
