@@ -143,7 +143,7 @@ module RSpec::Puppet
           "class { '#{class_name}': #{param_str(opts[:params])} }"
         end
       elsif type == :application
-        if opts.has_key?(:params)
+        if opts.key?(:params)
           "site { #{class_name} { '#{title}': #{param_str(opts[:params])} } }"
         else
           raise ArgumentError, "You need to provide params for an application"
@@ -154,7 +154,7 @@ module RSpec::Puppet
                     else
                       "'#{title}'"
                     end
-        if opts.has_key?(:params)
+        if opts.key?(:params)
           "#{class_name} { #{title_str}: #{param_str(opts[:params])} }"
         else
           "#{class_name} { #{title_str}: }"

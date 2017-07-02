@@ -97,7 +97,7 @@ module RSpec::Puppet
                     end
 
           unless @expected_params.any? { |param| param.first.to_s == namevar }
-            rsrc_hsh.delete(namevar.to_sym) if rsrc_hsh.has_key?(namevar.to_sym)
+            rsrc_hsh.delete(namevar.to_sym) if rsrc_hsh.key?(namevar.to_sym)
           end
 
           if @expected_params_count
