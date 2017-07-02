@@ -22,19 +22,19 @@ module RSpec::Puppet
 
       # ensures the listed properties are valid
       def with_properties(props)
-        @exp_properties = @exp_properties | Array(props)
+        @exp_properties |= Array(props)
         self
       end
 
       # ensures the listed parameters are valid
       def with_parameters(params)
-        @exp_parameters = @exp_parameters | Array(params)
+        @exp_parameters |= Array(params)
         self
       end
 
       # ensure the type has the list of features
       def with_features(features)
-        @exp_features = @exp_features | Array(features)
+        @exp_features |= Array(features)
         self
       end
 

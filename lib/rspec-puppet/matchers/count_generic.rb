@@ -20,14 +20,14 @@ module RSpec::Puppet
           end
 
           # Puppet automatically adds Stage[main]
-          @actual_number = @actual_number - 1
+          @actual_number -= 1
         else
           @actual_number = @catalogue.resources.count do |res|
             res.type == @referenced_type
           end
 
           # Puppet automatically adds Class[main] and Class[Settings]
-          @actual_number = @actual_number - 2 if @type == "class"
+          @actual_number -= 2 if @type == "class"
         end
 
         @actual_number == @expected_number

@@ -24,7 +24,7 @@ module RSpec::Puppet
 
       def with(*args, &block)
         params = args.shift
-        @expected_params = @expected_params | params.to_a
+        @expected_params |= params.to_a
         self
       end
 
@@ -36,7 +36,7 @@ module RSpec::Puppet
 
       def without(*args, &block)
         params = args.shift
-        @expected_undef_params = @expected_undef_params | Array(params)
+        @expected_undef_params |= Array(params)
         self
       end
 
