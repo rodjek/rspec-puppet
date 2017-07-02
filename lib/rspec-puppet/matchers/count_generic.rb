@@ -64,6 +64,7 @@ module RSpec::Puppet
       end
     end
 
+    # rubocop:disable Style/PredicateName
     def have_class_count(count)
       RSpec::Puppet::ManifestMatchers::CountGeneric.new('class', count)
     end
@@ -71,5 +72,6 @@ module RSpec::Puppet
     def have_resource_count(count)
       RSpec::Puppet::ManifestMatchers::CountGeneric.new('resource', count)
     end
+    # rubocop:enable Style/PredicateName
   end
 end

@@ -8,7 +8,7 @@ require 'English'
 module RSpec::Puppet
   class Setup
     def self.run(module_name=nil)
-      unless is_module_dir?
+      unless module_dir?
         $stderr.puts "Does not appear to be a Puppet module.  Aborting"
         return false
       end
@@ -97,7 +97,7 @@ module RSpec::Puppet
       module_name
     end
 
-    def self.is_module_dir?
+    def self.module_dir?
       Dir["*"].entries.include? "manifests"
     end
 
