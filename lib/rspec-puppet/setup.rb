@@ -97,7 +97,11 @@ module RSpec::Puppet
           $stderr.puts "!! #{dir} already exists and is not a directory"
         end
       else
-        FileUtils.mkdir dir
+        begin
+          FileUtils.mkdir dir
+        rescue Errno::EEXIST => e
+          raise e unless File.directory? dir
+        end
         puts " + #{dir}/" if verbose
       end
     end
@@ -145,7 +149,11 @@ module RSpec::Puppet
             abort
           end
         else
-          FileUtils.ln_s(File.expand_path(source), target)
+          begin
+            FileUtils.ln_s(File.expand_path(source), target)
+          rescue Errno::EEXIST => e
+            raise e unless File.symlink?(target) && File.readlink(target) == File.expand_path(source)
+          end
         end
         puts " + #{target}" if verbose
       end
