@@ -16,7 +16,7 @@ Puppet::Type.newtype(:fake) do
   newproperty(:eight)
 
   validate do
-    fail('three is a required param') unless self[:three]
+    raise 'three is a required param' unless self[:three]
   end
 
 end
