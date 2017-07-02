@@ -202,7 +202,7 @@ module RSpec::Puppet
           else
             a = type == :not ? '!' : '='
             b = value.is_a?(Regexp) ? '~' : '>'
-            output << if param.to_s == 'content' and value.is_a?( String )
+            output << if param.to_s == 'content' && value.is_a?( String )
                         "#{param.to_s} #{type == :not ? 'not ' : ''} supplied string"
                       else
                         "#{param.to_s} #{a}#{b} #{value.inspect}"
@@ -296,7 +296,7 @@ module RSpec::Puppet
 
         Puppet::Type.suppress_provider
         # Add autorequires if any
-        if type == :require and resource.resource_type.respond_to? :eachautorequire
+        if type == :require && resource.resource_type.respond_to?(:eachautorequire)
           resource.resource_type.eachautorequire do |t, b|
             Array(resource.to_ral.instance_eval(&b)).each do |dep|
               res = "#{t.to_s.capitalize}[#{dep}]"

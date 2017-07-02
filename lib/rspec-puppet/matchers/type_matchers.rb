@@ -69,7 +69,7 @@ module RSpec::Puppet
           # only build a resource if we are validating provider or setting
           # additional parameters
           resource = be_valid_resource(type, title, params.merge(@params_with_values))
-          match_default_provider(resource) and match_default_values(resource)
+          match_default_provider(resource) && match_default_values(resource)
         else
           true
         end

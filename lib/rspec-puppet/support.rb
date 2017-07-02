@@ -16,7 +16,7 @@ module RSpec::Puppet
     end
 
     def build_code(type, manifest_opts)
-      if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
+      if Puppet.version.to_f >= 4.0 || Puppet[:parser] == 'future'
         [site_pp_str, pre_cond, test_manifest(type, manifest_opts), post_cond].compact.join("\n")
       else
         [import_str, pre_cond, test_manifest(type, manifest_opts), post_cond].compact.join("\n")
