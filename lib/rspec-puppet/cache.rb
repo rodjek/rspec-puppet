@@ -13,7 +13,7 @@ module RSpec::Puppet
     def get(*args, &blk)
       # decouple the hash key from whatever the blk might do to it
       key = Marshal.load(Marshal.dump(args))
-      if !@cache.has_key? key
+      unless @cache.has_key?(key)
         @cache[key] = (blk || @default_proc).call(*args)
         @lra << key
         expire!
