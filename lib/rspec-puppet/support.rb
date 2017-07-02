@@ -388,7 +388,8 @@ module RSpec::Puppet
       end if facts.is_a? Hash
 
       return facts.reduce([]) do |memo, v|
-        memo << munge_facts(v); memo
+        memo << munge_facts(v)
+        memo
       end if facts.is_a? Array
 
       facts

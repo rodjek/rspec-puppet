@@ -36,7 +36,10 @@ module RSpec::Puppet
           arg.each { |a| freeze_arg(a) }
           arg.freeze
         when Hash
-          arg.each { |k,v| freeze_arg(k); freeze_arg(v) }
+          arg.each do |k,v|
+            freeze_arg(k)
+            freeze_arg(v)
+          end
           arg.freeze
         when String
           arg.freeze
