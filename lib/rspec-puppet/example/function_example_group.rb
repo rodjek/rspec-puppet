@@ -100,8 +100,6 @@ module RSpec::Puppet
 
         if Puppet::Parser::Functions.function(function_name)
           V3FunctionWrapper.new(function_name, scope.method("function_#{function_name}".intern))
-        else
-          nil
         end
       end
     end

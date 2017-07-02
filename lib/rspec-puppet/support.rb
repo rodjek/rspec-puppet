@@ -186,8 +186,6 @@ module RSpec::Puppet
         else
           pre_condition
         end
-      else
-        nil
       end
     end
 
@@ -198,8 +196,6 @@ module RSpec::Puppet
         else
           post_condition
         end
-      else
-        nil
       end
     end
 
