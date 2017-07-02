@@ -32,8 +32,8 @@ describe 'structured_data' do
           'second',
           %w(third fourth),
           5,
-          6
-        ]
+          6,
+        ],
       }
     end
 
@@ -49,8 +49,8 @@ describe 'structured_data' do
               'third',
               'fourth',
               5,
-              6
-            ]
+              6,
+            ],
           }
         )
       }
@@ -64,8 +64,8 @@ describe 'structured_data' do
               'second',
               %w(third fourth),
               5,
-              6
-            ]
+              6,
+            ],
           }
         )
       }

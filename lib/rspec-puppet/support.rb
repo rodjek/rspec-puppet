@@ -106,7 +106,7 @@ module RSpec::Puppet
           path_to_manifest = File.join([
             d,
             'manifests',
-            class_name.split('::')[1..-1]
+            class_name.split('::')[1..-1],
           ].flatten)
           import_str = [
             "import '#{d}/manifests/init.pp'",
@@ -357,7 +357,7 @@ module RSpec::Puppet
       if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
         Puppet.push_context(
           {
-            :trusted_information => Puppet::Context::TrustedInformation.new('remote', nodename, trusted_facts_val)
+            :trusted_information => Puppet::Context::TrustedInformation.new('remote', nodename, trusted_facts_val),
           },
           "Context for spec trusted hash"
         )

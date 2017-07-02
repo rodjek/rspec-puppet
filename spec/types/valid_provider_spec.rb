@@ -16,7 +16,7 @@ describe 'fake' do
       :properties =>
         {:baddies => %w(five fix), :goodies => %w(seven eight)},
       :features   =>
-        {:baddies => %w(nine ten), :goodies => %w(eleven twelve)}
+        {:baddies => %w(nine ten), :goodies => %w(eleven twelve)},
     }.each do |k, v|
 
       describe "#{k} checks" do

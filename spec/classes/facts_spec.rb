@@ -10,8 +10,8 @@ describe 'structured_facts::hash' do
   context 'symbols and strings in facts', :if => Puppet.version.to_f >= 4.0 do
     let(:facts) {{
       :os => {
-        'family' => family
-      }
+        'family' => family,
+      },
     }}
 
     it { should contain_class('structured_facts::hash') }
@@ -23,8 +23,8 @@ describe 'structured_facts::hash' do
   context 'only symbols in facts', :if => Puppet.version.to_f >= 4.0 do
     let(:facts) {{
       :os => {
-        :family => family
-      }
+        :family => family,
+      },
     }}
 
     it { should contain_class('structured_facts::hash') }
@@ -37,8 +37,8 @@ describe 'structured_facts::hash' do
   context 'mixed case symbols in facts', :if => Puppet.version.to_f >= 4.0 do
     let(:facts) {{
       :oS => {
-        :family => family
-      }
+        :family => family,
+      },
     }}
 
     it { should contain_class('structured_facts::hash') }
@@ -50,8 +50,8 @@ describe 'structured_facts::hash' do
   context 'only strings in facts', :if => Puppet.version.to_f >= 4.0 do
     let(:facts) {{
       'os' => {
-        'family' => family
-      }
+        'family' => family,
+      },
     }}
 
     it { should contain_class('structured_facts::hash') }
@@ -64,8 +64,8 @@ describe 'structured_facts::hash' do
   context 'mixed case strings in facts', :if => Puppet.version.to_f >= 4.0 do
     let(:facts) {{
       'oS' => {
-        'family' => family
-      }
+        'family' => family,
+      },
     }}
 
     it { should contain_class('structured_facts::hash') }
@@ -80,8 +80,8 @@ describe 'structured_facts::top_scope' do
   context 'symbols and strings in facts' do
     let(:facts) {{
       :os => {
-        'family' => family
-      }
+        'family' => family,
+      },
     }}
 
     it { should contain_class('structured_facts::top_scope') }
@@ -93,8 +93,8 @@ describe 'structured_facts::top_scope' do
   context 'only symbols in facts' do
     let(:facts) {{
       :os => {
-        :family => family
-      }
+        :family => family,
+      },
     }}
 
     it { should contain_class('structured_facts::top_scope') }
@@ -107,8 +107,8 @@ describe 'structured_facts::top_scope' do
   context 'mixed case in facts' do
     let(:facts) {{
       :Os => {
-        :family => family
-      }
+        :family => family,
+      },
     }}
 
     it { should contain_class('structured_facts::top_scope') }
@@ -120,8 +120,8 @@ describe 'structured_facts::top_scope' do
   context 'only string in facts' do
     let(:facts) {{
       'os' => {
-        'family' => family
-      }
+        'family' => family,
+      },
     }}
 
     it { should contain_class('structured_facts::top_scope') }
@@ -134,8 +134,8 @@ describe 'structured_facts::top_scope' do
   context 'mixed case in facts' do
     let(:facts) {{
       'Os' => {
-        'family' => family
-      }
+        'family' => family,
+      },
     }}
 
     it { should contain_class('structured_facts::top_scope') }
@@ -149,8 +149,8 @@ describe 'structured_facts::case_check' do
   context 'mixed case in structure fact nested keys', :if => Puppet.version.to_f >= 4.0 do
     let(:facts) {{
       'custom_fact' => {
-        'MixedCase' => 'value'
-      }
+        'MixedCase' => 'value',
+      },
     }}
 
     it { should contain_class('structured_facts::case_check') }

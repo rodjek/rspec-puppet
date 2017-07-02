@@ -55,8 +55,8 @@ describe 'structured_data' do
           'third'  => {
             'alpha' => 'a',
             'beta'  => 'b',
-          }
-        }
+          },
+        },
       }
     end
 
@@ -68,8 +68,8 @@ describe 'structured_data' do
             'third'  => {
               'alpha' => 'a',
               'beta'  => 'b',
-            }
-          }
+            },
+          },
         }
       )
     }

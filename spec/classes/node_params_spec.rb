@@ -9,7 +9,7 @@ describe 'node_params', :if => Puppet::Util::Package.versioncmp(Puppet.version, 
     :false => false,
     :integer => 5,
     :float => 4.4,
-    :nil => nil
+    :nil => nil,
   }
 
   let(:node_params) { fuzzed }

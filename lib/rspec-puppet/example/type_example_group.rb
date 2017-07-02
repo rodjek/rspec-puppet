@@ -14,7 +14,7 @@ module RSpec::Puppet
           # to pass all of the bits form the current scope
           # required to create it
           title,
-          my_params
+          my_params,
         ]
       end
     end

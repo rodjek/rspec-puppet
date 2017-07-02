@@ -134,7 +134,7 @@ module RSpec::Puppet
         Puppet.push_context(
           {
             :environments => loader,
-            :current_environment => env
+            :current_environment => env,
           },
           "Setup rspec-puppet environments"
         )
@@ -209,7 +209,7 @@ module RSpec::Puppet
       [
         ['4.0', Adapter4X],
         ['3.0', Adapter3X],
-        ['2.7', Adapter27]
+        ['2.7', Adapter27],
       ].each do |(version, klass)|
         if Puppet::Util::Package.versioncmp(Puppet.version, version) >= 0
           return klass.new

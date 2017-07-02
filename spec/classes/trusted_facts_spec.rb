@@ -37,7 +37,7 @@ describe 'trusted_facts', :if => Puppet::Util::Package.versioncmp(Puppet.version
   context 'with extensions' do
     extensions = {
       'pp_uuid'                 => 'ED803750-E3C7-44F5-BB08-41A04433FE2E',
-      '1.3.6.1.4.1.34380.1.2.1' => 'ssl-termination'
+      '1.3.6.1.4.1.34380.1.2.1' => 'ssl-termination',
     }
     let(:trusted_facts) { extensions }
     let(:node) { 'trusted.example.com' }
