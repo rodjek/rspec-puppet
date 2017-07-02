@@ -127,7 +127,7 @@ module RSpec::Puppet
       site_pp_str = ''
       filepath = adapter.manifest
 
-      if (!filepath.nil?) && File.file?(filepath)
+      if !filepath.nil? && File.file?(filepath)
         site_pp_str = File.open(filepath).read
       end
       site_pp_str
