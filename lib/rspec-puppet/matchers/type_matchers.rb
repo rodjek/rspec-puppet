@@ -139,11 +139,12 @@ module RSpec::Puppet
               baddies.push(param)
             end
           end
-          if baddies.size > 0
+
+          if baddies.empty?
+            true
+          else
             @errors.push("Invalid #{pluralize(attr_type)}: #{baddies.join(',')}")
             false
-          else
-            true
           end
         end
 

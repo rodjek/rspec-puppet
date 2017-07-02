@@ -153,7 +153,7 @@ module RSpec::Puppet
 
       def find_cycles(catalogue)
         cycles = catalogue.find_cycles_in_graph
-        if cycles.length > 0
+        unless cycles.empty?
           cycles.each do |cycle|
             paths = catalogue.paths_in_cycle(cycle)
             @cycles << (paths.map{ |path| '(' + path.join(" => ") + ')'}.join("\n") + "\n")
