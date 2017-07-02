@@ -83,12 +83,12 @@ module RSpec::Puppet
         resource_vertices = @catalogue.vertices.select { |v| v.is_a? Puppet::Resource }
         resource_vertices.each do |vertex|
           vertex.each do |param,value|
-            if [:require, :subscribe, :notify, :before].include? param
-              value = Array[value] unless value.is_a? Array
-              value.each do |val|
-                if val.is_a? Puppet::Resource
-                  retval = true unless resource_exists?(val, vertex)
-                end
+            next unless [:require, :subscribe, :notify, :before].include?(param)
+
+            value = Array[value] unless value.is_a? Array
+            value.each do |val|
+              if val.is_a? Puppet::Resource
+                retval = true unless resource_exists?(val, vertex)
               end
             end
           end
@@ -101,15 +101,15 @@ module RSpec::Puppet
         @resource_hash ||= begin
           res_hash = {}
           @catalogue.vertices.each do |vertex|
-            if vertex.is_a? Puppet::Resource
-              res_hash[vertex.ref] = 1
-              if vertex[:alias]
-                res_hash["#{vertex.type.to_s}[#{vertex[:alias]}]"] = 1
-              end
+            next unless vertex.is_a?(Puppet::Resource)
 
-              if vertex.uniqueness_key != [vertex.title]
-                res_hash["#{vertex.type.to_s}[#{vertex.uniqueness_key.first}]"] = 1
-              end
+            res_hash[vertex.ref] = 1
+            if vertex[:alias]
+              res_hash["#{vertex.type.to_s}[#{vertex[:alias]}]"] = 1
+            end
+
+            if vertex.uniqueness_key != [vertex.title]
+              res_hash["#{vertex.type.to_s}[#{vertex.uniqueness_key.first}]"] = 1
             end
           end
           res_hash
