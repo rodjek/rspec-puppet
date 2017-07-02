@@ -113,7 +113,7 @@ module RSpec::Puppet
       end
 
       def match_default_values(resource)
-        # TODO FINISH
+        # TODO: FINISH
         true
       end
 
