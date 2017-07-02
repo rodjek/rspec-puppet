@@ -4,6 +4,97 @@ layout: minimal
 
 # Changelog
 
+## 2.6.0
+
+The Windows parity release. rspec-puppet now officially supports Windows. A lot
+of work has been put in to support cross-platform tests, so that you can now
+test your Windows manifests on \*nix, and your \*nix manifests on Windows.
+
+Huge thanks to all the contributors! And everyone that's been waiting for a new
+release!
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.5.0...v2.6.0)
+
+### Changed
+
+ * Puppet settings are now applied as application overrides, allowing users to
+   call `Puppet.settings` directly to make changes to settings without them
+   getting clobbered by rspec-puppet.
+ * Improved support for setting up the `spec/fixtures/modules` link on Windows
+   by using directory junctions instead of symlinks, removing the need for
+   Administrator access.
+ * When testing for the absence of a parameter on a resource, the error message
+   now contains the value(s) of the parameter(s) that should be undefined.
+ * When testing a defined type, the defined type being tested is no longer part
+   of the coverage report.
+ * The cached catalogue will now be invalidated when hiera-puppet-helper users
+   change their `hiera_data` value.
+ * Multiple instances of a defined type can now be tested at once by providing
+   an array of strings with `let(:title)`.
+ * Explicitly specifying the type of an example group (`:type => :class`) now
+   takes precedence over the type inferred from the spec file's location.
+ * The manifest specified in `RSpec.configuration.manifest` (path to `site.pp`
+   for Puppet < 4.x) is now imported if specified on Puppet >= 4.x.
+ * Puppet functions called when testing a Puppet function now get executed in
+   the same scope as parent function.
+
+### Added
+
+ * The module is now automatically linked into `spec/fixtures/modules` at the
+   start of the rspec-puppet run.
+ * CI testing of PRs on Windows via Appveyor.
+ * Support for setting node parameters (mocking the behaviour of an ENC or
+   Puppet Enterprise Console) using `let(:node_params)`.
+ * Support for injecting Puppet code at the end of the test code using
+   `let(:post_condition)`.
+ * Resource coverage reports for `host` specs.
+ * Puppet functions that take a lambda as a parameter can now be tested by
+   chaining `with_lambda` to the `run` matcher.
+ * Facts and trusted facts are now available when testing Puppet functions.
+ * Hiera configuration can now be specified when testing Puppet functions using
+   `let(:hiera_config)`.
+ * Trusted facts (`$trusted[]`) can now be specified in
+   `RSpec.configuration.default_trusted_facts` or by `let(:trusted_facts)`.
+ * `:default` is now a supported parameter value when passed in by
+   `let(:params)`.
+ * Support for testing Puppet data type aliases.
+
+### Fixed
+
+ * Facts generated from the node name (as set by `let(:node)`) now take
+   precedence over the values specified in `RSpec.configuration.default_facts`
+   or by `let(:facts)`.
+ * Only fact names will now be converted to lowercase, not the fact values.
+ * Matchers now support resources where the namevar has a different value to
+   the title.
+ * Resources created outside of the module being tested by functions like
+   `create_resources` or `ensure_package` are no longer present in the coverage
+   report from Puppet 4.6 onwards.
+ * Guards have been put in place to prevent the possibility of rspec-puppet
+   getting stuck in an infinite recursion when testing the relationships
+   between resources.
+ * A full `spec/spec_helper.rb` file is now written out by `rspec-puppet-init`
+   to fix the `fixture_path` issue on new modules.
+ * The namevar of a resources is no longer taken into account when testing the
+   exact parameters of the resource with `only_with`.
+ * Minimum resource coverage check for RSpec <= 3.2.
+ * Resource parameters that take a hash as their value will no longer have that
+   hash converted into an array.
+ * Testing the value of a parameter with a Proc that returns `nil` now works as
+   expected.
+ * When testing Puppet functions, the function name is no longer automatically
+   coverted to lowercase.
+ * The value of `$::environment` is now forced to be a string as expected for
+   Puppet 4.0 - 4.3.
+ * app\_management is no longer enabled by rspec-puppet for Puppet >= 5.0 as it
+   is already enabled by default.
+ * Failing to provide parameters when testing an application now raises the
+   correct exception (`ArgumentError`).
+ * Ruby symbols in nested hashes or arrays are now converted into strings when
+   passed in by `let(:params)`.
+ * Namespaced resources are now correctly capitalised when being added to the
+   resource coverage filter.
+
 ## 2.5.0
 
 Headline features are app management, nested hashes in params, and testing for
