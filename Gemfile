@@ -38,7 +38,7 @@ elsif RUBY_VERSION =~ /^1\.?8/
   gem 'json_pure', '< 2.0.0'
 else
   gem 'rubocop'
-  gem 'rubocop-rspec', '~> 1.6' if (RUBY_VERSION >= '2.3.0' || RUBY_VERSION >= '23')
+  gem 'rubocop-rspec', '~> 1.6' if RUBY_VERSION >= '2.3.0' || RUBY_VERSION >= '23'
 end
 
 if ENV['COVERAGE'] == 'yes'
