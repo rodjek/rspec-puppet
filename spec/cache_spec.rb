@@ -3,7 +3,7 @@ require 'rspec-puppet/cache'
 
 describe RSpec::Puppet::Cache do
 
-  let(:compiler) { Hash.new }
+  let(:compiler) { {} }
 
   subject do
     described_class.new do |args|
