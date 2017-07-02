@@ -381,16 +381,18 @@ module RSpec::Puppet
     end
 
     def munge_facts(facts)
-      return facts.reduce({}) do | memo, (k, v)|
-        memo.tap { |m| m[k.to_s] = munge_facts(v) }
-      end if facts.is_a? Hash
-
-      return facts.reduce([]) do |memo, v|
-        memo << munge_facts(v)
-        memo
-      end if facts.is_a? Array
-
-      facts
+      case facts
+      when Hash
+        facts.reduce({}) do | memo, (k, v)|
+          memo.tap { |m| m[k.to_s] = munge_facts(v) }
+        end
+      when Array
+        facts.reduce([]) do |memo, v|
+          memo << munge_facts(v)
+        end
+      else
+        facts
+      end
     end
 
     def escape_special_chars(string)
