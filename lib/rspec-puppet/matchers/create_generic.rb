@@ -166,7 +166,7 @@ module RSpec::Puppet
           value_str = if values.length == 1
                         " #{value_str_prefix} #{values.first}"
                       else
-                        " #{value_str_prefix} #{values[0..-2].join(", ")} and #{values[-1]}"
+                        " #{value_str_prefix} #{values[0..-2].join(', ')} and #{values[-1]}"
                       end
         end
 
