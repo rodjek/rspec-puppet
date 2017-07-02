@@ -47,11 +47,11 @@ module RSpec::Puppet
     end
 
     def stub_file_consts(example)
-      if example.respond_to?(:metadata)
-        type = example.metadata[:type]
-      else
-        type = guess_type_from_path(example.example.metadata[:file_path])
-      end
+      type = if example.respond_to?(:metadata)
+               example.metadata[:type]
+             else
+               guess_type_from_path(example.example.metadata[:file_path])
+             end
 
       munged_facts = facts_hash(nodename(type))
 

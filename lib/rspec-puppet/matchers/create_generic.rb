@@ -90,11 +90,11 @@ module RSpec::Puppet
           RSpec::Puppet::Coverage.cover!(resource)
           rsrc_hsh = resource.to_hash
 
-          if resource.builtin_type?
-            namevar = resource.resource_type.key_attributes.first.to_s
-          else
-            namevar = 'name'
-          end
+          namevar = if resource.builtin_type?
+                      resource.resource_type.key_attributes.first.to_s
+                    else
+                      'name'
+                    end
 
           unless @expected_params.any? { |param| param.first.to_s == namevar }
             rsrc_hsh.delete(namevar.to_sym) if rsrc_hsh.has_key?(namevar.to_sym)
@@ -163,11 +163,11 @@ module RSpec::Puppet
         end
 
         unless values.empty?
-          if values.length == 1
-            value_str = " #{value_str_prefix} #{values.first}"
-          else
-            value_str = " #{value_str_prefix} #{values[0..-2].join(", ")} and #{values[-1]}"
-          end
+          value_str = if values.length == 1
+                        " #{value_str_prefix} #{values.first}"
+                      else
+                        " #{value_str_prefix} #{values[0..-2].join(", ")} and #{values[-1]}"
+                      end
         end
 
         "contain #{@referenced_type}[#{@title}]#{value_str}"
@@ -202,11 +202,11 @@ module RSpec::Puppet
           else
             a = type == :not ? '!' : '='
             b = value.is_a?(Regexp) ? '~' : '>'
-            if param.to_s == 'content' and value.is_a?( String )
-              output << "#{param.to_s} #{type == :not ? 'not ' : ''} supplied string"
-            else
-              output << "#{param.to_s} #{a}#{b} #{value.inspect}"
-            end
+            output << if param.to_s == 'content' and value.is_a?( String )
+                        "#{param.to_s} #{type == :not ? 'not ' : ''} supplied string"
+                      else
+                        "#{param.to_s} #{a}#{b} #{value.inspect}"
+                      end
           end
         end
         output

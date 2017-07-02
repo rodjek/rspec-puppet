@@ -1,22 +1,26 @@
 require 'spec_helper'
 
 describe 'split' do
+  let(:expected_error) do
+    if Puppet::Util::Package.versioncmp(Puppet.version, '3.1.0') >= 0
+      ArgumentError
+    else
+      Puppet::ParseError
+    end
+  end
+
+  let(:expected_error_message) do
+    if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
+      /expects \d+ arguments/
+    elsif Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0
+      /mis-matched arguments/
+    else
+      /number of arguments/
+    end
+  end
+
   it { should run.with_params('aoeu', 'o').and_return(%w(a eu)) }
   it { should_not run.with_params('foo').and_raise_error(Puppet::DevError) }
-
-  if Puppet::Util::Package.versioncmp(Puppet.version, '3.1.0') >= 0
-    expected_error = ArgumentError
-  else
-    expected_error = Puppet::ParseError
-  end
-
-  if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
-    expected_error_message = /expects \d+ arguments/
-  elsif Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0
-    expected_error_message = /mis-matched arguments/
-  else
-    expected_error_message = /number of arguments/
-  end
 
   it { should run.with_params('foo').and_raise_error(expected_error) }
 

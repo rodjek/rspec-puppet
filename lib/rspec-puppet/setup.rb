@@ -79,11 +79,11 @@ module RSpec::Puppet
     def self.get_module_name_from_file(file)
       # FIXME: see discussion at
       # https://github.com/rodjek/rspec-puppet/issues/290
-      if Puppet.version.to_f >= 4.0
-        p = Puppet::Pops::Parser::Lexer2.new
-      else
-        p = Puppet::Parser::Lexer.new
-      end
+      p = if Puppet.version.to_f >= 4.0
+            Puppet::Pops::Parser::Lexer2.new
+          else
+            Puppet::Parser::Lexer.new
+          end
       module_name = nil
       p.string = File.read(file)
       tokens = p.fullscan

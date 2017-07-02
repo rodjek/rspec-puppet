@@ -2,11 +2,11 @@ module RSpec::Puppet
   module ManifestMatchers
     class CountGeneric
       def initialize(type, count, *method)
-        if type.nil?
-          @type = method[0].to_s.gsub(/^have_(.+)_resource_count$/, '\1')
-        else
-          @type = type
-        end
+        @type = if type.nil?
+                  method[0].to_s.gsub(/^have_(.+)_resource_count$/, '\1')
+                else
+                  type
+                end
         @referenced_type = referenced_type(@type)
         @expected_number = count.to_i
       end

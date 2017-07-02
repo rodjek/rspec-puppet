@@ -60,11 +60,11 @@ module RSpec::Puppet
       def and_return(value)
         @has_expected_return = true
         @expected_return = value
-        if value.is_a? Regexp
-          @desc = "match #{value.inspect}"
-        else
-          @desc = "return #{value.inspect}"
-        end
+        @desc = if value.is_a?(Regexp)
+                  "match #{value.inspect}"
+                else
+                  "return #{value.inspect}"
+                end
         self
       end
 

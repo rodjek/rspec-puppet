@@ -110,27 +110,23 @@ module RSpec::Puppet
       def setup_puppet(example_group)
         super
 
-        if rspec_modulepath = RSpec.configuration.module_path
-          modulepath = rspec_modulepath.split(File::PATH_SEPARATOR)
-        else
-          modulepath = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
-            File.join(path, 'fixtures', 'modules')
-          end
-        end
+        modulepath = if RSpec.configuration.module_path
+                       RSpec.configuration.module_path.split(File::PATH_SEPARATOR)
+                     else
+                       Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
+                         File.join(path, 'fixtures', 'modules')
+                       end
+                     end
 
-        if rspec_manifest = RSpec.configuration.manifest
-          manifest = rspec_manifest
-        else
-          manifest_paths = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
-            File.join(path, 'fixtures', 'manifests')
-          end
+        manifest = if RSpec.configuration.manifest
+                     RSpec.configuration.manifest
+                   else
+                     manifest_paths = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
+                       File.join(path, 'fixtures', 'manifests')
+                     end
 
-          manifest = manifest_paths.find do |path|
-            File.exist?(path)
-          end
-
-          manifest ||= Puppet::Node::Environment::NO_MANIFEST
-        end
+                     manifest_paths.find { |path| File.exist?(path) } || Puppet::Node::Environment::NO_MANIFEST
+                   end
 
         env = Puppet::Node::Environment.create(@environment_name, modulepath, manifest)
         loader = Puppet::Environments::Static.new(env)
