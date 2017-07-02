@@ -98,7 +98,7 @@ module RSpec::Puppet
       end
 
       def resource_hash
-        @resource_hash ||= Proc.new do
+        @resource_hash ||= begin
           res_hash = {}
           @catalogue.vertices.each do |vertex|
             if vertex.is_a? Puppet::Resource
@@ -113,7 +113,7 @@ module RSpec::Puppet
             end
           end
           res_hash
-        end.call
+        end
       end
 
       def check_resource(res)
