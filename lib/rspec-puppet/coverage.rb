@@ -40,7 +40,7 @@ module RSpec::Puppet
 
     def add_filter(type, title)
       def capitalize_name(name)
-        name.split('::').map { |subtitle| subtitle.capitalize }.join('::')
+        name.split('::').map(&:capitalize).join('::')
       end
 
       type = capitalize_name(type)
