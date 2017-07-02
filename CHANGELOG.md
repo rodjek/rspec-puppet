@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.1]
+
+### Fixed
+
+ * 2.6.0 introduced a change to how resource titles are rendered in the test
+   manifest which caused them to get rendered as double quoted strings. This
+   caused a failure for tests of defined types that contained `$` characters
+   as Puppet would try and interpolate the values in the title as variable(s).
+
 ## [2.6.0]
 
 The Windows parity release. rspec-puppet now officially supports Windows. A lot
