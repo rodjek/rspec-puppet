@@ -336,7 +336,7 @@ module RSpec::Puppet
         end
 
         # Nothing found
-        return false
+        false
       end
 
       def notifies?(first, second)
@@ -354,7 +354,7 @@ module RSpec::Puppet
         end
 
         # Nothing found
-        return false
+        false
       end
 
       # @param resource [Hash<Symbol, Object>] The resource in the catalog

@@ -102,13 +102,13 @@ module RSpec::Puppet
       def match_default_provider(resource)
         if @exp_provider
           if resource[:provider] == @exp_provider
-            return true
+            true
           else
             @errors.push("Expected provider: #{@exp_provider} does not match: #{resource[:provider]}")
-            return false
+            false
           end
         else
-          return true
+          true
         end
       end
 

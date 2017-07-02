@@ -413,7 +413,7 @@ module RSpec::Puppet
     # @param [String] title reference title
     # @return [RSpec::Puppet::RawString] return a new RawString with the type/title populated correctly
     def ref(type, title)
-      return RSpec::Puppet::RawString.new("#{type}['#{title}']")
+      RSpec::Puppet::RawString.new("#{type}['#{title}']")
     end
 
     # @!attribute [r] adapter

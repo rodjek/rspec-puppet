@@ -166,7 +166,7 @@ module RSpec::Puppet
         end
       end
 
-      return false
+      false
     end
 
     # Find all paths that may contain testable resources for a module.
