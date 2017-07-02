@@ -93,6 +93,6 @@ RSpec.configure do |c|
   end
 
   c.before :each do |example|
-    stub_file_consts(example) if self.respond_to?(:stub_file_consts)
+    stub_file_consts(example) if respond_to?(:stub_file_consts)
   end
 end

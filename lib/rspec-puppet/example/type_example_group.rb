@@ -7,7 +7,7 @@ module RSpec::Puppet
       @type_and_resource ||= begin
         setup_puppet
         type_name = self.class.top_level_description.downcase
-        my_params = self.respond_to?(:params) ? params : {}
+        my_params = respond_to?(:params) ? params : {}
         [
           Puppet::Type.type(type_name),
           # I don't want to create the resource here, so I have

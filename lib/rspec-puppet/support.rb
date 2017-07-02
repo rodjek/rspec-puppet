@@ -81,8 +81,8 @@ module RSpec::Puppet
       with_vardir do
         node_name = nodename(type)
 
-        hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
-        hiera_data_value = self.respond_to?(:hiera_data) ? hiera_data : nil
+        hiera_config_value = respond_to?(:hiera_config) ? hiera_config : nil
+        hiera_data_value = respond_to?(:hiera_data) ? hiera_data : nil
 
         catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value,
                                   build_code(type, manifest_opts), exported, node_params_hash, hiera_data_value)
@@ -134,7 +134,7 @@ module RSpec::Puppet
     end
 
     def test_manifest(type, opts = {})
-      opts[:params] = params if self.respond_to?(:params)
+      opts[:params] = params if respond_to?(:params)
 
       if type == :class
         if opts[:params].nil? || opts[:params] == {}
@@ -167,7 +167,7 @@ module RSpec::Puppet
     end
 
     def nodename(type)
-      return node if self.respond_to?(:node)
+      return node if respond_to?(:node)
       if [:class, :define, :function, :application].include? type
         Puppet[:certname]
       else
@@ -180,7 +180,7 @@ module RSpec::Puppet
     end
 
     def pre_cond
-      if self.respond_to?(:pre_condition) && !pre_condition.nil?
+      if respond_to?(:pre_condition) && !pre_condition.nil?
         if pre_condition.is_a? Array
           pre_condition.compact.join("\n")
         else
@@ -192,7 +192,7 @@ module RSpec::Puppet
     end
 
     def post_cond
-      if self.respond_to?(:post_condition) && !post_condition.nil?
+      if respond_to?(:post_condition) && !post_condition.nil?
         if post_condition.is_a? Array
           post_condition.compact.join("\n")
         else
@@ -235,7 +235,7 @@ module RSpec::Puppet
 
       # Merge in `let(:facts)` facts
       result_facts.merge!(munge_facts(base_facts))
-      result_facts.merge!(munge_facts(facts)) if self.respond_to?(:facts)
+      result_facts.merge!(munge_facts(facts)) if respond_to?(:facts)
 
       # Merge node facts again on top of `let(:facts)` facts, but only if
       # a node name is given with `let(:node)`
@@ -272,7 +272,7 @@ module RSpec::Puppet
         extensions.merge!(RSpec.configuration.default_trusted_facts)
       end
 
-      extensions.merge!(trusted_facts) if self.respond_to?(:trusted_facts)
+      extensions.merge!(trusted_facts) if respond_to?(:trusted_facts)
       extensions
     end
 
