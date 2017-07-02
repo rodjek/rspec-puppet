@@ -3,6 +3,7 @@ if Puppet.version.to_f >= 4.0
   require 'puppet/pops'
 end
 require 'fileutils'
+require 'English'
 
 module RSpec::Puppet
   class Setup
@@ -153,7 +154,7 @@ module RSpec::Puppet
       else
         if Puppet::Util::Platform.windows?
           output = `call mklink /J "#{target.gsub('/', '\\')}" "#{source}"`
-          unless $?.success?
+          unless $CHILD_STATUS.success?
             puts output
             abort
           end
