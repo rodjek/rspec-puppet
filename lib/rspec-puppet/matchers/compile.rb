@@ -52,12 +52,8 @@ module RSpec::Puppet
       end
 
       def failure_message
-        unless @cycles.empty?
-          "dependency cycles found: #{@cycles.join('; ')}"
-        else
-          unless @error_msg.empty?
-            "error during compilation: #{@error_msg}"
-          else
+        if @cycles.empty?
+          if @error_msg.empty?
             case @expected_error
             when nil
               "expected that the catalogue would include #{@failed_resource}"
@@ -66,7 +62,11 @@ module RSpec::Puppet
             else
               "expected that the catalogue would fail to compile and raise the error #{@expected_error.inspect}"
             end
+          else
+            "error during compilation: #{@error_msg}"
           end
+        else
+          "dependency cycles found: #{@cycles.join('; ')}"
         end
       end
 
@@ -129,11 +129,11 @@ module RSpec::Puppet
       end
 
       def resource_exists?(res, vertex)
-        unless check_resource(res)
+        if check_resource(res)
+          true
+        else
           @failed_resource = "#{res.ref} used at #{vertex.file}:#{vertex.line} in #{vertex.ref}"
           false
-        else
-          true
         end
       end
 
