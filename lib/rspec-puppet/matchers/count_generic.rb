@@ -38,12 +38,12 @@ module RSpec::Puppet
 
         desc << "contain exactly #{@expected_number}"
         if @type == "class"
-          desc << "#{@expected_number == 1 ? "class" : "classes" }"
+          desc << @expected_number == 1 ? "class" : "classes"
         else
           unless @type == "resource"
-            desc << "#{@referenced_type}"
+            desc << @referenced_type.to_s
           end
-          desc << "#{@expected_number == 1 ? "resource" : "resources" }"
+          desc << @expected_number == 1 ? "resource" : "resources"
         end
 
         desc.join(" ")
