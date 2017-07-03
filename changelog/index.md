@@ -4,6 +4,31 @@ layout: minimal
 
 # Changelog
 
+## 2.6.2
+
+### Changed
+
+ * Puppet 5.0.x added to the CI test matrices.
+ * The automatic setup code now checks for the presence of `metadata.json` in
+   the working directory. If not present, it assumes that rspec-puppet is
+   running from inside a control repo instead of a module and skips creating
+   the `spec/fixtures` directory structure and link.
+
+### Added
+
+ * A new configuration option has been added
+   (`RSpec.configuration.setup_fixtures`) that controls whether rspec-puppet
+   will manage the `spec/fixtures` link.
+
+### Fixed
+
+ * A race condition when running rspec-puppet under parallel\_tests causing
+   errors when creating the `spec/fixtures` link.
+ * The contents of the `networking` fact hash is no longer cleared when merging
+   in the facts derived from the node name.
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.6.1...v2.6.2)
+
 ## 2.6.1
 
 ### Fixed
