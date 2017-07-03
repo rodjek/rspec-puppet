@@ -38,9 +38,12 @@ RSpec.configure do |c|
   c.add_setting :stringify_facts, :default => true
   c.add_setting :strict_variables, :default => false
   c.add_setting :adapter
+  c.add_setting :setup_fixtures, :default => true
 
   c.before(:all) do
-    RSpec::Puppet::Setup.safe_setup_directories(nil, false)
+    if RSpec.configuration.setup_fixtures?
+      RSpec::Puppet::Setup.safe_setup_directories(nil, false)
+    end
   end
 
   if defined?(Puppet::Test::TestHelper)
