@@ -61,36 +61,36 @@ The path to the directory containing your basic manifests like `site.pp`.
 
 #### module\_path
 Type   | Default  | Puppet Version(s)
------- | -------- | -----------------
-String | Required | 2.x, 3.x, 4.x
+------ | -------- | ------------------
+String | Required | 2.x, 3.x, 4.x, 5.x
 
 The path to the directory containing your Puppet modules.
 
 #### default\_facts
 Type | Default | Puppet Version(s)
----- | ------- | -----------------
-Hash | `{}`    | 2.x, 3.x, 4.x
+---- | ------- | ------------------
+Hash | `{}`    | 2.x, 3.x, 4.x, 5.x
 
 A hash of default facts that should be used for all the tests.
 
 #### hiera\_config
 Type   | Default       | Puppet Version(s)
 ------ | ------------- | -----------------
-String | `"/dev/null"` | 3.x, 4.x
+String | `"/dev/null"` | 3.x, 4.x, 5.x
 
 The path to your `hiera.yaml` file (if used).
 
 #### default\_node\_params
 Type | Default | Puppet Version(s)
 ---- | ------- | -----------------
-Hash | `{}`    | 4.x
+Hash | `{}`    | 4.x, 5.x
 
 A hash of default node parameters that should be used for all the tests.
 
 #### default\_trusted\_facts
 Type | Default | Puppet Version(s)
 ---- | ------- | -----------------
-Hash | `{}`    | 4.x
+Hash | `{}`    | 4.x, 5.x
 
 A hash of default trusted facts that should be used for all the tests
 (available in the manifests as the `$trusted` hash). In order to use this, the
@@ -99,22 +99,22 @@ A hash of default trusted facts that should be used for all the tests
 #### trusted\_node\_data
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `false` | 3.x, 4.x
+Boolean | `false` | 3.x, 4.x, 5.x
 
 Configures rspec-puppet to use the `$trusted` hash when compiling the
 catalogues.
 
 #### confdir
 Type   | Default         | Puppet Version(s)
------- | --------------- | -----------------
-String | `"/etc/puppet"` | 2.x, 3.x, 4.x
+------ | --------------- | ------------------
+String | `"/etc/puppet"` | 2.x, 3.x, 4.x, 5.x
 
 The path to the main Puppet configuration directory.
 
 #### config
 Type   | Default                | Puppet Version(s)
------- | ---------------------- | -----------------
-String | Puppet's default value | 2.x, 3.x, 4.x
+------ | ---------------------- | ------------------
+String | Puppet's default value | 2.x, 3.x, 4.x, 5.x
 
 The path to `puppet.conf`.
 
@@ -136,7 +136,7 @@ stored outside of modules.
 #### environmentpath
 Type   | Default                               | Puppet Version(s)
 ------ | ------------------------------------- | -----------------
-String | `"/etc/puppetlabs/code/environments"` | 4.x
+String | `"/etc/puppetlabs/code/environments"` | 4.x, 5.x
 
 The search path for environment directories.
 
@@ -150,7 +150,7 @@ This switches between the 3.x (`current`) and 4.x (`future`) parsers.
 #### ordering
 Type   | Default        | Puppet Version(s)
 ------ | -------------- | -----------------
-String | `"title-hash"` | 3.x, 4.x
+String | `"title-hash"` | 3.x, 4.x, 5.x
 
 How unrelated resources should be ordered when applying a catalogue.
  * `manifest` - Use the order in which the resources are declared in the
@@ -162,7 +162,7 @@ How unrelated resources should be ordered when applying a catalogue.
 #### strict\_variables
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `false` | 3.x, 4.x
+Boolean | `false` | 3.x, 4.x, 5.x
 
 Makes Puppet raise an error when it tries to reference a variable that hasn't
 been defined (not including variables that have been explicitly set to
@@ -171,15 +171,15 @@ been defined (not including variables that have been explicitly set to
 #### stringify\_facts
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `true`  | 3.x, 4.x
+Boolean | `true`  | 3.x, 4.x, 5.x
 
 Makes rspec-puppet coerce all the fact values into strings (matching the
 behaviour of older versions of Puppet).
 
 #### enable\_pathname\_stubbing
 Type    | Default | Puppet Version(s)
-------- | ------- | -----------------
-Boolean |`false`  | 2.x, 3.x, 4.x
+------- | ------- | ------------------
+Boolean |`false`  | 2.x, 3.x, 4.x, 5.x
 
 Configures rspec-puppet to stub out `Pathname#absolute?` with it's own
 implementation. This should only be enabled if you're running into an issue
@@ -188,8 +188,8 @@ functions, etc) that use `Pathname#absolute?`.
 
 #### setup\_fixtures
 Type    | Default | Puppet Version(s)
-------- | ------- | ---------------
-Boolean | `true`  | 2.x, 3.x, 4.x
+------- | ------- | ------------------
+Boolean | `true`  | 2.x, 3.x, 4.x, 5.x
 
 Configures rspec-puppet to automatically create a link from the root of your
 module to `spec/fixtures/<module name>` at the beginning of the test run.
