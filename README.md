@@ -186,6 +186,14 @@ implementation. This should only be enabled if you're running into an issue
 running cross-platform tests where you have Ruby code (types, providers,
 functions, etc) that use `Pathname#absolute?`.
 
+#### setup\_fixtures
+Type    | Default | Puppet Version(s)
+------- | ------- | ---------------
+Boolean | `true`  | 2.x, 3.x, 4.x
+
+Configures rspec-puppet to automatically create a link from the root of your
+module to `spec/fixtures/<module name>` at the beginning of the test run.
+
 ## Naming conventions
 
 For clarity and consistency, I recommend that you use the following directory
