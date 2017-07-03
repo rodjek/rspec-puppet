@@ -20,10 +20,15 @@ module RSpec::Puppet
     end
 
     def self.safe_setup_directories(module_name=nil, verbose=true)
+      if control_repo?
+        $stderr.puts "Unable to setup rspec-puppet automatically in a control repo" if verbose
+        return false
+      end
+
       if module_name.nil?
         module_name = get_module_name
         if module_name.nil?
-          $stderr.puts "Unable to determine module name.  Aborting"
+          $stderr.puts "Unable to determine module name.  Aborting" if verbose
           return false
         end
       end
@@ -58,6 +63,10 @@ module RSpec::Puppet
       end
     end
   protected
+    def self.control_repo?
+      !File.exist?('metadata.json')
+    end
+
     def self.get_module_name
       module_name = nil
       Dir["manifests/*.pp"].entries.each do |manifest|
