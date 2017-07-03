@@ -8,6 +8,10 @@ branches:
 environment:
   matrix:
     - RUBY_VERSION: 23-x64
+      PUPPET_GEM_VERSION: '~> 5.0.0'
+    - RUBY_VERSION: 21
+      PUPPET_GEM_VERSION: '~> 5.0.0'
+    - RUBY_VERSION: 23-x64
       PUPPET_GEM_VERSION: '~> 4.8.0'
     - RUBY_VERSION: 21
       PUPPET_GEM_VERSION: '~> 4.8.0'
@@ -43,4 +47,4 @@ test_script:
 
 notifications:
   email:
-    - tim@bombasticmonkey.com
+    - tim@sharpe.id.au
