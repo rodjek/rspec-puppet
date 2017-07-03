@@ -214,11 +214,12 @@ module RSpec::Puppet
         'fqdn'          => node,
         'domain'        => node.split('.', 2).last,
         'clientcert'    => node,
-        'networking'    => {
-          'fqdn'          => node,
-          'domain'        => node.split('.', 2).last,
-          'hostname'      => node.split('.').first
-        }
+      }
+
+      networking_facts = {
+        'hostname' => node_facts['hostname'],
+        'fqdn'     => node_facts['fqdn'],
+        'domain'   => node_facts['domain'],
       }
 
       result_facts = if RSpec.configuration.default_facts.any?
@@ -230,6 +231,8 @@ module RSpec::Puppet
       result_facts.merge!(munge_facts(base_facts))
       result_facts.merge!(munge_facts(facts)) if self.respond_to?(:facts)
       result_facts.merge!(munge_facts(node_facts))
+
+      (result_facts['networking'] ||= {}).merge!(networking_facts)
 
       # Facter currently supports lower case facts.  Bug FACT-777 has been submitted to support case sensitive
       # facts.
