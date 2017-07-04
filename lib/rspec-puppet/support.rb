@@ -228,11 +228,21 @@ module RSpec::Puppet
                        {}
                      end
 
+      # Merge in node facts so they always exist by default, but only if they
+      # haven't been defined in `RSpec.configuration.default_facts`
+      result_facts.merge!(munge_facts(node_facts)) { |_key, old_val, new_val| old_val.nil? ? new_val : old_val }
+      (result_facts['networking'] ||= {}).merge!(networking_facts) { |_key, old_val, new_val| old_val.nil? ? new_val : old_val }
+
+      # Merge in `let(:facts)` facts
       result_facts.merge!(munge_facts(base_facts))
       result_facts.merge!(munge_facts(facts)) if self.respond_to?(:facts)
-      result_facts.merge!(munge_facts(node_facts))
 
-      (result_facts['networking'] ||= {}).merge!(networking_facts)
+      # Merge node facts again on top of `let(:facts)` facts, but only if
+      # a node name is given with `let(:node)`
+      if respond_to?(:node)
+        result_facts.merge!(munge_facts(node_facts))
+        (result_facts['networking'] ||= {}).merge!(networking_facts)
+      end
 
       # Facter currently supports lower case facts.  Bug FACT-777 has been submitted to support case sensitive
       # facts.
