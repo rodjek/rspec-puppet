@@ -4,6 +4,16 @@ layout: minimal
 
 # Changelog
 
+## 2.6.3
+
+### Fixed
+
+ * Facts derived from the node name now only get merged on top of the facts
+   specified by `RSpec.configuration.default_facts` and `let(:facts)` if the
+   node name has been manually specified with `let(:node)`.
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.6.2...v2.6.3)
+
 ## 2.6.2
 
 ### Changed
