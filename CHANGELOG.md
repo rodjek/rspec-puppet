@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.3]
+
+### Fixed
+
+ * Facts derived from the node name now only get merged on top of the facts
+   specified by `RSpec.configuration.default_facts` and `let(:facts)` if the
+   node name has been manually specified with `let(:node)`.
+
 ## [2.6.2]
 
 ### Changed
