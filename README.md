@@ -403,6 +403,13 @@ it { is_expected.to contain_service('keystone').without(
 )}
 ```
 
+You can test if the resource has the expected tags with the `tagged` and
+`not_tagged` methods.
+
+```ruby
+it { is_expected.to contain_service('keystone').tagged('site:cph') }
+```
+
 #### Checking the number of resources
 
 You can test the number of resources in the catalogue with the
