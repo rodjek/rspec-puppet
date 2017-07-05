@@ -147,7 +147,7 @@ module RSpec::Puppet
         end
       else
         if Puppet::Util::Platform.windows?
-          output = `call mklink /J "#{target.gsub('/', '\\')}" "#{source}"`
+          output = `call mklink /J "#{target.tr('/', '\\')}" "#{source}"`
           unless $CHILD_STATUS.success?
             puts output
             abort
