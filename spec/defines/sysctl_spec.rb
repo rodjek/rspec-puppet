@@ -8,12 +8,14 @@ describe 'sysctl' do
   let(:pre_condition) { }
 
   it { should contain_class('sysctl::common') }
-  it { should create_augeas('sysctl/vm.swappiness') \
-    .with_context('/files/etc/sysctl.conf') \
-    .with_changes("set vm.swappiness '60'") \
-    .with_changes(nodoublequotes) \
-    .with_onlyif("match vm.swappiness[.='60'] size == 0") \
-    .with_notify('Exec[sysctl/reload]')\
-    .without_foo }
+  it do
+    should create_augeas('sysctl/vm.swappiness')
+      .with_context('/files/etc/sysctl.conf')
+      .with_changes("set vm.swappiness '60'")
+      .with_changes(nodoublequotes)
+      .with_onlyif("match vm.swappiness[.='60'] size == 0")
+      .with_notify('Exec[sysctl/reload]')
+      .without_foo
+  end
   it { should have_sysctl_resource_count(1) }
 end

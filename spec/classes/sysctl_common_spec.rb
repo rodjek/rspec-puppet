@@ -1,8 +1,12 @@
 require 'spec_helper'
 
 describe 'sysctl::common' do
-  it { should contain_exec('sysctl/reload') \
-    .with_command('/sbin/sysctl -p /etc/sysctl.conf').with_returns([0, 2]) }
+  it do
+    should contain_exec('sysctl/reload')
+      .with_command('/sbin/sysctl -p /etc/sysctl.conf')
+      .with_returns([0, 2])
+  end
+
   it { should_not create_augeas('foo') }
   describe 'when using with to specify a hash of parameters' do
     it 'should fail if the parameter is not contained in the resource' do
@@ -45,8 +49,7 @@ end
 describe 'sysctl::common' do
   let(:params) { { :test_param => "yes" } }
 
-  it { should create_class("sysctl::common")\
-    .with_test_param("yes") }
+  it { should create_class("sysctl::common").with_test_param("yes") }
   it { should have_class_count(1) }
   it { should have_exec_resource_count(1) }
   it { should have_resource_count(2) }
@@ -54,11 +57,14 @@ describe 'sysctl::common' do
 end
 
 describe 'sysctl::common' do
-  it { should contain_exec('sysctl/reload').only_with(
-         :command     => '/sbin/sysctl -p /etc/sysctl.conf',
-         :refreshonly => true,
-         :returns     => [0, 2]
-  )}
+  it do
+    should contain_exec('sysctl/reload').only_with(
+      :command     => '/sbin/sysctl -p /etc/sysctl.conf',
+      :refreshonly => true,
+      :returns     => [0, 2]
+    )
+  end
+
   it { should contain_exec('sysctl/reload') \
     .only_with_command('/sbin/sysctl -p /etc/sysctl.conf') \
     .only_with_refreshonly(true) \

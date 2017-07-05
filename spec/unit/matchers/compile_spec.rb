@@ -14,24 +14,30 @@ if Puppet.version.to_f >= 3.0
       let (:pre_condition) { 'file { "/tmp/resource": }' }
 
       it ("matches") { is_expected.to be_matches catalogue }
-      it { is_expected.to have_attributes(
-        :description => "compile into a catalogue without dependency cycles"
-      )}
+      it do
+        is_expected.to have_attributes(
+          :description => "compile into a catalogue without dependency cycles"
+        )
+      end
 
       context "when expecting an \"example\" error" do
         before(:each) { subject.and_raise_error("example") }
 
         it ("doesn't match") { is_expected.to_not be_matches catalogue }
-        it { is_expected.to have_attributes(
-          :description => "fail to compile and raise the error \"example\""
-        )}
+        it do
+          is_expected.to have_attributes(
+            :description => "fail to compile and raise the error \"example\""
+          )
+        end
 
         context "after matching" do
           before(:each) { subject.matches? catalogue }
 
-          it { is_expected.to have_attributes(
-            :failure_message => a_string_starting_with("expected that the catalogue would fail to compile and raise the error \"example\"")
-          )}
+          it do
+            is_expected.to have_attributes(
+              :failure_message => a_string_starting_with("expected that the catalogue would fail to compile and raise the error \"example\"")
+            )
+          end
         end
       end
 
@@ -39,16 +45,20 @@ if Puppet.version.to_f >= 3.0
         before(:each) { subject.and_raise_error(/example/) }
 
         it ("doesn't match") { is_expected.to_not be_matches catalogue }
-        it { is_expected.to have_attributes(
-          :description => "fail to compile and raise an error matching /example/"
-        )}
+        it do
+          is_expected.to have_attributes(
+            :description => "fail to compile and raise an error matching /example/"
+          )
+        end
 
         context "after matching" do
           before(:each) { subject.matches? catalogue }
 
-          it { is_expected.to have_attributes(
-            :failure_message => a_string_starting_with("expected that the catalogue would fail to compile and raise an error matching /example/")
-          )}
+          it do
+            is_expected.to have_attributes(
+              :failure_message => a_string_starting_with("expected that the catalogue would fail to compile and raise an error matching /example/")
+            )
+          end
         end
       end
     end
@@ -61,9 +71,11 @@ if Puppet.version.to_f >= 3.0
       context "after matching" do
         before(:each) { subject.matches? catalogue }
 
-        it { is_expected.to have_attributes(
-          :failure_message => a_string_matching(%r{\Aerror during compilation: Could not (retrieve dependency|find resource) 'File\[/tmp/missing\]'})
-        )}
+        it do
+          is_expected.to have_attributes(
+            :failure_message => a_string_matching(%r{\Aerror during compilation: Could not (retrieve dependency|find resource) 'File\[/tmp/missing\]'})
+          )
+        end
       end
     end
 
@@ -75,9 +87,11 @@ if Puppet.version.to_f >= 3.0
       context "after matching" do
         before(:each) { subject.matches? catalogue }
 
-        it { is_expected.to have_attributes(
-          :failure_message => a_string_starting_with("error during compilation: ")
-        )}
+        it do
+          is_expected.to have_attributes(
+            :failure_message => a_string_starting_with("error during compilation: ")
+          )
+        end
       end
     end
 
@@ -93,9 +107,11 @@ if Puppet.version.to_f >= 3.0
       context "after matching" do
         before(:each) { subject.matches? catalogue }
 
-        it { is_expected.to have_attributes(
-          :failure_message => a_string_starting_with("dependency cycles found: ")
-        )}
+        it do
+          is_expected.to have_attributes(
+            :failure_message => a_string_starting_with("dependency cycles found: ")
+          )
+        end
       end
 
       context "when expecting an \"example\" error" do
@@ -106,10 +122,12 @@ if Puppet.version.to_f >= 3.0
         context "after matching" do
           before(:each) { subject.matches? catalogue }
 
-          it { is_expected.to have_attributes(
-            :description => "fail to compile and raise the error \"example\"",
-            :failure_message => a_string_starting_with("dependency cycles found: ")
-          )}
+          it do
+            is_expected.to have_attributes(
+              :description => "fail to compile and raise the error \"example\"",
+              :failure_message => a_string_starting_with("dependency cycles found: ")
+            )
+          end
         end
       end
 
@@ -121,10 +139,12 @@ if Puppet.version.to_f >= 3.0
         context "after matching" do
           before(:each) { subject.matches? catalogue }
 
-          it { is_expected.to have_attributes(
-            :description => "fail to compile and raise an error matching /example/",
-            :failure_message => a_string_starting_with("dependency cycles found: ")
-          )}
+          it do
+            is_expected.to have_attributes(
+              :description => "fail to compile and raise an error matching /example/",
+              :failure_message => a_string_starting_with("dependency cycles found: ")
+            )
+          end
         end
       end
     end
@@ -137,10 +157,12 @@ if Puppet.version.to_f >= 3.0
       context "after matching" do
         before(:each) { subject.matches? catalogue }
 
-        it { is_expected.to have_attributes(
-          :description => "compile into a catalogue without dependency cycles",
-          :failure_message => a_string_starting_with("error during compilation: ")
-        )}
+        it do
+          is_expected.to have_attributes(
+            :description => "compile into a catalogue without dependency cycles",
+            :failure_message => a_string_starting_with("error during compilation: ")
+          )
+        end
       end
 
       context "when expecting the failure" do
@@ -150,16 +172,20 @@ if Puppet.version.to_f >= 3.0
           # the error message above is puppet4 specific
           it ("matches") { is_expected.to be_matches catalogue }
         end
-        it { is_expected.to have_attributes(
-          :description => "fail to compile and raise the error \"Evaluation Error: Error while evaluating a Function Call, failure at line 52:1 on node rspec::puppet::manifestmatchers::compile\""
-        )}
+        it do
+          is_expected.to have_attributes(
+            :description => "fail to compile and raise the error \"Evaluation Error: Error while evaluating a Function Call, failure at line 52:1 on node rspec::puppet::manifestmatchers::compile\""
+          )
+        end
 
         context "after matching" do
           before(:each) { subject.matches? catalogue }
 
-          it { is_expected.to have_attributes(
-            :failure_message => a_string_starting_with("error during compilation: ")
-          )}
+          it do
+            is_expected.to have_attributes(
+              :failure_message => a_string_starting_with("error during compilation: ")
+            )
+          end
         end
       end
 
@@ -167,17 +193,21 @@ if Puppet.version.to_f >= 3.0
         before(:each) { subject.and_raise_error(/failure/) }
 
         it ("matches") { is_expected.to be_matches catalogue }
-        it { is_expected.to have_attributes(
-          :description => "fail to compile and raise an error matching /failure/"
-        )}
+        it do
+          is_expected.to have_attributes(
+            :description => "fail to compile and raise an error matching /failure/"
+          )
+        end
 
 
         context "after matching" do
           before(:each) { subject.matches? catalogue }
 
-          it { is_expected.to have_attributes(
-            :failure_message => a_string_starting_with("error during compilation: ")
-          )}
+          it do
+            is_expected.to have_attributes(
+              :failure_message => a_string_starting_with("error during compilation: ")
+            )
+          end
         end
       end
     end
