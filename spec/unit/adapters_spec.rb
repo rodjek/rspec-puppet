@@ -64,11 +64,11 @@ describe RSpec::Puppet::Adapters::Base do
   end
 end
 
-describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).include?(Puppet.version.to_f) do
+describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).cover?(Puppet.version.to_f) do
 
   let(:test_context) { double :environment => 'rp_env' }
 
-  context 'when running on puppet 3.5 or later', :if => (3.5 ... 4.0).include?(Puppet.version.to_f) do
+  context 'when running on puppet 3.5 or later', :if => (3.5 ... 4.0).cover?(Puppet.version.to_f) do
     it 'sets Puppet[:strict_variables] to false by default' do
       subject.setup_puppet(test_context)
       expect(Puppet[:strict_variables]).to eq(false)
@@ -81,7 +81,7 @@ describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).include?(Puppe
     end
   end
 
-  context 'when running on puppet 3.x, with x >= 5', :if => (3.5 ... 4.0).include?(Puppet.version.to_f) do
+  context 'when running on puppet 3.x, with x >= 5', :if => (3.5 ... 4.0).cover?(Puppet.version.to_f) do
     it 'sets Puppet[:trusted_node_data] to false by default' do
       subject.setup_puppet(test_context)
       expect(Puppet[:trusted_node_data]).to eq(false)
@@ -93,7 +93,7 @@ describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).include?(Puppe
     end
   end
 
-  context 'when running on puppet ~> 3.2', :if => (3.2 ... 4.0).include?(Puppet.version.to_f) do
+  context 'when running on puppet ~> 3.2', :if => (3.2 ... 4.0).cover?(Puppet.version.to_f) do
     it 'sets Puppet[:parser] to "current" by default' do
       subject.setup_puppet(test_context)
       expect(Puppet[:parser]).to eq("current")
@@ -106,7 +106,7 @@ describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).include?(Puppe
     end
   end
 
-  context 'when running on puppet ~> 3.3', :if => (3.3 ... 4.0).include?(Puppet.version.to_f) do
+  context 'when running on puppet ~> 3.3', :if => (3.3 ... 4.0).cover?(Puppet.version.to_f) do
     it 'sets Puppet[:stringify_facts] to true by default' do
       subject.setup_puppet(test_context)
       expect(Puppet[:stringify_facts]).to eq(true)
