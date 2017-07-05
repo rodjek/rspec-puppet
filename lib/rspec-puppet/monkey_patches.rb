@@ -158,7 +158,8 @@ Puppet::Type.type(:exec).paramclass(:user).validate { |value| true }
 # windows, otherwise it will require other libraries that probably won't be
 # available on non-windows hosts.
 module Kernel
-  alias :old_require :require
+  alias old_require require
+
   def require(path)
     return if path == 'puppet/util/windows' && Puppet::Util::Platform.pretend_windows?
     old_require(path)

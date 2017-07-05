@@ -40,6 +40,6 @@ module RSpec::Puppet
       RSpec::Puppet::TypeAliasMatchers::AllowValue.new(values)
     end
 
-    alias_method :allow_values, :allow_value
+    alias allow_values allow_value
   end
 end
