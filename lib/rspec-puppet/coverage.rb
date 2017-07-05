@@ -33,9 +33,9 @@ module RSpec::Puppet
     end
 
     def add(resource)
-      if !exists?(resource) && !filtered?(resource)
-        @collection[resource.to_s] = ResourceWrapper.new(resource)
-      end
+      return if exists?(resource) || filtered?(resource)
+
+      @collection[resource.to_s] = ResourceWrapper.new(resource)
     end
 
     def add_filter(type, title)
@@ -64,9 +64,9 @@ module RSpec::Puppet
     end
 
     def cover!(resource)
-      if !filtered?(resource) && (wrapper = find(resource))
-        wrapper.touch!
-      end
+      return if !exists?(resource) || filtered?(resource)
+
+      find(resource).touch!
     end
 
     def report!(coverage_desired = nil)
@@ -78,23 +78,22 @@ module RSpec::Puppet
         Resource coverage: #{report[:coverage]}%
       EOH
 
-      if report[:coverage] != "100.00"
-        puts <<-EOH.gsub(/^ {10}/, '')
-          Untouched resources:
+      return if report[:coverage] == "100.00"
 
-          #{
-            untouched_resources = report[:resources].reject do |_,rsrc|
-              rsrc[:touched]
-            end
-            untouched_resources.inject([]) do |memo, (name,_)|
-              memo << "  #{name}"
-            end.sort.join("\n")
-          }
-        EOH
-        if coverage_desired
-          coverage_test(coverage_desired, report[:coverage])
-        end
-      end
+      puts <<-EOH.gsub(/^ {10}/, '')
+        Untouched resources:
+
+        #{
+          untouched_resources = report[:resources].reject do |_,rsrc|
+            rsrc[:touched]
+          end
+          untouched_resources.inject([]) { |memo, (name, _)|
+            memo << "  #{name}"
+          }.sort.join("\n")
+        }
+      EOH
+
+      coverage_test(coverage_desired, report[:coverage]) if coverage_desired
     end
 
     def coverage_test(coverage_desired, coverage_actual)

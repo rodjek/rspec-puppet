@@ -282,11 +282,8 @@ module RSpec::Puppet
         return results unless resource
 
         # guard to prevent infinite recursion
-        if visited.include?(resource.object_id)
-          return [canonicalize_resource_ref(resource)]
-        else
-          visited << resource.object_id
-        end
+        return [canonicalize_resource_ref(resource)] if visited.include?(resource.object_id)
+        visited << resource.object_id
 
         Array[resource[type]].flatten.compact.each do |r|
           results << canonicalize_resource_ref(r)

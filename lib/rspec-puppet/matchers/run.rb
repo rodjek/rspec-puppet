@@ -14,30 +14,25 @@ module RSpec::Puppet
         end
 
         if @has_expected_error
-          if @has_returned
-            return false
-          elsif @actual_error.is_a?(@expected_error)
-            case @expected_error_message
-            when nil
-              return true
-            when Regexp
-              return !!(@actual_error.message =~ @expected_error_message)
-            else
-              return @actual_error.message == @expected_error_message
-            end
-          else # error did not match
-            return false
+          return false if @has_returned
+          return false unless @actual_error.is_a?(@expected_error)
+
+          case @expected_error_message
+          when nil
+            return true
+          when Regexp
+            return !!(@actual_error.message =~ @expected_error_message)
+          else
+            return @actual_error.message == @expected_error_message
           end
         elsif @has_expected_return
-          if !@has_returned
-            return false
+          return false unless @has_returned
+
+          case @expected_return
+          when Regexp
+            return !!(@actual_return =~ @expected_return)
           else
-            case @expected_return
-            when Regexp
-              return !!(@actual_return =~ @expected_return)
-            else
-              return @actual_return == @expected_return
-            end
+            return @actual_return == @expected_return
           end
         else
           return @has_returned

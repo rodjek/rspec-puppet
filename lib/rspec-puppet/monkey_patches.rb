@@ -143,11 +143,9 @@ class Pathname
     define_method(:chop_basename) do |path|
       if RSpec.configuration.enable_pathname_stubbing
         base = rspec_puppet_basename(path)
-        if /\A#{SEPARATOR_PAT}?\z/o =~ base
-          return nil
-        else
-          return path[0, path.rindex(base)], base
-        end
+        return nil if /\A#{SEPARATOR_PAT}?\z/o =~ base
+
+        return path[0, path.rindex(base)], base
       else
         old_chop_basename.bind(self).call(path)
       end

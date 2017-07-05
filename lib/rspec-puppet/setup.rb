@@ -59,9 +59,7 @@ module RSpec::Puppet
       end
 
       target = File.join('spec', 'fixtures', 'modules', module_name)
-      if File.symlink?(target) && File.readlink(target) == File.expand_path('.')
-        File.unlink(target)
-      end
+      File.unlink(target) if File.symlink?(target) && File.readlink(target) == File.expand_path('.')
     end
   protected
     def self.control_repo?

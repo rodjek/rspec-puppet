@@ -143,11 +143,9 @@ module RSpec::Puppet
           "class { '#{class_name}': #{param_str(opts[:params])} }"
         end
       elsif type == :application
-        if opts.key?(:params)
-          "site { #{class_name} { '#{title}': #{param_str(opts[:params])} } }"
-        else
-          raise ArgumentError, "You need to provide params for an application"
-        end
+        raise ArgumentError, "You need to provide params for an application" unless opts.key?(:params)
+
+        "site { #{class_name} { '#{title}': #{param_str(opts[:params])} } }"
       elsif type == :define
         title_str = if title.is_a?(Array)
                       '[' + title.map { |r| "'#{r}'" }.join(', ') + ']'
@@ -180,22 +178,24 @@ module RSpec::Puppet
     end
 
     def pre_cond
-      if respond_to?(:pre_condition) && !pre_condition.nil?
-        if pre_condition.is_a? Array
-          pre_condition.compact.join("\n")
-        else
-          pre_condition
-        end
+      return unless respond_to?(:pre_condition)
+      return if pre_condition.nil?
+
+      if pre_condition.is_a? Array
+        pre_condition.compact.join("\n")
+      else
+        pre_condition
       end
     end
 
     def post_cond
-      if respond_to?(:post_condition) && !post_condition.nil?
-        if post_condition.is_a? Array
-          post_condition.compact.join("\n")
-        else
-          post_condition
-        end
+      return unless respond_to?(:post_condition)
+      return if post_condition.nil?
+
+      if post_condition.is_a? Array
+        post_condition.compact.join("\n")
+      else
+        post_condition
       end
     end
 
@@ -398,12 +398,12 @@ module RSpec::Puppet
       string
     end
 
+    # RSpec 2 compatibility:
     def rspec_compatibility
-      if RSpec::Version::STRING < '3'
-        # RSpec 2 compatibility:
-        alias_method :failure_message_for_should, :failure_message
-        alias_method :failure_message_for_should_not, :failure_message_when_negated
-      end
+      return unless RSpec::Version::STRING < '3'
+
+      alias_method :failure_message_for_should, :failure_message
+      alias_method :failure_message_for_should_not, :failure_message_when_negated
     end
 
     # Helper to return a resource/node reference, so it gets translated in params to a raw string
