@@ -170,7 +170,8 @@ module RSpec::Puppet
             :loaders => loaders,
             :global_scope => compiler.context_overrides[:global_scope],
           },
-        "set globals")
+          "set globals"
+        )
       end
       compiler
     end
