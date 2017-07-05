@@ -55,7 +55,7 @@ module RSpec::Puppet
 
       munged_facts = facts_hash(nodename(type))
 
-      if munged_facts['operatingsystem'] && munged_facts['operatingsystem'].to_s.downcase == 'windows'
+      if munged_facts['operatingsystem'] && munged_facts['operatingsystem'].casecmp('windows').zero?
         stub_const_wrapper('File::PATH_SEPARATOR', ';')
         stub_const_wrapper('File::ALT_SEPARATOR', "\\")
         stub_const_wrapper('Pathname::SEPARATOR_PAT', /[#{Regexp.quote(File::ALT_SEPARATOR)}#{Regexp.quote(File::SEPARATOR)}]/)
@@ -363,7 +363,7 @@ module RSpec::Puppet
     end
 
     def stub_facts!(facts)
-      if facts['operatingsystem'] && facts['operatingsystem'].to_s.downcase == 'windows'
+      if facts['operatingsystem'] && facts['operatingsystem'].casecmp('windows').zero?
         Puppet::Util::Platform.pretend_to_be :windows
       else
         Puppet::Util::Platform.pretend_to_be :posix
