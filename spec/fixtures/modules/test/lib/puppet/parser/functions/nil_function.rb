@@ -1,5 +1,3 @@
 Puppet::Parser::Functions.newfunction(:nil_function) do |arguments|
-  if arguments[0]
-    raise Puppet::ParseError, 'Forced Failure - old version'
-  end
+  raise Puppet::ParseError, 'Forced Failure - old version' if arguments[0]
 end

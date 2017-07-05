@@ -40,9 +40,7 @@ module RSpec::Puppet
         if @type == "class"
           desc << @expected_number == 1 ? "class" : "classes"
         else
-          unless @type == "resource"
-            desc << @referenced_type.to_s
-          end
+          desc << @referenced_type.to_s unless @type == "resource"
           desc << @expected_number == 1 ? "resource" : "resources"
         end
 

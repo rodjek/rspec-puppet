@@ -1,7 +1,5 @@
 require 'puppet'
-if Puppet.version.to_f >= 4.0
-  require 'puppet/pops'
-end
+require 'puppet/pops' if Puppet.version.to_f >= 4.0
 require 'fileutils'
 require 'English'
 
@@ -88,9 +86,7 @@ module RSpec::Puppet
       tokens = p.fullscan
 
       i = tokens.index { |token| [:CLASS, :DEFINE].include? token.first }
-      unless i.nil?
-        module_name = tokens[i + 1].last[:value].split('::').first
-      end
+      module_name = tokens[i + 1].last[:value].split('::').first unless i.nil?
 
       module_name
     end

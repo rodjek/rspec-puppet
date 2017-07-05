@@ -44,9 +44,7 @@ module RSpec::Puppet
       end
 
       type = capitalize_name(type)
-      if type == 'Class'
-        title = capitalize_name(title)
-      end
+      title = capitalize_name(title) if type == 'Class'
 
       @filters << "#{type}[#{title}]"
     end
@@ -147,22 +145,16 @@ module RSpec::Puppet
     # @param test_module [String] The name of the module under test
     # @return [true, false]
     def filter_resource?(resource, test_module)
-      if @filters.include?(resource.to_s)
-        return true
-      end
+      return true if @filters.include?(resource.to_s)
 
       if resource.type == 'Class'
         module_name = resource.title.split('::').first.downcase
-        if module_name != test_module
-          return true
-        end
+        return true if module_name != test_module
       end
 
       if resource.file
         paths = module_paths(test_module)
-        unless paths.any? { |path| resource.file.include?(path) }
-          return true
-        end
+        return true unless paths.any? { |path| resource.file.include?(path) }
       end
 
       false

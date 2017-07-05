@@ -89,9 +89,7 @@ module RSpec::Puppet
       def check_hash(expected, actual)
         op = @should_match ? :"==" : :"!="
 
-        unless expected.keys.size.send(op, actual.keys.size)
-          return false
-        end
+        return false unless expected.keys.size.send(op, actual.keys.size)
 
         expected.keys.all? do |key|
           check(expected[key], actual[key])
@@ -101,9 +99,7 @@ module RSpec::Puppet
       def check_array(expected, actual)
         op = @should_match ? :"==" : :"!="
 
-        unless expected.size.send(op, actual.size)
-          return false
-        end
+        return false unless expected.size.send(op, actual.size)
 
         (0...expected.size).all? do |index|
           check(expected[index], actual[index])

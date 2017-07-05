@@ -29,12 +29,8 @@ module Puppet
 
       retval = old_set_default.bind(self).call(attr)
 
-      unless old_posix.nil?
-        Puppet.features.add(:posix) { old_posix }
-      end
-      unless old_microsoft_windows.nil?
-        Puppet.features.add(:microsoft_windows) { old_microsoft_windows }
-      end
+      Puppet.features.add(:posix) { old_posix } unless old_posix.nil?
+      Puppet.features.add(:microsoft_windows) { old_microsoft_windows } unless old_microsoft_windows.nil?
 
       retval
     end
@@ -65,9 +61,7 @@ module Puppet
       define_method(:validate_dirs) do |dirs|
         pretending = Puppet::Util::Platform.pretend_platform
 
-        if pretending
-          Puppet::Util::Platform.pretend_to_be nil
-        end
+        Puppet::Util::Platform.pretend_to_be nil if pretending
 
         output = old_validate_dirs.bind(self).call(dirs)
 
@@ -131,9 +125,7 @@ class Pathname
   def rspec_puppet_basename(path)
     raise ArgumentError, 'pathname stubbing not enabled' unless RSpec.configuration.enable_pathname_stubbing
 
-    if path =~ /\A[a-zA-Z]:(#{SEPARATOR_PAT}.*)\z/
-      path = path[2..-1]
-    end
+    path = path[2..-1] if path =~ /\A[a-zA-Z]:(#{SEPARATOR_PAT}.*)\z/
     path.split(SEPARATOR_PAT).last || path[/(#{SEPARATOR_PAT})/, 1] || path
   end
 

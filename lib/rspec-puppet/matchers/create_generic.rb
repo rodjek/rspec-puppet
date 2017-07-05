@@ -367,9 +367,7 @@ module RSpec::Puppet
             end
           else
             m = ParameterMatcher.new(param, value, type)
-            unless m.matches?(resource)
-              @errors.concat m.errors
-            end
+            @errors.concat m.errors unless m.matches?(resource)
           end
         end
       end

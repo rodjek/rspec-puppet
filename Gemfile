@@ -13,9 +13,7 @@ end
 gemspec
 
 # ffi (specifically the x64-mingw32 variant) requires ruby >= 2.0 after version 1.9.14 
-if RUBY_VERSION =~ /^1\.?9/
-  gem 'ffi', '<= 1.9.14'
-end
+gem 'ffi', '<= 1.9.14' if RUBY_VERSION =~ /^1\.?9/
 
 gem 'rspec', *location_for(ENV['RSPEC_GEM_VERSION'] || '~> 3.0')
 gem 'puppet', *location_for(ENV['PUPPET_GEM_VERSION'] || '~> 4.0')
@@ -41,10 +39,6 @@ else
   gem 'rubocop-rspec', '~> 1.6' if RUBY_VERSION >= '2.3.0' || RUBY_VERSION >= '23'
 end
 
-if ENV['COVERAGE'] == 'yes'
-  gem 'coveralls', :require => false
-end
+gem 'coveralls', :require => false if ENV['COVERAGE'] == 'yes'
 
-if File.exist?('Gemfile.local')
-  eval_gemfile('Gemfile.local')
-end
+eval_gemfile('Gemfile.local') if File.exist?('Gemfile.local')
