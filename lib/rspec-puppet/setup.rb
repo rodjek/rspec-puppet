@@ -59,7 +59,9 @@ module RSpec::Puppet
       target = File.join('spec', 'fixtures', 'modules', module_name)
       File.unlink(target) if File.symlink?(target) && File.readlink(target) == File.expand_path('.')
     end
-  protected
+
+    protected
+
     def self.control_repo?
       !File.exist?('metadata.json')
     end

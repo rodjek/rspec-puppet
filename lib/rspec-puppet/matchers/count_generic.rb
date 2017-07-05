@@ -55,7 +55,7 @@ module RSpec::Puppet
         "expected that the catalogue would not " + description + " but it does"
       end
 
-    private
+      private
 
       def referenced_type(type)
         type.split('__').map(&:capitalize).join('::')
