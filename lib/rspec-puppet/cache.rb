@@ -1,6 +1,5 @@
 module RSpec::Puppet
   class Cache
-
     MAX_ENTRIES = 16
 
     # @param [Proc] default_proc The default proc to use to fetch objects on cache miss

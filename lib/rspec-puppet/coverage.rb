@@ -11,7 +11,6 @@ end
 
 module RSpec::Puppet
   class Coverage
-
     attr_accessor :filters
 
     class << self
