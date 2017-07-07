@@ -111,6 +111,20 @@ module Puppet
       module_function :pretend_platform
     end
   end
+
+  if defined?(Puppet::Confine)
+    class Confine::Exists < Puppet::Confine
+      def pass?(value)
+        true
+      end
+    end
+  else
+    class Provider::Confine::Exists < Puppet::Provider::Confine
+      def pass?(value)
+        true
+      end
+    end
+  end
 end
 
 class Pathname
