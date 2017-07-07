@@ -77,6 +77,7 @@ module RSpec::Puppet
       end
 
       private
+
       def missing_dependencies?
         retval = false
 

@@ -102,6 +102,7 @@ module RSpec::Puppet
       end
 
       private
+
       def func_name
         @func_obj.func_name
       end

@@ -186,6 +186,7 @@ module RSpec::Puppet
       end
 
       private
+
       def referenced_type(type)
         type.split('__').map(&:capitalize).join('::')
       end
