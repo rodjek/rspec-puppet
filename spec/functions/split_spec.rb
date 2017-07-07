@@ -19,7 +19,7 @@ describe 'split' do
     end
   end
 
-  it { should run.with_params('aoeu', 'o').and_return(%w(a eu)) }
+  it { should run.with_params('aoeu', 'o').and_return(%w[a eu]) }
   it { should_not run.with_params('foo').and_raise_error(Puppet::DevError) }
 
   it { should run.with_params('foo').and_raise_error(expected_error) }
@@ -32,6 +32,6 @@ describe 'split' do
 
   context 'after including a class' do
     let(:pre_condition) { 'include ::sysctl::common' }
-    it { should run.with_params('aoeu', 'o').and_return(%w(a eu)) }
+    it { should run.with_params('aoeu', 'o').and_return(%w[a eu]) }
   end
 end
