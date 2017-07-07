@@ -60,7 +60,7 @@ module RSpec::Puppet
         title  = type_title_and_params[1]
         params = type_title_and_params[2]
         unless match_params(type) && match_props(type) && match_features(type)
-         return false
+          return false
         end
         if @params_with_values != {} || @exp_provider
           # only build a resource if we are validating provider or setting
