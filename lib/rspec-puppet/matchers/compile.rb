@@ -156,7 +156,7 @@ module RSpec::Puppet
 
         cycles.each do |cycle|
           paths = catalogue.paths_in_cycle(cycle)
-          @cycles << (paths.map { |path| '(' + path.join(" => ") + ')'}.join("\n") + "\n")
+          @cycles << (paths.map { |path| '(' + path.join(" => ") + ')' }.join("\n") + "\n")
         end
       end
 

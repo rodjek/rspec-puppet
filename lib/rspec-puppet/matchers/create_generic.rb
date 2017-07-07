@@ -178,11 +178,11 @@ module RSpec::Puppet
       end
 
       def expected
-        @errors.map {|e| e.expected if e.respond_to?(:expected)}.compact.join("\n\n")
+        @errors.map { |e| e.expected if e.respond_to?(:expected) }.compact.join("\n\n")
       end
 
       def actual
-        @errors.map {|e| e.actual if e.respond_to?(:actual)}.compact.join("\n\n")
+        @errors.map { |e| e.actual if e.respond_to?(:actual) }.compact.join("\n\n")
       end
 
       private

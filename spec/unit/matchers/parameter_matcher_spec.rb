@@ -56,7 +56,7 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
 
     context 'with lambda(){"foo"} expected' do
       subject do
-        block = lambda {|actual| actual == "foo" }
+        block = lambda { |actual| actual == "foo" }
         described_class.new(:foo_parameter, block, :should)
       end
 

@@ -5,7 +5,7 @@ nodoublequotes = proc { |x| x !~ /"/ }
 describe 'sysctl' do
   let(:title) { 'vm.swappiness' }
   let(:params) { {:value => '60'} }
-  let(:pre_condition) { }
+  let(:pre_condition) {}
 
   it { should contain_class('sysctl::common') }
   it do
