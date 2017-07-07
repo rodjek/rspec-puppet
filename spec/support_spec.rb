@@ -66,9 +66,11 @@ describe RSpec::Puppet::Support do
         def class_name
           "class_name"
         end
+
         def site_pp_str
           ""
         end
+
         def import_str
           ""
         end

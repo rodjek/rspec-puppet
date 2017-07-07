@@ -103,9 +103,11 @@ module RSpec::Puppet
         end
       end
     end
+
     def call_function(function_name, *args)
       scope.call_function(function_name, args)
     end
+
     def scope
       @scope ||= build_scope(compiler, nodename(:function))
     end
