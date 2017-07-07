@@ -5,7 +5,7 @@ require 'English'
 
 module RSpec::Puppet
   class Setup
-    def self.run(module_name=nil)
+    def self.run(module_name = nil)
       unless module_dir?
         $stderr.puts "Does not appear to be a Puppet module.  Aborting"
         return false
@@ -18,7 +18,7 @@ module RSpec::Puppet
       safe_create_rakefile
     end
 
-    def self.safe_setup_directories(module_name=nil, verbose=true)
+    def self.safe_setup_directories(module_name = nil, verbose = true)
       if control_repo?
         $stderr.puts "Unable to setup rspec-puppet automatically in a control repo" if verbose
         return false
@@ -47,7 +47,7 @@ module RSpec::Puppet
       safe_make_link('.', target, verbose)
     end
 
-    def self.safe_teardown_links(module_name=nil)
+    def self.safe_teardown_links(module_name = nil)
       if module_name.nil?
         module_name = find_module_name
         if module_name.nil?
@@ -97,7 +97,7 @@ module RSpec::Puppet
       Dir["*"].entries.include? "manifests"
     end
 
-    def self.safe_mkdir(dir, verbose=true)
+    def self.safe_mkdir(dir, verbose = true)
       if File.exists? dir
         unless File.directory? dir
           $stderr.puts "!! #{dir} already exists and is not a directory"
@@ -142,7 +142,7 @@ module RSpec::Puppet
       safe_create_file('spec/spec_helper.rb', content)
     end
 
-    def self.safe_make_link(source, target, verbose=true)
+    def self.safe_make_link(source, target, verbose = true)
       if File.exists?(target)
         unless File.symlink?(target) && File.readlink(target) == File.expand_path(source)
           $stderr.puts "!! #{target} already exists and is not a symlink"

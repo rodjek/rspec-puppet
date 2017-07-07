@@ -63,7 +63,7 @@ module RSpec::Puppet
         self
       end
 
-      def and_raise_error(error_or_message, message=nil)
+      def and_raise_error(error_or_message, message = nil)
         @has_expected_error = true
         case error_or_message
         when String, Regexp
