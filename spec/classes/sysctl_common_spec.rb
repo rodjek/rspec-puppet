@@ -65,11 +65,13 @@ describe 'sysctl::common' do
     )
   end
 
-  it { should contain_exec('sysctl/reload') \
-    .only_with_command('/sbin/sysctl -p /etc/sysctl.conf') \
-    .only_with_refreshonly(true) \
-    .only_with_returns([0, 2])
-  }
+  it do
+    should contain_exec('sysctl/reload')
+      .only_with_command('/sbin/sysctl -p /etc/sysctl.conf')
+      .only_with_refreshonly(true)
+      .only_with_returns([0, 2])
+  end
+
   it 'should fail if not enough parameters are contained in the resource' do
     expect do
       expect(subject).to contain_exec('sysctl/reload').only_with(

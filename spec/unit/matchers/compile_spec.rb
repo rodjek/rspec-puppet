@@ -96,9 +96,10 @@ if Puppet.version.to_f >= 3.0
     end
 
     describe "a manifest with a dependency cycle" do
-      let (:pre_condition) { <<-EOS
-        file { "/tmp/a": require => File["/tmp/b"] }
-        file { "/tmp/b": require => File["/tmp/a"] }
+      let (:pre_condition) {
+        <<-EOS
+          file { "/tmp/a": require => File["/tmp/b"] }
+          file { "/tmp/b": require => File["/tmp/a"] }
         EOS
       }
 

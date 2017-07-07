@@ -12,10 +12,12 @@ describe 'trusted_facts::lookup', :if => Puppet::Util::Package.versioncmp(Puppet
   end
 
   context 'with trusted fact extensions' do
-    let(:trusted_facts) {{
-      'extra1' => '1',
-      'extra2' => '2',
-    }}
+    let(:trusted_facts) do
+      {
+        'extra1' => '1',
+        'extra2' => '2',
+      }
+    end
 
     it { is_expected.to run.with_params('extensions').and_return(trusted_facts) }
   end
