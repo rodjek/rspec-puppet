@@ -124,32 +124,32 @@ module RSpec::Puppet
 
       private
 
-        def match_attrs(type, attrs, attr_type)
-          baddies = []
-          attrs.each do |param|
-            param = param.to_sym
-            if attr_type == :feature
-              baddies.push(param) unless type.provider_feature(param)
-            elsif ! type.send("valid#{attr_type}?".to_sym, param)
-              baddies.push(param)
-            end
-          end
-
-          if baddies.empty?
-            true
-          else
-            @errors.push("Invalid #{pluralize(attr_type)}: #{baddies.join(',')}")
-            false
+      def match_attrs(type, attrs, attr_type)
+        baddies = []
+        attrs.each do |param|
+          param = param.to_sym
+          if attr_type == :feature
+            baddies.push(param) unless type.provider_feature(param)
+          elsif ! type.send("valid#{attr_type}?".to_sym, param)
+            baddies.push(param)
           end
         end
 
-        def pluralize(name)
-          if name == :property
-            "properties"
-          else
-            "#{name}s"
-          end
+        if baddies.empty?
+          true
+        else
+          @errors.push("Invalid #{pluralize(attr_type)}: #{baddies.join(',')}")
+          false
         end
+      end
+
+      def pluralize(name)
+        if name == :property
+          "properties"
+        else
+          "#{name}s"
+        end
+      end
     end
   end
 end
