@@ -199,7 +199,6 @@ if Puppet.version.to_f >= 3.0
           )
         end
 
-
         context "after matching" do
           before(:each) { subject.matches? catalogue }
 
