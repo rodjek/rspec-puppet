@@ -379,7 +379,7 @@ module RSpec::Puppet
     def munge_facts(facts)
       case facts
       when Hash
-        facts.reduce({}) do | memo, (k, v)|
+        facts.reduce({}) do |memo, (k, v)|
           memo.tap { |m| m[k.to_s] = munge_facts(v) }
         end
       when Array
