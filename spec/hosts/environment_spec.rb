@@ -10,4 +10,9 @@ describe 'facts.acme.com' do
     it { should contain_file('environment').with_path('test_env') }
     it { should contain_file('conditional_file') }
   end
+
+  context 'test' do
+    let(:environment) { :production }
+    it { should contain_file('environment').with_path('production') }
+  end
 end

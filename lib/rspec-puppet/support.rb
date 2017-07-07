@@ -206,7 +206,7 @@ module RSpec::Puppet
     def facts_hash(node)
       base_facts = {
         'clientversion' => Puppet::PUPPETVERSION,
-        'environment'   => environment,
+        'environment'   => environment.to_s,
       }
 
       node_facts = {
