@@ -70,7 +70,7 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
 
     context 'with /foo/ expected' do
       subject do
-        described_class.new(:foo_parameter, /foo/, :should)
+        described_class.new(:foo_parameter, %r{foo}, :should)
       end
 
       it 'matches "foo"' do

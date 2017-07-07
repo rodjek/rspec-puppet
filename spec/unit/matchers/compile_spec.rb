@@ -42,7 +42,7 @@ if Puppet.version.to_f >= 3.0
       end
 
       context "when matching an \"example\" error" do
-        before(:each) { subject.and_raise_error(/example/) }
+        before(:each) { subject.and_raise_error(%r{example}) }
 
         it ("doesn't match") { is_expected.to_not be_matches catalogue }
         it do
@@ -133,7 +133,7 @@ if Puppet.version.to_f >= 3.0
       end
 
       context "when matching an \"example\" error" do
-        before(:each) { subject.and_raise_error(/example/) }
+        before(:each) { subject.and_raise_error(%r{example}) }
 
         it ("doesn't match") { is_expected.to_not be_matches catalogue }
 
@@ -191,7 +191,7 @@ if Puppet.version.to_f >= 3.0
       end
 
       context "when matching the failure" do
-        before(:each) { subject.and_raise_error(/failure/) }
+        before(:each) { subject.and_raise_error(%r{failure}) }
 
         it ("matches") { is_expected.to be_matches catalogue }
         it do

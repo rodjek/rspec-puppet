@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-nodoublequotes = proc { |x| x !~ /"/ }
+nodoublequotes = proc { |x| x !~ %r{"} }
 
 describe 'sysctl' do
   let(:title) { 'vm.swappiness' }

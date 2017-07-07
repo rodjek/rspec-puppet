@@ -125,8 +125,8 @@ class Pathname
   def rspec_puppet_basename(path)
     raise ArgumentError, 'pathname stubbing not enabled' unless RSpec.configuration.enable_pathname_stubbing
 
-    path = path[2..-1] if path =~ /\A[a-zA-Z]:(#{SEPARATOR_PAT}.*)\z/
-    path.split(SEPARATOR_PAT).last || path[/(#{SEPARATOR_PAT})/, 1] || path
+    path = path[2..-1] if path =~ %r{\A[a-zA-Z]:(#{SEPARATOR_PAT}.*)\z}
+    path.split(SEPARATOR_PAT).last || path[%r{(#{SEPARATOR_PAT})}, 1] || path
   end
 
   if instance_methods.include?("chop_basename")
@@ -135,7 +135,7 @@ class Pathname
     define_method(:chop_basename) do |path|
       if RSpec.configuration.enable_pathname_stubbing
         base = rspec_puppet_basename(path)
-        return nil if /\A#{SEPARATOR_PAT}?\z/o =~ base
+        return nil if %r{\A#{SEPARATOR_PAT}?\z}o =~ base
 
         return path[0, path.rindex(base)], base
       else

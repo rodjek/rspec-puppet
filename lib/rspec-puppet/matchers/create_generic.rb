@@ -7,7 +7,7 @@ module RSpec::Puppet
       include RSpec::Puppet::Errors
 
       def initialize(*args, &block)
-        @exp_resource_type = args.shift.to_s.gsub(/^(create|contain)_/, '')
+        @exp_resource_type = args.shift.to_s.gsub(%r{^(create|contain)_}, '')
         @args = args
         @block = block
         @referenced_type = referenced_type(@exp_resource_type)
@@ -61,17 +61,17 @@ module RSpec::Puppet
       end
 
       def method_missing(method, *args, &block)
-        if method.to_s =~ /^with_/
-          param = method.to_s.gsub(/^with_/, '')
+        if method.to_s =~ %r{^with_}
+          param = method.to_s.gsub(%r{^with_}, '')
           @expected_params << [param, args[0]]
           self
-        elsif method.to_s =~ /^only_with_/
-          param = method.to_s.gsub(/^only_with_/, '')
+        elsif method.to_s =~ %r{^only_with_}
+          param = method.to_s.gsub(%r{^only_with_}, '')
           @expected_params_count = (@expected_params_count || 0) + 1
           @expected_params << [param, args[0]]
           self
-        elsif method.to_s =~ /^without_/
-          param = method.to_s.gsub(/^without_/, '')
+        elsif method.to_s =~ %r{^without_}
+          param = method.to_s.gsub(%r{^without_}, '')
           @expected_undef_params << [param, args[0]]
           self
         else

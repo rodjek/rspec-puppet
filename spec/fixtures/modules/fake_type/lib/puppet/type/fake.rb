@@ -7,7 +7,7 @@ Puppet::Type.newtype(:fake) do
   newparam(:three)
 
   newparam(:four) do
-    newvalues(/(one|two)/)
+    newvalues(%r{(one|two)})
   end
 
   newproperty(:seven)

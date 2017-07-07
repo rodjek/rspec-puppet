@@ -11,11 +11,11 @@ describe 'split' do
 
   let(:expected_error_message) do
     if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
-      /expects \d+ arguments/
+      %r{expects \d+ arguments}
     elsif Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0
-      /mis-matched arguments/
+      %r{mis-matched arguments}
     else
-      /number of arguments/
+      %r{number of arguments}
     end
   end
 
@@ -28,7 +28,7 @@ describe 'split' do
 
   it { should run.with_params('foo').and_raise_error(expected_error_message) }
 
-  it { expect { should run.with_params('foo').and_raise_error(/definitely no match/) }.to raise_error RSpec::Expectations::ExpectationNotMetError }
+  it { expect { should run.with_params('foo').and_raise_error(%r{definitely no match}) }.to raise_error RSpec::Expectations::ExpectationNotMetError }
 
   context 'after including a class' do
     let(:pre_condition) { 'include ::sysctl::common' }

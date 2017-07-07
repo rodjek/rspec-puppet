@@ -68,7 +68,7 @@ module RSpec::Puppet
 
     def report!(coverage_desired = nil)
       report = results
-      puts <<-EOH.gsub(/^ {8}/, '')
+      puts <<-EOH.gsub(%r{^ {8}}, '')
 
         Total resources:   #{report[:total]}
         Touched resources: #{report[:touched]}
@@ -77,7 +77,7 @@ module RSpec::Puppet
 
       return if report[:coverage] == "100.00"
 
-      puts <<-EOH.gsub(/^ {10}/, '')
+      puts <<-EOH.gsub(%r{^ {10}}, '')
         Untouched resources:
 
         #{

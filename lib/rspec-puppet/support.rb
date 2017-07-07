@@ -24,21 +24,21 @@ module RSpec::Puppet
 
     def guess_type_from_path(path)
       case path
-      when /spec\/defines/
+      when %r{spec/defines}
         :define
-      when /spec\/classes/
+      when %r{spec/classes}
         :class
-      when /spec\/functions/
+      when %r{spec/functions}
         :function
-      when /spec\/hosts/
+      when %r{spec/hosts}
         :host
-      when /spec\/types/
+      when %r{spec/types}
         :type
-      when /spec\/type_aliases/
+      when %r{spec/type_aliases}
         :type_alias
-      when /spec\/provider/
+      when %r{spec/provider}
         :provider
-      when /spec\/applications/
+      when %r{spec/applications}
         :application
       else
         :unknown
@@ -57,11 +57,11 @@ module RSpec::Puppet
       if munged_facts['operatingsystem'] && munged_facts['operatingsystem'].casecmp('windows').zero?
         stub_const_wrapper('File::PATH_SEPARATOR', ';')
         stub_const_wrapper('File::ALT_SEPARATOR', "\\")
-        stub_const_wrapper('Pathname::SEPARATOR_PAT', /[#{Regexp.quote(File::ALT_SEPARATOR)}#{Regexp.quote(File::SEPARATOR)}]/)
+        stub_const_wrapper('Pathname::SEPARATOR_PAT', %r{[#{Regexp.quote(File::ALT_SEPARATOR)}#{Regexp.quote(File::SEPARATOR)}]})
       else
         stub_const_wrapper('File::PATH_SEPARATOR', ':')
         stub_const_wrapper('File::ALT_SEPARATOR', nil)
-        stub_const_wrapper('Pathname::SEPARATOR_PAT', /#{Regexp.quote(File::SEPARATOR)}/)
+        stub_const_wrapper('Pathname::SEPARATOR_PAT', %r{#{Regexp.quote(File::SEPARATOR)}})
       end
     end
 
@@ -392,7 +392,7 @@ module RSpec::Puppet
     end
 
     def escape_special_chars(string)
-      string.gsub!(/\$/, "\\$")
+      string.gsub!(%r{\$}, "\\$")
       string
     end
 

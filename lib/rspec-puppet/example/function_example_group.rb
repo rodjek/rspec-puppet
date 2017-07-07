@@ -181,7 +181,7 @@ module RSpec::Puppet
     def build_scope(compiler, node_name)
       return compiler.context_overrides[:global_scope] if Puppet.version.to_f >= 4.0
 
-      if Puppet.version =~ /^2\.[67]/
+      if Puppet.version =~ %r{^2\.[67]}
         # loadall should only be necessary prior to 3.x
         # Please note, loadall needs to happen first when creating a scope, otherwise
         # you might receive undefined method `function_*' errors

@@ -23,7 +23,7 @@ describe 'fake' do
               should be_valid_type.send("with_#{k}".to_sym, baddies)
             end.to raise_error(
               RSpec::Expectations::ExpectationNotMetError,
-              /Invalid #{k}: #{Array(baddies).join(',')}/
+              %r{Invalid #{k}: #{Array(baddies).join(',')}}
             )
           end
         end
@@ -51,7 +51,7 @@ describe 'fake' do
         should be_valid_type.with_provider(:non_matching)
       end.to raise_error(
         RSpec::Expectations::ExpectationNotMetError,
-        /Expected provider: non_matching does not match: default/
+        %r{Expected provider: non_matching does not match: default}
       )
     end
 
@@ -66,7 +66,7 @@ describe 'fake' do
         )
       end.to raise_error(
         Puppet::Error,
-        /Valid values match \/\(one\|two\)\//
+        %r{Valid values match /\(one\|two\)/}
       )
     end
 

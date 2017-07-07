@@ -69,7 +69,7 @@ describe RSpec::Puppet::FunctionMatchers::Run do
       end
 
       context "and_raise_error(ArgumentError, /message/)" do
-        before(:each) { subject.and_raise_error(ArgumentError, /message/) }
+        before(:each) { subject.and_raise_error(ArgumentError, %r{message}) }
 
         it 'should match a wrapper that raises ArgumentError("with matching message")' do
           expect(wrapper).to receive(:execute).and_raise(ArgumentError, 'with matching message').once

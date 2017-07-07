@@ -81,7 +81,7 @@ describe 'Pathname#rspec_puppet_basename' do
 
     context 'on posix' do
       before do
-        stub_const('Pathname::SEPARATOR_PAT', /\//)
+        stub_const('Pathname::SEPARATOR_PAT', %r{/})
       end
 
       it 'returns the basename for edgecases' do
@@ -98,7 +98,7 @@ describe 'Pathname#rspec_puppet_basename' do
 
     context 'on windows' do
       before do
-        stub_const('Pathname::SEPARATOR_PAT', /[\\\/]/)
+        stub_const('Pathname::SEPARATOR_PAT', %r{[\\/]})
       end
 
       it 'handles UNC pathnames' do

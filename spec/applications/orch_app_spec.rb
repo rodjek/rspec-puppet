@@ -20,6 +20,6 @@ describe 'orch_app', :if => Puppet::Util::Package.versioncmp(Puppet.version, '4.
   end
 
   context 'missing params' do
-    it { expect { should compile }.to raise_error(ArgumentError, /provide params for an app/) }
+    it { expect { should compile }.to raise_error(ArgumentError, %r{provide params for an app}) }
   end
 end

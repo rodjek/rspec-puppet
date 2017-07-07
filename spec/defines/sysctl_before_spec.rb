@@ -7,7 +7,7 @@ describe 'sysctl::before' do
   it "Should raise an error about needing the sysctl::common class" do
     expect {
       should create_notify("message-title").with_message("This should print if the class is here first.")
-    }.to raise_error(Puppet::Error, /Could not find resource 'Class\[Sysctl::Common\]/)
+    }.to raise_error(Puppet::Error, %r{Could not find resource 'Class\[Sysctl::Common\]})
   end
 end
 

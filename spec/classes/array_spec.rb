@@ -41,7 +41,7 @@ describe 'structured_data' do
     # Puppet 2.6 will automatically flatten nested arrays. If we're going
     # to be testing recursive data structures, we might as well ensure that
     # we're still handling numeric values correctly.
-    describe 'on Puppet 2.6', :if => Puppet.version =~ /^2\.6/ do
+    describe 'on Puppet 2.6', :if => Puppet.version =~ %r{^2\.6} do
       it {
         should contain_structured_data__def('thing').with(
           'data' => [
@@ -56,7 +56,7 @@ describe 'structured_data' do
       }
     end
 
-    describe 'on Puppet 2.7 and later', :unless => Puppet.version =~ /^2\.6/ do
+    describe 'on Puppet 2.7 and later', :unless => Puppet.version =~ %r{^2\.6} do
       it {
         should contain_structured_data__def('thing').with(
           'data' => [

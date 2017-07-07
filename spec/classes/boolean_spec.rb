@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-if Puppet::PUPPETVERSION !~ /0\.2/
+if Puppet::PUPPETVERSION !~ %r{0\.2}
   describe 'boolean_test' do
     let(:title) { 'bool.testing' }
     let(:params) { { :bool => false } }
