@@ -140,12 +140,14 @@ module RSpec::Puppet
       end
 
       def settings_map
-        super.concat([
-          [:environmentpath, :environmentpath],
-          [:hiera_config, :hiera_config],
-          [:strict_variables, :strict_variables],
-          [:manifest, :manifest],
-        ])
+        super.concat(
+          [
+            [:environmentpath, :environmentpath],
+            [:hiera_config, :hiera_config],
+            [:strict_variables, :strict_variables],
+            [:manifest, :manifest],
+          ]
+        )
       end
 
       def catalog(node, exported)
@@ -180,27 +182,31 @@ module RSpec::Puppet
 
     class Adapter3X < Base
       def settings_map
-        super.concat([
-          [:manifestdir, :manifest_dir],
-          [:manifest, :manifest],
-          [:templatedir, :template_dir],
-          [:hiera_config, :hiera_config],
-          [:parser, :parser],
-          [:trusted_node_data, :trusted_node_data],
-          [:ordering, :ordering],
-          [:stringify_facts, :stringify_facts],
-          [:strict_variables, :strict_variables],
-        ])
+        super.concat(
+          [
+            [:manifestdir, :manifest_dir],
+            [:manifest, :manifest],
+            [:templatedir, :template_dir],
+            [:hiera_config, :hiera_config],
+            [:parser, :parser],
+            [:trusted_node_data, :trusted_node_data],
+            [:ordering, :ordering],
+            [:stringify_facts, :stringify_facts],
+            [:strict_variables, :strict_variables],
+          ]
+        )
       end
     end
 
     class Adapter27 < Base
       def settings_map
-        super.concat([
-          [:manifestdir, :manifest_dir],
-          [:manifest, :manifest],
-          [:templatedir, :template_dir],
-        ])
+        super.concat(
+          [
+            [:manifestdir, :manifest_dir],
+            [:manifest, :manifest],
+            [:templatedir, :template_dir],
+          ]
+        )
       end
     end
 
