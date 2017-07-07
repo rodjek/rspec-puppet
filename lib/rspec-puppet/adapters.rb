@@ -1,6 +1,5 @@
 module RSpec::Puppet
   module Adapters
-
     class Base
       # Set up all Puppet settings applicable for this Puppet version as
       # application defaults.

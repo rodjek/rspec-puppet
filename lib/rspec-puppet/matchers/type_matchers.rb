@@ -1,6 +1,5 @@
 module RSpec::Puppet
   module TypeMatchers
-
     class CreateGeneric
       def initialize(*args, &block)
         @exp_provider = nil
@@ -152,6 +151,5 @@ module RSpec::Puppet
           end
         end
     end
-
   end
 end

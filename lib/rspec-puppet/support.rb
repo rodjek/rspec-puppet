@@ -4,7 +4,6 @@ require 'rspec-puppet/raw_string'
 
 module RSpec::Puppet
   module Support
-
     @@cache = RSpec::Puppet::Cache.new
 
     def subject
