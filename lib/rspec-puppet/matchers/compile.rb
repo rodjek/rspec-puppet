@@ -83,7 +83,7 @@ module RSpec::Puppet
 
         resource_vertices = @catalogue.vertices.select { |v| v.is_a? Puppet::Resource }
         resource_vertices.each do |vertex|
-          vertex.each do |param,value|
+          vertex.each do |param, value|
             next unless [:require, :subscribe, :notify, :before].include?(param)
 
             value = Array[value] unless value.is_a? Array

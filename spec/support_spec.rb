@@ -29,7 +29,7 @@ describe RSpec::Puppet::Support do
 
   describe "#ref" do
     it 'should return a new RawString with the type/title format' do
-      expect(subject.ref('Package','tomcat').inspect).to eq("Package['tomcat']")
+      expect(subject.ref('Package', 'tomcat').inspect).to eq("Package['tomcat']")
     end
   end
 
@@ -52,7 +52,7 @@ describe RSpec::Puppet::Support do
       expect(subject.str_from_value(:a_symbol)).to eq('"a_symbol"')
     end
     it "should handle Arrays recursively" do
-      expect(subject.str_from_value([1,2,3])).to eq('[ 1, 2, 3 ]')
+      expect(subject.str_from_value([1, 2, 3])).to eq('[ 1, 2, 3 ]')
     end
     it "should handle Hashes recursively" do
       expect(subject.str_from_value(:k1=>'v1')).to eq('{ "k1" => "v1" }')

@@ -81,7 +81,7 @@ module RSpec::Puppet
         Untouched resources:
 
         #{
-          untouched_resources = report[:resources].reject do |_,rsrc|
+          untouched_resources = report[:resources].reject do |_, rsrc|
             rsrc[:touched]
           end
           untouched_resources.inject([]) { |memo, (name, _)|

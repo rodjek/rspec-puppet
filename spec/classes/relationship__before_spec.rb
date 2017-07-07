@@ -10,11 +10,11 @@ describe 'relationships::before' do
   it { should contain_notify('baz').that_requires('Notify[foo]') }
   it { should contain_notify('baz').that_requires('Notify[bar]') }
 
-  it { should contain_notify('foo').that_comes_before(['Notify[bar]','Notify[baz]']) }
+  it { should contain_notify('foo').that_comes_before(['Notify[bar]', 'Notify[baz]']) }
   it { should contain_notify('bar').that_comes_before(['Notify[baz]']) }
 
   it { should contain_notify('bar').that_requires(['Notify[foo]']) }
-  it { should contain_notify('baz').that_requires(['Notify[foo]','Notify[bar]']) }
+  it { should contain_notify('baz').that_requires(['Notify[foo]', 'Notify[bar]']) }
 
   it { should contain_class('relationship::before::pre').that_comes_before('Class[relationship::before::post]') }
   it { should contain_class('relationship::before::post').that_requires('Class[relationship::before::pre]') }

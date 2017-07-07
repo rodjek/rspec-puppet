@@ -274,7 +274,7 @@ module RSpec::Puppet
     def str_from_value(value)
       case value
       when Hash
-        kvs = value.collect do |k,v|
+        kvs = value.collect do |k, v|
           "#{str_from_value(k)} => #{str_from_value(v)}"
         end.join(", ")
         "{ #{kvs} }"
@@ -297,7 +297,7 @@ module RSpec::Puppet
     def param_str_from_hash(params_hash)
       # the param_str has special quoting rules, because the top-level keys are the Puppet
       # params, which may not be quoted
-      params_hash.collect do |k,v|
+      params_hash.collect do |k, v|
         "#{k.to_s} => #{str_from_value(v)}"
       end.join(', ')
     end

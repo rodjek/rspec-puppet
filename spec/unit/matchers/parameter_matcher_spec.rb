@@ -14,7 +14,7 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
         expect(subject.matches?(:foo_parameter => [])).to be(false)
       end
       it 'does not match [1,2,3]' do
-        expect(subject.matches?(:foo_parameter => [1,2,3])).to be(false)
+        expect(subject.matches?(:foo_parameter => [1, 2, 3])).to be(false)
       end
       it 'does not match nil' do
         expect(subject.matches?(:foo_parameter => nil)).to be(false)
@@ -22,11 +22,11 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
     end
     context 'with [1,2,3] expected' do
       subject do
-        described_class.new(:foo_parameter, [1,2,3], :should)
+        described_class.new(:foo_parameter, [1, 2, 3], :should)
       end
 
       it 'matches [1,2,3]' do
-        expect(subject.matches?(:foo_parameter => [1,2,3])).to be(true)
+        expect(subject.matches?(:foo_parameter => [1, 2, 3])).to be(true)
       end
       it 'does not match []' do
         expect(subject.matches?(:foo_parameter => [])).to be(false)

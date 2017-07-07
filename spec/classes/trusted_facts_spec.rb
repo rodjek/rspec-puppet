@@ -49,7 +49,7 @@ describe 'trusted_facts', :if => Puppet::Util::Package.versioncmp(Puppet.version
     it { should contain_notify("hostname-trusted") }
     it { should contain_notify("domain-example.com") }
     it { should_not contain_notify("no-extensions") }
-    extensions.each do |k,v|
+    extensions.each do |k, v|
       it { should contain_notify("extension-#{k}-#{v}") }
     end
   end

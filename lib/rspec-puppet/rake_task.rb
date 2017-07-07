@@ -7,7 +7,7 @@ RSpec::Core::RakeTask.new(:rspec) do |t|
   t.rspec_opts = opts
 end
 
-SPEC_SUITES = (Dir.entries('spec') - ['.', '..','fixtures']).select {|e| File.directory? "spec/#{e}" }
+SPEC_SUITES = (Dir.entries('spec') - ['.', '..', 'fixtures']).select {|e| File.directory? "spec/#{e}" }
 namespace :rspec do
   SPEC_SUITES.each do |suite|
     desc "Run #{suite} RSpec code examples"
