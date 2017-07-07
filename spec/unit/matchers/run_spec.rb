@@ -17,7 +17,7 @@ describe RSpec::Puppet::FunctionMatchers::Run do
     expect(subject.matches?(wrapper)).to be false
   end
 
-  [ [true], [false], [''], ['string'], [nil], [0], [1.1], [[]], %w(one two), [{}], [{ 'key' => 'value' }], [:undef] ].each do |supplied_params|
+  [[true], [false], [''], ['string'], [nil], [0], [1.1], [[]], %w(one two), [{}], [{ 'key' => 'value' }], [:undef]].each do |supplied_params|
     context "with_params(#{supplied_params.collect(&:inspect).join(', ')})" do
       before(:each) { subject.with_params(*supplied_params) }
 
@@ -32,7 +32,7 @@ describe RSpec::Puppet::FunctionMatchers::Run do
       end
     end
 
-    [ true, false, '', 'string', nil, 0, 1.1, [], {}, :undef ].each do |expected_return|
+    [true, false, '', 'string', nil, 0, 1.1, [], {}, :undef].each do |expected_return|
       context "and_return(#{expected_return.inspect})" do
         before(:each) { subject.and_return(expected_return) }
 
@@ -55,7 +55,7 @@ describe RSpec::Puppet::FunctionMatchers::Run do
           expect(subject.matches?(wrapper)).to be true
         end
 
-        [ true, false, '', 'string', nil, 0, 1.1, [], {}, :undef ].each do |value|
+        [true, false, '', 'string', nil, 0, 1.1, [], {}, :undef].each do |value|
           it "should not match a wrapper that returns #{value.inspect}" do
             expect(wrapper).to receive(:execute).and_return(value).once
             expect(subject.matches?(wrapper)).to be false
@@ -81,7 +81,7 @@ describe RSpec::Puppet::FunctionMatchers::Run do
           expect(subject.matches?(wrapper)).to be false
         end
 
-        [ true, false, '', 'string', nil, 0, 1.1, [], {}, :undef ].each do |value|
+        [true, false, '', 'string', nil, 0, 1.1, [], {}, :undef].each do |value|
           it "should not match a wrapper that returns #{value.inspect}" do
             expect(wrapper).to receive(:execute).and_return(value).once
             expect(subject.matches?(wrapper)).to be false
