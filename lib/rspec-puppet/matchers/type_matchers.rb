@@ -49,8 +49,8 @@ module RSpec::Puppet
         self
       end
 
-      #def with_autorequires(autorequires))
-      #end
+      # def with_autorequires(autorequires))
+      # end
 
       #
       # this is the method that drives all of the validation
