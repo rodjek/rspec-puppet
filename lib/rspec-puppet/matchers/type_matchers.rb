@@ -130,7 +130,7 @@ module RSpec::Puppet
           param = param.to_sym
           if attr_type == :feature
             baddies.push(param) unless type.provider_feature(param)
-          elsif ! type.send("valid#{attr_type}?".to_sym, param)
+          elsif !type.send("valid#{attr_type}?".to_sym, param)
             baddies.push(param)
           end
         end
