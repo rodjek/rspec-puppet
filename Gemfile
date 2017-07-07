@@ -12,7 +12,7 @@ end
 
 gemspec
 
-# ffi (specifically the x64-mingw32 variant) requires ruby >= 2.0 after version 1.9.14 
+# ffi (specifically the x64-mingw32 variant) requires ruby >= 2.0 after version 1.9.14
 gem 'ffi', '<= 1.9.14' if RUBY_VERSION =~ /^1\.?9/
 
 gem 'rspec', *location_for(ENV['RSPEC_GEM_VERSION'] || '~> 3.0')
