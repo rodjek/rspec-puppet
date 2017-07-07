@@ -11,7 +11,7 @@ module RSpec::Puppet
       end
 
       def message
-        if @param.to_s == 'content' && expected.is_a?( String )
+        if @param.to_s == 'content' && expected.is_a?(String)
           if negative == true
             "#{param} not set to supplied string"
           else
