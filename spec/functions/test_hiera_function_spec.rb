@@ -10,4 +10,3 @@ describe 'test::hiera_function', :if => Puppet::Util::Package.versioncmp(Puppet.
     it { should run.and_return('not found') }
   end
 end
-

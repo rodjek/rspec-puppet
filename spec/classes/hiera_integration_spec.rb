@@ -11,4 +11,3 @@ describe 'test::hiera', :if => Puppet.version.to_f >= 3.0 do
     it { should contain_notify('not found') }
   end
 end
-
