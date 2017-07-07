@@ -3,7 +3,6 @@ module RSpec::Puppet
 
     class CreateGeneric
       def initialize(*args, &block)
-
         @exp_provider = nil
         @exp_parameters       = []
         @exp_properties       = []

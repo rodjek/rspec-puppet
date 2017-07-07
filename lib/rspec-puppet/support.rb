@@ -331,7 +331,6 @@ module RSpec::Puppet
     end
 
     def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported, node_params, *_)
-
       # If we're going to rebuild the catalog, we should clear the cached instance
       # of Hiera that Puppet is using.  This opens the possibility of the catalog
       # now being rebuilt against a differently configured Hiera (i.e. :hiera_config

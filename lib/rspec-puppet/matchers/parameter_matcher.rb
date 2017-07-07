@@ -23,7 +23,6 @@ module RSpec::Puppet
       #
       # @return [true, false]
       def matches?(resource)
-
         @resource = resource
 
         actual   = @resource[@parameter]
