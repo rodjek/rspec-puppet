@@ -284,9 +284,9 @@ module RSpec::Puppet
         end.join(", ")
         "[ #{vals} ]"
       when :default
-        'default'  # verbatim default keyword
+        'default' # verbatim default keyword
       when :undef
-        'undef'  # verbatim undef keyword
+        'undef' # verbatim undef keyword
       when Symbol
         str_from_value(value.to_s)
       else
