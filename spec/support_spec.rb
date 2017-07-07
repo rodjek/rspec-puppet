@@ -55,8 +55,8 @@ describe RSpec::Puppet::Support do
       expect(subject.str_from_value([1, 2, 3])).to eq('[ 1, 2, 3 ]')
     end
     it "should handle Hashes recursively" do
-      expect(subject.str_from_value(:k1=>'v1')).to eq('{ "k1" => "v1" }')
-      expect(subject.str_from_value('k2'=>'v2')).to eq('{ "k2" => "v2" }')
+      expect(subject.str_from_value(:k1 => 'v1')).to eq('{ "k1" => "v1" }')
+      expect(subject.str_from_value('k2' => 'v2')).to eq('{ "k2" => "v2" }')
     end
   end
 
