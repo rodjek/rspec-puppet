@@ -21,8 +21,6 @@ module RSpec::Puppet
           "expected that the catalogue would include Class[#{expected_class}]"
         end
       end
-
     end
-
   end
 end

@@ -83,5 +83,4 @@ describe RSpec::Puppet::TypeAliasMatchers::AllowValue, :if => Puppet.version.to_
       it { expect(subject.failure_message_when_negated).to eq('expected that the type alias would not match values "circle", "square", "triangle" but it does') }
     end
   end
-
 end

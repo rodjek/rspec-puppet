@@ -3,7 +3,6 @@ require 'rspec-puppet/coverage'
 require 'rspec-puppet/support'
 
 describe RSpec::Puppet::Coverage do
-
   subject { described_class.new }
 
   # Save and restore the global coverage object so that these tests don't

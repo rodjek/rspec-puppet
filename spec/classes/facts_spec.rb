@@ -6,7 +6,6 @@ family = 'RedHat'
 # with the description of "Facter should not downcast fact names".  The "mixed case in facts" tests this functionality.
 
 describe 'structured_facts::hash' do
-
   context 'symbols and strings in facts', :if => Puppet.version.to_f >= 4.0 do
     let(:facts) {{
       :os => {
@@ -76,7 +75,6 @@ describe 'structured_facts::hash' do
 end
 
 describe 'structured_facts::top_scope' do
-
   context 'symbols and strings in facts' do
     let(:facts) {{
       :os => {

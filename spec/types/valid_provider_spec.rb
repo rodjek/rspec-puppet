@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'fake' do
-
   let :title do
     'foo'
   end
@@ -9,7 +8,6 @@ describe 'fake' do
   it { should be_valid_type }
 
   describe 'tests of the types' do
-
     {
       :parameters =>
         {:baddies => %w(one two), :goodies => %w(three four)},
@@ -18,9 +16,7 @@ describe 'fake' do
       :features   =>
         {:baddies => %w(nine ten), :goodies => %w(eleven twelve)},
     }.each do |k, v|
-
       describe "#{k} checks" do
-
         [v[:baddies], v[:baddies].first].each do |baddies|
           it "should fail for #{baddies.size} baddies" do
             expect do
@@ -37,15 +33,11 @@ describe 'fake' do
             should be_valid_type.send("with_#{k}".to_sym, goodies)
           end
         end
-
       end
-
     end
-
   end
 
   describe 'tests that create a resource instance' do
-
     let :params do
       { :three => 'value' }
     end
@@ -83,7 +75,5 @@ describe 'fake' do
         :four => 'one'
       )
     end
-
   end
-
 end

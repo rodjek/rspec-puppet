@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'rspec-puppet/cache'
 
 describe RSpec::Puppet::Cache do
-
   let(:compiler) { {} }
 
   subject do
@@ -58,7 +57,6 @@ describe RSpec::Puppet::Cache do
 
       expect(first).to eq("Catalog to evict")
       expect(second).to eq("Replacement catalog")
-
     end
   end
 end

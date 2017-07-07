@@ -58,14 +58,12 @@ describe RSpec::Puppet::Adapters::Base do
 
     describe "when the setting is not available on the given version of Puppet" do
       it "logs a warning about the setting" do
-
       end
     end
   end
 end
 
 describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).cover?(Puppet.version.to_f) do
-
   let(:test_context) { double :environment => 'rp_env' }
 
   context 'when running on puppet 3.5 or later', :if => (3.5 ... 4.0).cover?(Puppet.version.to_f) do
@@ -132,7 +130,6 @@ describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).cover?(Puppet.
 end
 
 describe RSpec::Puppet::Adapters::Adapter4X, :if => Puppet.version.to_f >= 4.0 do
-
   let(:test_context) { double :environment => 'rp_env' }
 
   it 'sets Puppet[:strict_variables] to false by default' do

@@ -9,7 +9,6 @@ require 'rspec-puppet/example/provider_example_group'
 require 'rspec-puppet/example/application_example_group'
 
 RSpec.configure do |c|
-
   def c.rspec_puppet_include(group, type, file_path)
     escaped_file_path = Regexp.compile(file_path.join('[\\\/]'))
     if RSpec::Version::STRING < '3'

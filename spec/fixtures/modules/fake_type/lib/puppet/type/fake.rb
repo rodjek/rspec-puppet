@@ -1,5 +1,4 @@
 Puppet::Type.newtype(:fake) do
-
   feature :eleven, "11"
   feature :twelve, "12"
 
@@ -18,5 +17,4 @@ Puppet::Type.newtype(:fake) do
   validate do
     raise 'three is a required param' unless self[:three]
   end
-
 end
