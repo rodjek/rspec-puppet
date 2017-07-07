@@ -49,10 +49,11 @@ describe 'structured_data' do
   describe 'with nested hashes' do
     # the key "sec.ond" needs quoting, otherwise it would be a syntax error in the manifest
     let(:params) do
-      { 'data' => {
-          'first'  => 1,
+      {
+        'data' => {
+          'first'   => 1,
           'sec.ond' => 2,
-          'third'  => {
+          'third'   => {
             'alpha' => 'a',
             'beta'  => 'b',
           },
