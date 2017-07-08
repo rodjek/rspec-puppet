@@ -50,6 +50,11 @@ module RSpec::Puppet
 
         if Puppet.settings.respond_to?(:initialize_app_defaults)
           Puppet.settings.initialize_app_defaults(settings_hash)
+
+          # Forcefully apply the environmentpath setting instead of relying on
+          # the application defaults as Puppet::Test::TestHelper automatically
+          # sets this value as well, overriding our application default
+          Puppet.settings[:environmentpath] = settings_hash[:environmentpath] if settings_hash.key?(:environmentpath)
         else
           # Set settings the old way for Puppet 2.x, because that's how
           # they're defaulted in that version of Puppet::Test::TestHelper and
