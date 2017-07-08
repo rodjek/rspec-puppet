@@ -4,6 +4,19 @@ layout: minimal
 
 # Changelog
 
+## 2.6.4
+
+### Fixed
+
+ * A regression that prevented environment names to be specified as a symbol.
+ * A regression that prevented the `environmentpath` setting from taking
+   effect.
+ * Stubbed out the automatic confines created by resource providers on their
+   specified commands, which was preventing the correct provider from being
+   assigned to a resource when performing cross-platform testing.
+
+[View Diff](https://github.com/rodjek/rspec-puppet/compare/v2.6.3...v2.6.4)
+
 ## 2.6.3
 
 ### Fixed
