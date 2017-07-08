@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.4]
+
+### Fixed
+
+ * A regression that prevented environment names to be specified as a symbol.
+ * A regression that prevented the `environmentpath` setting from taking
+   effect.
+ * Stubbed out the automatic confines created by resource providers on their
+   specified commands, which was preventing the correct provider from being
+   assigned to a resource when performing cross-platform testing.
+
 ## [2.6.3]
 
 ### Fixed
