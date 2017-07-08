@@ -146,6 +146,12 @@ describe RSpec::Puppet::Adapters::Adapter4X, :if => Puppet.version.to_f >= 4.0 d
     expect(Puppet[:strict_variables]).to eq(true)
   end
 
+  it 'overrides the environmentpath set by Puppet::Test::TestHelper' do
+    allow(test_context).to receive(:environmentpath).and_return('/path/to/my/environments')
+    subject.setup_puppet(test_context)
+    expect(Puppet[:environmentpath]).to match(%r{(C:)?/path/to/my/environments})
+  end
+
   describe '#manifest' do
     it 'returns the configured environment manifest when set' do
       allow(RSpec.configuration).to receive(:manifest).and_return("/path/to/manifest")
