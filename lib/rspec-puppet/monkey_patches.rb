@@ -108,13 +108,13 @@ module Puppet
 
   if defined?(Puppet::Confine)
     class Confine::Exists < Puppet::Confine
-      def pass?(value)
+      def pass?(_value)
         true
       end
     end
   else
     class Provider::Confine::Exists < Puppet::Provider::Confine
-      def pass?(value)
+      def pass?(_value)
         true
       end
     end

@@ -21,7 +21,7 @@ module RSpec::Puppet
       end
 
       # compatibility alias for existing tests
-      def call(scope, *args)
+      def call(_scope, *args)
         RSpec.deprecate('subject.call', :replacement => 'is_expected.to run.with().and_raise_error(), or execute()')
         execute(*args)
       end

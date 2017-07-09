@@ -1,7 +1,7 @@
 module RSpec::Puppet
   module TypeMatchers
     class CreateGeneric
-      def initialize(*args, &block)
+      def initialize(*_args)
         @exp_provider = nil
         @exp_parameters       = []
         @exp_properties       = []
@@ -109,7 +109,7 @@ module RSpec::Puppet
         end
       end
 
-      def match_default_values(resource)
+      def match_default_values(_resource)
         # TODO: FINISH
         true
       end

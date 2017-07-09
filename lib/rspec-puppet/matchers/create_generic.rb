@@ -22,19 +22,19 @@ module RSpec::Puppet
         @befores = []
       end
 
-      def with(*args, &block)
+      def with(*args)
         params = args.shift
         @expected_params |= params.to_a
         self
       end
 
-      def only_with(*args, &block)
+      def only_with(*args)
         params = args.shift
         @expected_params_count = (@expected_params_count || 0) + params.size
-        with(params, &block)
+        with(params)
       end
 
-      def without(*args, &block)
+      def without(*args)
         params = args.shift
         @expected_undef_params |= Array(params)
         self
@@ -107,10 +107,10 @@ module RSpec::Puppet
 
           check_params(rsrc_hsh, @expected_params, :should) if @expected_params.any?
           check_params(rsrc_hsh, @expected_undef_params, :not) if @expected_undef_params.any?
-          check_befores(@catalogue, resource) if @befores.any?
-          check_requires(@catalogue, resource) if @requires.any?
-          check_notifies(@catalogue, resource) if @notifies.any?
-          check_subscribes(@catalogue, resource) if @subscribes.any?
+          check_befores(resource) if @befores.any?
+          check_requires(resource) if @requires.any?
+          check_notifies(resource) if @notifies.any?
+          check_subscribes(resource) if @subscribes.any?
 
           @errors.empty?
         end
@@ -211,7 +211,7 @@ module RSpec::Puppet
         output
       end
 
-      def check_befores(catalogue, resource)
+      def check_befores(resource)
         @befores.each do |ref|
           unless precedes?(resource, canonicalize_resource(ref))
             @errors << BeforeRelationshipError.new(resource.to_ref, ref)
@@ -219,7 +219,7 @@ module RSpec::Puppet
         end
       end
 
-      def check_requires(catalogue, resource)
+      def check_requires(resource)
         @requires.each do |ref|
           unless precedes?(canonicalize_resource(ref), resource)
             @errors << RequireRelationshipError.new(resource.to_ref, ref)
@@ -227,7 +227,7 @@ module RSpec::Puppet
         end
       end
 
-      def check_notifies(catalogue, resource)
+      def check_notifies(resource)
         @notifies.each do |ref|
           unless notifies?(resource, canonicalize_resource(ref))
             @errors << NotifyRelationshipError.new(resource.to_ref, ref)
@@ -235,7 +235,7 @@ module RSpec::Puppet
         end
       end
 
-      def check_subscribes(catalogue, resource)
+      def check_subscribes(resource)
         @subscribes.each do |ref|
           unless notifies?(canonicalize_resource(ref), resource)
             @errors << SubscribeRelationshipError.new(resource.to_ref, ref)

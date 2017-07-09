@@ -86,11 +86,11 @@ module RSpec::Puppet
       end
 
       def failure_message
-        failure_message_generic(:should, @func_obj)
+        failure_message_generic(:should)
       end
 
       def failure_message_when_negated
-        failure_message_generic(:should_not, @func_obj)
+        failure_message_generic(:should_not)
       end
 
       def description
@@ -127,7 +127,7 @@ module RSpec::Puppet
         end
       end
 
-      def failure_message_generic(type, func_obj)
+      def failure_message_generic(type)
         message = "expected #{func_name}(#{func_params}) to "
         message << 'not ' if type == :should_not
 
