@@ -256,7 +256,7 @@ module RSpec::Puppet
         if res.nil?
           resource = Struct.new(:type, :title).new(*@catalogue.title_key_for_ref(resource)) if resource.is_a?(String)
 
-          resource_keys = @catalogue.resource_keys.select { |type, name|
+          resource_keys = @catalogue.resource_keys.select { |type, _name|
             type == resource.type
           }
 

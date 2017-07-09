@@ -13,11 +13,11 @@ module RSpec::Puppet
       end
 
       if RSpec::Version::STRING < '3'
-        failure_message_for_should do |actual|
+        failure_message_for_should do |_actual|
           "expected that the catalogue would include Class[#{expected_class}]"
         end
       else
-        failure_message do |actual|
+        failure_message do |_actual|
           "expected that the catalogue would include Class[#{expected_class}]"
         end
       end

@@ -152,7 +152,7 @@ Puppet::Type.type(:file).paramclass(:path).munge { |value| value }
 # Prevent the Exec type from validating the user. This parameter isn't
 # supported under Windows at all and only under *nix when the current user is
 # root.
-Puppet::Type.type(:exec).paramclass(:user).validate { |value| true }
+Puppet::Type.type(:exec).paramclass(:user).validate { |_value| true }
 
 # Prevent Puppet from requiring 'puppet/util/windows' if we're pretending to be
 # windows, otherwise it will require other libraries that probably won't be
