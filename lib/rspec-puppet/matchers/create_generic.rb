@@ -80,7 +80,6 @@ module RSpec::Puppet
       end
 
       def matches?(catalogue)
-        ret = true
         @catalogue = catalogue.is_a?(Puppet::Resource::Catalog) ? catalogue : catalogue.call
         resource = @catalogue.resource(@referenced_type, @title)
 
@@ -102,7 +101,6 @@ module RSpec::Puppet
 
           if @expected_params_count
             unless rsrc_hsh.size == @expected_params_count
-              ret = false
               (@errors ||= []) << "exactly #{@expected_params_count} parameters but the catalogue contains #{rsrc_hsh.size}"
             end
           end

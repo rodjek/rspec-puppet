@@ -84,8 +84,6 @@ module RSpec::Puppet
 
     def find_function(function_name = self.class.top_level_description)
       with_vardir do
-        env = adapter.current_environment
-
         if Puppet.version.to_f >= 4.0
           context_overrides = compiler.context_overrides
           func = nil
