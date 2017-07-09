@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RSpec::Puppet::FunctionMatchers::Run do
-  let (:wrapper) { double('function wrapper') }
+  let(:wrapper) { double('function wrapper') }
 
   before :each do
     expect(wrapper).to receive(:call).never

@@ -11,9 +11,9 @@ if Puppet.version.to_f >= 3.0
     let(:catalogue) { lambda { load_catalogue(:host) } }
 
     describe 'a valid manifest' do
-      let (:pre_condition) { 'file { "/tmp/resource": }' }
+      let(:pre_condition) { 'file { "/tmp/resource": }' }
 
-      it ('matches') { is_expected.to be_matches catalogue }
+      it('matches') { is_expected.to be_matches catalogue }
       it do
         is_expected.to have_attributes(
           :description => 'compile into a catalogue without dependency cycles'
@@ -23,7 +23,7 @@ if Puppet.version.to_f >= 3.0
       context 'when expecting an "example" error' do
         before(:each) { subject.and_raise_error('example') }
 
-        it ("doesn't match") { is_expected.to_not be_matches catalogue }
+        it("doesn't match") { is_expected.to_not be_matches catalogue }
         it do
           is_expected.to have_attributes(
             :description => 'fail to compile and raise the error "example"'
@@ -44,7 +44,7 @@ if Puppet.version.to_f >= 3.0
       context 'when matching an "example" error' do
         before(:each) { subject.and_raise_error(%r{example}) }
 
-        it ("doesn't match") { is_expected.to_not be_matches catalogue }
+        it("doesn't match") { is_expected.to_not be_matches catalogue }
         it do
           is_expected.to have_attributes(
             :description => 'fail to compile and raise an error matching /example/'
@@ -64,9 +64,9 @@ if Puppet.version.to_f >= 3.0
     end
 
     describe 'a manifest with missing dependencies' do
-      let (:pre_condition) { 'file { "/tmp/resource": require => File["/tmp/missing"] }' }
+      let(:pre_condition) { 'file { "/tmp/resource": require => File["/tmp/missing"] }' }
 
-      it ("doesn't match") { is_expected.to_not be_matches catalogue }
+      it("doesn't match") { is_expected.to_not be_matches catalogue }
 
       context 'after matching' do
         before(:each) { subject.matches? catalogue }
@@ -80,9 +80,9 @@ if Puppet.version.to_f >= 3.0
     end
 
     describe 'a manifest with syntax error' do
-      let (:pre_condition) { 'file { "/tmp/resource": ' }
+      let(:pre_condition) { 'file { "/tmp/resource": ' }
 
-      it ("doesn't match") { is_expected.to_not be_matches catalogue }
+      it("doesn't match") { is_expected.to_not be_matches catalogue }
 
       context 'after matching' do
         before(:each) { subject.matches? catalogue }
@@ -96,14 +96,14 @@ if Puppet.version.to_f >= 3.0
     end
 
     describe 'a manifest with a dependency cycle' do
-      let (:pre_condition) {
+      let(:pre_condition) {
         <<-EOS
           file { "/tmp/a": require => File["/tmp/b"] }
           file { "/tmp/b": require => File["/tmp/a"] }
         EOS
       }
 
-      it ("doesn't match") { is_expected.to_not be_matches catalogue }
+      it("doesn't match") { is_expected.to_not be_matches catalogue }
 
       context 'after matching' do
         before(:each) { subject.matches? catalogue }
@@ -118,7 +118,7 @@ if Puppet.version.to_f >= 3.0
       context 'when expecting an "example" error' do
         before(:each) { subject.and_raise_error('example') }
 
-        it ("doesn't match") { is_expected.to_not be_matches catalogue }
+        it("doesn't match") { is_expected.to_not be_matches catalogue }
 
         context 'after matching' do
           before(:each) { subject.matches? catalogue }
@@ -135,7 +135,7 @@ if Puppet.version.to_f >= 3.0
       context 'when matching an "example" error' do
         before(:each) { subject.and_raise_error(%r{example}) }
 
-        it ("doesn't match") { is_expected.to_not be_matches catalogue }
+        it("doesn't match") { is_expected.to_not be_matches catalogue }
 
         context 'after matching' do
           before(:each) { subject.matches? catalogue }
@@ -151,9 +151,9 @@ if Puppet.version.to_f >= 3.0
     end
 
     describe 'a manifest with a real failure' do
-      let (:pre_condition) { 'fail("failure")' }
+      let(:pre_condition) { 'fail("failure")' }
 
-      it ("doesn't match") { is_expected.to_not be_matches catalogue }
+      it("doesn't match") { is_expected.to_not be_matches catalogue }
 
       context 'after matching' do
         before(:each) { subject.matches? catalogue }
@@ -171,7 +171,7 @@ if Puppet.version.to_f >= 3.0
 
         if Puppet.version.to_f >= 4.0
           # the error message above is puppet4 specific
-          it ('matches') { is_expected.to be_matches catalogue }
+          it('matches') { is_expected.to be_matches catalogue }
         end
         it do
           is_expected.to have_attributes(
@@ -193,7 +193,7 @@ if Puppet.version.to_f >= 3.0
       context 'when matching the failure' do
         before(:each) { subject.and_raise_error(%r{failure}) }
 
-        it ('matches') { is_expected.to be_matches catalogue }
+        it('matches') { is_expected.to be_matches catalogue }
         it do
           is_expected.to have_attributes(
             :description => 'fail to compile and raise an error matching /failure/'
