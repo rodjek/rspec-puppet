@@ -301,7 +301,8 @@ module RSpec::Puppet
           resource.resource_type.eachautorequire do |t, b|
             Array(resource.to_ral.instance_eval(&b)).each do |dep|
               res = "#{t.to_s.capitalize}[#{dep}]"
-              if r = relationship_refs(res, type, visited)
+              r = relationship_refs(res, type, visited)
+              unless r.nil?
                 results << res
                 results << r
               end
