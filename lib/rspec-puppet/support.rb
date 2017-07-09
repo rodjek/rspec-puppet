@@ -371,8 +371,8 @@ module RSpec::Puppet
     end
 
     def build_catalog(*args)
-      @@cache.get(*args) do |*args|
-        build_catalog_without_cache(*args)
+      @@cache.get(*args) do |*build_args|
+        build_catalog_without_cache(*build_args)
       end
     end
 

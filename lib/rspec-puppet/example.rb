@@ -14,7 +14,7 @@ RSpec.configure do |c|
     if RSpec::Version::STRING < '3'
       include group, :type => type, :example_group => { :file_path => escaped_file_path }, :spec_type => type
     else
-      include group, :type => type, :file_path => lambda { |file_path, metadata| metadata[:type].nil? && escaped_file_path =~ file_path }
+      include group, :type => type, :file_path => lambda { |spec_file_path, metadata| metadata[:type].nil? && escaped_file_path =~ spec_file_path }
     end
   end
 
