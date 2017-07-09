@@ -96,7 +96,7 @@ module RSpec::Puppet
     end
 
     def self.safe_mkdir(dir, verbose = true)
-      if File.exists? dir
+      if File.exist? dir
         unless File.directory? dir
           $stderr.puts "!! #{dir} already exists and is not a directory"
         end
@@ -111,7 +111,7 @@ module RSpec::Puppet
     end
 
     def self.safe_touch(file)
-      if File.exists? file
+      if File.exist? file
         unless File.file? file
           $stderr.puts "!! #{file} already exists and is not a regular file"
         end
@@ -122,7 +122,7 @@ module RSpec::Puppet
     end
 
     def self.safe_create_file(filename, content)
-      if File.exists? filename
+      if File.exist? filename
         old_content = File.read(filename)
         if old_content != content
           $stderr.puts "!! #{filename} already exists and differs from template"
@@ -141,7 +141,7 @@ module RSpec::Puppet
     end
 
     def self.safe_make_link(source, target, verbose = true)
-      if File.exists?(target)
+      if File.exist?(target)
         unless File.symlink?(target) && File.readlink(target) == File.expand_path(source)
           $stderr.puts "!! #{target} already exists and is not a symlink"
         end

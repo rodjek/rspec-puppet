@@ -101,7 +101,7 @@ module RSpec::Puppet
     def import_str
       import_str = ''
       adapter.modulepath.each { |d|
-        if File.exists?(File.join(d, 'manifests', 'init.pp'))
+        if File.exist?(File.join(d, 'manifests', 'init.pp'))
           path_to_manifest = File.join([
             d,
             'manifests',
@@ -113,7 +113,7 @@ module RSpec::Puppet
             '',
           ].join("\n")
           break
-        elsif File.exists?(d)
+        elsif File.exist?(d)
           import_str = "import '#{adapter.manifest}'\n"
           break
         end
