@@ -298,7 +298,7 @@ module RSpec::Puppet
       # the param_str has special quoting rules, because the top-level keys are the Puppet
       # params, which may not be quoted
       params_hash.collect do |k, v|
-        "#{k.to_s} => #{str_from_value(v)}"
+        "#{k} => #{str_from_value(v)}"
       end.join(', ')
     end
 

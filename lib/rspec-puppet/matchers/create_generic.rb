@@ -197,14 +197,14 @@ module RSpec::Puppet
         output = []
         list.each do |param, value|
           if value.nil?
-            output << "#{param.to_s} #{type == :not ? 'un' : ''}defined"
+            output << "#{param} #{type == :not ? 'un' : ''}defined"
           else
             a = type == :not ? '!' : '='
             b = value.is_a?(Regexp) ? '~' : '>'
             output << if param.to_s == 'content' && value.is_a?(String)
-                        "#{param.to_s} #{type == :not ? 'not ' : ''} supplied string"
+                        "#{param} #{type == :not ? 'not ' : ''} supplied string"
                       else
-                        "#{param.to_s} #{a}#{b} #{value.inspect}"
+                        "#{param} #{a}#{b} #{value.inspect}"
                       end
           end
         end

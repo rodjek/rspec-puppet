@@ -105,12 +105,10 @@ module RSpec::Puppet
             next unless vertex.is_a?(Puppet::Resource)
 
             res_hash[vertex.ref] = 1
-            if vertex[:alias]
-              res_hash["#{vertex.type.to_s}[#{vertex[:alias]}]"] = 1
-            end
+            res_hash["#{vertex.type}[#{vertex[:alias]}]"] = 1 if vertex[:alias]
 
             if vertex.uniqueness_key != [vertex.title]
-              res_hash["#{vertex.type.to_s}[#{vertex.uniqueness_key.first}]"] = 1
+              res_hash["#{vertex.type}[#{vertex.uniqueness_key.first}]"] = 1
             end
           end
           res_hash
@@ -120,7 +118,7 @@ module RSpec::Puppet
       def check_resource(res)
         if resource_hash[res.ref]
           true
-        elsif res[:alias] && resource_hash["#{res.type.to_s}[#{res[:alias]}]"]
+        elsif res[:alias] && resource_hash["#{res.type}[#{res[:alias]}]"]
           true
         else
           false
