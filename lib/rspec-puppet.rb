@@ -11,7 +11,7 @@ require 'rspec-puppet/adapters'
 
 begin
   require 'puppet/test/test_helper'
-rescue LoadError
+rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
 
 RSpec.configure do |c|
@@ -56,14 +56,14 @@ RSpec.configure do |c|
     c.before :all do
       begin
         Puppet::Test::TestHelper.before_all_tests
-      rescue
+      rescue # rubocop:disable Lint/HandleExceptions
       end
     end
 
     c.after :all do
       begin
         Puppet::Test::TestHelper.after_all_tests
-      rescue
+      rescue # rubocop:disable Lint/HandleExceptions
       end
     end
 
@@ -72,14 +72,14 @@ RSpec.configure do |c|
         Puppet::Test::TestHelper.before_each_test
       rescue Puppet::Context::DuplicateRollbackMarkError
         Puppet::Test::TestHelper.send(:initialize_settings_before_each)
-      rescue
+      rescue # rubocop:disable Lint/HandleExceptions
       end
     end
 
     c.after :each do
       begin
         Puppet::Test::TestHelper.after_each_test
-      rescue
+      rescue # rubocop:disable Lint/HandleExceptions
       end
     end
   end
