@@ -3,32 +3,32 @@ require 'spec_helper'
 describe 'structured_data' do
   describe 'with a single level hash of strings' do
     let(:params) do
-      {'data' => {'foo' => 'bar', 'baz' => 'quux'}}
+      { 'data' => { 'foo' => 'bar', 'baz' => 'quux' } }
     end
 
     it {
       should contain_structured_data__def('thing').with(
-        'data' => {'foo' => 'bar', 'baz' => 'quux'}
+        'data' => { 'foo' => 'bar', 'baz' => 'quux' }
       )
     }
   end
 
   describe 'with integers as keys' do
     let(:params) do
-      { 'data' => {1 => 'uno', 2 => 'dos'}}
+      { 'data' => { 1 => 'uno', 2 => 'dos' } }
     end
 
     context 'puppet less than 4', :unless => Puppet.version.to_f >= 4.0 do
       it {
         should contain_structured_data__def('thing').with(
-          'data' => {'1' => 'uno', '2' => 'dos'}
+          'data' => { '1' => 'uno', '2' => 'dos' }
         )
       }
     end
     context 'puppet 4 or greater', :if => Puppet.version.to_f >= 4.0 do
       it {
         should contain_structured_data__def('thing').with(
-          'data' => {1 => 'uno', 2 => 'dos'}
+          'data' => { 1 => 'uno', 2 => 'dos' }
         )
       }
     end
@@ -36,12 +36,12 @@ describe 'structured_data' do
 
   describe 'with integers as values' do
     let(:params) do
-      { 'data' => {'first' => 1, 'second' => 2}}
+      { 'data' => { 'first' => 1, 'second' => 2 } }
     end
 
     it {
       should contain_structured_data__def('thing').with(
-        'data' => {'first' => 1, 'second' => 2}
+        'data' => { 'first' => 1, 'second' => 2 }
       )
     }
   end

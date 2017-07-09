@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'rspec-puppet/adapters'
 
 def context_double(options = {})
-  double({:environment => 'rp_puppet'}.merge(options))
+  double({ :environment => 'rp_puppet' }.merge(options))
 end
 
 describe RSpec::Puppet::Adapters::Base do

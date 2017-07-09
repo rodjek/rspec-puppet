@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'relationships::before' do
-  let(:facts) { {:operatingsystem => 'debian'} }
+  let(:facts) { { :operatingsystem => 'debian' } }
   it { should contain_notify('foo').that_comes_before('Notify[bar]') }
   it { should contain_notify('foo').that_comes_before('Notify[baz]') }
   it { should contain_notify('bar').that_comes_before('Notify[baz]') }

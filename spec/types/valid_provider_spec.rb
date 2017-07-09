@@ -10,11 +10,11 @@ describe 'fake' do
   describe 'tests of the types' do
     {
       :parameters =>
-        {:baddies => %w[one two], :goodies => %w[three four]},
+        { :baddies => %w[one two], :goodies => %w[three four] },
       :properties =>
-        {:baddies => %w[five fix], :goodies => %w[seven eight]},
+        { :baddies => %w[five fix], :goodies => %w[seven eight] },
       :features   =>
-        {:baddies => %w[nine ten], :goodies => %w[eleven twelve]},
+        { :baddies => %w[nine ten], :goodies => %w[eleven twelve] },
     }.each do |k, v|
       describe "#{k} checks" do
         [v[:baddies], v[:baddies].first].each do |baddies|

@@ -41,7 +41,7 @@ module RSpec::Puppet
         settings = settings_map.map do |puppet_setting, rspec_setting|
           [puppet_setting, get_setting(example_group, rspec_setting)]
         end.flatten
-        default_hash = {:confdir => '/dev/null', :vardir => '/dev/null' }
+        default_hash = { :confdir => '/dev/null', :vardir => '/dev/null' }
         if defined?(Puppet::Test::TestHelper) && Puppet::Test::TestHelper.respond_to?(:app_defaults_for_tests, true)
           default_hash.merge!(Puppet::Test::TestHelper.send(:app_defaults_for_tests))
         end

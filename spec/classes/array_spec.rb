@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'structured_data' do
   describe 'with a single level array of strings' do
     let(:params) do
-      {'data' => %w[foo bar baz quux]}
+      { 'data' => %w[foo bar baz quux] }
     end
 
     it {
