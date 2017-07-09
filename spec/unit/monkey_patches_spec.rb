@@ -7,7 +7,7 @@ WINDOWS = defined?(RSpec::Support) ? RSpec::Support::OS.windows? : !!File::ALT_S
 describe 'File constants' do
   context 'on windows', :if => WINDOWS do
     specify('File::PATH_SEPARATOR') { expect(File::PATH_SEPARATOR).to eq(';') }
-    specify('File::ALT_SEPARATOR') { expect(File::ALT_SEPARATOR).to eq("\\") }
+    specify('File::ALT_SEPARATOR') { expect(File::ALT_SEPARATOR).to eq('\\') }
   end
 
   context 'on posix', :unless => WINDOWS do

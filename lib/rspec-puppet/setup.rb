@@ -7,7 +7,7 @@ module RSpec::Puppet
   class Setup
     def self.run(module_name = nil)
       unless module_dir?
-        $stderr.puts "Does not appear to be a Puppet module.  Aborting"
+        $stderr.puts 'Does not appear to be a Puppet module.  Aborting'
         return false
       end
 
@@ -20,14 +20,14 @@ module RSpec::Puppet
 
     def self.safe_setup_directories(module_name = nil, verbose = true)
       if control_repo?
-        $stderr.puts "Unable to setup rspec-puppet automatically in a control repo" if verbose
+        $stderr.puts 'Unable to setup rspec-puppet automatically in a control repo' if verbose
         return false
       end
 
       if module_name.nil?
         module_name = find_module_name
         if module_name.nil?
-          $stderr.puts "Unable to determine module name.  Aborting" if verbose
+          $stderr.puts 'Unable to determine module name.  Aborting' if verbose
           return false
         end
       end
@@ -51,7 +51,7 @@ module RSpec::Puppet
       if module_name.nil?
         module_name = find_module_name
         if module_name.nil?
-          $stderr.puts "Unable to determine module name.  Aborting"
+          $stderr.puts 'Unable to determine module name.  Aborting'
           return false
         end
       end
@@ -68,7 +68,7 @@ module RSpec::Puppet
 
     def self.find_module_name
       module_name = nil
-      Dir["manifests/*.pp"].entries.each do |manifest|
+      Dir['manifests/*.pp'].entries.each do |manifest|
         module_name = get_module_name_from_file(manifest)
         break unless module_name.nil?
       end
@@ -94,7 +94,7 @@ module RSpec::Puppet
     end
 
     def self.module_dir?
-      Dir["*"].entries.include? "manifests"
+      Dir['*'].entries.include? 'manifests'
     end
 
     def self.safe_mkdir(dir, verbose = true)

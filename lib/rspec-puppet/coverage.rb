@@ -75,7 +75,7 @@ module RSpec::Puppet
         Resource coverage: #{report[:coverage]}%
       EOH
 
-      return if report[:coverage] == "100.00"
+      return if report[:coverage] == '100.00'
 
       puts <<-EOH.gsub(%r{^ {10}}, '')
         Untouched resources:
@@ -95,7 +95,7 @@ module RSpec::Puppet
 
     def coverage_test(coverage_desired, coverage_actual)
       if coverage_desired.is_a?(Numeric) && coverage_desired.to_f <= 100.00 && coverage_desired.to_f >= 0.0
-        coverage_test = RSpec.describe("Code coverage.")
+        coverage_test = RSpec.describe('Code coverage.')
         coverage_results = coverage_test.example("Must be at least #{coverage_desired}% of code coverage") {
           expect(coverage_actual.to_f).to be >= coverage_desired.to_f
         }

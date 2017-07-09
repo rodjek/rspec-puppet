@@ -56,7 +56,7 @@ module RSpec::Puppet
 
       if munged_facts['operatingsystem'] && munged_facts['operatingsystem'].casecmp('windows').zero?
         stub_const_wrapper('File::PATH_SEPARATOR', ';')
-        stub_const_wrapper('File::ALT_SEPARATOR', "\\")
+        stub_const_wrapper('File::ALT_SEPARATOR', '\\')
         stub_const_wrapper('Pathname::SEPARATOR_PAT', %r{[#{Regexp.quote(File::ALT_SEPARATOR)}#{Regexp.quote(File::SEPARATOR)}]})
       else
         stub_const_wrapper('File::PATH_SEPARATOR', ':')
@@ -99,7 +99,7 @@ module RSpec::Puppet
     end
 
     def import_str
-      import_str = ""
+      import_str = ''
       adapter.modulepath.each { |d|
         if File.exists?(File.join(d, 'manifests', 'init.pp'))
           path_to_manifest = File.join([
@@ -142,7 +142,7 @@ module RSpec::Puppet
           "class { '#{class_name}': #{param_str(opts[:params])} }"
         end
       elsif type == :application
-        raise ArgumentError, "You need to provide params for an application" unless opts.key?(:params)
+        raise ArgumentError, 'You need to provide params for an application' unless opts.key?(:params)
 
         "site { #{class_name} { '#{title}': #{param_str(opts[:params])} } }"
       elsif type == :define
@@ -276,12 +276,12 @@ module RSpec::Puppet
       when Hash
         kvs = value.collect do |k, v|
           "#{str_from_value(k)} => #{str_from_value(v)}"
-        end.join(", ")
+        end.join(', ')
         "{ #{kvs} }"
       when Array
         vals = value.map do |v|
           str_from_value(v)
-        end.join(", ")
+        end.join(', ')
         "[ #{vals} ]"
       when :default
         'default' # verbatim default keyword
@@ -353,7 +353,7 @@ module RSpec::Puppet
           {
             :trusted_information => Puppet::Context::TrustedInformation.new('remote', nodename, trusted_facts_val),
           },
-          "Context for spec trusted hash"
+          'Context for spec trusted hash'
         )
       end
 
@@ -392,7 +392,7 @@ module RSpec::Puppet
     end
 
     def escape_special_chars(string)
-      string.gsub!(%r{\$}, "\\$")
+      string.gsub!(%r{\$}, '\\$')
       string
     end
 

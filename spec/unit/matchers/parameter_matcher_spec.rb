@@ -37,11 +37,11 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
     end
     context 'with {"foo" => "bar"} expected' do
       subject do
-        described_class.new(:foo_parameter, {"foo" => "bar"}, :should)
+        described_class.new(:foo_parameter, {'foo' => 'bar'}, :should)
       end
 
       it 'matches {"foo" => "bar"}' do
-        expect(subject.matches?(:foo_parameter => {"foo" => "bar"})).to be(true)
+        expect(subject.matches?(:foo_parameter => {'foo' => 'bar'})).to be(true)
       end
       it 'does not match nil' do
         expect(subject.matches?(:foo_parameter => nil)).to be(false)
@@ -50,18 +50,18 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
         expect(subject.matches?(:foo_parameter => {})).to be(false)
       end
       it 'does not match {"foo" => "baz"}' do
-        expect(subject.matches?(:foo_parameter => {"foo" => "baz"})).to be(false)
+        expect(subject.matches?(:foo_parameter => {'foo' => 'baz'})).to be(false)
       end
     end
 
     context 'with lambda(){"foo"} expected' do
       subject do
-        block = lambda { |actual| actual == "foo" }
+        block = lambda { |actual| actual == 'foo' }
         described_class.new(:foo_parameter, block, :should)
       end
 
       it 'matches "foo"' do
-        expect(subject.matches?(:foo_parameter => "foo")).to be(true)
+        expect(subject.matches?(:foo_parameter => 'foo')).to be(true)
       end
       it 'does not match nil' do
         expect(subject.matches?(:foo_parameter => nil)).to be(false)
@@ -74,7 +74,7 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
       end
 
       it 'matches "foo"' do
-        expect(subject.matches?(:foo_parameter => "foo")).to be(true)
+        expect(subject.matches?(:foo_parameter => 'foo')).to be(true)
       end
       it 'does not match nil' do
         expect(subject.matches?(:foo_parameter => nil)).to be(false)
@@ -83,11 +83,11 @@ describe RSpec::Puppet::ManifestMatchers::ParameterMatcher do
 
     context 'with "foo" expected' do
       subject do
-        described_class.new(:foo_parameter, "foo", :should)
+        described_class.new(:foo_parameter, 'foo', :should)
       end
 
       it 'matches "foo"' do
-        expect(subject.matches?(:foo_parameter => "foo")).to be(true)
+        expect(subject.matches?(:foo_parameter => 'foo')).to be(true)
       end
       it 'does not match nil' do
         expect(subject.matches?(:foo_parameter => nil)).to be(false)

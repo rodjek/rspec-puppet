@@ -4,11 +4,11 @@ describe 'trusted_facts', :if => Puppet::Util::Package.versioncmp(Puppet.version
   context 'without node set' do
     it { should contain_class('trusted_facts') }
     it { should compile.with_all_deps }
-    it { should contain_notify("certname-my_node.my_node") }
-    it { should contain_notify("authenticated-remote") }
-    it { should contain_notify("hostname-my_node") }
-    it { should contain_notify("domain-my_node") }
-    it { should contain_notify("no-extensions") }
+    it { should contain_notify('certname-my_node.my_node') }
+    it { should contain_notify('authenticated-remote') }
+    it { should contain_notify('hostname-my_node') }
+    it { should contain_notify('domain-my_node') }
+    it { should contain_notify('no-extensions') }
   end
 
   context 'FQDN as certname' do
@@ -16,10 +16,10 @@ describe 'trusted_facts', :if => Puppet::Util::Package.versioncmp(Puppet.version
     it { should contain_class('trusted_facts') }
     it { should compile.with_all_deps }
     it { should contain_notify("certname-#{node}") }
-    it { should contain_notify("authenticated-remote") }
-    it { should contain_notify("hostname-trusted") }
-    it { should contain_notify("domain-example.com") }
-    it { should contain_notify("no-extensions") }
+    it { should contain_notify('authenticated-remote') }
+    it { should contain_notify('hostname-trusted') }
+    it { should contain_notify('domain-example.com') }
+    it { should contain_notify('no-extensions') }
   end
 
   context 'shortname as certname' do
@@ -28,10 +28,10 @@ describe 'trusted_facts', :if => Puppet::Util::Package.versioncmp(Puppet.version
     it { should contain_class('trusted_facts') }
     it { should compile.with_all_deps }
     it { should contain_notify("certname-#{node}") }
-    it { should contain_notify("authenticated-remote") }
-    it { should contain_notify("hostname-trusted") }
-    it { should contain_notify("domain-") }
-    it { should contain_notify("no-extensions") }
+    it { should contain_notify('authenticated-remote') }
+    it { should contain_notify('hostname-trusted') }
+    it { should contain_notify('domain-') }
+    it { should contain_notify('no-extensions') }
   end
 
   context 'with extensions' do
@@ -45,10 +45,10 @@ describe 'trusted_facts', :if => Puppet::Util::Package.versioncmp(Puppet.version
     it { should contain_class('trusted_facts') }
     it { should compile.with_all_deps }
     it { should contain_notify("certname-#{node}") }
-    it { should contain_notify("authenticated-remote") }
-    it { should contain_notify("hostname-trusted") }
-    it { should contain_notify("domain-example.com") }
-    it { should_not contain_notify("no-extensions") }
+    it { should contain_notify('authenticated-remote') }
+    it { should contain_notify('hostname-trusted') }
+    it { should contain_notify('domain-example.com') }
+    it { should_not contain_notify('no-extensions') }
     extensions.each do |k, v|
       it { should contain_notify("extension-#{k}-#{v}") }
     end

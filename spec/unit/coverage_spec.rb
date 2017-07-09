@@ -16,52 +16,52 @@ describe RSpec::Puppet::Coverage do
     described_class.instance = @saved
   end
 
-  describe "filtering" do
-    it "filters boilerplate catalog resources by default" do
+  describe 'filtering' do
+    it 'filters boilerplate catalog resources by default' do
       expect(subject.filters).to eq %w[Stage[main] Class[Settings] Class[main] Node[default]]
     end
 
-    it "can add additional filters" do
-      subject.add_filter("notify", "ignore me")
-      expect(subject.filters).to include("Notify[ignore me]")
+    it 'can add additional filters' do
+      subject.add_filter('notify', 'ignore me')
+      expect(subject.filters).to include('Notify[ignore me]')
 
-      subject.add_filter("foo::bar", "ignore me")
-      expect(subject.filters).to include("Foo::Bar[ignore me]")
+      subject.add_filter('foo::bar', 'ignore me')
+      expect(subject.filters).to include('Foo::Bar[ignore me]')
 
-      subject.add_filter("class", "foo::bar")
-      expect(subject.filters).to include("Class[Foo::Bar]")
+      subject.add_filter('class', 'foo::bar')
+      expect(subject.filters).to include('Class[Foo::Bar]')
     end
 
-    it "filters resources based on the resource title" do
+    it 'filters resources based on the resource title' do
       # TODO: this is evil and uses duck typing on `#to_s` to work.
-      fake_resource = "Stage[main]"
+      fake_resource = 'Stage[main]'
       expect(subject.filtered?(fake_resource)).to be
     end
   end
 
-  describe "adding resources that could be covered" do
+  describe 'adding resources that could be covered' do
     it "adds resources that don't exist and aren't filtered" do
-      expect(subject.add("Notify[Add me]")).to be
+      expect(subject.add('Notify[Add me]')).to be
     end
 
-    it "ignores resources that have been filtered" do
-      subject.add_filter("notify", "ignore me")
-      expect(subject.add("Notify[ignore me]")).to_not be
+    it 'ignores resources that have been filtered' do
+      subject.add_filter('notify', 'ignore me')
+      expect(subject.add('Notify[ignore me]')).to_not be
 
-      subject.add_filter("foo::bar", "ignore me")
-      expect(subject.add("Foo::Bar[ignore me]")).to_not be
+      subject.add_filter('foo::bar', 'ignore me')
+      expect(subject.add('Foo::Bar[ignore me]')).to_not be
 
-      subject.add_filter("class", "foo::bar")
-      expect(subject.add("Class[Foo::Bar]")).to_not be
+      subject.add_filter('class', 'foo::bar')
+      expect(subject.add('Class[Foo::Bar]')).to_not be
     end
 
-    it "ignores resources that have already been added" do
-      subject.add("Notify[Ignore the duplicate]")
-      expect(subject.add("Notify[Ignore the duplicate]")).to_not be
+    it 'ignores resources that have already been added' do
+      subject.add('Notify[Ignore the duplicate]')
+      expect(subject.add('Notify[Ignore the duplicate]')).to_not be
     end
   end
 
-  describe "getting coverage results" do
+  describe 'getting coverage results' do
     let(:touched) { %w[First Second Third Fourth Fifth] }
     let(:untouched) { %w[Sixth Seventh Eighth Nineth] }
 
@@ -77,23 +77,23 @@ describe RSpec::Puppet::Coverage do
 
     let(:report) { subject.results }
 
-    it "counts the total number of resources" do
+    it 'counts the total number of resources' do
       expect(report[:total]).to eq 9
     end
 
-    it "counts the number of touched resources" do
+    it 'counts the number of touched resources' do
       expect(report[:touched]).to eq 5
     end
 
-    it "counts the number of untouched resources" do
+    it 'counts the number of untouched resources' do
       expect(report[:untouched]).to eq 4
     end
 
-    it "counts the coverage percentage" do
-      expect(report[:coverage]).to eq "55.56"
+    it 'counts the coverage percentage' do
+      expect(report[:coverage]).to eq '55.56'
     end
 
-    it "includes all resources and their status" do
+    it 'includes all resources and their status' do
       resources = report[:resources]
       touched.each do |name|
         expect(resources["Notify[#{name}]"]).to eq(:touched => true)

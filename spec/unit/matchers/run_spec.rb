@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RSpec::Puppet::FunctionMatchers::Run do
-  let (:wrapper) { double("function wrapper") }
+  let (:wrapper) { double('function wrapper') }
 
   before :each do
     expect(wrapper).to receive(:call).never
@@ -47,7 +47,7 @@ describe RSpec::Puppet::FunctionMatchers::Run do
         end
       end
 
-      context "and_raise_error(ArgumentError)" do
+      context 'and_raise_error(ArgumentError)' do
         before(:each) { subject.and_raise_error(ArgumentError) }
 
         it 'should match a wrapper that raises ArgumentError' do
@@ -68,7 +68,7 @@ describe RSpec::Puppet::FunctionMatchers::Run do
         end
       end
 
-      context "and_raise_error(ArgumentError, /message/)" do
+      context 'and_raise_error(ArgumentError, /message/)' do
         before(:each) { subject.and_raise_error(ArgumentError, %r{message}) }
 
         it 'should match a wrapper that raises ArgumentError("with matching message")' do

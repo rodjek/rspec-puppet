@@ -15,14 +15,14 @@ module RSpec::Puppet
 
       # This method is used by the `run` matcher to trigger the function execution, and provides a uniform interface across all puppet versions.
       def execute(*args, &block)
-        Puppet.override(@overrides, "rspec-test scope") do
+        Puppet.override(@overrides, 'rspec-test scope') do
           @func.call(@overrides[:global_scope], *freeze_arg(args), &block)
         end
       end
 
       # compatibility alias for existing tests
       def call(scope, *args)
-        RSpec.deprecate("subject.call", :replacement => "is_expected.to run.with().and_raise_error(), or execute()")
+        RSpec.deprecate('subject.call', :replacement => 'is_expected.to run.with().and_raise_error(), or execute()')
         execute(*args)
       end
 
@@ -67,7 +67,7 @@ module RSpec::Puppet
 
       # This method was formerly used by the `run` matcher to trigger the function execution, and provides puppet versions dependant interface.
       def call(*args)
-        RSpec.deprecate("subject.call", :replacement => "is_expected.to run.with().and_raise_error(), or execute()")
+        RSpec.deprecate('subject.call', :replacement => 'is_expected.to run.with().and_raise_error(), or execute()')
         if args.nil?
           @func.call
         else
@@ -90,7 +90,7 @@ module RSpec::Puppet
           context_overrides = compiler.context_overrides
           func = nil
           loaders = Puppet.lookup(:loaders)
-          Puppet.override(context_overrides, "rspec-test scope") do
+          Puppet.override(context_overrides, 'rspec-test scope') do
             func = V4FunctionWrapper.new(function_name, loaders.private_environment_loader.load(:function, function_name), context_overrides)
             @scope = context_overrides[:global_scope]
           end
@@ -159,7 +159,7 @@ module RSpec::Puppet
           {
             :trusted_information => Puppet::Context::TrustedInformation.new('remote', node_name, trusted_values),
           },
-          "Context for spec trusted hash"
+          'Context for spec trusted hash'
         )
       end
 
@@ -172,7 +172,7 @@ module RSpec::Puppet
             :loaders => loaders,
             :global_scope => compiler.context_overrides[:global_scope],
           },
-          "set globals"
+          'set globals'
         )
       end
       compiler

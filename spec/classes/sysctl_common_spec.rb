@@ -47,9 +47,9 @@ describe 'sysctl::common' do
 end
 
 describe 'sysctl::common' do
-  let(:params) { { :test_param => "yes" } }
+  let(:params) { { :test_param => 'yes' } }
 
-  it { should create_class("sysctl::common").with_test_param("yes") }
+  it { should create_class('sysctl::common').with_test_param('yes') }
   it { should have_class_count(1) }
   it { should have_exec_resource_count(1) }
   it { should have_resource_count(2) }

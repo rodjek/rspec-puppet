@@ -7,7 +7,7 @@ end
 
 describe RSpec::Puppet::Adapters::Base do
   describe '#setup_puppet' do
-    it "sets up all settings listed in the settings map" do
+    it 'sets up all settings listed in the settings map' do
       context = context_double
       expected_settings = Hash[*subject.settings_map.map { |r| [r.first, anything] }.flatten]
       expect(Puppet.settings).to receive(:initialize_app_defaults).with(hash_including(expected_settings))
@@ -16,15 +16,15 @@ describe RSpec::Puppet::Adapters::Base do
   end
 
   describe '#set_setting' do
-    describe "with a context specific setting" do
-      it "sets the Puppet setting based on the example group setting" do
-        context = context_double :confdir => "/etc/fingerpuppet"
+    describe 'with a context specific setting' do
+      it 'sets the Puppet setting based on the example group setting' do
+        context = context_double :confdir => '/etc/fingerpuppet'
         subject.setup_puppet(context)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/fingerpuppet})
       end
 
-      it "does not persist settings between example groups" do
-        context1 = context_double :confdir => "/etc/fingerpuppet"
+      it 'does not persist settings between example groups' do
+        context1 = context_double :confdir => '/etc/fingerpuppet'
         context2 = context_double
         subject.setup_puppet(context1)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/fingerpuppet})
@@ -33,31 +33,31 @@ describe RSpec::Puppet::Adapters::Base do
       end
     end
 
-    describe "with a global RSpec configuration setting" do
+    describe 'with a global RSpec configuration setting' do
       before do
-        allow(RSpec.configuration).to receive(:confdir).and_return("/etc/bunraku")
+        allow(RSpec.configuration).to receive(:confdir).and_return('/etc/bunraku')
       end
 
-      it "sets the Puppet setting based on the global configuration value" do
+      it 'sets the Puppet setting based on the global configuration value' do
         subject.setup_puppet(context_double)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/bunraku})
       end
     end
 
-    describe "with both a global RSpec configuration setting and a context specific setting" do
+    describe 'with both a global RSpec configuration setting and a context specific setting' do
       before do
-        allow(RSpec.configuration).to receive(:confdir).and_return("/etc/bunraku")
+        allow(RSpec.configuration).to receive(:confdir).and_return('/etc/bunraku')
       end
 
-      it "prefers the context specific setting" do
-        context = context_double :confdir => "/etc/sockpuppet"
+      it 'prefers the context specific setting' do
+        context = context_double :confdir => '/etc/sockpuppet'
         subject.setup_puppet(context)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/sockpuppet})
       end
     end
 
-    describe "when the setting is not available on the given version of Puppet" do
-      it "logs a warning about the setting" do
+    describe 'when the setting is not available on the given version of Puppet' do
+      it 'logs a warning about the setting' do
       end
     end
   end
@@ -94,13 +94,13 @@ describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0...4.0).cover?(Puppet.ve
   context 'when running on puppet ~> 3.2', :if => (3.2...4.0).cover?(Puppet.version.to_f) do
     it 'sets Puppet[:parser] to "current" by default' do
       subject.setup_puppet(test_context)
-      expect(Puppet[:parser]).to eq("current")
+      expect(Puppet[:parser]).to eq('current')
     end
 
     it 'reads the :parser setting' do
-      allow(test_context).to receive(:parser).and_return("future")
+      allow(test_context).to receive(:parser).and_return('future')
       subject.setup_puppet(test_context)
-      expect(Puppet[:parser]).to eq("future")
+      expect(Puppet[:parser]).to eq('future')
     end
   end
 
@@ -122,7 +122,7 @@ describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0...4.0).cover?(Puppet.ve
     end
 
     it 'reads the :ordering setting' do
-      allow(test_context).to receive(:ordering).and_return("manifest")
+      allow(test_context).to receive(:ordering).and_return('manifest')
       subject.setup_puppet(test_context)
       expect(Puppet[:ordering]).to eq('manifest')
     end
@@ -151,14 +151,14 @@ describe RSpec::Puppet::Adapters::Adapter4X, :if => Puppet.version.to_f >= 4.0 d
 
   describe '#manifest' do
     it 'returns the configured environment manifest when set' do
-      allow(RSpec.configuration).to receive(:manifest).and_return("/path/to/manifest")
+      allow(RSpec.configuration).to receive(:manifest).and_return('/path/to/manifest')
       subject.setup_puppet(double(:environment => 'rp_puppet'))
       expect(subject.manifest).to match(%r{(C:)?/path/to/manifest})
     end
 
     it 'returns nil when the configured environment manifest is not set' do
       allow(RSpec.configuration).to receive(:manifest)
-      allow(RSpec.configuration).to receive(:environmentpath).and_return("/some/missing/path:/another/missing/path")
+      allow(RSpec.configuration).to receive(:environmentpath).and_return('/some/missing/path:/another/missing/path')
       subject.setup_puppet(double(:environment => 'rp_puppet'))
       expect(subject.manifest).to be_nil
     end

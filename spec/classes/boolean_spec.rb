@@ -6,7 +6,7 @@ if Puppet::PUPPETVERSION !~ %r{0\.2}
     let(:params) { { :bool => false } }
 
     it do
-      should create_notify("bool testing").with_message("This will print when \$bool is false.")
+      should create_notify('bool testing').with_message("This will print when \$bool is false.")
     end
   end
 end

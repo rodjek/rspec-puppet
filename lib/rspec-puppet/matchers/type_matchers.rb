@@ -115,7 +115,7 @@ module RSpec::Puppet
       end
 
       def description
-        "be a valid type"
+        'be a valid type'
       end
 
       def failure_message
@@ -145,7 +145,7 @@ module RSpec::Puppet
 
       def pluralize(name)
         if name == :property
-          "properties"
+          'properties'
         else
           "#{name}s"
         end

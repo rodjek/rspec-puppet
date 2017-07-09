@@ -14,7 +14,7 @@ module RSpec::Puppet
       def matches?(catalogue)
         @catalogue = catalogue.call
 
-        if @type == "resource"
+        if @type == 'resource'
           @actual_number = @catalogue.resources.count do |res|
             !(%w[Class Node].include? res.type)
           end
@@ -27,7 +27,7 @@ module RSpec::Puppet
           end
 
           # Puppet automatically adds Class[main] and Class[Settings]
-          @actual_number -= 2 if @type == "class"
+          @actual_number -= 2 if @type == 'class'
         end
 
         @actual_number == @expected_number
@@ -37,22 +37,22 @@ module RSpec::Puppet
         desc = []
 
         desc << "contain exactly #{@expected_number}"
-        if @type == "class"
-          desc << @expected_number == 1 ? "class" : "classes"
+        if @type == 'class'
+          desc << @expected_number == 1 ? 'class' : 'classes'
         else
-          desc << @referenced_type.to_s unless @type == "resource"
-          desc << @expected_number == 1 ? "resource" : "resources"
+          desc << @referenced_type.to_s unless @type == 'resource'
+          desc << @expected_number == 1 ? 'resource' : 'resources'
         end
 
-        desc.join(" ")
+        desc.join(' ')
       end
 
       def failure_message
-        "expected that the catalogue would " + description + " but it contains #{@actual_number}"
+        'expected that the catalogue would ' + description + ' but it contains #{@actual_number}'
       end
 
       def failure_message_when_negated
-        "expected that the catalogue would not " + description + " but it does"
+        'expected that the catalogue would not ' + description + ' but it does'
       end
 
       private

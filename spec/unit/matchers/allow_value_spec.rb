@@ -7,7 +7,7 @@ describe RSpec::Puppet::TypeAliasMatchers::AllowValue, :if => Puppet.version.to_
 
   let(:catalogue) { double('catalogue builder') }
 
-  describe "one matching value" do
+  describe 'one matching value' do
     let (:values) { %w[circle] }
     before { allow(catalogue).to receive(:call).with('circle') }
 
@@ -20,7 +20,7 @@ describe RSpec::Puppet::TypeAliasMatchers::AllowValue, :if => Puppet.version.to_
     end
   end
 
-  describe "one incorrect value" do
+  describe 'one incorrect value' do
     let (:values) { %w[circle] }
     before { allow(catalogue).to receive(:call).with('circle').and_raise(Puppet::Error.new('expected a Shape value, got circle')) }
 
@@ -42,7 +42,7 @@ describe RSpec::Puppet::TypeAliasMatchers::AllowValue, :if => Puppet.version.to_
     end
   end
 
-  describe "multiple matching values" do
+  describe 'multiple matching values' do
     let (:values) { %w[circle square] }
     before do
       allow(catalogue).to receive(:call).with('circle')
@@ -58,7 +58,7 @@ describe RSpec::Puppet::TypeAliasMatchers::AllowValue, :if => Puppet.version.to_
     end
   end
 
-  describe "mixed matching/incorrect values" do
+  describe 'mixed matching/incorrect values' do
     let (:values) { %w[circle square triangle] }
     before do
       allow(catalogue).to receive(:call).with('circle').and_raise(Puppet::Error.new('expected a Shape value, got circle'))

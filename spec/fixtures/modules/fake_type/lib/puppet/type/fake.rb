@@ -1,6 +1,6 @@
 Puppet::Type.newtype(:fake) do
-  feature :eleven, "11"
-  feature :twelve, "12"
+  feature :eleven, '11'
+  feature :twelve, '12'
 
   newparam(:name, :isnamevar => true)
 

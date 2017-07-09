@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'structured_data' do
-  describe "with a single level hash of strings" do
+  describe 'with a single level hash of strings' do
     let(:params) do
       {'data' => {'foo' => 'bar', 'baz' => 'quux'}}
     end
@@ -13,19 +13,19 @@ describe 'structured_data' do
     }
   end
 
-  describe "with integers as keys" do
+  describe 'with integers as keys' do
     let(:params) do
       { 'data' => {1 => 'uno', 2 => 'dos'}}
     end
 
-    context "puppet less than 4", :unless => Puppet.version.to_f >= 4.0 do
+    context 'puppet less than 4', :unless => Puppet.version.to_f >= 4.0 do
       it {
         should contain_structured_data__def('thing').with(
-          'data' => {"1" => 'uno', "2" => 'dos'}
+          'data' => {'1' => 'uno', '2' => 'dos'}
         )
       }
     end
-    context "puppet 4 or greater", :if => Puppet.version.to_f >= 4.0 do
+    context 'puppet 4 or greater', :if => Puppet.version.to_f >= 4.0 do
       it {
         should contain_structured_data__def('thing').with(
           'data' => {1 => 'uno', 2 => 'dos'}

@@ -135,7 +135,7 @@ module RSpec::Puppet
             :environments => loader,
             :current_environment => env,
           },
-          "Setup rspec-puppet environments"
+          'Setup rspec-puppet environments'
         )
       end
 

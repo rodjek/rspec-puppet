@@ -128,7 +128,7 @@ module RSpec::Puppet
 
       def description
         values = []
-        value_str_prefix = "with"
+        value_str_prefix = 'with'
 
         if @expected_params_count
           values << "exactly #{@expected_params_count} parameters"
@@ -143,22 +143,22 @@ module RSpec::Puppet
         end
 
         if @notifies.any?
-          value_str_prefix = "that notifies"
+          value_str_prefix = 'that notifies'
           values = @notifies
         end
 
         if @subscribes.any?
-          value_str_prefix = "that subscribes to"
+          value_str_prefix = 'that subscribes to'
           values = @subscribes
         end
 
         if @requires.any?
-          value_str_prefix = "that requires"
+          value_str_prefix = 'that requires'
           values = @requires
         end
 
         if @befores.any?
-          value_str_prefix = "that comes before"
+          value_str_prefix = 'that comes before'
           values = @befores
         end
 
@@ -192,7 +192,7 @@ module RSpec::Puppet
       end
 
       def errors
-        @errors.empty? ? "" : " with #{@errors.join(', and parameter ')}"
+        @errors.empty? ? '' : " with #{@errors.join(', and parameter ')}"
       end
 
       def generate_param_list(list, type)

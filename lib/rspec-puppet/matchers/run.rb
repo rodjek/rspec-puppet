@@ -129,7 +129,7 @@ module RSpec::Puppet
 
       def failure_message_generic(type, func_obj)
         message = "expected #{func_name}(#{func_params}) to "
-        message << "not " if type == :should_not
+        message << 'not ' if type == :should_not
 
         if @has_expected_return
           message << "have returned #{@expected_return.inspect}"
@@ -139,7 +139,7 @@ module RSpec::Puppet
             message << " matching #{@expected_error_message.inspect}"
           end
         else
-          message << "have run successfully"
+          message << 'have run successfully'
         end
         message << failure_message_actual(type)
       end

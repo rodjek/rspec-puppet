@@ -55,7 +55,7 @@ module Puppet
   # to the manifests on disk during compilation, so we have to temporarily
   # disable the pretending when running it.
   class Node::Environment
-    if instance_methods.include?("validate_dirs")
+    if instance_methods.include?('validate_dirs')
       old_validate_dirs = instance_method(:validate_dirs)
 
       define_method(:validate_dirs) do |dirs|
@@ -129,7 +129,7 @@ class Pathname
     path.split(SEPARATOR_PAT).last || path[%r{(#{SEPARATOR_PAT})}, 1] || path
   end
 
-  if instance_methods.include?("chop_basename")
+  if instance_methods.include?('chop_basename')
     old_chop_basename = instance_method(:chop_basename)
 
     define_method(:chop_basename) do |path|

@@ -1,9 +1,9 @@
 require 'rake'
 require 'rspec/core/rake_task'
 
-desc "Run all RSpec code examples"
+desc 'Run all RSpec code examples'
 RSpec::Core::RakeTask.new(:rspec) do |t|
-  opts = File.exist?('spec/spec.opts') ? File.read("spec/spec.opts").chomp : ""
+  opts = File.exist?('spec/spec.opts') ? File.read('spec/spec.opts').chomp : ''
   t.rspec_opts = opts
 end
 
@@ -13,7 +13,7 @@ namespace :rspec do
     desc "Run #{suite} RSpec code examples"
     RSpec::Core::RakeTask.new(suite) do |t|
       t.pattern = "spec/#{suite}/**/*_spec.rb"
-      opts = File.exist?('spec/spec.opts') ? File.read("spec/spec.opts").chomp : ""
+      opts = File.exist?('spec/spec.opts') ? File.read('spec/spec.opts').chomp : ''
       t.rspec_opts = opts
     end
   end

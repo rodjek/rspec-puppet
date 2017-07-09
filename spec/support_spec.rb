@@ -27,17 +27,17 @@ describe RSpec::Puppet::Support do
     end
   end
 
-  describe "#ref" do
+  describe '#ref' do
     it 'should return a new RawString with the type/title format' do
       expect(subject.ref('Package', 'tomcat').inspect).to eq("Package['tomcat']")
     end
   end
 
   describe '#str_from_value' do
-    it "should quote strings" do
+    it 'should quote strings' do
       expect(subject.str_from_value('a string')).to eq('"a string"')
     end
-    it "should not quote numbers" do
+    it 'should not quote numbers' do
       expect(subject.str_from_value(100)).to eq('100')
       expect(subject.str_from_value(-42)).to eq('-42')
       expect(subject.str_from_value(3.14)).to eq('3.14')
@@ -48,13 +48,13 @@ describe RSpec::Puppet::Support do
     it "should use literal 'undef' when receiving :undef" do
       expect(subject.str_from_value(:undef)).to eq('undef')
     end
-    it "should convert Symbols to Strings" do
+    it 'should convert Symbols to Strings' do
       expect(subject.str_from_value(:a_symbol)).to eq('"a_symbol"')
     end
-    it "should handle Arrays recursively" do
+    it 'should handle Arrays recursively' do
       expect(subject.str_from_value([1, 2, 3])).to eq('[ 1, 2, 3 ]')
     end
-    it "should handle Hashes recursively" do
+    it 'should handle Hashes recursively' do
       expect(subject.str_from_value(:k1 => 'v1')).to eq('{ "k1" => "v1" }')
       expect(subject.str_from_value('k2' => 'v2')).to eq('{ "k2" => "v2" }')
     end
@@ -64,49 +64,49 @@ describe RSpec::Puppet::Support do
     before do
       class << subject
         def class_name
-          "class_name"
+          'class_name'
         end
 
         def site_pp_str
-          ""
+          ''
         end
 
         def import_str
-          ""
+          ''
         end
       end
     end
 
-    context "without any properties" do
-      it "builds a test manifest" do
+    context 'without any properties' do
+      it 'builds a test manifest' do
         expect(subject.build_code(:class, {})).to eq "\ninclude class_name"
       end
     end
 
-    context "with a pre_condition available" do
+    context 'with a pre_condition available' do
       before do
         class << subject
           def pre_condition
-            "pre_condition"
+            'pre_condition'
           end
         end
       end
 
-      it "builds a test manifest" do
+      it 'builds a test manifest' do
         expect(subject.build_code(:class, {})).to eq "\npre_condition\ninclude class_name"
       end
     end
 
-    context "with a post_condition available" do
+    context 'with a post_condition available' do
       before do
         class << subject
           def post_condition
-            "post_condition"
+            'post_condition'
           end
         end
       end
 
-      it "builds a test manifest" do
+      it 'builds a test manifest' do
         expect(subject.build_code(:class, {})).to eq "\ninclude class_name\npost_condition"
       end
     end

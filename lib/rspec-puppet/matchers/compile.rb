@@ -2,10 +2,10 @@ module RSpec::Puppet
   module ManifestMatchers
     class Compile
       def initialize
-        @failed_resource = ""
+        @failed_resource = ''
         @check_deps = false
         @cycles = []
-        @error_msg = ""
+        @error_msg = ''
       end
 
       def with_all_deps
@@ -41,7 +41,7 @@ module RSpec::Puppet
       def description
         case @expected_error
         when nil
-          "compile into a catalogue without dependency cycles"
+          'compile into a catalogue without dependency cycles'
         when Regexp
           "fail to compile and raise an error matching #{@expected_error.inspect}"
         else
@@ -70,9 +70,9 @@ module RSpec::Puppet
 
       def failure_message_when_negated
         if @expected_error.nil?
-          "expected that the catalogue would not compile but it does"
+          'expected that the catalogue would not compile but it does'
         else
-          "expected that the catalogue would compile but it does not"
+          'expected that the catalogue would compile but it does not'
         end
       end
 
@@ -156,7 +156,7 @@ module RSpec::Puppet
 
         cycles.each do |cycle|
           paths = catalogue.paths_in_cycle(cycle)
-          @cycles << (paths.map { |path| '(' + path.join(" => ") + ')' }.join("\n") + "\n")
+          @cycles << (paths.map { |path| '(' + path.join(' => ') + ')' }.join("\n") + "\n")
         end
       end
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'structured_data' do
-  describe "with a single level array of strings" do
+  describe 'with a single level array of strings' do
     let(:params) do
       {'data' => %w[foo bar baz quux]}
     end
@@ -13,7 +13,7 @@ describe 'structured_data' do
     }
   end
 
-  describe "with integers as data values" do
+  describe 'with integers as data values' do
     let(:params) do
       { 'data' => ['first', 1, 'second', 2] }
     end
