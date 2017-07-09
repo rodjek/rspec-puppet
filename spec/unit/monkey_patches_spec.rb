@@ -44,7 +44,7 @@ describe 'Pathname#rspec_puppet_basename' do
     it 'returns the basename of a path (basic cases)' do
       expect(subject.rspec_puppet_basename('/Some/path/to/test.txt')).to eq('test.txt')
       expect(subject.rspec_puppet_basename(File.join('/tmp'))).to eq('tmp')
-      expect(subject.rspec_puppet_basename(File.join(*%w[g f d s a b]))).to eq('b')
+      expect(subject.rspec_puppet_basename(File.join('g', 'f', 'd', 's', 'a', 'b'))).to eq('b')
       expect(subject.rspec_puppet_basename(File.join('/tmp/'))).to eq('tmp')
       expect(subject.rspec_puppet_basename('/')).to eq('/')
       expect(subject.rspec_puppet_basename('//')).to eq('/')
