@@ -9,7 +9,7 @@ module RSpec::Puppet
           # `*nil` does not evaluate to "no params" on ruby 1.8 :-(
           @actual_return = @params.nil? ? @func_obj.execute(&@block) : @func_obj.execute(*@params, &@block)
           @has_returned = true
-        rescue Exception => e
+        rescue StandardError => e
           @actual_error = e
         end
 
@@ -67,7 +67,7 @@ module RSpec::Puppet
         @has_expected_error = true
         case error_or_message
         when String, Regexp
-          @expected_error = Exception
+          @expected_error = StandardError
           @expected_error_message = error_or_message
         else
           @expected_error = error_or_message
