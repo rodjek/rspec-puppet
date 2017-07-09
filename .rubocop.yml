@@ -1,0 +1,32 @@
+AllCops:
+    TargetRubyVersion: 1.9
+
+inherit_from: .rubocop_todo.yml
+
+Style/FileName:
+    Exclude:
+        - 'lib/rspec-puppet.rb'
+        - 'spec/fixtures/modules/test/lib/puppet/parser/functions/camelCaseFunction.rb'
+        - 'spec/functions/camelCaseFunction_spec.rb'
+
+Style/HashSyntax:
+    EnforcedStyle: hash_rockets
+
+Style/Lambda:
+    EnforcedStyle: lambda
+
+Style/RegexpLiteral:
+    EnforcedStyle: percent_r
+
+Style/StringLiterals:
+    EnforcedStyle: single_quotes
+
+Style/SymbolArray:
+    EnforcedStyle: brackets
+
+Style/TrailingCommaInLiteral:
+    EnforcedStyleForMultiline: comma
+
+# Ruby >= 2.3 feature
+Style/SafeNavigation:
+    Enabled: false

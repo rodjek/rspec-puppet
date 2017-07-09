@@ -1,0 +1,137 @@
+# Offense count: 3
+# Configuration parameters: Include.
+# Include: **/Gemfile, **/gems.rb
+Bundler/DuplicatedGem:
+  Exclude:
+    - 'Gemfile'
+
+# Offense count: 2
+# Cop supports --auto-correct.
+# Configuration parameters: Include, TreatCommentsAsGroupSeparators.
+# Include: **/Gemfile, **/gems.rb
+Bundler/OrderedGems:
+  Exclude:
+    - 'Gemfile'
+
+# Offense count: 1
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: auto_detection, squiggly, active_support, powerpack, unindent
+Layout/IndentHeredoc:
+  Exclude:
+    - 'lib/rspec-puppet/setup.rb'
+
+# Offense count: 3
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: space, no_space
+Layout/SpaceInsideStringInterpolation:
+  Exclude:
+    - 'lib/rspec-puppet/coverage.rb'
+
+# Offense count: 1
+Lint/NestedMethodDefinition:
+  Exclude:
+    - 'lib/rspec-puppet/coverage.rb'
+
+# Offense count: 27
+Metrics/AbcSize:
+  Max: 50
+
+# Offense count: 39
+# Configuration parameters: CountComments, ExcludedMethods.
+Metrics/BlockLength:
+  Max: 200
+
+Metrics/BlockNesting:
+  Enabled: false
+
+# Offense count: 6
+# Configuration parameters: CountComments.
+Metrics/ClassLength:
+  Max: 400
+
+# Offense count: 11
+Metrics/CyclomaticComplexity:
+  Max: 14
+
+# Offense count: 278
+# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+# URISchemes: http, https
+Metrics/LineLength:
+  Max: 230
+
+# Offense count: 49
+# Configuration parameters: CountComments.
+Metrics/MethodLength:
+  Max: 37
+
+# Offense count: 1
+# Configuration parameters: CountComments.
+Metrics/ModuleLength:
+  Max: 400
+
+# Offense count: 1
+# Configuration parameters: CountKeywordArgs.
+Metrics/ParameterLists:
+  Max: 8
+
+# Offense count: 12
+Metrics/PerceivedComplexity:
+  Max: 20
+
+# Offense count: 22
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles, ProceduralMethods, FunctionalMethods, IgnoredMethods.
+# SupportedStyles: line_count_based, semantic, braces_for_chaining
+# ProceduralMethods: benchmark, bm, bmbm, create, each_with_object, measure, new, realtime, tap, with_object
+# FunctionalMethods: let, let!, subject, watch
+# IgnoredMethods: lambda, proc, it
+Style/BlockDelimiters:
+  Exclude:
+    - 'lib/rspec-puppet/coverage.rb'
+    - 'lib/rspec-puppet/matchers/create_generic.rb'
+    - 'lib/rspec-puppet/support.rb'
+    - 'spec/classes/facts_spec.rb'
+    - 'spec/defines/sysctl_before_spec.rb'
+    - 'spec/functions/trusted_facts_lookup_spec.rb'
+    - 'spec/hosts/array_spec.rb'
+    - 'spec/unit/matchers/compile_spec.rb'
+
+# Offense count: 27
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: nested, compact
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# Offense count: 1
+Style/ClassVars:
+  Exclude:
+    - 'lib/rspec-puppet/support.rb'
+
+# Offense count: 42
+Style/Documentation:
+  Enabled: false
+
+# Offense count: 6
+Style/DoubleNegation:
+  Exclude:
+    - 'lib/rspec-puppet/coverage.rb'
+    - 'lib/rspec-puppet/matchers/parameter_matcher.rb'
+    - 'lib/rspec-puppet/matchers/run.rb'
+    - 'lib/rspec-puppet/monkey_patches.rb'
+    - 'spec/unit/monkey_patches_spec.rb'
+
+# Offense count: 123
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: when_needed, always, never
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# Offense count: 5
+Style/MethodMissing:
+  Exclude:
+    - 'lib/rspec-puppet/coverage.rb'
+    - 'lib/rspec-puppet/matchers/create_generic.rb'
+    - 'lib/rspec-puppet/matchers/dynamic_matchers.rb'
