@@ -8,21 +8,21 @@ describe 'test::basic' do
     let(:node) { 'test123.test.com' }
     let(:facts) do
       {
-        :fqdn       => 'notthis.test.com',
+        :fqdn       => 'othertest.test.com',
         :networking => {
           :primary => 'eth0',
         },
       }
     end
 
-    it { should contain_notify('test123.test.com') }
-    it { should_not contain_notify('notthis.test.com') }
+    it { should contain_notify('othertest.test.com') }
+    it { should_not contain_notify('test123.test.com') }
 
     context 'existing networking facts should not be clobbered', :if => Puppet.version.to_f >= 4.0 do
       let(:pre_condition) { 'notify { [$facts["networking"]["primary"], $facts["networking"]["hostname"]]: }' }
 
       it { should contain_notify('eth0') }
-      it { should contain_notify('test123') }
+      it { should contain_notify('othertest') }
     end
   end
 end
