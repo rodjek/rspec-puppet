@@ -64,7 +64,7 @@ describe RSpec::Puppet::Adapters::Base do
   end
 end
 
-describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).include?(Puppet.version.to_f) do
+describe RSpec::Puppet::Adapters::Adapter35, :if => (3.5 ... 4.0).include?(Puppet.version.to_f) do
 
   let(:test_context) { double :environment => 'rp_env' }
 
@@ -81,11 +81,18 @@ describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).include?(Puppe
     end
   end
 
-  context 'when running on puppet 3.x, with x >= 5', :if => (3.5 ... 4.0).include?(Puppet.version.to_f) do
+end
+
+describe RSpec::Puppet::Adapters::Adapter34, :if => (3.4 ... 4.0).include?(Puppet.version.to_f) do
+
+  let(:test_context) { double :environment => 'rp_env' }
+
+  context 'when running on puppet 3.4 or later', :if => (3.4 ... 4.0).include?(Puppet.version.to_f) do
     it 'sets Puppet[:trusted_node_data] to false by default' do
       subject.setup_puppet(test_context)
       expect(Puppet[:trusted_node_data]).to eq(false)
     end
+
     it 'reads the :trusted_node_data setting' do
       allow(test_context).to receive(:trusted_node_data).and_return(true)
       subject.setup_puppet(test_context)
@@ -93,18 +100,11 @@ describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).include?(Puppe
     end
   end
 
-  context 'when running on puppet ~> 3.2', :if => (3.2 ... 4.0).include?(Puppet.version.to_f) do
-    it 'sets Puppet[:parser] to "current" by default' do
-      subject.setup_puppet(test_context)
-      expect(Puppet[:parser]).to eq("current")
-    end
+end
 
-    it 'reads the :parser setting' do
-      allow(test_context).to receive(:parser).and_return("future")
-      subject.setup_puppet(test_context)
-      expect(Puppet[:parser]).to eq("future")
-    end
-  end
+describe RSpec::Puppet::Adapters::Adapter33, :if => (3.3 ... 4.0).include?(Puppet.version.to_f) do
+
+  let(:test_context) { double :environment => 'rp_env' }
 
   context 'when running on puppet ~> 3.3', :if => (3.3 ... 4.0).include?(Puppet.version.to_f) do
     it 'sets Puppet[:stringify_facts] to true by default' do
@@ -129,6 +129,26 @@ describe RSpec::Puppet::Adapters::Adapter3X, :if => (3.0 ... 4.0).include?(Puppe
       expect(Puppet[:ordering]).to eq('manifest')
     end
   end
+
+end
+
+describe RSpec::Puppet::Adapters::Adapter32, :if => (3.2 ... 4.0).include?(Puppet.version.to_f) do
+
+  let(:test_context) { double :environment => 'rp_env' }
+
+  context 'when running on puppet ~> 3.2', :if => (3.2 ... 4.0).include?(Puppet.version.to_f) do
+    it 'sets Puppet[:parser] to "current" by default' do
+      subject.setup_puppet(test_context)
+      expect(Puppet[:parser]).to eq("current")
+    end
+
+    it 'reads the :parser setting' do
+      allow(test_context).to receive(:parser).and_return("future")
+      subject.setup_puppet(test_context)
+      expect(Puppet[:parser]).to eq("future")
+    end
+  end
+
 end
 
 describe RSpec::Puppet::Adapters::Adapter4X, :if => Puppet.version.to_f >= 4.0 do

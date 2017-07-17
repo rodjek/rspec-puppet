@@ -99,7 +99,7 @@ A hash of default trusted facts that should be used for all the tests
 #### trusted\_node\_data
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `false` | 3.x, 4.x, 5.x
+Boolean | `false` | >=3.4, 4.x, 5.x
 
 Configures rspec-puppet to use the `$trusted` hash when compiling the
 catalogues.
@@ -143,14 +143,14 @@ The search path for environment directories.
 #### parser
 Type   | Default     | Puppet Version(s)
 ------ | ----------- | -----------------
-String | `"current"` | 3.x
+String | `"current"` | >= 3.2
 
 This switches between the 3.x (`current`) and 4.x (`future`) parsers.
 
 #### ordering
 Type   | Default        | Puppet Version(s)
 ------ | -------------- | -----------------
-String | `"title-hash"` | 3.x, 4.x, 5.x
+String | `"title-hash"` | >= 3.3, 4.x, 5.x
 
 How unrelated resources should be ordered when applying a catalogue.
  * `manifest` - Use the order in which the resources are declared in the
@@ -162,7 +162,7 @@ How unrelated resources should be ordered when applying a catalogue.
 #### strict\_variables
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `false` | 3.x, 4.x, 5.x
+Boolean | `false` | >= 3.5, 4.x, 5.x
 
 Makes Puppet raise an error when it tries to reference a variable that hasn't
 been defined (not including variables that have been explicitly set to
@@ -171,7 +171,7 @@ been defined (not including variables that have been explicitly set to
 #### stringify\_facts
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `true`  | 3.x, 4.x, 5.x
+Boolean | `true`  | >= 3.3, 4.x, 5.x
 
 Makes rspec-puppet coerce all the fact values into strings (matching the
 behaviour of older versions of Puppet).

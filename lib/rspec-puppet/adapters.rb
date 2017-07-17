@@ -183,17 +183,45 @@ module RSpec::Puppet
       end
     end
 
-    class Adapter3X < Base
+    class Adapter30 < Base
       def settings_map
         super.concat([
           [:manifestdir, :manifest_dir],
           [:manifest, :manifest],
           [:templatedir, :template_dir],
           [:hiera_config, :hiera_config],
+        ])
+      end
+    end
+
+    class Adapter32 < Adapter30
+      def settings_map
+        super.concat([
           [:parser, :parser],
-          [:trusted_node_data, :trusted_node_data],
+        ])
+      end
+    end
+
+    class Adapter33 < Adapter32
+      def settings_map
+        super.concat([
           [:ordering, :ordering],
           [:stringify_facts, :stringify_facts],
+        ])
+      end
+    end
+
+    class Adapter34 < Adapter33
+      def settings_map
+        super.concat([
+          [:trusted_node_data, :trusted_node_data],
+        ])
+      end
+    end
+
+    class Adapter35 < Adapter34
+      def settings_map
+        super.concat([
           [:strict_variables, :strict_variables],
         ])
       end
@@ -212,7 +240,11 @@ module RSpec::Puppet
     def self.get
       [
         ['4.0', Adapter4X],
-        ['3.0', Adapter3X],
+        ['3.5', Adapter35],
+        ['3.4', Adapter34],
+        ['3.3', Adapter33],
+        ['3.2', Adapter32],
+        ['3.0', Adapter30],
         ['2.7', Adapter27]
       ].each do |(version, klass)|
         if Puppet::Util::Package.versioncmp(Puppet.version, version) >= 0
