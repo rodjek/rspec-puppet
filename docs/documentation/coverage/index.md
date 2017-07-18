@@ -45,9 +45,12 @@ If this percentage is not achieved, a test failure will be raised.
 Resources declared outside of the module being tested (i.e. resources added by
 module dependencies) are automatically excluded from the coverage report.
 
-{% callout info %}
-Prior to Puppet 4.6.0, resources created by functions (`create_resources`,
-`ensure_packages` etc) did not have the required information in them to
-determine which manifest they came from and so can not be excluded from the
-coverage report
-{% endcallout %}
+<div class="callout-block callout-info">
+<div class="icon-holder"><i class="fa fa-info-circle"></i></div>
+<div class="content">
+Prior to Puppet 4.6.0, resources created by functions
+(<code>create_resources</code>, <code>ensure_packages</code> etc) did not have
+the required information in them to determine which manifest they came from and
+so can not be excluded from the coverage report.
+</div>
+</div>
