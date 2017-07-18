@@ -453,7 +453,7 @@ select {
   color: #a2a6af;
 }
 .doc-content {
-  margin-left: 230px;
+  margin-left: 220px;
 }
 .doc-section {
   padding-top: 15px;
@@ -812,7 +812,7 @@ figure.highlight {
   width: 200px;
 }
 .doc-menu {
-  width: 230px;
+  width: 220px;
   list-style: none;
   padding-left: 0;
 }
@@ -960,7 +960,7 @@ figure.highlight {
 }
 .affix,
 .affix-bottom {
-  width: 230px;
+  width: 220px;
 }
 .affix-bottom {
   position: absolute;
