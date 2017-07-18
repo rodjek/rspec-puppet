@@ -8,9 +8,12 @@ breadcrumbs:
         path: /documentation/
 ---
 
-{% callout info %}
+<div class="callout-block callout-info">
+<div class="icon-holder"><i class="fa fa-info-circle"></i></div>
+<div class="content">
 Application management is only available on Puppet >= 4.3.0
-{% endcallout %}
+</div>
+</div>
 
 ## Basic Test Structure
 
@@ -38,10 +41,13 @@ end
    resource mappings. The `ref` method creates these references (a normal
    string will not suffice).
 
-{% callout info %}
+<div class="callout-block callout-info">
+<div class="icon-holder"><i class="fa fa-info-circle"></i></div>
+<div class="content">
 Cross-node support is not available at the moment and will return an error.
 Ensure that you model your tests to be single-node.
-{% endcallout %}
+</div>
+</div>
 
 ## Configuring The Tests
 

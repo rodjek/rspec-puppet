@@ -61,12 +61,15 @@ This can also be used to test if a class has been included in the catalogue.
 it { is_expected.to contain_class('apache::vhosts') }
 {% endhighlight %}
 
-{% callout info %}
+<div class="callout-block callout-info">
+<div class="icon-holder"><i class="fa fa-info-circle"></i></div>
+<div class="content">
 rspec-puppet does not do the class name parsing and lookup that the Puppet
 parser would do for you. The matcher only accepts fully qualified class names
-without any leading colons. This means that class `foo::bar` will only be
-matched by `foo::bar`, not by `::foo::bar` or `bar` alone.
-{% endcallout %}
+without any leading colons. This means that class <code>foo::bar</code> will only be
+matched by <code>foo::bar</code>, not by <code>::foo::bar</code> or <code>bar</code> alone.
+</div>
+</div>
 
 ### Test resource parameters
 
@@ -130,18 +133,19 @@ matter if it was defined using the relationship metaparameters (`require`,
 `before`, `notify`, `subscribe`) or the chaining arrows (`->`, `<-`, `~>`,
 `<~`).
 
-{% callout info %}
+<div class="callout-block callout-info">
+<div class="icon-holder"><i class="fa fa-info-circle"></i></div>
+<div class="content">
 The values passed to these methods must be in the format used in the Puppet
 catalogue (which is slightly different to the way they're written in a Puppet
 manifest).
- * The resource titles must be unquoted (`Package[apache]` instead of
-   `Package['apache']`)
- * One title per resource (`[Package[apache], Package[htpasswd]]` instead of
-   `Package[apache, htpasswd]`)
- * If referencing a class, it must be fully qualified and should not have
-   a leading `::` (`Class[apache::service]` instead of
-   `Class[::apache::service]`)
-{% endcallout %}
+<ul>
+<li>The resource titles must be unquoted (<code>Package[apache]</code> instead of <code>Package['apache']</code>)</li>
+<li>One title per resource (<code>[Package[apache], Package[htpasswd]]</code> instead of <code>Package[apache, htpasswd]</code>)</li>
+<li>If referencing a class, it must be fully qualified and should not have a leading <code>::</code> (<code>Class[apache::service]</code> instead of <code>Class[::apache::service]</code>)</li>
+</ul>
+</div>
+</div>
 
 {% highlight ruby %}
 it { is_expected.to contain_file('a').that_requires('File[b]') }

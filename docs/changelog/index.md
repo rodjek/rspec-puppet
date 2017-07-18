@@ -4,7 +4,10 @@ title: Change Log
 icon: fa fa-history
 ---
 
-## 2.6.4 {% view_diff v2.6.3...v2.6.4 %}
+## 2.6.4
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.3...v2.6.4"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
 
@@ -15,7 +18,10 @@ icon: fa fa-history
    specified commands, which was preventing the correct provider from being
    assigned to a resource when performing cross-platform testing.
 
-## 2.6.3 {% view_diff v2.6.2...v2.6.3 %}
+## 2.6.3
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.2...v2.6.3"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
 
@@ -23,7 +29,10 @@ icon: fa fa-history
    specified by `RSpec.configuration.default_facts` and `let(:facts)` if the
    node name has been manually specified with `let(:node)`.
 
-## 2.6.2 {% view_diff v2.6.1...v2.6.2 %}
+## 2.6.2
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.1...v2.6.2"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Changed
 
@@ -46,7 +55,10 @@ icon: fa fa-history
  * The contents of the `networking` fact hash is no longer cleared when merging
    in the facts derived from the node name.
 
-## 2.6.1 {% view_diff v2.6.0...v2.6.1 %}
+## 2.6.1
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.0...v2.6.1"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
 
@@ -55,7 +67,10 @@ icon: fa fa-history
    caused a failure for tests of defined types that contained `$` characters
    as Puppet would try and interpolate the values in the title as variable(s).
 
-## 2.6.0 {% view_diff v2.5.0...v2.6.0 %}
+## 2.6.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.5.0...v2.6.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 The Windows parity release. rspec-puppet now officially supports Windows. A lot
 of work has been put in to support cross-platform tests, so that you can now
@@ -141,7 +156,10 @@ test your Windows manifests on \*nix, and your \*nix manifests on Windows.
  * Namespaced resources are now correctly capitalised when being added to the
    resource coverage filter.
 
-## 2.5.0 {% view_diff v2.4.0...v2.5.0 %}
+## 2.5.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.4.0...v2.5.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 Headline features are app management, nested hashes in params, and testing for
 "internal" functions.
@@ -159,7 +177,10 @@ Thanks to everyone who contributed: Leo Arnold, Matt Schuchard, and Si Wilkins.
  * Link functions and types into test dir on setup
  * Increased test coverage
 
-## 2.4.0 {% view_diff v2.3.0...v2.4.0 %}
+## 2.4.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.3.0...v2.4.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 This release now supports testing exported resources in the same way that
 normal resources in the catalogue are tested. Access them in your examples
@@ -179,21 +200,30 @@ as all the folks helping out on github for the contributions to this release.
  * Added code to reinitialise Puppet before each example in order to ensure
    a consistent test environment.
 
-## 2.3.2 {% view_diff v2.3.1...v2.3.2 %}
+## 2.3.2
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.3.1...v2.3.2"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 Properly fix yesterday's issue by unsharing the cache key before passing the
 data to Puppet. This also contains a new test matrix to avoid missing
 a half-baked fix.
 
 
-## 2.3.1 {% view_diff v2.3.0...v2.3.1 %}
+## 2.3.1
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.3.0...v2.3.1"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 A quick workaround to re-enable testing with the recently released Puppet 3.8.5
 and the soon to be released Puppet 4.3.2. See PUP-5743 for the gritty details.
 Upgrade to this version if you hit the "undefined method \`resource' for
 nil:NilClass" error.
 
-## 2.3.0 {% view_diff v2.2.0...v2.3.0 %}
+## 2.3.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.2.0...v2.3.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 rspec-puppet now supports testing custom types, `:undef` values in params,
 structured facts, and checks resource dependencies recursively.
@@ -248,7 +278,10 @@ Kohlmeyer, and Tristan Colgate for their contibutions to this release.
  * Document the `scope` property.
 
 
-## 2.2.0 {% view_diff v2.1.0...v2.2.0 %}
+## 2.2.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.1.0...v2.2.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Added
  * Added setting for ordering, strict\_variables, stringify\_facts, and
@@ -260,7 +293,10 @@ Kohlmeyer, and Tristan Colgate for their contibutions to this release.
  * Several fixes and enhancements for the `run` matcher
  * Recompile the catalogue when the hiera config changes
 
-## 2.1.0 {% view_diff v2.0.1...v2.1.0 %}
+## 2.1.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.0.1...v2.1.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Added
  * Puppet 4 support
@@ -272,12 +308,18 @@ Kohlmeyer, and Tristan Colgate for their contibutions to this release.
  * Fix functions accidentally modifying rspec function arguments
  * Restructured TravisCI matrix (NB: Puppet 2.6 is no longer tested)
 
-## 2.0.1 {% view_diff v2.0.0...v2.0.1 %}
+## 2.0.1
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.0.0...v2.0.1"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
  * Allow RSpec 2 to still be used
 
-## 2.0.0 {% view_diff v1.0.1...v2.0.0 %}
+## 2.0.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v1.0.1...v2.0.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Changed
  * `subject` is now a lambda to enable catching of compilation failures.
@@ -295,14 +337,20 @@ Kohlmeyer, and Tristan Colgate for their contibutions to this release.
    dependency cycles
 
 
-## 1.0.1 {% view_diff v1.0.0...v1.0.1 %}
+## 1.0.1
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v1.0.0...v1.0.1"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Fixed bug where under certain circumstances a newline isn't added after the
    user specified `pre_condition`, causing the catalogue compilation to fail.
  * When comparing parameter values, munge the actual value into an array if the
    expected value is an array with a single item.
 
-## 1.0.0 {% view_diff v0.1.6...v1.0.0 %}
+## 1.0.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.6...v1.0.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Added support for setting `confdir` inside the `RSpec.configure` block
  * Added support for checking if all the dependencies in the graph have been met
@@ -331,23 +379,35 @@ Kohlmeyer, and Tristan Colgate for their contibutions to this release.
    parameters.
  * Deprecated `include_class` matcher in favour of `contain_class`
 
-## 0.1.6 {% view_diff v0.1.5...v0.1.6 %}
+## 0.1.6
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.5...v0.1.6"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Allow an array of pre\_conditions
  * Fix `object name is a symbol` error when a test on a function fails
  * Puppet 3.1.x support
 
-## 0.1.5 {% view_diff v0.1.4...v0.1.5 %}
+## 0.1.5
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.4...v0.1.5"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Puppet 3.0.x support
 
-## 0.1.4 {% view_diff v0.1.3...v0.1.4 %}
+## 0.1.4
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.3...v0.1.4"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Improved catalogue caching for faster testing on the same compiled catalogue
  * Add support for pre\_condition when testing functions
  * Fix bug when specifying a array with a single value as a parameter
 
-## 0.1.3 {% view_diff v0.1.1...v0.1.3 %}
+## 0.1.3
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.1...v0.1.3"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add support for testing the catalogue of a node
  * Add Puppet[:config] as a supported option
@@ -355,49 +415,76 @@ Kohlmeyer, and Tristan Colgate for their contibutions to this release.
  * Chained methods added to description of contain\_\* matcher
  * Add support for Ruby 1.9.x
 
-## 0.1.1 {% view_diff v0.1.0...v0.1.1 %}
+## 0.1.1
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.0...v0.1.1"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add 'with' and 'without' chains to the 'contain\_' matcher to support
    testing multiple parameters by supplying a Hash.
  * Add support for passing regular expressions to 'with\_' and 'without\_'
    chains.
 
-## 0.1.0 {% view_diff v0.0.9...v0.1.0 %}
+## 0.1.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.9...v0.1.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 * Add support for testing Puppet functions
 
-## 0.0.9 {% view_diff v0.0.8...v0.0.9 %}
+## 0.0.9
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.8...v0.0.9"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add support for setting custom 'manifestdir', 'manifest' and 'templatedir'
    Puppet config values
  * Provide a default 'domain' fact
 
-## 0.0.8 {% view_diff v0.0.7...v0.0.8 %}
+## 0.0.8
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.7...v0.0.8"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add support for fact names as Symbols
 
-## 0.0.7 {% view_diff v0.0.6...v0.0.7 %}
+## 0.0.7
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.6...v0.0.7"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add 'without\_\*' chain to the 'contain\_\*' matcher to test for the absence
    of parameters.
 
-## 0.0.6 {% view_diff v0.0.5...v0.0.6 %}
+## 0.0.6
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.7...v0.0.6"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Remove Faces API call for Puppet 2.7.x
  * Remove quotes from resource references
 
 
-## 0.0.5 {% view_diff v0.0.4...v0.0.5 %}
+## 0.0.5
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.4...v0.0.5"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Fix 0.0.4 release (incorrect tag pushed for 0.0.4 release)
 
-## 0.0.4 {% view_diff v0.0.3...v0.0.4 %}
+## 0.0.4
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.3...v0.0.4"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * DRY up catalogue compilation
  * Add support for 'pre_condition' to allow the specification of external
    dependencies for classes and defines
 
-## 0.0.3 {% view_diff v0.0.2...v0.0.3 %}
+## 0.0.3
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.2...v0.0.3"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Provide default 'hostname' and 'fqdn' facts
  * Change generic resource matcher to support 'contain\_' as well as 'create\_'
