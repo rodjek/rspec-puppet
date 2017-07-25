@@ -8,8 +8,9 @@ breadcrumbs:
         path: /documentation/
 ---
 rspec-puppet can be configured by modifying the `RSpec.configure` block in your
-`spec/spec_helper.rb` file. If you followed the [setup instructions](/setup/)
-you'll already have an `RSpec.configure` block that you can modify.
+`spec/spec_helper.rb` file. If you followed the [setup
+instructions](/documentation/setup/) you'll already have an `RSpec.configure`
+block that you can modify.
 
 {% highlight ruby %}
 RSpec.configure do |c|
