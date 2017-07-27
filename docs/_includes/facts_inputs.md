@@ -5,7 +5,7 @@ By default, the test environment contains only the `hostname`, `domain`, and
 specified as a hash of values using `let(:facts)`.
 
 {% highlight ruby %}
-let(:facts) { {:operatingsystem => 'Debian', :ipaddress => '192.168.0.1'} }
+let(:facts) { {'operatingsystem' => 'Debian', 'ipaddress' => '192.168.0.1'} }
 {% endhighlight %}
 
 Facts may be expressed as a value (shown in the previous example) or
@@ -15,12 +15,12 @@ converted to a lower case string to align with the Facter standard.
 {% highlight ruby %}
 let(:facts) do
   {
-    :os => {
-      :family  => 'RedHat',
-      :release => {
-        :major => '7',
-        :minor => '1',
-        :full  => '7.1.1503',
+    'os' => {
+      'family'  => 'RedHat',
+      'release' => {
+        'major' => '7',
+        'minor' => '1',
+        'full'  => '7.1.1503',
       }
     }
   }

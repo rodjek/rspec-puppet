@@ -539,7 +539,7 @@ We can write the following testcase (in `spec/defines/sysctl_spec.rb`)
 ```ruby
 describe 'sysctl' do
   let(:title) { 'baz' }
-  let(:params) { { :value => 'foo' } }
+  let(:params) { { 'value' => 'foo' } }
 
   it { is_expected.to contain_exec('sysctl/reload').with_command("/sbin/sysctl -p /etc/sysctl.conf") }
 end
@@ -557,21 +557,21 @@ Parameters of a defined type, class or application can be passed defining `:para
 and passing it a hash as seen below.
 
 ```ruby
-let(:params) { {:ensure => 'present', ...} }
+let(:params) { {'ensure' => 'present', ...} }
 ```
 
 For passing Puppet's `undef` as a paremeter value, you can simply use `:undef` and it will
 be translated to `undef` when compiling. For example:
 
 ```ruby
-let(:params) { {:user => :undef, ...} }
+let(:params) { {'user' => :undef, ...} }
 ```
 
 For references to nodes or resources as seen when using `require` or `before` properties,
 or an `application` resource you can pass the string as an argument to the `ref` helper:
 
 ```ruby
-let(:params) { :require => ref('Package', 'sudoku') }
+let(:params) { 'require' => ref('Package', 'sudoku') }
 ```
 
 Which translates to:
@@ -583,7 +583,7 @@ mydefine { 'mytitle': require => Package['sudoku'] }
 Another example, for an application setup (when using `app_management`):
 
 ```ruby
-let(:params) { { :nodes => { ref('Node', 'dbnode') => ref('Myapp::Mycomponent', 'myapp') } } }
+let(:params) { { 'nodes' => { ref('Node', 'dbnode') => ref('Myapp::Mycomponent', 'myapp') } } }
 ```
 
 Will translate to:
@@ -616,7 +616,7 @@ By default, the test environment contains no facts for your manifest to use.
 You can set them with a hash
 
 ```ruby
-let(:facts) { {:operatingsystem => 'Debian', :kernel => 'Linux', ...} }
+let(:facts) { {'operatingsystem' => 'Debian', 'kernel' => 'Linux', ...} }
 ```
 
 Facts may be expressed as a value (shown in the previous example) or a structure.  Fact keys
@@ -624,7 +624,7 @@ may be expressed as either symbols or strings.  A key will be converted to a low
 string to align with the Facter standard
 
 ```ruby
-let(:facts) { {:os => { :family => 'RedHat', :release => { :major => '7', :minor => '1', :full => '7.1.1503' } } } }
+let(:facts) { {'os' => { 'family' => 'RedHat', 'release' => { 'major' => '7', 'minor' => '1', 'full' => '7.1.1503' } } } }
 ```
 
 You can also create a set of default facts provided to all specs in your spec_helper:
@@ -632,7 +632,7 @@ You can also create a set of default facts provided to all specs in your spec_he
 ``` ruby
 RSpec.configure do |c|
   c.default_facts = {
-    :operatingsystem => 'Ubuntu'
+    'operatingsystem' => 'Ubuntu'
   }
 end
 ```
@@ -646,7 +646,7 @@ You can create top-scope variables much in the same way as an ENC.
 
 
 ```ruby
-let(:node_params) { { :hostgroup => 'webservers', :rack => 'KK04', :status => 'maintenance' } }
+let(:node_params) { { 'hostgroup' => 'webservers', 'rack' => 'KK04', 'status' => 'maintenance' } }
 ```
 
 You can also create a set of default top-scope variables provided to all specs in your spec_helper:
@@ -654,9 +654,9 @@ You can also create a set of default top-scope variables provided to all specs i
 ``` ruby
 RSpec.configure do |c|
   c.default_node_params = {
-    :owner => 'itprod',
-    :site => 'ams4',
-    :status => 'live'
+    'owner'  => 'itprod',
+    'site'   => 'ams4',
+    'status' => 'live'
   }
 end
 ```
@@ -773,7 +773,7 @@ describe 'orch_app' do
   let(:title) { 'my_awesome_app' }
   let(:params) do
     {
-      :nodes => {
+      'nodes' => {
         ref('Node', node) => ref('Orch_app::Db', title),
       }
     }
@@ -965,7 +965,7 @@ user:
 
 ```ruby
   ntpserver = hiera.lookup('ntpserver', nil, nil)
-  let(:params) { :ntpserver => ntpserver }
+  let(:params) { 'ntpserver' => ntpserver }
 ```
 
 ### Enabling hiera lookups

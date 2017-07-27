@@ -23,7 +23,7 @@ describe '<application name>' do
   let(:title) { '<application instance title>' }
   let(:params) do
     {
-      :nodes => {
+      'nodes' => {
         ref('Node', node) => ref('<capitalised application name>', title),
       }
       # any additional app parameters

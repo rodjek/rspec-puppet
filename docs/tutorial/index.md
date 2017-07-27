@@ -157,7 +157,7 @@ should exist in the file.
 
 {% highlight ruby %}
   context 'with compress => true' do
-    let(:params) { {:compress => true} }
+    let(:params) { {'compress' => true} }
 
     it do
       is_expected.to contain_file('/etc/logrotate.d/nginx') \
@@ -166,7 +166,7 @@ should exist in the file.
   end
 
   context 'with compress => false' do
-    let(:params) { {:compress => false} }
+    let(:params) { {'compress' => false} }
 
     it do
       is_expected.to contain_file('/etc/logrotate.d/nginx') \
@@ -188,7 +188,7 @@ it.
 
 {% highlight ruby %}
   context 'with compress => foo' do
-    let(:params) { {:compress => 'foo'} }
+    let(:params) { {'compress' => 'foo'} }
 
     it { is_expected.to compile.and_raise_error(/compress must be true or false/) }
   end
@@ -214,7 +214,7 @@ describe 'logrotate::rule' do
   end
 
   context 'with compress => true' do
-    let(:params) { {:compress => true} }
+    let(:params) { {'compress' => true} }
 
     it do
       is_expected.to contain_file('/etc/logrotate.d/nginx') \
@@ -223,7 +223,7 @@ describe 'logrotate::rule' do
   end
 
   context 'with compress => false' do
-    let(:params) { {:compress => false} }
+    let(:params) { {'compress' => false} }
 
     it do
       is_expected.to contain_file('/etc/logrotate.d/nginx') \
@@ -232,7 +232,7 @@ describe 'logrotate::rule' do
   end
 
   context 'with compress => foo' do
-    let(:params) { {:compress => 'foo'} }
+    let(:params) { {'compress' => 'foo'} }
 
     it do
       expect {

@@ -26,13 +26,13 @@ matcher.
 {% highlight ruby %}
 describe 'my::type' do
   context 'with ensure => present' do
-    let(:params) { {:ensure => 'present'} }
+    let(:params) { {'ensure' => 'present'} }
 
     it { is_expected.to compile }
   end
 
   context 'with ensure => whoopsiedoo' do
-    let(:params) { {:ensure => 'whoopsiedoo'} }
+    let(:params) { {'ensure' => 'whoopsiedoo'} }
 
     it { is_expected.to compile.and_raise_error(/the expected error message/) }
   end
