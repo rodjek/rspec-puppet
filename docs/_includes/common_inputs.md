@@ -13,7 +13,7 @@ Node parameters (or top-scope variables) such as would be provided by an ENC
 can be specified as a hash of values using `let(:node_params)`.
 
 {% highlight ruby %}
-let(:node_params) { {:hostgroup => 'web', :rack => 'KK04' } }
+let(:node_params) { {'hostgroup' => 'web', 'rack' => 'KK04' } }
 {% endhighlight %}
 
 These node parameters will be merged into the default node parameters (if set),
