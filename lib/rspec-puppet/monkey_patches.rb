@@ -70,34 +70,33 @@ module Puppet
     end
   end
 
-  # If Puppet::Node::Environment has a validate_dirs instance method (i.e.
-  # Puppet < 3.x), wrap the method to check if rspec-puppet is pretending to be
-  # running under windows. The original method uses Puppet::Util.absolute_path?
-  # (which in turn calls Puppet::Util::Platform.windows?) to validate the path
-  # to the manifests on disk during compilation, so we have to temporarily
-  # disable the pretending when running it.
-  class Node::Environment
-    if instance_methods.include?("validate_dirs")
-      old_validate_dirs = instance_method(:validate_dirs)
+  module Parser::Files
+    alias :old_find_manifests_in_modules :find_manifests_in_modules
+    module_function :old_find_manifests_in_modules
 
-      define_method(:validate_dirs) do |dirs|
-        if rspec_puppet_example?
-          pretending = Puppet::Util::Platform.pretend_platform
+    def find_manifests_in_modules(pattern, environment)
+      if RSpec::Puppet.rspec_puppet_example?
+        pretending = Puppet::Util::Platform.pretend_platform
 
-          if pretending
-            Puppet::Util::Platform.pretend_to_be nil
-          end
-
-          output = old_validate_dirs.bind(self).call(dirs)
-
-          Puppet::Util::Platform.pretend_to_be pretending
-
-          output
-        else
-          old_validate_dirs.bind(self).call(dirs)
+        if pretending
+          Puppet::Util::Platform.pretend_to_be nil
+          RSpec::Puppet::Consts.stub_consts_for(RSpec.configuration.platform)
         end
+
+        environment.send(:value_cache).clear if environment.respond_to?(:value_cache, true)
+        output = old_find_manifests_in_modules(pattern, environment)
+
+        if pretending
+          Puppet::Util::Platform.pretend_to_be pretending
+          RSpec::Puppet::Consts.stub_consts_for pretending
+        end
+
+        output
+      else
+        old_find_manifests_in_modules(pattern, environment)
       end
     end
+    module_function :find_manifests_in_modules
   end
 
   module Util
