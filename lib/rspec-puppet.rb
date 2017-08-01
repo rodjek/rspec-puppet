@@ -18,6 +18,22 @@ RSpec.configure do |c|
   c.add_setting :enable_pathname_stubbing, :default => false
 end
 
+module RSpec::Puppet
+  def self.rspec_puppet_example?
+    return false if state_obj.current_example.nil?
+
+    state_obj.current_example.example_group.included_modules.include?(RSpec::Puppet::Support)
+  end
+
+  def self.state_obj
+    @state_obj ||= if RSpec.respond_to?(:current_example)
+                     RSpec
+                   else
+                     RSpec::Puppet::EventListener
+                   end
+  end
+end
+
 require 'rspec-puppet/monkey_patches'
 
 RSpec.configure do |c|

@@ -1,8 +1,17 @@
 require 'pathname'
 
-def rspec_puppet_example?
-  return false if RSpec.current_example.nil?
-  RSpec.current_example.example_group.included_modules.include?(RSpec::Puppet::Support)
+class RSpec::Puppet::EventListener
+  def self.example_started(example)
+    @current_example = example
+  end
+
+  def self.current_example
+    @current_example
+  end
+end
+
+unless RSpec.respond_to?(:current_example)
+  RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :example_started)
 end
 
 module Puppet
@@ -16,7 +25,7 @@ module Puppet
     old_set_default = instance_method(:set_default)
 
     define_method(:set_default) do |attr|
-      if rspec_puppet_example?
+      if RSpec::Puppet.rspec_puppet_example?
         old_posix = nil
         old_microsoft_windows = nil
 
@@ -98,7 +107,7 @@ module Puppet
       module_function :old_windows?
 
       def windows?
-        if rspec_puppet_example?
+        if RSpec::Puppet.rspec_puppet_example?
           pretend_platform.nil? ? (actual_platform == :windows) : pretend_windows?
         else
           old_windows?
@@ -139,7 +148,7 @@ module Puppet
       old_pass = instance_method(:pass?)
 
       define_method(:pass?) do |value|
-        if rspec_puppet_example?
+        if RSpec::Puppet.rspec_puppet_example?
           true
         else
           old_pass.bind(self).call(value)
@@ -147,11 +156,13 @@ module Puppet
       end
     end
   rescue LoadError
+    require 'puppet/provider/confine/exists'
+
     class Provider::Confine::Exists < Puppet::Provider::Confine
       old_pass = instance_method(:pass?)
 
       define_method(:pass?) do |value|
-        if rspec_puppet_example?
+        if RSpec::Puppet.rspec_puppet_example?
           true
         else
           old_pass.bind(self).call(value)
@@ -175,7 +186,7 @@ class Pathname
     old_chop_basename = instance_method(:chop_basename)
 
     define_method(:chop_basename) do |path|
-      if rspec_puppet_example?
+      if RSpec::Puppet.rspec_puppet_example?
         if RSpec.configuration.enable_pathname_stubbing
           base = rspec_puppet_basename(path)
           if /\A#{SEPARATOR_PAT}?\z/o =~ base
@@ -197,7 +208,7 @@ end
 # normalise paths, which does very bad things to *nix paths on Windows.
 file_path_munge = Puppet::Type.type(:file).paramclass(:path).instance_method(:unsafe_munge)
 Puppet::Type.type(:file).paramclass(:path).munge do |value|
-  if rspec_puppet_example?
+  if RSpec::Puppet.rspec_puppet_example?
     value
   else
     file_path_munge.bind(self).call(value)
@@ -209,7 +220,7 @@ end
 # root.
 exec_user_validate = Puppet::Type.type(:exec).paramclass(:user).instance_method(:unsafe_validate)
 Puppet::Type.type(:exec).paramclass(:user).validate do |value|
-  if rspec_puppet_example?
+  if RSpec::Puppet.rspec_puppet_example?
     true
   else
     exec_user_validate.bind(self).call(value)
@@ -222,7 +233,7 @@ end
 module Kernel
   alias :old_require :require
   def require(path)
-    return if path == 'puppet/util/windows' && rspec_puppet_example? && Puppet::Util::Platform.pretend_windows?
+    return if path == 'puppet/util/windows' && RSpec::Puppet.rspec_puppet_example? && Puppet::Util::Platform.pretend_windows?
     old_require(path)
   end
 end
