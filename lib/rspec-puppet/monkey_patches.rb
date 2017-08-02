@@ -78,7 +78,7 @@ module Puppet
       if RSpec::Puppet.rspec_puppet_example?
         pretending = Puppet::Util::Platform.pretend_platform
 
-        if pretending
+        unless pretending.nil?
           Puppet::Util::Platform.pretend_to_be nil
           RSpec::Puppet::Consts.stub_consts_for(RSpec.configuration.platform)
         end
@@ -86,7 +86,7 @@ module Puppet
         environment.send(:value_cache).clear if environment.respond_to?(:value_cache, true)
         output = old_find_manifests_in_modules(pattern, environment)
 
-        if pretending
+        unless pretending.nil?
           Puppet::Util::Platform.pretend_to_be pretending
           RSpec::Puppet::Consts.stub_consts_for pretending
         end

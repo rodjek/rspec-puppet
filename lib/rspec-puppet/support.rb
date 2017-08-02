@@ -352,18 +352,20 @@ module RSpec::Puppet
     end
 
     def stub_facts!(facts)
-      if facts['operatingsystem']
-        if facts['operatingsystem'].to_s.downcase == 'windows'
-          Puppet::Util::Platform.pretend_to_be :windows
-        else
-          Puppet::Util::Platform.pretend_to_be :posix
-        end
-      end
       Puppet.settings[:autosign] = false
       facts.each { |k, v| Facter.add(k) { setcode { v } } }
     end
 
     def build_catalog(*args)
+      build_facts = args[1]
+      if build_facts.key?('operatingsystem')
+        if build_facts['operatingsystem'].to_s.downcase == 'windows'
+          Puppet::Util::Platform.pretend_to_be :windows
+        else
+          Puppet::Util::Platform.pretend_to_be :posix
+        end
+      end
+
       @@cache.get(*args) do |*args|
         build_catalog_without_cache(*args)
       end
