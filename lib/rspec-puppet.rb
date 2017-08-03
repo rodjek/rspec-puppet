@@ -8,6 +8,7 @@ require 'rspec-puppet/example'
 require 'rspec-puppet/setup'
 require 'rspec-puppet/coverage'
 require 'rspec-puppet/adapters'
+require 'rspec-puppet/consts'
 
 begin
   require 'puppet/test/test_helper'
@@ -16,6 +17,12 @@ end
 
 RSpec.configure do |c|
   c.add_setting :enable_pathname_stubbing, :default => false
+end
+
+module RSpec::Puppet
+  def self.rspec_puppet_example?
+    RSpec::Puppet::EventListener.rspec_puppet_example?
+  end
 end
 
 require 'rspec-puppet/monkey_patches'
@@ -39,6 +46,7 @@ RSpec.configure do |c|
   c.add_setting :strict_variables, :default => false
   c.add_setting :adapter
   c.add_setting :setup_fixtures, :default => true
+  c.add_setting :platform, :default => Puppet::Util::Platform.actual_platform
 
   c.before(:all) do
     if RSpec.configuration.setup_fixtures?
@@ -85,7 +93,7 @@ RSpec.configure do |c|
   end
 
   c.before :each do
-    if self.class.ancestors.include? RSpec::Puppet::Support
+    if RSpec::Puppet.rspec_puppet_example?
       @adapter = RSpec::Puppet::Adapters.get
       @adapter.setup_puppet(self)
       c.adapter = adapter
@@ -93,6 +101,13 @@ RSpec.configure do |c|
   end
 
   c.before :each do |example|
-    stub_file_consts(example) if self.respond_to?(:stub_file_consts)
+    if RSpec::Puppet.rspec_puppet_example?
+      Puppet::Util::Platform.pretend_to_be RSpec.configuration.platform
+      stub_file_consts(example) if self.respond_to?(:stub_file_consts)
+    end
+  end
+
+  c.after(:each) do
+    RSpec::Puppet::Consts.restore_consts if RSpec::Puppet.rspec_puppet_example?
   end
 end

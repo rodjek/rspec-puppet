@@ -9,6 +9,7 @@ if Puppet.version.to_f >= 3.0
     subject { RSpec::Puppet::ManifestMatchers::Compile.new }
 
     let(:catalogue) { lambda { load_catalogue(:host) } }
+    let(:facts) { { 'operatingsystem' => 'Debian' } }
 
     describe "a valid manifest" do
       let (:pre_condition) { 'file { "/tmp/resource": }' }

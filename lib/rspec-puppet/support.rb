@@ -4,7 +4,6 @@ require 'rspec-puppet/raw_string'
 
 module RSpec::Puppet
   module Support
-
     @@cache = RSpec::Puppet::Cache.new
 
     def subject
@@ -55,25 +54,14 @@ module RSpec::Puppet
 
       munged_facts = facts_hash(nodename(type))
 
-      if munged_facts['operatingsystem'] && munged_facts['operatingsystem'].to_s.downcase == 'windows'
-        stub_const_wrapper('File::PATH_SEPARATOR', ';')
-        stub_const_wrapper('File::ALT_SEPARATOR', "\\")
-        stub_const_wrapper('Pathname::SEPARATOR_PAT', /[#{Regexp.quote(File::ALT_SEPARATOR)}#{Regexp.quote(File::SEPARATOR)}]/)
-      else
-        stub_const_wrapper('File::PATH_SEPARATOR', ':')
-        stub_const_wrapper('File::ALT_SEPARATOR', nil)
-        stub_const_wrapper('Pathname::SEPARATOR_PAT', /#{Regexp.quote(File::SEPARATOR)}/)
-      end
-    end
-
-    def stub_const_wrapper(const, value)
-      if defined?(RSpec::Core::MockingAdapters::RSpec) && RSpec.configuration.mock_framework == RSpec::Core::MockingAdapters::RSpec
-        stub_const(const, value)
-      else
-        klass_name, const_name = const.split('::', 2)
-        klass = Object.const_get(klass_name)
-        klass.send(:remove_const, const_name) if klass.const_defined?(const_name)
-        klass.const_set(const_name, value)
+      ['operatingsystem', 'osfamily'].each do |os_fact|
+        if munged_facts.key?(os_fact)
+          if munged_facts[os_fact].to_s.downcase == 'windows'
+            RSpec::Puppet::Consts.stub_consts_for(:windows)
+          else
+            RSpec::Puppet::Consts.stub_consts_for(:posix)
+          end
+        end
       end
     end
 
@@ -367,16 +355,22 @@ module RSpec::Puppet
     end
 
     def stub_facts!(facts)
-      if facts['operatingsystem'] && facts['operatingsystem'].to_s.downcase == 'windows'
-        Puppet::Util::Platform.pretend_to_be :windows
-      else
-        Puppet::Util::Platform.pretend_to_be :posix
-      end
       Puppet.settings[:autosign] = false
       facts.each { |k, v| Facter.add(k) { setcode { v } } }
     end
 
     def build_catalog(*args)
+      build_facts = args[1]
+      ['operatingsystem', 'osfamily'].each do |os_fact|
+        if build_facts.key?(os_fact)
+          if build_facts[os_fact].to_s.downcase == 'windows'
+            Puppet::Util::Platform.pretend_to_be :windows
+          else
+            Puppet::Util::Platform.pretend_to_be :posix
+          end
+        end
+      end
+
       @@cache.get(*args) do |*args|
         build_catalog_without_cache(*args)
       end

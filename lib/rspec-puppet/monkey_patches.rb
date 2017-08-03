@@ -1,5 +1,29 @@
 require 'pathname'
 
+class RSpec::Puppet::EventListener
+  def self.example_started(example)
+    if rspec3?
+      @rspec_puppet_example = example.example.example_group.ancestors.include?(RSpec::Puppet::Support)
+    else
+      @rspec_puppet_example = example.example_group.ancestors.include?(RSpec::Puppet::Support)
+    end
+  end
+
+  def self.rspec_puppet_example?
+    @rspec_puppet_example || false
+  end
+
+  def self.rspec3?
+    if @rspec3.nil?
+      @rspec3 = defined?(RSpec::Core::Notifications)
+    end
+
+    @rspec3
+  end
+end
+
+RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :example_started)
+
 module Puppet
   # Allow rspec-puppet to prevent Puppet::Type from automatically picking
   # a provider for a resource. We need to do this because in order to fully
@@ -11,32 +35,36 @@ module Puppet
     old_set_default = instance_method(:set_default)
 
     define_method(:set_default) do |attr|
-      old_posix = nil
-      old_microsoft_windows = nil
+      if RSpec::Puppet.rspec_puppet_example?
+        old_posix = nil
+        old_microsoft_windows = nil
 
-      if attr == :provider
-        old_posix = Puppet.features.posix?
-        old_microsoft_windows = Puppet.features.microsoft_windows?
+        if attr == :provider
+          old_posix = Puppet.features.posix?
+          old_microsoft_windows = Puppet.features.microsoft_windows?
 
-        if Puppet::Util::Platform.pretend_windows?
-          Puppet.features.add(:posix) { false }
-          Puppet.features.add(:microsoft_windows) { true }
-        else
-          Puppet.features.add(:posix) { true }
-          Puppet.features.add(:microsoft_windows) { false }
+          if Puppet::Util::Platform.pretend_windows?
+            Puppet.features.add(:posix) { false }
+            Puppet.features.add(:microsoft_windows) { true }
+          else
+            Puppet.features.add(:posix) { true }
+            Puppet.features.add(:microsoft_windows) { false }
+          end
         end
-      end
 
-      retval = old_set_default.bind(self).call(attr)
+        retval = old_set_default.bind(self).call(attr)
 
-      unless old_posix.nil?
-        Puppet.features.add(:posix) { old_posix }
-      end
-      unless old_microsoft_windows.nil?
-        Puppet.features.add(:microsoft_windows) { old_microsoft_windows }
-      end
+        unless old_posix.nil?
+          Puppet.features.add(:posix) { old_posix }
+        end
+        unless old_microsoft_windows.nil?
+          Puppet.features.add(:microsoft_windows) { old_microsoft_windows }
+        end
 
-      retval
+        retval
+      else
+        old_set_default.bind(self).call(attr)
+      end
     end
 
     def self.suppress_provider?
@@ -52,37 +80,47 @@ module Puppet
     end
   end
 
-  # If Puppet::Node::Environment has a validate_dirs instance method (i.e.
-  # Puppet < 3.x), wrap the method to check if rspec-puppet is pretending to be
-  # running under windows. The original method uses Puppet::Util.absolute_path?
-  # (which in turn calls Puppet::Util::Platform.windows?) to validate the path
-  # to the manifests on disk during compilation, so we have to temporarily
-  # disable the pretending when running it.
-  class Node::Environment
-    if instance_methods.include?("validate_dirs")
-      old_validate_dirs = instance_method(:validate_dirs)
+  module Parser::Files
+    alias :old_find_manifests_in_modules :find_manifests_in_modules
+    module_function :old_find_manifests_in_modules
 
-      define_method(:validate_dirs) do |dirs|
+    def find_manifests_in_modules(pattern, environment)
+      if RSpec::Puppet.rspec_puppet_example?
         pretending = Puppet::Util::Platform.pretend_platform
 
-        if pretending
+        unless pretending.nil?
           Puppet::Util::Platform.pretend_to_be nil
+          RSpec::Puppet::Consts.stub_consts_for(RSpec.configuration.platform)
         end
 
-        output = old_validate_dirs.bind(self).call(dirs)
+        environment.send(:value_cache).clear if environment.respond_to?(:value_cache, true)
+        output = old_find_manifests_in_modules(pattern, environment)
 
-        Puppet::Util::Platform.pretend_to_be pretending
+        unless pretending.nil?
+          Puppet::Util::Platform.pretend_to_be pretending
+          RSpec::Puppet::Consts.stub_consts_for pretending
+        end
 
         output
+      else
+        old_find_manifests_in_modules(pattern, environment)
       end
     end
+    module_function :find_manifests_in_modules
   end
 
   module Util
     # Allow rspec-puppet to pretend to be different platforms.
     module Platform
+      alias :old_windows? :windows?
+      module_function :old_windows?
+
       def windows?
-        pretend_platform.nil? ? (actual_platform == :windows) : pretend_windows?
+        if RSpec::Puppet.rspec_puppet_example?
+          pretend_platform.nil? ? (actual_platform == :windows) : pretend_windows?
+        else
+          old_windows?
+        end
       end
       module_function :windows?
 
@@ -112,16 +150,32 @@ module Puppet
     end
   end
 
-  if defined?(Puppet::Confine)
+  begin
+    require 'puppet/confine/exists'
+
     class Confine::Exists < Puppet::Confine
-      def pass?(value)
-        true
+      old_pass = instance_method(:pass?)
+
+      define_method(:pass?) do |value|
+        if RSpec::Puppet.rspec_puppet_example?
+          true
+        else
+          old_pass.bind(self).call(value)
+        end
       end
     end
-  else
+  rescue LoadError
+    require 'puppet/provider/confine/exists'
+
     class Provider::Confine::Exists < Puppet::Provider::Confine
-      def pass?(value)
-        true
+      old_pass = instance_method(:pass?)
+
+      define_method(:pass?) do |value|
+        if RSpec::Puppet.rspec_puppet_example?
+          true
+        else
+          old_pass.bind(self).call(value)
+        end
       end
     end
   end
@@ -141,12 +195,16 @@ class Pathname
     old_chop_basename = instance_method(:chop_basename)
 
     define_method(:chop_basename) do |path|
-      if RSpec.configuration.enable_pathname_stubbing
-        base = rspec_puppet_basename(path)
-        if /\A#{SEPARATOR_PAT}?\z/o =~ base
-          return nil
+      if RSpec::Puppet.rspec_puppet_example?
+        if RSpec.configuration.enable_pathname_stubbing
+          base = rspec_puppet_basename(path)
+          if /\A#{SEPARATOR_PAT}?\z/o =~ base
+            return nil
+          else
+            return path[0, path.rindex(base)], base
+          end
         else
-          return path[0, path.rindex(base)], base
+          old_chop_basename.bind(self).call(path)
         end
       else
         old_chop_basename.bind(self).call(path)
@@ -157,12 +215,26 @@ end
 
 # Prevent the File type from munging paths (which uses File.expand_path to
 # normalise paths, which does very bad things to *nix paths on Windows.
-Puppet::Type.type(:file).paramclass(:path).munge { |value| value }
+file_path_munge = Puppet::Type.type(:file).paramclass(:path).instance_method(:unsafe_munge)
+Puppet::Type.type(:file).paramclass(:path).munge do |value|
+  if RSpec::Puppet.rspec_puppet_example?
+    value
+  else
+    file_path_munge.bind(self).call(value)
+  end
+end
 
 # Prevent the Exec type from validating the user. This parameter isn't
 # supported under Windows at all and only under *nix when the current user is
 # root.
-Puppet::Type.type(:exec).paramclass(:user).validate { |value| true }
+exec_user_validate = Puppet::Type.type(:exec).paramclass(:user).instance_method(:unsafe_validate)
+Puppet::Type.type(:exec).paramclass(:user).validate do |value|
+  if RSpec::Puppet.rspec_puppet_example?
+    true
+  else
+    exec_user_validate.bind(self).call(value)
+  end
+end
 
 # Prevent Puppet from requiring 'puppet/util/windows' if we're pretending to be
 # windows, otherwise it will require other libraries that probably won't be
@@ -170,7 +242,7 @@ Puppet::Type.type(:exec).paramclass(:user).validate { |value| true }
 module Kernel
   alias :old_require :require
   def require(path)
-    return if path == 'puppet/util/windows' && Puppet::Util::Platform.pretend_windows?
+    return if path == 'puppet/util/windows' && RSpec::Puppet.rspec_puppet_example? && Puppet::Util::Platform.pretend_windows?
     old_require(path)
   end
 end
