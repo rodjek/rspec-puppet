@@ -257,10 +257,10 @@ module RSpec::Puppet
       extensions = {}
 
       if RSpec.configuration.default_trusted_facts.any?
-        extensions.merge!(RSpec.configuration.default_trusted_facts)
+        extensions.merge!(munge_facts(RSpec.configuration.default_trusted_facts))
       end
 
-      extensions.merge!(trusted_facts) if self.respond_to?(:trusted_facts)
+      extensions.merge!(munge_facts(trusted_facts)) if self.respond_to?(:trusted_facts)
       extensions
     end
 
