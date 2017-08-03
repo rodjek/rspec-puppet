@@ -30,6 +30,29 @@ end
 These facts will be merged into the default facts (if set), with these values
 taking precedence over the default fact values in the event of a conflict.
 
+If have nested RSpec contexts to test the behaviour of different fact
+values, you can partially override the parent facts by merging the changed
+facts into `super()` in your `let(:facts)` block.
+
+{% highlight ruby %}
+describe 'My::Class' do
+  let(:facts) do
+    {
+      'operatingsystem' => 'Debian',
+      'role'            => 'default',
+    }
+  end
+
+  context 'with role => web' do
+    let(:facts) do
+      super().merge({ 'role' => 'web' })
+    end
+
+    it { should compile }
+  end
+end
+{% endhighlight %}
+
 ### Specifying trusted facts
 
 When testing with Puppet >= 4.3, the trusted facts hash will have the standard
@@ -48,3 +71,26 @@ let(:trusted_facts) { {'pp_uuid' => '012345670-ABCD', 'some' => 'value'} }
 These trusted facts will be merged into the default trusted facts (if set),
 with these values taking precedence over the default trusted facts in the event
 of a conflict.
+
+If have nested RSpec contexts to test the behaviour of different trusted fact
+values, you can partially override the parent trusted facts by merging the
+changed facts into `super()` in your `let(:trusted_facts)` block.
+
+{% highlight ruby %}
+describe 'My::Class' do
+  let(:trusted_facts) do
+    {
+      'some_common_param' => 'value'
+      'role'              => 'default',
+    }
+  end
+
+  context 'with role => web' do
+    let(:trusted_facts) do
+      super().merge({ 'role' => 'web' })
+    end
+
+    it { should compile }
+  end
+end
+{% endhighlight %}

@@ -20,6 +20,29 @@ These node parameters will be merged into the default node parameters (if set),
 with these values taking precedence over the default node parameters in the
 event of a conflict.
 
+If have nested RSpec contexts to test the behaviour of different node parameter
+values, you can partially override the node parameters by merging the changed
+parameters into `super()` in your `let(:node_params)` block.
+
+{% highlight ruby %}
+describe 'My::Class' do
+  let(:node_params) do
+    {
+      'some_common_param' => 'value',
+      'role'              => 'default',
+    }
+  end
+
+  context 'with role => web' do
+    let(:node_params) do
+      super().merge({ 'role' => 'web' })
+    end
+
+    it { should compile }
+  end
+end
+{% endhighlight %}
+
 ### Specifying code to include before
 
 If the manifest being tested relies on some existing state (another class being
