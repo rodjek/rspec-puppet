@@ -227,7 +227,7 @@ module RSpec::Puppet
 
       # Merge node facts again on top of `let(:facts)` facts, but only if
       # a node name is given with `let(:node)`
-      if respond_to?(:node)
+      if respond_to?(:node) && RSpec.configuration.derive_node_facts_from_nodename
         result_facts.merge!(munge_facts(node_facts))
         (result_facts['networking'] ||= {}).merge!(networking_facts)
       end

@@ -24,5 +24,22 @@ describe 'test::basic' do
       it { should contain_notify('eth0') }
       it { should contain_notify('test123') }
     end
+
+    context 'when derive_node_facts_from_nodename => false' do
+      let(:pre_condition) { 'notify { $::fqdn: }' }
+      let(:node) { 'mycertname.test.com' }
+      let(:facts) do
+        {
+          :fqdn => 'myhostname.test.com',
+        }
+      end
+
+      before do
+        RSpec.configuration.derive_node_facts_from_nodename = false
+      end
+
+      it { should contain_notify('myhostname.test.com') }
+      it { should_not contain_notify('mycertname.test.com') }
+    end
   end
 end
