@@ -2,17 +2,27 @@ require 'pathname'
 
 class RSpec::Puppet::EventListener
   def self.example_started(example)
-    @current_example = example
+    if rspec3?
+      @rspec_puppet_example = example.example.example_group.ancestors.include?(RSpec::Puppet::Support)
+    else
+      @rspec_puppet_example = example.example_group.ancestors.include?(RSpec::Puppet::Support)
+    end
   end
 
-  def self.current_example
-    @current_example
+  def self.rspec_puppet_example?
+    @rspec_puppet_example || false
+  end
+
+  def self.rspec3?
+    if @rspec3.nil?
+      @rspec3 = defined?(RSpec::Core::Notifications)
+    end
+
+    @rspec3
   end
 end
 
-unless RSpec.respond_to?(:current_example)
-  RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :example_started)
-end
+RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :example_started)
 
 module Puppet
   # Allow rspec-puppet to prevent Puppet::Type from automatically picking
