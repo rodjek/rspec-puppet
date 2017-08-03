@@ -159,3 +159,54 @@ describe 'structured_facts::case_check' do
     it { should contain_notify('value') }
   end
 end
+
+describe 'structured_facts::hostname' do
+  let(:hostname) { fqdn.split('.').first }
+  let(:domain) { fqdn.split('.', 2).last }
+
+  context 'when node => testnode.example.com' do
+    let(:node) { 'testnode.example.com' }
+    let(:fqdn) { node }
+    let(:facts) { { :networking => { :other => 'foo' } } }
+
+    it { should contain_class('structured_facts::hostname') }
+    it { should compile.with_all_deps }
+
+    it { should contain_notify("clientcert:#{node}") }
+    it { should contain_notify("hostname:#{hostname}") }
+    it { should contain_notify("domain:#{domain}") }
+    it { should contain_notify("fqdn:#{fqdn}") }
+    it { should contain_notify("nh-hostname:#{hostname}") }
+    it { should contain_notify("nh-domain:#{domain}") }
+    it { should contain_notify("nh-fqdn:#{fqdn}") }
+    it { should contain_notify('nh-other:foo') }
+  end
+
+  context 'when node => testnode.example.com with fqdn set in facts' do
+    let(:node) { 'testnode' }
+    let(:fqdn) { 'another.example.net' }
+    let(:facts) {{
+      :fqdn     => fqdn,
+      :hostname => hostname,
+      :domain   => domain,
+      :networking => {
+        :fqdn     => fqdn,
+        :hostname => hostname,
+        :domain   => domain,
+        :other    => 'foo',
+      }
+    }}
+
+    it { should contain_class('structured_facts::hostname') }
+    it { should compile.with_all_deps }
+
+    it { should contain_notify("clientcert:#{node}") }
+    it { should contain_notify("hostname:#{hostname}") }
+    it { should contain_notify("domain:#{domain}") }
+    it { should contain_notify("fqdn:#{fqdn}") }
+    it { should contain_notify("nh-hostname:#{hostname}") }
+    it { should contain_notify("nh-domain:#{domain}") }
+    it { should contain_notify("nh-fqdn:#{fqdn}") }
+    it { should contain_notify('nh-other:foo') }
+  end
+end

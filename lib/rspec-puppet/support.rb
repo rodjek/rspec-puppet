@@ -195,19 +195,8 @@ module RSpec::Puppet
       base_facts = {
         'clientversion' => Puppet::PUPPETVERSION,
         'environment'   => environment.to_s,
-      }
-
-      node_facts = {
-        'hostname'      => node.split('.').first,
         'fqdn'          => node,
-        'domain'        => node.split('.', 2).last,
         'clientcert'    => node,
-      }
-
-      networking_facts = {
-        'hostname' => node_facts['hostname'],
-        'fqdn'     => node_facts['fqdn'],
-        'domain'   => node_facts['domain'],
       }
 
       result_facts = if RSpec.configuration.default_facts.any?
@@ -216,20 +205,24 @@ module RSpec::Puppet
                        {}
                      end
 
-      # Merge in node facts so they always exist by default, but only if they
-      # haven't been defined in `RSpec.configuration.default_facts`
-      result_facts.merge!(munge_facts(node_facts)) { |_key, old_val, new_val| old_val.nil? ? new_val : old_val }
-      (result_facts['networking'] ||= {}).merge!(networking_facts) { |_key, old_val, new_val| old_val.nil? ? new_val : old_val }
-
       # Merge in `let(:facts)` facts
       result_facts.merge!(munge_facts(base_facts))
       result_facts.merge!(munge_facts(facts)) if self.respond_to?(:facts)
 
-      # Merge node facts again on top of `let(:facts)` facts, but only if
-      # a node name is given with `let(:node)`
-      if respond_to?(:node)
-        result_facts.merge!(munge_facts(node_facts))
-        (result_facts['networking'] ||= {}).merge!(networking_facts)
+      # If `fqdn` was set but not hostname or domain, derive them from `fqdn` and add them:
+      if result_facts.key?('fqdn')
+        fqdn = result_facts['fqdn']
+        result_facts['hostname'] = result_facts['fqdn'].split('.').first unless result_facts.key?('hostname')
+        result_facts['domain'] = result_facts['fqdn'].split('.', 2).last unless result_facts.key?('domain')
+      end
+
+      # Set these three keys only if they weren't explicitly provided already in the networking
+      # structured fact. This is to ensure that the user can override any of the facts, but
+      # provides a helpful default setting in the networking hash similar to the previous behavior
+      # in the top-level facts:
+      result_facts['networking'] = {} unless result_facts.key?('networking')
+      ['hostname', 'fqdn', 'domain'].each do |fact|
+        result_facts['networking'][fact] = result_facts[fact] unless result_facts['networking'].key?(fact)
       end
 
       # Facter currently supports lower case facts.  Bug FACT-777 has been submitted to support case sensitive
