@@ -53,12 +53,15 @@ module RSpec::Puppet
       end
 
       munged_facts = facts_hash(nodename(type))
-      return unless munged_facts.key?('operatingsystem')
 
-      if munged_facts['operatingsystem'].to_s.downcase == 'windows'
-        RSpec::Puppet::Consts.stub_consts_for(:windows)
-      else
-        RSpec::Puppet::Consts.stub_consts_for(:posix)
+      ['operatingsystem', 'osfamily'].each do |os_fact|
+        if munged_facts.key?(os_fact)
+          if munged_facts[os_fact].to_s.downcase == 'windows'
+            RSpec::Puppet::Consts.stub_consts_for(:windows)
+          else
+            RSpec::Puppet::Consts.stub_consts_for(:posix)
+          end
+        end
       end
     end
 
@@ -358,11 +361,13 @@ module RSpec::Puppet
 
     def build_catalog(*args)
       build_facts = args[1]
-      if build_facts.key?('operatingsystem')
-        if build_facts['operatingsystem'].to_s.downcase == 'windows'
-          Puppet::Util::Platform.pretend_to_be :windows
-        else
-          Puppet::Util::Platform.pretend_to_be :posix
+      ['operatingsystem', 'osfamily'].each do |os_fact|
+        if build_facts.key?(os_fact)
+          if build_facts[os_fact].to_s.downcase == 'windows'
+            Puppet::Util::Platform.pretend_to_be :windows
+          else
+            Puppet::Util::Platform.pretend_to_be :posix
+          end
         end
       end
 
