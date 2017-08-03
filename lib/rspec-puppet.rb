@@ -44,8 +44,9 @@ RSpec.configure do |c|
   c.add_setting :ordering, :default => 'title-hash'
   c.add_setting :stringify_facts, :default => true
   c.add_setting :strict_variables, :default => false
-  c.add_setting :adapter
   c.add_setting :setup_fixtures, :default => true
+  c.add_setting :derive_node_facts_from_nodename, :default => true
+  c.add_setting :adapter
   c.add_setting :platform, :default => Puppet::Util::Platform.actual_platform
 
   c.before(:all) do

@@ -194,6 +194,19 @@ Boolean | `true`  | 2.x, 3.x, 4.x, 5.x
 Configures rspec-puppet to automatically create a link from the root of your
 module to `spec/fixtures/<module name>` at the beginning of the test run.
 
+#### derive\_node\_facts\_from\_nodename
+Type    | Default | Puppet Version(s)
+------- | ------- | -----------------
+Boolean | `true`  | 2.x, 3.x, 4.x, 5.x
+
+If `true`, rspec-puppet will override the `fdqn`, `hostname`, and `domain`
+facts with values that it derives from the node name (specified with
+`let(:node)`.
+
+In some circumstances (e.g. where your nodename/certname is not the same as
+your FQDN), this behaviour is undesirable and can be disabled by changing this
+setting to `false`.
+
 ## Naming conventions
 
 For clarity and consistency, I recommend that you use the following directory

@@ -190,3 +190,16 @@ Configures rspec-puppet to stub out `Pathname#absolute?` with its own
 implementation. This should only be enabled if you're running into an issue
 running cross-platform tests where you have Ruby code (types, providers,
 functions, etc) that use `Pathname#absolute?`.
+
+### derive\_node\_facts\_from\_nodename
+**Type:** Boolean<br />
+**Default:** `true`<br />
+**Puppet Version(s):** 2.x, 3.x, 4.x, 5.x
+
+If `true`, rspec-puppet will override the `fdqn`, `hostname`, and `domain`
+facts with values that it derives from the node name (specified with
+`let(:node)`.
+
+In some circumstances (e.g. where your nodename/certname is not the same as
+your FQDN), this behaviour is undesirable and can be disabled by changing this
+setting to `false`.
