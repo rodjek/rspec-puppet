@@ -22,6 +22,29 @@ title>)`)
 let(:params) { {'require' => ref('Package', 'apache2')} }
 {% endhighlight %}
 
+If have nested RSpec contexts to test the behaviour of different parameter
+values, you can partially override the parameters by merging the changed
+parameters into `super()` in your `let(:params)` block.
+
+{% highlight ruby %}
+describe 'My::Class' do
+  let(:params) do
+    {
+      'some_common_param' => 'value',
+      'ensure'            => 'present',
+    }
+  end
+
+  context 'with ensure => absent' do
+    let(:params) do
+      super().merge({ 'ensure' => 'absent' })
+    end
+
+    it { should compile }
+  end
+end
+{% endhighlight %}
+
 ### Specifying the FQDN of the test node
 
 If the object being tested depends upon the node having a certain name, it
