@@ -4,6 +4,27 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.5
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.4...v2.6.5"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Changed
+
+ * `derive_node_facts_from_nodename` setting added to disable the overriding of
+   `fqdn`, `hostname`, and `domain` facts with values derived from the node
+   name specified with `let(:node)`.
+
+### Fixed
+
+ * The `trusted_facts` hash now accepts symbol keys, matching the behaviour of
+   the `facts` hash.
+ * The modifications made to Puppet internals are now contained to rspec-puppet
+   examples, preventing them from bleeding out into other examples in the same
+   RSpec process (like Ruby unit tests).
+ * rspec-puppet no longer attempts to configure settings for Puppet 3.x
+   releases that they do not support.
+
 ## 2.6.4
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.3...v2.6.4"

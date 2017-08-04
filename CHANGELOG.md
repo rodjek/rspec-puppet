@@ -2,6 +2,24 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.5]
+
+### Changed
+
+ * `derive_node_facts_from_nodename` setting added to disable the overriding of
+   `fqdn`, `hostname`, and `domain` facts with values derived from the node
+   name specified with `let(:node)`.
+
+### Fixed
+
+ * The `trusted_facts` hash now accepts symbol keys, matching the behaviour of
+   the `facts` hash.
+ * The modifications made to Puppet internals are now contained to rspec-puppet
+   examples, preventing them from bleeding out into other examples in the same
+   RSpec process (like Ruby unit tests).
+ * rspec-puppet no longer attempts to configure settings for Puppet 3.x
+   releases that they do not support.
+
 ## [2.6.4]
 
 ### Fixed
