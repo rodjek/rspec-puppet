@@ -64,7 +64,7 @@ module RSpec::Puppet
     end
 
     def cover!(resource)
-      if !filtered?(resource) && (wrapper = find(resource))
+      if (wrapper = find(resource))
         wrapper.touch!
       end
     end
