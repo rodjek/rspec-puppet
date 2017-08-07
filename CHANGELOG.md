@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.6]
+
+### Fixed
+
+ * Fixed an issue caused by `Puppet::Util.get_env` when pretending to be a
+   Windows host.
+
 ## [2.6.5]
 
 ### Changed

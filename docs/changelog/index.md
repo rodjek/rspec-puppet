@@ -4,6 +4,16 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.6
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.5...v2.6.6"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+
+ * Fixed an issue caused by `Puppet::Util.get_env` when pretending to be a
+   Windows host.
+
 ## 2.6.5
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.4...v2.6.5"
