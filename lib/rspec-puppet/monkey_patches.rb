@@ -110,6 +110,21 @@ module Puppet
   end
 
   module Util
+    if respond_to?(:get_env)
+      alias :old_get_env :get_env
+      module_function :old_get_env
+
+      def get_env(name, mode = default_env)
+        if RSpec::Puppet.rspec_puppet_example?
+          # use the actual platform, not the pretended
+         old_get_env(name, Platform.actual_platform)
+        else
+         old_get_env(name, mode)
+        end
+      end
+      module_function :get_env
+    end
+
     # Allow rspec-puppet to pretend to be different platforms.
     module Platform
       alias :old_windows? :windows?
