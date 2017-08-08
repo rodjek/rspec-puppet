@@ -4,6 +4,16 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.7
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.6...v2.6.7"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+
+ * An issue where the optional minimum resource coverage check would throw an
+   exception when the coverage wasn't 100%.
+
 ## 2.6.6
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.5...v2.6.6"

@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.7]
+
+### Fixed
+
+ * An issue where the optional minimum resource coverage check would throw an
+   exception when the coverage wasn't 100%.
+
 ## [2.6.6]
 
 ### Fixed
