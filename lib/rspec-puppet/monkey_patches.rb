@@ -9,6 +9,18 @@ class RSpec::Puppet::EventListener
     end
   end
 
+  def self.example_passed(example)
+    @rspec_puppet_example = false
+  end
+
+  def self.example_pending(example)
+    @rspec_puppet_example = false
+  end
+
+  def self.example_failed(example)
+    @rspec_puppet_example = false
+  end
+
   def self.rspec_puppet_example?
     @rspec_puppet_example || false
   end
@@ -22,7 +34,7 @@ class RSpec::Puppet::EventListener
   end
 end
 
-RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :example_started)
+RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :example_started, :example_pending, :example_passed, :example_failed)
 
 module Puppet
   # Allow rspec-puppet to prevent Puppet::Type from automatically picking
