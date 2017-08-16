@@ -12,7 +12,8 @@
 
 ## Starting out with a new module
 
-When you start out on a new module, run `rspec-puppet-init` to create the necessary files to configure rspec-puppet for your module's tests.
+When you start out on a new module, create a metadata.json file for your module and then run `rspec-puppet-init` to create the necessary files to configure rspec-puppet for your module's tests.
+
 
 ## Configure manifests for Puppet 4
 
