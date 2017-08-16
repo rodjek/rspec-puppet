@@ -105,7 +105,9 @@ module Puppet
           RSpec::Puppet::Consts.stub_consts_for(RSpec.configuration.platform)
         end
 
-        environment.send(:value_cache).clear if environment.respond_to?(:value_cache, true)
+        if pretending && pretending != Puppet::Util::Platform.actual_platform
+          environment.send(:value_cache).clear if environment.respond_to?(:value_cache, true)
+        end
         output = old_find_manifests_in_modules(pattern, environment)
 
         unless pretending.nil?
