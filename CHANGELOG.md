@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.8]
+
+### Fixed
+
+ * Performance regression with Puppet < 4.0.0 due to overly agressive cache
+   invalidation.
+ * Clarified rspec-puppet-init output when run inside a directory that does not
+   contain a `metadata.json` file.
+
 ## [2.6.7]
 
 ### Fixed

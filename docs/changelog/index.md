@@ -4,6 +4,18 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.8
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.7...v2.6.8"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+
+ * Performance regression with Puppet < 4.0.0 due to overly agressive cache
+   invalidation.
+ * Clarified rspec-puppet-init output when run inside a directory that does not
+   contain a `metadata.json` file.
+
 ## 2.6.7
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.6...v2.6.7"
