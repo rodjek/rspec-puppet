@@ -12,6 +12,14 @@ module RSpec::Puppet
         return false
       end
 
+      if control_repo?
+        $stderr.puts <<-END
+Unable to find a metadata.json file. If this is a module, please create a
+metadata.json file and try again.
+END
+        return false
+      end
+
       safe_setup_directories(module_name)
       safe_touch(File.join('spec', 'fixtures', 'manifests', 'site.pp'))
 
