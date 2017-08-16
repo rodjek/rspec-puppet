@@ -54,6 +54,7 @@ require.
 
 {% highlight console %}
 $ cd path/to/your/module
+$ touch metadata.json
 $ rspec-puppet-init
 {% endhighlight %}
 
