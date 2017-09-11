@@ -1,5 +1,12 @@
 require 'pathname'
 
+# Load this library before enabling the monkey-patches to avoid HI-581
+begin
+require 'hiera/util/win32'
+rescue LoadError
+  # ignore this on installs without hiera, e.g. puppet 3 gems
+end
+
 class RSpec::Puppet::EventListener
   def self.example_started(example)
     if rspec3?
