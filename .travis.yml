@@ -3,49 +3,9 @@ cache: bundler
 bundler_args: --without development
 
 rvm:
-  - 2.3.0
-  - 2.1
   - 1.9.3
 
 sudo: false
 
 env:
-  - PUPPET_GEM_VERSION='~> 5.0.0' COVERAGE=yes
   - PUPPET_GEM_VERSION='~> 4.10.0'
-  - PUPPET_GEM_VERSION='~> 4.9.0'
-  - PUPPET_GEM_VERSION='~> 4.8.0'
-  - PUPPET_GEM_VERSION='~> 4.7.0'
-  - PUPPET_GEM_VERSION='~> 4.5.0'
-  - PUPPET_GEM_VERSION='~> 4.4.0'
-  - PUPPET_GEM_VERSION='~> 4.3.0'
-  - PUPPET_GEM_VERSION='~> 4.2.0'
-  # Latest code from puppetlabs/puppet.git
-  - PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#master'
-  - PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#stable'
-
-matrix:
-  include:
-    # these versions are explicitly needed for ruby 1.8.7 support
-    - rvm: 1.8.7
-      env: PUPPET_GEM_VERSION='~> 3.8.0' RSPEC_GEM_VERSION='= 3.1.0'
-    - rvm: 1.8.7
-      env: PUPPET_GEM_VERSION='~> 2.7.0' RSPEC_GEM_VERSION='~> 2.14.0'
-    - rvm: 1.9.3
-      env: PUPPET_GEM_VERSION='~> 5.0.0'
-    - rvm: 2.3.0
-      env: PUPPET_GEM_VERSION='~> 5.0.0'
-
-  exclude:
-    # run Coveralls exactly once
-    - rvm: 1.9.3
-      env: PUPPET_GEM_VERSION='~> 5.0.0' COVERAGE=yes
-    - rvm: 2.3.0
-      env: PUPPET_GEM_VERSION='~> 5.0.0' COVERAGE=yes
-
-  allowed_failures:
-    # Don't fail for puppet.git#master because it may be to blame for any failures
-    - env: PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#master'
-
-notifications:
-  email:
-    - tim@sharpe.id.au
