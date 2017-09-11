@@ -1,6 +1,8 @@
 language: ruby
 cache: bundler
 bundler_args: --without development
+# workaround bundler/rubygems version mismatch on new trusty images for ruby 1.9
+before_install: gem install bundler -v '1.15.4'
 
 rvm:
   - 2.3.0
