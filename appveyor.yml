@@ -46,5 +46,6 @@ test_script:
   - bundle exec rake test
 
 notifications:
-  email:
-    - tim@sharpe.id.au
+  - provider: Email
+    to:
+      - tim@sharpe.id.au
