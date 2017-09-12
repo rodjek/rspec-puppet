@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.9]
+
+### Fixed
+
+ * Initialise Hiera 3 before loading any monkey patches to ensure that the
+   correct code is loaded for the actual platform running the tests.
+
 ## [2.6.8]
 
 ### Fixed

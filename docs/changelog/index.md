@@ -4,6 +4,16 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.9
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.8...v2.6.9"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+
+ * Initialise Hiera 3 before loading any monkey patches to ensure that the
+   correct code is loaded for the actual platform running the tests.
+
 ## 2.6.8
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.7...v2.6.8"
