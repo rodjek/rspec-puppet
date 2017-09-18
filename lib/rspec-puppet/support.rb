@@ -72,7 +72,8 @@ module RSpec::Puppet
         hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
         hiera_data_value = self.respond_to?(:hiera_data) ? hiera_data : nil
 
-        catalogue = build_catalog(node_name, facts_hash(node_name), trusted_facts_hash(node_name), hiera_config_value,
+        build_facts = facts_hash(node_name)
+        catalogue = build_catalog(node_name, build_facts, trusted_facts_hash(node_name), hiera_config_value,
                                   build_code(type, manifest_opts), exported, node_params_hash, hiera_data_value)
 
         test_module = type == :host ? nil : class_name.split('::').first
@@ -82,6 +83,16 @@ module RSpec::Puppet
           RSpec::Puppet::Coverage.add_filter(type.to_s, class_name)
         end
         RSpec::Puppet::Coverage.add_from_catalog(catalogue, test_module)
+
+        ['operatingsystem', 'osfamily'].each do |os_fact|
+          if build_facts.key?(os_fact)
+            if build_facts[os_fact].to_s.downcase == 'windows'
+              Puppet::Util::Platform.pretend_to_be :windows
+            else
+              Puppet::Util::Platform.pretend_to_be :posix
+            end
+          end
+        end
 
         catalogue
       end
@@ -367,17 +378,6 @@ module RSpec::Puppet
     end
 
     def build_catalog(*args)
-      build_facts = args[1]
-      ['operatingsystem', 'osfamily'].each do |os_fact|
-        if build_facts.key?(os_fact)
-          if build_facts[os_fact].to_s.downcase == 'windows'
-            Puppet::Util::Platform.pretend_to_be :windows
-          else
-            Puppet::Util::Platform.pretend_to_be :posix
-          end
-        end
-      end
-
       @@cache.get(*args) do |*args|
         build_catalog_without_cache(*args)
       end
