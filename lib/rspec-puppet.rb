@@ -1,5 +1,6 @@
 require 'puppet'
 require 'rspec'
+require 'rspec/its'
 require 'fileutils'
 require 'tmpdir'
 require 'rspec-puppet/errors'
@@ -9,6 +10,7 @@ require 'rspec-puppet/setup'
 require 'rspec-puppet/coverage'
 require 'rspec-puppet/adapters'
 require 'rspec-puppet/consts'
+require 'rspec-puppet/v3'
 
 begin
   require 'puppet/test/test_helper'

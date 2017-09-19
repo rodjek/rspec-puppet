@@ -7,7 +7,7 @@ module RSpec::Puppet
     @@cache = RSpec::Puppet::Cache.new
 
     def subject
-      lambda { catalogue }
+      described_class || lambda { catalogue }
     end
 
     def environment
