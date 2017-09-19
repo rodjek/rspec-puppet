@@ -5,6 +5,8 @@ module RSpec::Puppet
     end
 
     class Resource
+      include RSpec::Puppet::Helpers::Relationships
+
       def initialize(type, title)
         @type = type
         @title = title
@@ -34,6 +36,46 @@ module RSpec::Puppet
       end
       alias_method :in_catalogue?, :exist?
       alias_method :in_catalog?, :exist?
+
+      def sanitise_resource(resource)
+        if resource.is_a?(self.class)
+          resource.catalogue_resource
+        else
+          canonicalize_resource(resource)
+        end
+      end
+
+      def notifies_resource?(other_resource)
+        return false unless exist?
+        other_resource = sanitise_resource(other_resource)
+        return false if other_resource.nil?
+
+        notifies?(catalogue_resource, other_resource)
+      end
+
+      def subscribes_to_resource?(other_resource)
+        return false unless exist?
+        other_resource = sanitise_resource(other_resource)
+        return false if other_resource.nil?
+
+        notifies?(other_resource, catalogue_resource)
+      end
+
+      def requires_resource?(other_resource)
+        return false unless exist?
+        other_resource = sanitise_resource(other_resource)
+        return false if other_resource.nil?
+
+        precedes?(other_resource, catalogue_resource)
+      end
+
+      def comes_before_resource?(other_resource)
+        return false unless exist?
+        other_resource = sanitise_resource(other_resource)
+        return false if other_resource.nil?
+
+        precedes?(catalogue_resource, other_resource)
+      end
     end
   end
 end
@@ -41,4 +83,5 @@ end
 # TODO: Limit this to only rspec-puppet example groups
 class RSpec::Core::ExampleGroup
   extend RSpec::Puppet::V3
+  include RSpec::Puppet::V3
 end
