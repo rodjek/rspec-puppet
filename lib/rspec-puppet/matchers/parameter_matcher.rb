@@ -21,10 +21,8 @@ module RSpec::Puppet
       #
       # @return [true, false]
       def matches?(resource)
+        actual = (resource['parameters'] || {})[@parameter]
 
-        @resource = resource
-
-        actual   = @resource[@parameter]
         expected = @value
 
         # Puppet flattens an array with a single value into just the value and
