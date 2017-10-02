@@ -23,6 +23,9 @@ module RSpec::Puppet
       def matches?(resource)
         actual = (resource['parameters'] || {})[@parameter]
 
+        if resource['sensitive_parameters'] && resource['sensitive_parameters'].include?(@parameter)
+          actual = ::Puppet::Pops::Types::PSensitiveType::Sensitive.new(actual)
+        end
         expected = @value
 
         # Puppet flattens an array with a single value into just the value and
@@ -63,6 +66,8 @@ module RSpec::Puppet
           check_hash(expected, actual)
         when Array
           check_array(expected, actual)
+        when RSpec::Puppet::Sensitive
+          expected == actual
         else
           check_string(expected, actual)
         end
