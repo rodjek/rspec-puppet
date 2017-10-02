@@ -23,7 +23,7 @@ describe RSpec::Puppet::Sensitive do
     end
   end
 
-  describe '#==' do
+  describe '#==', :if => Puppet::Util::Package.versioncmp(Puppet.version, '4.6.0') >= 0 do
     it "compares equal to Puppet sensitive type" do
       expect(sensitive).to eq ::Puppet::Pops::Types::PSensitiveType::Sensitive.new contents
     end
