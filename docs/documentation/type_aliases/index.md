@@ -40,7 +40,7 @@ it { is_expected.to allow_values('circle', 'triangle') }
 
 ## Testing Disallowed Values
 
-You can negate the `allow_value` matcher to test expected failure case.
+You can negate the `allow_value` matcher to test expected failure cases.
 
 {% highlight ruby %}
 it { is_expected.not_to allow_values('line', 'point') }
