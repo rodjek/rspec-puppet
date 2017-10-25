@@ -1,6 +1,8 @@
 # Change Log
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
+## Unreleased
+ * Adds rspec configuration to set default facterdb search paths
 
 ## [2.6.9]
 

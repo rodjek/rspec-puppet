@@ -48,6 +48,8 @@ RSpec.configure do |c|
   c.add_setting :derive_node_facts_from_nodename, :default => true
   c.add_setting :adapter
   c.add_setting :platform, :default => Puppet::Util::Platform.actual_platform
+  c.add_setting :facterdb_skip_defaultdb, :default => false
+  c.add_setting :facterdb_search_paths, :default => File.join('spec', 'fixtures','facts')
 
   c.before(:all) do
     if RSpec.configuration.setup_fixtures?
@@ -78,6 +80,10 @@ RSpec.configure do |c|
 
     c.before :each do
       begin
+        # this is useful when people are using puppet-debugger or rspec-puppete-facts
+        # in conjuction with their tests
+        ENV['FACTERDB_SEARCH_PATHS'] = RSpec.configuration.facterdb_search_paths
+        ENV['FACTERDB_SKIP_DEFAULTDB'] = RSpec.configuration.facterdb_skip_defaultdb
         Puppet::Test::TestHelper.before_each_test
       rescue Puppet::Context::DuplicateRollbackMarkError
         Puppet::Test::TestHelper.send(:initialize_settings_before_each)
@@ -87,6 +93,8 @@ RSpec.configure do |c|
 
     c.after :each do
       begin
+        ENV['FACTERDB_SEARCH_PATHS'] = nil
+        ENV['FACTERDB_SKIP_DEFAULTDB'] = nil
         Puppet::Test::TestHelper.after_each_test
       rescue
       end
@@ -94,6 +102,10 @@ RSpec.configure do |c|
   end
 
   c.before :each do
+    # this is useful when people are using puppet-debugger or rspec-puppete-facts
+    # in conjuction with their tests
+    ENV['FACTERDB_SEARCH_PATHS'] = RSpec.configuration.facterdb_search_paths
+    ENV['FACTERDB_SKIP_DEFAULTDB'] = RSpec.configuration.facterdb_skip_defaultdb
     if RSpec::Puppet.rspec_puppet_example?
       @adapter = RSpec::Puppet::Adapters.get
       @adapter.setup_puppet(self)
@@ -109,6 +121,8 @@ RSpec.configure do |c|
   end
 
   c.after(:each) do
+    ENV['FACTERDB_SEARCH_PATHS'] = nil
+    ENV['FACTERDB_SKIP_DEFAULTDB'] = nil
     RSpec::Puppet::Consts.restore_consts if RSpec::Puppet.rspec_puppet_example?
   end
 end

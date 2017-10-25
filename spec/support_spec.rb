@@ -109,4 +109,22 @@ describe RSpec::Puppet::Support do
       end
     end
   end
+
+  describe 'facterdb variables' do
+    it 'create default values' do
+      expect(RSpec.configuration.facterdb_search_paths).to eq('spec/fixtures/facts')
+      expect(RSpec.configuration.facterdb_skip_defaultdb).to be false
+    end
+
+    it 'set variables' do
+      RSpec.configuration.facterdb_skip_defaultdb = 'yes'
+      expect(ENV['FACTERDB_SEARCH_PATHS']).to eq('spec/fixtures/facts')
+      expect(ENV['FACTERDB_SKIP_DEFAULTDB']).to eq('yes')
+    end
+
+    it 'unset variables' do
+      expect(ENV['FACTERDB_SEARCH_PATHS']).to be nil
+      expect(ENV['FACTERDB_SKIP_DEFAULTDB']).to be nil
+    end
+  end
 end
