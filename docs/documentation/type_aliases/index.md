@@ -37,3 +37,11 @@ matcher
 {% highlight ruby %}
 it { is_expected.to allow_values('circle', 'triangle') }
 {% endhighlight %}
+
+## Testing Disallowed Values
+
+You can negate the `allow_value` matcher to test expected failure case.
+
+{% highlight ruby %}
+it { is_expected.not_to allow_values('line', 'point') }
+{% endhighlight %}
