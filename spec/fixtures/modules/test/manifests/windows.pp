@@ -5,4 +5,8 @@ class test::windows {
     mode     => '0755',
     provider => windows,
   }
+
+  package { 'test':
+    ensure => 'installed',
+  }
 }
