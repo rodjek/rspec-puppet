@@ -337,6 +337,8 @@ module RSpec::Puppet
 
       stub_facts! facts_val
 
+      Puppet::Type.eachtype { |type| type.defaultprovider = nil }
+
       node_facts = Puppet::Node::Facts.new(nodename, facts_val.dup)
       node_params = facts_val.merge(node_params)
 
@@ -356,6 +358,7 @@ module RSpec::Puppet
 
     def stub_facts!(facts)
       Puppet.settings[:autosign] = false
+      Facter.clear
       facts.each { |k, v| Facter.add(k) { setcode { v } } }
     end
 
