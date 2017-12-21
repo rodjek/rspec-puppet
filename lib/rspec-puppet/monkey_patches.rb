@@ -272,6 +272,21 @@ Puppet::Type.type(:exec).paramclass(:user).validate do |value|
   end
 end
 
+# Stub out Puppet::Util::Windows::Security.supports_acl? if it has been
+# defined. This check only makes sense when applying the catalogue to a host
+# and so can be safely stubbed out for unit testing.
+Puppet::Type.type(:file).provide(:windows).class_eval do
+  old_supports_acl = instance_method(:supports_acl?) if respond_to?(:supports_acl?)
+
+  def supports_acl?(path)
+    if RSpec::Puppet.rspec_puppet_example?
+      true
+    else
+      old_supports_acl.bind(self).call(value)
+    end
+  end
+end
+
 # Prevent Puppet from requiring 'puppet/util/windows' if we're pretending to be
 # windows, otherwise it will require other libraries that probably won't be
 # available on non-windows hosts.
