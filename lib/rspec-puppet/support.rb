@@ -132,15 +132,15 @@ module RSpec::Puppet
         end
       elsif type == :application
         if opts.has_key?(:params)
-          "site { #{class_name} { '#{title}': #{param_str(opts[:params])} } }"
+          "site { #{class_name} { #{sanitise_resource_title(title)}: #{param_str(opts[:params])} } }"
         else
           raise ArgumentError, "You need to provide params for an application"
         end
       elsif type == :define
         title_str = if title.is_a?(Array)
-                      '[' + title.map { |r| "'#{r}'" }.join(', ') + ']'
+                      '[' + title.map { |r| sanitise_resource_title(r) }.join(', ') + ']'
                     else
-                      "'#{title}'"
+                      sanitise_resource_title(title)
                     end
         if opts.has_key?(:params)
           "#{class_name} { #{title_str}: #{param_str(opts[:params])} }"
@@ -152,6 +152,10 @@ module RSpec::Puppet
       elsif type == :type_alias
         "$test = #{str_from_value(opts[:test_value])}\nassert_type(#{self.class.top_level_description}, $test)"
       end
+    end
+
+    def sanitise_resource_title(title)
+      title.include?("'") ? title.inspect : "'#{title}'"
     end
 
     def nodename(type)
