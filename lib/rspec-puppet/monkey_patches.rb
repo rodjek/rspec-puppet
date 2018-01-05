@@ -293,7 +293,7 @@ end
 module Kernel
   alias :old_require :require
   def require(path)
-    return if path == 'puppet/util/windows' && RSpec::Puppet.rspec_puppet_example? && Puppet::Util::Platform.pretend_windows?
+    return if (['puppet/util/windows', 'win32ole'].include?(path)) && RSpec::Puppet.rspec_puppet_example? && Puppet::Util::Platform.pretend_windows?
     old_require(path)
   end
 end
