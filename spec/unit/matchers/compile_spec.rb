@@ -145,14 +145,25 @@ if Puppet.version.to_f >= 3.0
       end
 
       context "when expecting the failure" do
-        before(:each) { subject.and_raise_error("Evaluation Error: Error while evaluating a Function Call, failure at line 52:1 on node rspec::puppet::manifestmatchers::compile") }
+        let(:expected_error) do
+          "Evaluation Error: Error while evaluating a Function Call, #{error_detail} on node rspec::puppet::manifestmatchers::compile"
+        end
+
+        before(:each) { subject.and_raise_error(expected_error) }
+
+        if Puppet::Util::Package.versioncmp(Puppet.version, '5.3.4') >= 0
+          let(:error_detail) { "failure (line: 52, column: 1)" }
+        else
+          let(:error_detail) { "failure at line 52:1" }
+        end
 
         if Puppet.version.to_f >= 4.0
           # the error message above is puppet4 specific
           it ("matches") { is_expected.to be_matches catalogue }
         end
+
         it { is_expected.to have_attributes(
-          :description => "fail to compile and raise the error \"Evaluation Error: Error while evaluating a Function Call, failure at line 52:1 on node rspec::puppet::manifestmatchers::compile\""
+          :description => "fail to compile and raise the error \"#{expected_error}\""
         )}
 
         context "after matching" do
