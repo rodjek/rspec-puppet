@@ -4,4 +4,5 @@ describe 'test::windows' do
   let(:facts) { {:operatingsystem => 'windows' } }
 
   it { should compile.with_all_deps }
+  it { should contain_file('C:\\something.txt') }
 end

@@ -6,6 +6,11 @@ class test::windows {
     provider => windows,
   }
 
+  file { 'C:\\something.txt':
+    ensure => link,
+    target => 'C:\\test.txt',
+  }
+
   package { 'test':
     ensure => 'installed',
   }
