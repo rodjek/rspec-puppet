@@ -5,6 +5,13 @@ end
 
 require 'rspec-puppet'
 
+# rspec 2.x doesn't have RSpec::Support, so fall back to File::ALT_SEPARATOR to
+# detect if running on windows
+def windows?
+  return @windowsp unless @windowsp.nil?
+  @windowsp = defined?(RSpec::Support) ? RSpec::Support::OS.windows? : !!File::ALT_SEPARATOR
+end
+
 RSpec.configure do |c|
   c.module_path     = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'modules')
   c.manifest_dir    = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests')
