@@ -45,6 +45,8 @@ if ENV['COVERAGE'] == 'yes'
   gem 'coveralls', :require => false
 end
 
+gem 'win32-taskscheduler', :platforms => [:mingw, :x64_mingw, :mswin]
+
 if File.exist?('Gemfile.local')
   eval_gemfile('Gemfile.local')
 end

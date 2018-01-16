@@ -43,6 +43,8 @@ end
 
 RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :example_started, :example_pending, :example_passed, :example_failed)
 
+require 'rspec-puppet/monkey_patches/win32/taskscheduler'
+
 module Puppet
   # Allow rspec-puppet to prevent Puppet::Type from automatically picking
   # a provider for a resource. We need to do this because in order to fully
