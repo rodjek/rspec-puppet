@@ -87,6 +87,11 @@ module RSpec::Puppet
       def check_hash(expected, actual)
         op = @should_match ? :"==" : :"!="
 
+        unless actual.class.send(op, expected.class)
+          @errors << MatchError.new(@parameter, expected, actual, !@should_match)
+          return false
+        end
+
         unless expected.keys.size.send(op, actual.keys.size)
           return false
         end
@@ -98,6 +103,11 @@ module RSpec::Puppet
 
       def check_array(expected, actual)
         op = @should_match ? :"==" : :"!="
+
+        unless actual.class.send(op, expected.class)
+          @errors << MatchError.new(@parameter, expected, actual, !@should_match)
+          return false
+        end
 
         unless expected.size.send(op, actual.size)
           return false
