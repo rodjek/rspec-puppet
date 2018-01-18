@@ -287,6 +287,16 @@ Puppet::Type.type(:file).provide(:windows).class_eval do
       old_supports_acl.bind(self).call(value)
     end
   end
+
+  old_manages_symlinks = instance_method(:manages_symlinks?) if respond_to?(:manages_symlinks?)
+
+  def manages_symlinks?
+    if RSpec::Puppet.rspec_puppet_example?
+      true
+    else
+      old_manages_symlinks.bind(self).call(value)
+    end
+  end
 end
 
 # Prevent Puppet from requiring 'puppet/util/windows' if we're pretending to be
