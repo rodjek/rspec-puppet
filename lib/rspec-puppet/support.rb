@@ -279,6 +279,34 @@ module RSpec::Puppet
       extensions
     end
 
+    def server_facts_hash()
+      server_facts = {}
+
+      # Add our server version to the fact list
+      server_facts["serverversion"] = Puppet.version.to_s
+
+      # And then add the server name and IP
+      {"servername" => "fqdn",
+        "serverip" => "ipaddress"
+      }.each do |var, fact|
+        if value = Facter.value(fact)
+          server_facts[var] = value
+        else
+          Puppet.warning _("Could not retrieve fact %{fact}") % { fact: fact }
+        end
+      end
+
+      if server_facts["servername"].nil?
+        host = Facter.value(:hostname)
+        if domain = Facter.value(:domain)
+          server_facts["servername"] = [host, domain].join(".")
+        else
+          server_facts["servername"] = host
+        end
+      end
+      server_facts
+    end
+
     def str_from_value(value)
       case value
       when Hash
@@ -366,6 +394,10 @@ module RSpec::Puppet
           },
           "Context for spec trusted hash"
         )
+      end
+
+      if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
+        node_obj.add_server_facts(server_facts_hash)
       end
 
       adapter.catalog(node_obj, exported)
