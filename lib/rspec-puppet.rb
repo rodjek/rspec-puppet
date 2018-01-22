@@ -48,6 +48,7 @@ RSpec.configure do |c|
   c.add_setting :derive_node_facts_from_nodename, :default => true
   c.add_setting :adapter
   c.add_setting :platform, :default => Puppet::Util::Platform.actual_platform
+  c.add_setting :trusted_server_facts, :default => false
 
   c.before(:all) do
     if RSpec.configuration.setup_fixtures?

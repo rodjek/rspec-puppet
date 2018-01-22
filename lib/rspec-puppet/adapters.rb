@@ -150,6 +150,7 @@ module RSpec::Puppet
           [:hiera_config, :hiera_config],
           [:strict_variables, :strict_variables],
           [:manifest, :manifest],
+          [:trusted_server_facts, :trusted_server_facts]
         ])
       end
 
