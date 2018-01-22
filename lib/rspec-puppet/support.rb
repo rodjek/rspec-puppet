@@ -279,7 +279,7 @@ module RSpec::Puppet
       extensions
     end
 
-    def server_facts_hash()
+    def server_facts_hash
       server_facts = {}
 
       # Add our server version to the fact list
