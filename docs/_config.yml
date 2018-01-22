@@ -1,0 +1,15 @@
+encoding: UTF-8
+kramdown:
+    input: GFM
+    hard_wrap: false
+    math_engine: mathjax
+    syntax_highlighter: rouge
+future: true
+gfm_quirks: paragraph_end
+lsi: false
+safe: true
+incremental: false
+highlighter: rouge
+git:
+    noscript: false
+markdown: kramdown
