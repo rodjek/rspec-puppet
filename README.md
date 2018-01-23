@@ -105,6 +105,14 @@ Boolean | `false` | >=3.4, 4.x, 5.x
 Configures rspec-puppet to use the `$trusted` hash when compiling the
 catalogues.
 
+#### trusted\_server\_facts
+Type    | Default | Puppet Version(s)
+------- | ------- | -----------------
+Boolean | `false` | >=4.3, 5.x
+
+Configures rspec-puppet to use the `$server_facts` hash when compiling the
+catalogues.
+
 #### confdir
 Type   | Default         | Puppet Version(s)
 ------ | --------------- | ------------------
