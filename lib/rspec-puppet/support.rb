@@ -292,7 +292,7 @@ module RSpec::Puppet
         if value = Facter.value(fact)
           server_facts[var] = value
         else
-          Puppet.warning _("Could not retrieve fact %{fact}") % { fact: fact }
+          warn "Could not retrieve fact #{fact}"
         end
       end
 
