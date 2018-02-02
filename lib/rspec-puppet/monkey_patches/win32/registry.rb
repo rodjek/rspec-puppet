@@ -69,3 +69,11 @@ module RSpec
     end
   end
 end
+
+begin
+  require 'win32/registry'
+rescue LoadError
+  module Win32
+    Registry = RSpec::Puppet::Win32::Registry
+  end
+end
