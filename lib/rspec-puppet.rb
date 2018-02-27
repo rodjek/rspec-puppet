@@ -23,6 +23,10 @@ module RSpec::Puppet
   def self.rspec_puppet_example?
     RSpec::Puppet::EventListener.rspec_puppet_example?
   end
+
+  def self.current_example
+    RSpec::Puppet::EventListener.current_example
+  end
 end
 
 require 'rspec-puppet/monkey_patches'
@@ -48,7 +52,17 @@ RSpec.configure do |c|
   c.add_setting :derive_node_facts_from_nodename, :default => true
   c.add_setting :adapter
   c.add_setting :platform, :default => Puppet::Util::Platform.actual_platform
-  c.add_setting :trusted_server_facts, :default => false
+
+  c.instance_eval do
+    def trusted_server_facts
+      @trusted_server_facts.nil? ? false : @trusted_server_facts
+    end
+
+    def trusted_server_facts=(value)
+      @trusted_server_facts = value
+      adapter.setup_puppet(RSpec::Puppet.current_example) unless adapter.nil?
+    end
+  end
 
   c.before(:all) do
     if RSpec.configuration.setup_fixtures?
