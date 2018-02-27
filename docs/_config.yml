@@ -3,14 +3,11 @@ kramdown:
     input: GFM
     hard_wrap: false
     math_engine: mathjax
-    syntax_highlighter_opts:
-        disable: true
 future: true
 gfm_quirks: paragraph_end
 lsi: false
 safe: true
 incremental: false
-highlighter: none
 gist:
     noscript: false
 markdown: kramdown
