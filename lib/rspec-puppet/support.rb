@@ -74,7 +74,8 @@ module RSpec::Puppet
 
         build_facts = facts_hash(node_name)
         catalogue = build_catalog(node_name, build_facts, trusted_facts_hash(node_name), hiera_config_value,
-                                  build_code(type, manifest_opts), exported, node_params_hash, hiera_data_value)
+                                  build_code(type, manifest_opts), exported, node_params_hash, hiera_data_value,
+                                  RSpec.configuration.trusted_server_facts)
 
         test_module = type == :host ? nil : class_name.split('::').first
         if type == :define
