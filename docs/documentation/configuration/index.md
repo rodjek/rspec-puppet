@@ -77,6 +77,14 @@ Makes rspec-puppet use the `$trusted` hash when testing catalogues.
 Configures rspec-puppet to automatically create a link from the root of your
 module to `spec/fixtures/<module name>` at the beginning of the test run.
 
+### trusted\_server\_facts
+**Type:** Boolean<br />
+**Default:** `false`<br />
+**Puppet Version(s):** >= 4.3, 5.x
+
+Configures rspec-puppet to use the `$server_facts` hash when compiling the
+catalogues.
+
 ## Optional overrides
 Only set these values if you need to. rspec-puppet is generally pretty good at
 determining the values itself, but if you need to override them you can.

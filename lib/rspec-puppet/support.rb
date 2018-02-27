@@ -74,7 +74,8 @@ module RSpec::Puppet
 
         build_facts = facts_hash(node_name)
         catalogue = build_catalog(node_name, build_facts, trusted_facts_hash(node_name), hiera_config_value,
-                                  build_code(type, manifest_opts), exported, node_params_hash, hiera_data_value)
+                                  build_code(type, manifest_opts), exported, node_params_hash, hiera_data_value,
+                                  RSpec.configuration.trusted_server_facts)
 
         test_module = type == :host ? nil : class_name.split('::').first
         if type == :define
@@ -279,6 +280,34 @@ module RSpec::Puppet
       extensions
     end
 
+    def server_facts_hash
+      server_facts = {}
+
+      # Add our server version to the fact list
+      server_facts["serverversion"] = Puppet.version.to_s
+
+      # And then add the server name and IP
+      {"servername" => "fqdn",
+        "serverip" => "ipaddress"
+      }.each do |var, fact|
+        if value = Facter.value(fact)
+          server_facts[var] = value
+        else
+          warn "Could not retrieve fact #{fact}"
+        end
+      end
+
+      if server_facts["servername"].nil?
+        host = Facter.value(:hostname)
+        if domain = Facter.value(:domain)
+          server_facts["servername"] = [host, domain].join(".")
+        else
+          server_facts["servername"] = host
+        end
+      end
+      server_facts
+    end
+
     def str_from_value(value)
       case value
       when Hash
@@ -366,6 +395,10 @@ module RSpec::Puppet
           },
           "Context for spec trusted hash"
         )
+      end
+
+      if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
+        node_obj.add_server_facts(server_facts_hash)
       end
 
       adapter.catalog(node_obj, exported)
