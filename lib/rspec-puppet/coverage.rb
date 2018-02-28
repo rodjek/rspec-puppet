@@ -119,6 +119,8 @@ module RSpec::Puppet
     def results
       report = {}
 
+      @collection.delete_if { |name, _| filtered?(name) }
+
       report[:total] = @collection.size
       report[:touched] = @collection.count { |_, resource| resource.touched? }
       report[:untouched] = report[:total] - report[:touched]
