@@ -57,7 +57,8 @@ end
 
 When testing with Puppet >= 4.3, the trusted facts hash will have the standard
 trusted facts (`certname`, `domain`, and `hostname`) populated based on the
-node name.
+node name. Those elements can only be set with the `let(:node)`, not with this
+structure.
 
 By default, the test environment contains no custom trusted facts (usually
 obtained from certificate extensions) and found in the `extensions` key. If the
