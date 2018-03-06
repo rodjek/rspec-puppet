@@ -4,6 +4,56 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.10
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.9...v2.6.10"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+
+ * Replaced deprecated `File.exists?` calls in `rspec-puppet-init` with
+   `File.exist?`, which behaves much more reliably in respect to symlinks.
+ * Stubbed out `Puppet::Util::Windows::Security.supports_acl?` when compiling
+   the catalogue as this check only make sense when applying the resources to
+   a host and prevents testing Windows File resources on non-Windows hosts.
+ * The cached default provider for native types is now reset before compiling
+   a new catalogue.
+ * Resource titles that contain single quotes are now rendered correctly,
+   allowing them to be tested.
+ * When pretending to be a different platform, the methods in
+   `Puppet::Util::Platform` are now stubbed after the catalogue has been
+   compiled, allowing path related logic in custom facts to behave as expected.
+ * A mock version of `Win32::TaskScheduler` has been added to rspec-puppet.
+   This will be loaded when running rspec-puppet on a non-Windows host in order
+   to allow testing of catalogues containing Scheduled\_task resources.
+ * Stubbed out the `manages_symlinks` feature on
+   `Puppet::Type::File::ProviderWindows` as this can only be evaluated at apply
+   time and prevents testing Windows File resources that manage symlinks on
+   non-Windows hosts.
+ * Fixed unhandled exception when testing resource parameters where the
+   expected value is an Array or a Hash and the actual value is a different
+   data type.
+ * A mock version of `Win32::Registry` has been added to rspec-puppet. This
+   will be loaded when running rspec-puppet on a non-Windows host in order to
+   allow testing of catalogues that contain Exec resources that use the
+   `powershell` provider from the `puppetlabs/puppetlabs-powershell` module.
+ * Fixed a case where the order in which tests are run can cause a resource
+   that is being tested to be falsely reported as untested in the coverage
+   report.
+
+### Changed
+
+ * The tests for the `compile` matcher have been updated to support the new
+   error message format introduced in Puppet 5.3.4.
+ * The builtin `$server_facts` hash is now populated on versions of Puppet that
+   support it (Puppet >= 4.3). This is not currently enabled by default, but
+   can be enabled by setting `RSpec.configuration.trusted_server_facts` to
+   `true`.
+ * `$facts['os']['family']` and `$facts['os']['name']` are now checked when
+   determining if rspec-puppet needs to pretend to be running on a different
+   platform (previously only `$facts['operatingsystem']` and
+   `$facts['osfamily']` were used).
+
 ## 2.6.9
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.8...v2.6.9"
