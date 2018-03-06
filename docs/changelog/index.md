@@ -4,6 +4,17 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.11
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.10...v2.6.11"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+
+ * The `server_facts` hash is now only built if
+   `RSpec.configuration.trusted_server_facts` is `true`. Previously, this was
+   always built but only used when enabled.
+
 ## 2.6.10
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.9...v2.6.10"
