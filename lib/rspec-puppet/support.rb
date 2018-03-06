@@ -400,10 +400,8 @@ module RSpec::Puppet
           },
           "Context for spec trusted hash"
         )
-      end
 
-      if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
-        node_obj.add_server_facts(server_facts_hash)
+        node_obj.add_server_facts(server_facts_hash) if RSpec.configuration.trusted_server_facts
       end
 
       adapter.catalog(node_obj, exported)
