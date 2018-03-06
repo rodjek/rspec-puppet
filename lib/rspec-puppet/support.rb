@@ -54,16 +54,28 @@ module RSpec::Puppet
 
       munged_facts = facts_hash(nodename(type))
 
-      ['operatingsystem', 'osfamily'].each do |os_fact|
-        if munged_facts.key?(os_fact)
-          if munged_facts[os_fact].to_s.downcase == 'windows'
-            RSpec::Puppet::Consts.stub_consts_for(:windows)
-          else
-            RSpec::Puppet::Consts.stub_consts_for(:posix)
-          end
+      pretend_platform = find_pretend_platform(munged_facts)
+      RSpec::Puppet::Consts.stub_consts_for(pretend_platform) unless pretend_platform.nil?
+    end
+
+    def find_pretend_platform(test_facts)
+      from_value = lambda { |value|
+        value.to_s.downcase == 'windows' ? :windows : :posix
+      }
+
+      ['operatingsystem', 'osfamily', 'os'].each do |os_fact|
+        return from_value.call(test_facts[os_fact]) if test_facts.key?(os_fact)
+      end
+
+      if test_facts.key?('os') && test_facts['os'].is_a?(Hash)
+        ['name', 'family'].each do |os_hash_key|
+          return from_value.call(test_facts['os'][os_hash_key]) if test_facts['os'].key?(os_hash_key)
         end
       end
+
+      nil
     end
+
 
     def load_catalogue(type, exported = false, manifest_opts = {})
       with_vardir do
@@ -85,15 +97,8 @@ module RSpec::Puppet
         end
         RSpec::Puppet::Coverage.add_from_catalog(catalogue, test_module)
 
-        ['operatingsystem', 'osfamily'].each do |os_fact|
-          if build_facts.key?(os_fact)
-            if build_facts[os_fact].to_s.downcase == 'windows'
-              Puppet::Util::Platform.pretend_to_be :windows
-            else
-              Puppet::Util::Platform.pretend_to_be :posix
-            end
-          end
-        end
+        pretend_platform = find_pretend_platform(build_facts)
+        Puppet::Util::Platform.pretend_to_be(pretend_platform) unless pretend_platform.nil?
 
         catalogue
       end
