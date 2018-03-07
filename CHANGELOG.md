@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.11]
+
+### Fixed
+
+ * The `server_facts` hash is now only built if
+   `RSpec.configuration.trusted_server_facts` is `true`. Previously, this was
+   always built but only used when enabled.
+
 ## [2.6.10]
 
 ### Fixed
