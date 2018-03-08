@@ -87,6 +87,18 @@ module RSpec::Puppet
           context_overrides = compiler.context_overrides
           func = nil
           loaders = Puppet.lookup(:loaders)
+
+          # allow loading functions from the environment
+          Puppet.override(context_overrides, "rspec-test scope") do
+            # TODO a better way to get the base directory (don't assume)
+            dir = File.join(Dir.pwd, 'lib')
+            loader = Puppet::Pops::Loader::ModuleLoaders::FileBased.new(loaders.private_environment_loader, loaders, Puppet::Pops::Loader::ENVIRONMENT, dir, 'environment functions', [:func_4x])
+            func = V4FunctionWrapper.new(function_name, loader.load(:function, function_name), context_overrides)
+            @scope = context_overrides[:global_scope]
+          end
+
+          return func if func.func
+
           Puppet.override(context_overrides, "rspec-test scope") do
             func = V4FunctionWrapper.new(function_name, loaders.private_environment_loader.load(:function, function_name), context_overrides)
             @scope = context_overrides[:global_scope]
