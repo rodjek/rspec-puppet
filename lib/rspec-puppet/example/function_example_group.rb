@@ -1,3 +1,5 @@
+require 'puppet/pops/loader/loader'
+
 module RSpec::Puppet
   module FunctionExampleGroup
     include RSpec::Puppet::FunctionMatchers
