@@ -158,6 +158,15 @@ module Puppet
       module_function :get_env
     end
 
+    module Windows
+      module File
+        def symlink?(file_name)
+          false
+        end
+        module_function :symlink?
+      end
+    end
+
     # Allow rspec-puppet to pretend to be different platforms.
     module Platform
       alias :old_windows? :windows?
