@@ -1,7 +1,4 @@
 require 'puppet'
-if Puppet.version.to_f >= 4.0
-  require 'puppet/pops'
-end
 require 'fileutils'
 
 module RSpec::Puppet
@@ -87,7 +84,8 @@ END
     def self.get_module_name_from_file(file)
       # FIXME: see discussion at
       # https://github.com/rodjek/rspec-puppet/issues/290
-      if Puppet.version.to_f >= 4.0
+      if Puppet.version.to_f >= 4.0 || RSpec.configuration.parser == 'future'
+        require 'puppet/pops'
         p = Puppet::Pops::Parser::Lexer2.new
       else
         p = Puppet::Parser::Lexer.new
