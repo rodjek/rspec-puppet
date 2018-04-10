@@ -60,6 +60,50 @@ describe RSpec::Puppet::Support do
     end
   end
 
+  describe '#find_pretend_platform' do
+    let(:build_hash) do
+      {
+	"hostname" => "fy73bdiqazmyj62",
+	"networking" => {
+	  "hostname" => "fy73bdiqazmyj62",
+	  "fqdn" => "fy73bdiqazmyj62.delivery.puppetlabs.net"
+	},
+      }
+    end
+    context 'without os facts' do
+      it 'returns the correct platform' do
+	expect(subject.find_pretend_platform(build_hash)).to eq(nil)
+      end
+    end
+    { 'windows' => :windows, 'debian' => :posix }.each do |family, platform|
+      context 'with os structured fact' do
+	let(:build_hash) do
+	  super().merge({
+	    "os" => {
+	      "family" => family,
+	      "version" => {
+		"major" => "10"
+	      }
+	    }
+	  })
+	end
+	it 'returns the correct platform' do
+	  expect(subject.find_pretend_platform(build_hash)).to eq(platform)
+	end
+      end
+      context 'with osfamily fact' do
+	let(:build_hash) do
+	  super().merge({
+	    "osfamily" => family
+	  })
+	end
+	it 'returns the correct platform' do
+	  expect(subject.find_pretend_platform(build_hash)).to eq(platform)
+	end
+      end
+    end
+  end
+
   describe '#build_code' do
     before do
       class << subject
