@@ -54,6 +54,7 @@ RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :ex
 
 require 'rspec-puppet/monkey_patches/win32/taskscheduler'
 require 'rspec-puppet/monkey_patches/win32/registry'
+require 'rspec-puppet/monkey_patches/windows/taskschedulerconstants'
 
 module Puppet
   # Allow rspec-puppet to prevent Puppet::Type from automatically picking
