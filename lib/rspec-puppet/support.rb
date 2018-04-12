@@ -63,7 +63,7 @@ module RSpec::Puppet
         value.to_s.downcase == 'windows' ? :windows : :posix
       }
 
-      ['operatingsystem', 'osfamily', 'os'].each do |os_fact|
+      ['operatingsystem', 'osfamily'].each do |os_fact|
         return from_value.call(test_facts[os_fact]) if test_facts.key?(os_fact)
       end
 
