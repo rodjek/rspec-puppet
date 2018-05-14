@@ -8,6 +8,26 @@ branches:
 environment:
   matrix:
     - RUBY_VERSION: 23-x64
+      PUPPET_GEM_VERSION: '~> 5.5.0'
+    - RUBY_VERSION: 21
+      PUPPET_GEM_VERSION: '~> 5.5.0'
+    - RUBY_VERSION: 23-x64
+      PUPPET_GEM_VERSION: '~> 5.4.0'
+    - RUBY_VERSION: 21
+      PUPPET_GEM_VERSION: '~> 5.4.0'
+    - RUBY_VERSION: 23-x64
+      PUPPET_GEM_VERSION: '~> 5.3.0'
+    - RUBY_VERSION: 21
+      PUPPET_GEM_VERSION: '~> 5.3.0'
+    - RUBY_VERSION: 23-x64
+      PUPPET_GEM_VERSION: '~> 5.2.0'
+    - RUBY_VERSION: 21
+      PUPPET_GEM_VERSION: '~> 5.2.0'
+    - RUBY_VERSION: 23-x64
+      PUPPET_GEM_VERSION: '~> 5.1.0'
+    - RUBY_VERSION: 21
+      PUPPET_GEM_VERSION: '~> 5.1.0'
+    - RUBY_VERSION: 23-x64
       PUPPET_GEM_VERSION: '~> 5.0.0'
     - RUBY_VERSION: 21
       PUPPET_GEM_VERSION: '~> 5.0.0'
@@ -21,7 +41,10 @@ environment:
       PUPPET_GEM_VERSION: '~> 4.2.0'
     # Latest gem release
     - RUBY_VERSION: 23-x64
-      PUPPET_GEM_VERSION: '~> 4.0'
+      PUPPET_GEM_VERSION: '~> 5.0'
+    - RUBY_VERSION: 23-x64
+      PUPPET_GEM_VERSION: '~> 5.0'
+      FACTER_GEM_VERSION: '3.11.0.cfacter.20180319'
     # Latest code from puppetlabs/puppet.git
     - RUBY_VERSION: 23-x64
       PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
@@ -32,7 +55,7 @@ matrix:
     - PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
 
 install:
-  - SET PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - SET PATH=C:\Ruby%RUBY_VERSION%\bin;C:\Ruby%RUBY_VERSION%\lib\ruby\gems\2.3.0\gems\facter-3.11.0.cfacter.20180319-x64-mingw32\bin;%PATH%
   - SET LOG_SPEC_ORDER=true
   - ruby -v
   - gem -v
