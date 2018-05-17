@@ -32,17 +32,17 @@ end
 require 'rspec-puppet/monkey_patches'
 
 RSpec.configure do |c|
-  c.add_setting :environmentpath, :default => '/etc/puppetlabs/code/environments'
+  c.add_setting :environmentpath, :default => Puppet::Util::Platform.actually_windows? ? 'nul' : '/dev/null'
   c.add_setting :module_path, :default => nil
   c.add_setting :manifest_dir, :default => nil
   c.add_setting :manifest, :default => nil
   c.add_setting :template_dir, :default => nil
   c.add_setting :config, :default => nil
-  c.add_setting :confdir, :default => '/etc/puppet'
+  c.add_setting :confdir, :default => Puppet::Util::Platform.actually_windows? ? 'nul' : '/dev/null'
   c.add_setting :default_facts, :default => {}
   c.add_setting :default_node_params, :default => {}
   c.add_setting :default_trusted_facts, :default => {}
-  c.add_setting :hiera_config, :default => '/dev/null'
+  c.add_setting :hiera_config, :default => Puppet::Util::Platform.actually_windows? ? 'nul' : '/dev/null'
   c.add_setting :parser, :default => 'current'
   c.add_setting :trusted_node_data, :default => false
   c.add_setting :ordering, :default => 'title-hash'

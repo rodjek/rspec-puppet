@@ -178,6 +178,11 @@ module Puppet
       end
       module_function :actual_platform
 
+      def actually_windows?
+        actual_platform == :windows
+      end
+      module_function :actually_windows?
+
       def pretend_windows?
         pretend_platform == :windows
       end
