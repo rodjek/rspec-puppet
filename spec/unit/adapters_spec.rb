@@ -20,7 +20,7 @@ describe RSpec::Puppet::Adapters::Base do
       subject.setup_puppet(context_double)
     end
 
-    null_path = windows? ? 'nul' : '/dev/null'
+    null_path = windows? ? 'c:/nul/' : '/dev/null'
 
     [:vardir, :confdir].each do |setting|
       it "sets #{setting} to #{null_path}" do
@@ -168,7 +168,7 @@ describe RSpec::Puppet::Adapters::Adapter32, :if => (3.2 ... 4.0).include?(Puppe
       subject.setup_puppet(context_double)
     end
 
-    null_path = windows? ? 'nul' : '/dev/null'
+    null_path = windows? ? 'c:/nul/' : '/dev/null'
 
     [:vardir, :rundir, :logdir, :hiera_config, :confdir].each do |setting|
       it "sets #{setting} to #{null_path}" do
@@ -219,7 +219,7 @@ describe RSpec::Puppet::Adapters::Adapter4X, :if => Puppet.version.to_f >= 4.0 d
       subject.setup_puppet(context_double)
     end
 
-    null_path = windows? ? 'nul' : '/dev/null'
+    null_path = windows? ? 'c:/nul/' : '/dev/null'
 
     [:vardir, :codedir, :rundir, :logdir, :hiera_config, :confdir].each do |setting|
       it "sets #{setting} to #{null_path}" do
