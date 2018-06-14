@@ -30,7 +30,7 @@ module RSpec::Puppet
 
       def only_with(*args, &block)
         params = args.shift
-        @expected_params_count = (@expected_params_count || 0) + params.size
+        @expected_params_count = (@expected_params_count || 0) + params.select { |_, v| !v.nil? }.size
         self.with(params, &block)
       end
 
