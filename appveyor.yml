@@ -42,9 +42,9 @@ environment:
     # Latest gem release
     - RUBY_VERSION: 23-x64
       PUPPET_GEM_VERSION: '~> 5.0'
-    - RUBY_VERSION: 23-x64
+    - RUBY_VERSION: 25-x64
       PUPPET_GEM_VERSION: '~> 5.0'
-      FACTER_GEM_VERSION: '3.11.0.cfacter.20180319'
+      FACTER_GEM_VERSION: '3.11.2.cfacter.20180612'
     # Latest code from puppetlabs/puppet.git
     - RUBY_VERSION: 23-x64
       PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
@@ -55,7 +55,7 @@ matrix:
     - PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
 
 install:
-  - SET PATH=C:\Ruby%RUBY_VERSION%\bin;C:\Ruby%RUBY_VERSION%\lib\ruby\gems\2.3.0\gems\facter-3.11.0.cfacter.20180319-x64-mingw32\bin;%PATH%
+  - SET PATH=C:\Ruby%RUBY_VERSION%\bin;C:\Ruby%RUBY_VERSION%\lib\ruby\gems\2.5.0\gems\facter-3.11.2.cfacter.20180612-x64-mingw32\bin;%PATH%
   - SET LOG_SPEC_ORDER=true
   - ruby -v
   - gem -v
