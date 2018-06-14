@@ -1,6 +1,12 @@
 module RSpec::Puppet
   module ManifestMatchers
     class CountGeneric
+      DEFAULT_RESOURCES = [
+        'Class[main]',
+        'Class[Settings]',
+        'Stage[main]',
+      ].freeze
+
       def initialize(type, count, *method)
         if type.nil?
           @type = method[0].to_s.gsub(/^have_(.+)_resource_count$/, '\1')
@@ -14,21 +20,19 @@ module RSpec::Puppet
       def matches?(catalogue)
         @catalogue = catalogue.call
 
-        if @type == "resource"
-          @actual_number = @catalogue.resources.count do |res|
-            !(['Class', 'Node'].include? res.type)
-          end
-
-          # Puppet automatically adds Stage[main]
-          @actual_number = @actual_number - 1
-        else
-          @actual_number = @catalogue.resources.count do |res|
-            res.type == @referenced_type
-          end
-
-          # Puppet automatically adds Class[main] and Class[Settings]
-          @actual_number = @actual_number - 2 if @type == "class"
+        resources = @catalogue.resources.reject do |res|
+          DEFAULT_RESOURCES.include?(res.ref)
         end
+
+        @actual_number = if @type == 'resource'
+                           resources.count do |res|
+                             !['Class', 'Node'].include?(res.type)
+                           end
+                         else
+                           resources.count do |res|
+                             res.type == @referenced_type
+                           end
+                         end
 
         @actual_number == @expected_number
       end
