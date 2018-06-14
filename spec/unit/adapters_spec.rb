@@ -15,6 +15,20 @@ describe RSpec::Puppet::Adapters::Base do
     end
   end
 
+  describe 'default settings' do
+    before do
+      subject.setup_puppet(context_double)
+    end
+
+    null_path = windows? ? 'c:/nul/' : '/dev/null'
+
+    [:vardir, :confdir].each do |setting|
+      it "sets #{setting} to #{null_path}" do
+        expect(Puppet[setting]).to eq(File.expand_path(null_path))
+      end
+    end
+  end
+
   describe '#set_setting' do
     describe "with a context specific setting" do
       it "sets the Puppet setting based on the example group setting" do
@@ -29,7 +43,7 @@ describe RSpec::Puppet::Adapters::Base do
         subject.setup_puppet(context1)
         expect(Puppet[:confdir]).to match(%r{(C:)?/etc/fingerpuppet})
         subject.setup_puppet(context2)
-        expect(Puppet[:confdir]).to match(%r{(C:)?/etc/puppet})
+        expect(Puppet[:confdir]).not_to match(%r{(C:)?/etc/fingerpuppet})
       end
     end
 
@@ -149,6 +163,19 @@ describe RSpec::Puppet::Adapters::Adapter32, :if => (3.2 ... 4.0).include?(Puppe
     end
   end
 
+  describe 'default settings' do
+    before do
+      subject.setup_puppet(context_double)
+    end
+
+    null_path = windows? ? 'c:/nul/' : '/dev/null'
+
+    [:vardir, :rundir, :logdir, :hiera_config, :confdir].each do |setting|
+      it "sets #{setting} to #{null_path}" do
+        expect(Puppet[setting]).to eq(File.expand_path(null_path))
+      end
+    end
+  end
 end
 
 describe RSpec::Puppet::Adapters::Adapter4X, :if => Puppet.version.to_f >= 4.0 do
@@ -184,6 +211,20 @@ describe RSpec::Puppet::Adapters::Adapter4X, :if => Puppet.version.to_f >= 4.0 d
       allow(RSpec.configuration).to receive(:environmentpath).and_return("/some/missing/path:/another/missing/path")
       subject.setup_puppet(double(:environment => 'rp_puppet'))
       expect(subject.manifest).to be_nil
+    end
+  end
+
+  describe 'default settings' do
+    before do
+      subject.setup_puppet(context_double)
+    end
+
+    null_path = windows? ? 'c:/nul/' : '/dev/null'
+
+    [:vardir, :codedir, :rundir, :logdir, :hiera_config, :confdir].each do |setting|
+      it "sets #{setting} to #{null_path}" do
+        expect(Puppet[setting]).to eq(File.expand_path(null_path))
+      end
     end
   end
 end

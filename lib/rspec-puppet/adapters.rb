@@ -47,6 +47,7 @@ module RSpec::Puppet
           default_hash.merge!(Puppet::Test::TestHelper.send(:app_defaults_for_tests))
         end
         settings_hash = default_hash.merge(Hash[*settings])
+        settings_hash.inject(settings_hash) { |h, (k, v)| h[k] = (v == '/dev/null') ? 'c:/nul/' : v; h } if Gem.win_platform?
 
         if Puppet.settings.respond_to?(:initialize_app_defaults)
           Puppet.settings.initialize_app_defaults(settings_hash)
