@@ -410,7 +410,7 @@ module RSpec::Puppet
     def stub_facts!(facts)
       Puppet.settings[:autosign] = false
       Facter.clear
-      facts.each { |k, v| Facter.add(k) { setcode { v } } }
+      facts.each { |k, v| Facter.add(k, :weight => 999) { setcode { v } } }
     end
 
     def build_catalog(*args)
