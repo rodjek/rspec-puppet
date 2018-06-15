@@ -51,7 +51,7 @@ task :release_test do
 
         Dir.chdir(module_dir) do
           print '  Installing dependencies... '
-          bundle_install_output, status = Open3.capture2e('bundle', 'install', '--path', 'vendor/gems')
+          bundle_install_output, status = Open3.capture2e('bundle', 'install', '--path', '../vendor/gems')
           if status.success?
             puts 'Done'
           else
@@ -90,7 +90,7 @@ task :release_test do
           puts 'Done'
 
           print '  Installing dependencies... '
-          _, status = Open3.capture2e('bundle', 'install', '--path', 'vendor/gems')
+          _, status = Open3.capture2e('bundle', 'install', '--path', '../vendor/gems')
           if status.success?
             puts 'Done'
           else
@@ -115,8 +115,8 @@ task :release_test do
           end
 
           json_regex = %r{\{(?:[^{}]|(?:\g<0>))*\}}x
-          baseline_results = JSON.parse(baseline_output.scan(json_regex).last)
-          head_results = JSON.parse(head_output.scan(json_regex).last)
+          baseline_results = JSON.parse(baseline_output.scan(json_regex).find { |r| r.include?('summary_line') })
+          head_results = JSON.parse(head_output.scan(json_regex).find { |r| r.include?('summary_line') })
           if head_results['summary_line'] == baseline_results['summary_line']
             puts "  PASS: #{head_results['summary_line']}"
           else
@@ -128,7 +128,7 @@ task :release_test do
   end
 end
 
-class GemfileRewrite < Parser::Rewriter
+class GemfileRewrite < Parser::TreeRewriter
   def on_send(node)
     _, method_name, *args = *node
 
