@@ -51,7 +51,7 @@ task :release_test do
 
         Dir.chdir(module_dir) do
           print '  Installing dependencies... '
-          bundle_install_output, status = Open3.capture2e('bundle', 'install', '--path', 'vendor/gems')
+          bundle_install_output, status = Open3.capture2e('bundle', 'install', '--path', '../vendor/gems')
           if status.success?
             puts 'Done'
           else
@@ -90,7 +90,7 @@ task :release_test do
           puts 'Done'
 
           print '  Installing dependencies... '
-          _, status = Open3.capture2e('bundle', 'install', '--path', 'vendor/gems')
+          _, status = Open3.capture2e('bundle', 'install', '--path', '../vendor/gems')
           if status.success?
             puts 'Done'
           else
