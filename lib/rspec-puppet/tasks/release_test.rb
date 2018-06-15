@@ -115,8 +115,8 @@ task :release_test do
           end
 
           json_regex = %r{\{(?:[^{}]|(?:\g<0>))*\}}x
-          baseline_results = JSON.parse(baseline_output.scan(json_regex).last)
-          head_results = JSON.parse(head_output.scan(json_regex).last)
+          baseline_results = JSON.parse(baseline_output.scan(json_regex).find { |r| r.include?('summary_line') })
+          head_results = JSON.parse(head_output.scan(json_regex).find { |r| r.include?('summary_line') })
           if head_results['summary_line'] == baseline_results['summary_line']
             puts "  PASS: #{head_results['summary_line']}"
           else
