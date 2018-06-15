@@ -2,6 +2,35 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.12]
+
+### Fixed
+
+ * Updated `Win32::TaskScheduler` stubs to match the latest release of
+   `win32-taskscheduler`.
+ * The `os` structured fact is now correctly treated as a Hash when determining
+   the platform that rspec-puppet pretends to be.
+ * The default resources that Puppet adds to the catalogue (`Class[main]`,
+   `Class[Settings]`, etc) are now filtered out of the catalogue when using the
+   `have_resource_count` matcher, rather than simply subtracted from the
+   resource count. This allows the `have_resource_count` matcher to be used on
+   subsects of the catalogue (`exported_resources` for example).
+ * When running on Windows, rspec-puppet will now convert Puppet configuration
+   settings from `/dev/null` to `NUL`, preventing Puppet from automatically
+   creating directories like `C:\dev` when running tests on Windows as an
+   Administrator.
+ * When overriding fact values, rspec-puppet will now assign the stub facts
+   a weight of 1000 to ensure that they override the generated fact values from
+   Facter 3.x.
+ * `Selinux.is_selinux_enabled` is now automatically stubbed to return 0 to
+   disable any SELinux related apply-time validation of resources.
+ * When testing against Puppet 3.x, rspec-puppet will now honour the
+   `RSpec.configuration.parser` value when determining the module name to set
+   up the fixture symlink.
+ * When testing for the absence of a parameter using `only_with(:parameter_name
+   => nil`), this will no longer incorrectly affect the expected parameter
+   count.
+
 ## [2.6.11]
 
 ### Fixed
