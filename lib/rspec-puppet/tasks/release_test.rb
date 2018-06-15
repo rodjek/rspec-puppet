@@ -128,7 +128,7 @@ task :release_test do
   end
 end
 
-class GemfileRewrite < Parser::Rewriter
+class GemfileRewrite < Parser::TreeRewriter
   def on_send(node)
     _, method_name, *args = *node
 
