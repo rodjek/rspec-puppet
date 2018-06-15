@@ -17,6 +17,7 @@ RSpec.configure do |c|
   c.manifest_dir    = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests')
   c.manifest        = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests', 'site.pp')
   c.environmentpath = File.join(Dir.pwd, 'spec')
+  c.parser          = ENV['FUTURE_PARSER'] == 'yes' ? 'future' : 'current'
 
   c.after(:suite) do
     RSpec::Puppet::Coverage.report!(0)
