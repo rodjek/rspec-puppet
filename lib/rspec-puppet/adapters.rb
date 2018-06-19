@@ -107,7 +107,7 @@ module RSpec::Puppet
       end
     end
 
-    class Adapter4X < Base
+    class Adapter40 < Base
       def setup_puppet(example_group)
         super
 
@@ -151,7 +151,6 @@ module RSpec::Puppet
           [:hiera_config, :hiera_config],
           [:strict_variables, :strict_variables],
           [:manifest, :manifest],
-          [:trusted_server_facts, :trusted_server_facts]
         ])
       end
 
@@ -182,6 +181,14 @@ module RSpec::Puppet
         else
           m
         end
+      end
+    end
+
+    class Adapter4X < Adapter40
+      def settings_map
+        super.concat([
+          [:trusted_server_facts, :trusted_server_facts]
+        ])
       end
     end
 
@@ -241,7 +248,8 @@ module RSpec::Puppet
 
     def self.get
       [
-        ['4.0', Adapter4X],
+        ['4.1', Adapter4X],
+        ['4.0', Adapter40],
         ['3.5', Adapter35],
         ['3.4', Adapter34],
         ['3.3', Adapter33],
