@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.13]
+
+### Fixed
+
+ * rspec-puppet no longer attempts to set the `trusted_server_facts` Puppet
+   setting on Puppet 4.0.0, as the setting was only introduced in Puppet 4.1.0.
+ * Automatic `Selinux` stubbing introduced in 2.6.12 no longer assumes the use
+   of rspec-mocks. If rspec-mocks is not available, it will fall back to mocha
+   and finally fall back to doing nothing if neither is available.
+
 ## [2.6.12]
 
 ### Fixed
