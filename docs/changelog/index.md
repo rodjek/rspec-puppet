@@ -4,6 +4,19 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.13
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.12...v2.6.13"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+
+ * rspec-puppet no longer attempts to set the `trusted_server_facts` Puppet
+   setting on Puppet 4.0.0, as the setting was only introduced in Puppet 4.1.0.
+ * Automatic `Selinux` stubbing introduced in 2.6.12 no longer assumes the use
+   of rspec-mocks. If rspec-mocks is not available, it will fall back to mocha
+   and finally fall back to doing nothing if neither is available.
+
 ## 2.6.12
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.11...v2.6.12"
