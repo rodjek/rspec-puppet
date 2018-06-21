@@ -120,7 +120,14 @@ RSpec.configure do |c|
     if RSpec::Puppet.rspec_puppet_example?
       Puppet::Util::Platform.pretend_to_be RSpec.configuration.platform
       stub_file_consts(example) if self.respond_to?(:stub_file_consts)
-      allow(Selinux).to receive(:is_selinux_enabled).and_return(0) if defined?(Selinux)
+
+      if defined?(Selinux)
+        if respond_to?(:allow)
+          allow(Selinux).to receive(:is_selinux_enabled).and_return(0)
+        elsif Selinux.respond_to?(:stubs)
+          Selinux.stubs(:is_selinux_enabled).returns(0)
+        end
+      end
     end
   end
 
