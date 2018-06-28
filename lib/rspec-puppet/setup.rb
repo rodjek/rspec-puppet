@@ -1,6 +1,12 @@
 require 'puppet'
 require 'fileutils'
 
+begin
+  require 'win32/dir'
+rescue LoadError
+  nil
+end
+
 module RSpec::Puppet
   class Setup
     def self.run(module_name=nil)
@@ -151,27 +157,40 @@ END
       safe_create_file('spec/spec_helper.rb', content)
     end
 
+    def self.link_to_source?(target, source)
+      return false unless link?(target)
+
+      link_target = Dir.respond_to?(:read_junction) ? Dir.read_junction(target) : File.readlink(target)
+
+      link_target == File.expand_path(source)
+    end
+
+    def self.link?(target)
+      Dir.respond_to?(:junction?) ? Dir.junction?(target) : File.symlink(target)
+    end
+
     def self.safe_make_link(source, target, verbose=true)
-      if File.exist?(target)
-        unless File.symlink?(target) && File.readlink(target) == File.expand_path(source)
-          $stderr.puts "!! #{target} already exists and is not a symlink"
+      if File.exist?(target) && !link?(target)
+        $stderr.puts "!! #{target} already exists and is not a symlink"
+        return
+      end
+
+      return if link_to_source?(target, source)
+
+      if Puppet::Util::Platform.windows?
+        output = `call mklink /J "#{target.gsub('/', '\\')}" "#{source}"`
+        unless $?.success?
+          puts output
+          abort
         end
       else
-        if Puppet::Util::Platform.windows?
-          output = `call mklink /J "#{target.gsub('/', '\\')}" "#{source}"`
-          unless $?.success?
-            puts output
-            abort
-          end
-        else
-          begin
-            FileUtils.ln_s(File.expand_path(source), target)
-          rescue Errno::EEXIST => e
-            raise e unless File.symlink?(target) && File.readlink(target) == File.expand_path(source)
-          end
+        begin
+          FileUtils.ln_s(File.expand_path(source), target)
+        rescue Errno::EEXIST => e
+          raise e unless link_to_source?(target, source)
         end
-        puts " + #{target}" if verbose
       end
+      puts " + #{target}" if verbose
     end
 
     def self.safe_create_rakefile
