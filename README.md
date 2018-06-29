@@ -1055,8 +1055,9 @@ be excluded from the coverage report.
 * [puppetlabs_spec_helper](https://github.com/puppetlabs/puppetlabs_spec_helper): shared spec helpers to setup puppet
 * [rspec-puppet-augeas](https://github.com/domcleal/rspec-puppet-augeas): RSpec tests for Augeas resources inside Puppet manifests
 * [jimdo-rspec-puppet-helpers](https://github.com/Jimdo/jimdo-rspec-puppet-helpers): Tests the contents of a file with a source
-* [puppet-catalog_rspec](https://github.com/enterprisemodules/puppet-catalog_rspec): Ease development of specs by dumping the Puppet catalog as RSpec code
-
+* Ease development of specs
+  * [puppet-catalog_rspec](https://github.com/enterprisemodules/puppet-catalog_rspec): Dump the Puppet Catalog as RSpec code at compile time
+  * [create_specs](https://github.com/alexharv074/create_specs.git): A different implementation that takes a compiled catalog and writes out RSpec code with various options
 * Fact providers
   * [rspec-puppet-facts](https://github.com/mcanevet/rspec-puppet-facts): Simplify your unit tests by looping on every supported Operating System and populating facts.
   * [rspec-puppet-osmash](https://github.com/Aethylred/rspec-puppet-osmash): Provides Operation System hashes and validations for rspec-puppet
