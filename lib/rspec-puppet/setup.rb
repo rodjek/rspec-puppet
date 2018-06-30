@@ -166,7 +166,7 @@ END
     end
 
     def self.link?(target)
-      Dir.respond_to?(:junction?) ? Dir.junction?(target) : File.symlink(target)
+      Dir.respond_to?(:junction?) ? Dir.junction?(target) : File.symlink?(target)
     end
 
     def self.safe_make_link(source, target, verbose=true)
