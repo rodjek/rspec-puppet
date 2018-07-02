@@ -87,7 +87,11 @@ module RSpec::Puppet
           expect( coverage_actual.to_f ).to be >= coverage_desired.to_f
         end
         coverage_test.run(RSpec.configuration.reporter)
-        coverage_results.execution_result.pending_message = report[:text]
+
+        # This is not available on RSpec 2.x
+        if coverage_results.execution_result.respond_to?(:pending_message)
+          coverage_results.execution_result.pending_message = report[:text]
+        end
       else
         puts "The desired coverage must be 0 <= x <= 100, not '#{coverage_desired.inspect}'"
       end
