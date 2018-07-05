@@ -1,3 +1,8 @@
+require 'tmpdir'
+require 'digest'
+require 'json'
+require 'fileutils'
+
 unless defined?(RSpec::Core::NullReporter)
   module RSpec::Core
     class NullReporter
@@ -30,6 +35,29 @@ module RSpec::Puppet
     def initialize
       @collection = {}
       @filters = ['Stage[main]', 'Class[Settings]', 'Class[main]', 'Node[default]']
+    end
+
+    def save_results
+      slug = "#{Digest::MD5.hexdigest(Dir.pwd)}-#{Process.pid}"
+      File.open(File.join(Dir.tmpdir, "rspec-puppet-coverage-#{slug}"), 'w+') do |f|
+        f.puts @collection.to_json
+      end
+    end
+
+    def merge_results
+      pattern = File.join(Dir.tmpdir, "rspec-puppet-coverage-#{Digest::MD5.hexdigest(Dir.pwd)}-*")
+      Dir[pattern].each do |result_file|
+        load_results(result_file)
+        FileUtils.rm(result_file)
+      end
+    end
+
+    def load_results(path)
+      saved_results = JSON.parse(File.read(path))
+      saved_results.each do |resource, data|
+        add(resource)
+        cover!(resource) if data['touched']
+      end
     end
 
     def add(resource)
@@ -70,6 +98,27 @@ module RSpec::Puppet
     end
 
     def report!(coverage_desired = nil)
+      if parallel_tests?
+        require 'parallel_tests'
+
+        if ParallelTests.first_process?
+          ParallelTests.wait_for_other_processes_to_finish
+          run_report(coverage_desired)
+        else
+          save_results
+        end
+      else
+        run_report(coverage_desired)
+      end
+    end
+
+    def parallel_tests?
+      !!ENV['TEST_ENV_NUMBER']
+    end
+
+    def run_report(coverage_desired = nil)
+      merge_results if ENV['TEST_ENV_NUMBER']
+
       report = results
 
       coverage_test(coverage_desired, report)
@@ -200,6 +249,10 @@ module RSpec::Puppet
         {
           :touched => touched?,
         }
+      end
+
+      def to_json(opts)
+        to_hash.to_json(opts)
       end
 
       def touch!

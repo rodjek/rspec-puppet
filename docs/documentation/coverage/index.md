@@ -25,6 +25,17 @@ This checks which Puppet resources have been explicitly checked as part of the
 test run and outputs both a coverage percentage and a list of untouched
 resources.
 
+<div class="callout-block callout-info">
+<div class="icon-holder"><i class="fa fa-info-circle"></i></div>
+<div class="content">
+If you are using <code>parallel_tests</code> to speed up your rspec-puppet and
+want to generate coverage reports, you <b>must</b> configure it in an
+<code>after(:suite)</code> hook in <code>spec/spec_helper.rb</code> as
+documented above and not with any other method (like an <code>at_exit</code>
+hook in a spec file).
+</div>
+</div>
+
 ## Setting A Minimum Coverage Level
 
 A desired code coverage percentage can be provided as an argument to
