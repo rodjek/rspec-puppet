@@ -71,46 +71,27 @@ module RSpec::Puppet
 
     def report!(coverage_desired = nil)
       report = results
-      puts <<-EOH.gsub(/^ {8}/, '')
 
-        Total resources:   #{report[:total]}
-        Touched resources: #{report[:touched]}
-        Resource coverage: #{report[:coverage]}%
-      EOH
+      coverage_test(coverage_desired, report)
 
-      if report[:coverage] != "100.00"
-        puts <<-EOH.gsub(/^ {10}/, '')
-          Untouched resources:
-
-          #{
-            untouched_resources = report[:resources].reject do |_,rsrc|
-              rsrc[:touched]
-            end
-            untouched_resources.inject([]) do |memo, (name,_)|
-              memo << "  #{name}"
-            end.sort.join("\n")
-          }
-        EOH
-        if coverage_desired
-          coverage_test(coverage_desired, report[:coverage])
-        end
-      end
+      puts report[:text]
     end
 
-    def coverage_test(coverage_desired, coverage_actual)
-      if coverage_desired.is_a?(Numeric) && coverage_desired.to_f <= 100.00 && coverage_desired.to_f >= 0.0
-        coverage_test = RSpec.describe("Code coverage.")
-        coverage_results = coverage_test.example("Must be at least #{coverage_desired}% of code coverage") {
-          expect( coverage_actual.to_f ).to be >= coverage_desired.to_f
-        }
-        coverage_test.run(RSpec::Core::NullReporter)
-        passed = if coverage_results.execution_result.respond_to? :status then
-                   coverage_results.execution_result.status == :passed
-                 else
-                   coverage_results.execution_result[:status] == 'passed'
-                 end
+    def coverage_test(coverage_desired, report)
+      coverage_actual = report[:coverage]
+      coverage_desired ||= 0
 
-        RSpec.configuration.reporter.example_failed coverage_results unless passed
+      if coverage_desired.is_a?(Numeric) && coverage_desired.to_f <= 100.00 && coverage_desired.to_f >= 0.0
+        coverage_test = RSpec.describe("Code coverage")
+        coverage_results = coverage_test.example("must cover at least #{coverage_desired}% of resources") do
+          expect( coverage_actual.to_f ).to be >= coverage_desired.to_f
+        end
+        coverage_test.run(RSpec.configuration.reporter)
+
+        # This is not available on RSpec 2.x
+        if coverage_results.execution_result.respond_to?(:pending_message)
+          coverage_results.execution_result.pending_message = report[:text]
+        end
       else
         puts "The desired coverage must be 0 <= x <= 100, not '#{coverage_desired.inspect}'"
       end
@@ -129,6 +110,19 @@ module RSpec::Puppet
       report[:resources] = Hash[*@collection.map do |name, wrapper|
         [name, wrapper.to_hash]
       end.flatten]
+
+      text = [
+        "Total resources:   #{report[:total]}",
+        "Touched resources: #{report[:touched]}",
+        "Resource coverage: #{report[:coverage]}%",
+      ]
+
+      if report[:untouched] > 0
+        text += ['', 'Untouched resources:']
+        untouched_resources = report[:resources].reject { |_, r| r[:touched] }
+        text += untouched_resources.map { |name, _| "  #{name}" }.sort
+      end
+      report[:text] = text.join("\n")
 
       report
     end
