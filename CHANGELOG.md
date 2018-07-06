@@ -2,6 +2,23 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.14]
+
+### Fixed
+
+ * If present, `Win32::Dir` will be used to managed the fixtures directory
+   junction on Windows as the builtin `File` module does not have complete
+   support for directory junctions on Ruby <= 2.1.
+
+### Changed
+
+ * Resource coverage results are now exposed to the configured RSpec reporter
+   rather than only being printed to STDOUT.
+ * If running with parallel\_tests, resource coverage data is stored in
+   per-process temp files and merged at the end of the final rspec process,
+   allowing for a complete coverage report to be generated when splitting
+   a test suite across multiple rspec processes.
+
 ## [2.6.13]
 
 ### Fixed

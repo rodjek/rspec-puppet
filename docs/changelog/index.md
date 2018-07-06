@@ -4,6 +4,26 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.14
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.13...v2.6.14"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+
+ * If present, `Win32::Dir` will be used to managed the fixtures directory
+   junction on Windows as the builtin `File` module does not have complete
+   support for directory junctions on Ruby <= 2.1.
+
+### Changed
+
+ * Resource coverage results are now exposed to the configured RSpec reporter
+   rather than only being printed to STDOUT.
+ * If running with parallel\_tests, resource coverage data is stored in
+   per-process temp files and merged at the end of the final rspec process,
+   allowing for a complete coverage report to be generated when splitting
+   a test suite across multiple rspec processes.
+
 ## 2.6.13
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.12...v2.6.13"
