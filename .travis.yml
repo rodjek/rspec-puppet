@@ -29,7 +29,6 @@ env:
   - PUPPET_GEM_VERSION='~> 4.2.0'
   # Latest code from puppetlabs/puppet.git
   - PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#master'
-  - PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#stable'
 
 matrix:
   include:
