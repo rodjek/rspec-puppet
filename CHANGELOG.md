@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.15]
+
+### Fixed
+
+ * Added a Puppet 6.x adapter so that rspec-puppet does not try to set removed
+   Puppet settings (specifically `trusted_server_facts`) when running tests
+   against the upcoming Puppet 6.0.0 release.
+
 ## [2.6.14]
 
 ### Fixed

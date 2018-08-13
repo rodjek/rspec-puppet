@@ -4,6 +4,17 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.6.15
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.14...v2.6.15"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+
+ * Added a Puppet 6.x adapter so that rspec-puppet does not try to set removed
+   Puppet settings (specifically `trusted_server_facts`) when running tests
+   against the upcoming Puppet 6.0.0 release.
+
 ## 2.6.14
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.13...v2.6.14"
