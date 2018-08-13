@@ -178,7 +178,7 @@ describe RSpec::Puppet::Adapters::Adapter32, :if => (3.2 ... 4.0).include?(Puppe
   end
 end
 
-describe RSpec::Puppet::Adapters::Adapter4X, :if => Puppet.version.to_f >= 4.0 do
+describe RSpec::Puppet::Adapters::Adapter4X, :if => (4.0 ... 6.0).include?(Puppet.version.to_f) do
 
   let(:test_context) { double :environment => 'rp_env' }
 
