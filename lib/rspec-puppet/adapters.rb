@@ -192,6 +192,8 @@ module RSpec::Puppet
       end
     end
 
+    class Adapter6X < Adapter40; end
+
     class Adapter30 < Base
       def settings_map
         super.concat([
@@ -248,6 +250,7 @@ module RSpec::Puppet
 
     def self.get
       [
+        ['6.0', Adapter6X],
         ['4.1', Adapter4X],
         ['4.0', Adapter40],
         ['3.5', Adapter35],
