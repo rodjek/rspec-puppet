@@ -25,6 +25,13 @@ def sensitive?
   defined?(::Puppet::Pops::Types::PSensitiveType)
 end
 
+module Helpers
+  def rspec2?
+    RSpec::Version::STRING < '3'
+  end
+  module_function :rspec2?
+end
+
 RSpec.configure do |c|
   c.module_path     = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'modules')
   c.manifest_dir    = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests')
@@ -35,4 +42,7 @@ RSpec.configure do |c|
   c.after(:suite) do
     RSpec::Puppet::Coverage.report!(0)
   end
+
+  c.include Helpers
+  c.extend Helpers
 end

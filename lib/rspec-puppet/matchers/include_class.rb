@@ -4,7 +4,7 @@ module RSpec::Puppet
 
     matcher :include_class do |expected_class|
       match do |catalogue|
-        RSpec.deprecate(:include_class, :replacement => :contain_class)
+        RSpec.deprecate('include_class()', :replacement => 'contain_class()')
         catalogue.call.classes.include?(expected_class)
       end
 
