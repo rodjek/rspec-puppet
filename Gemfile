@@ -45,6 +45,7 @@ end
 
 if ENV['COVERAGE'] == 'yes'
   gem 'coveralls', :require => false
+  gem 'simplecov', :require => false
 end
 
 gem 'win32-taskscheduler', :platforms => [:mingw, :x64_mingw, :mswin]
