@@ -1,10 +1,14 @@
-if ENV['COVERAGE'] == 'yes'
+if ENV['COVERAGE']
   require 'simplecov'
   require 'coveralls'
 
-  SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+  if ENV['COVERAGE'] == 'yes'
+    SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+  end
+
   SimpleCov.start do
     add_filter %r{^/spec/}
+    add_filter %r{^/vendor/}
   end
 end
 
