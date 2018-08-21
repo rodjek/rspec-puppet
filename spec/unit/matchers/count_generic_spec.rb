@@ -1,15 +1,7 @@
-require 'spec_helper'
+require 'spec_helper_unit'
 
 describe RSpec::Puppet::ManifestMatchers::CountGeneric do
   subject(:matcher) { described_class.new(type, expected, method) }
-
-  def test_double(type, *args)
-    if respond_to?(:instance_double)
-      instance_double(type, *args)
-    else
-      double(type.to_s, *args)
-    end
-  end
 
   let(:actual) do
     lambda { test_double(Puppet::Resource::Catalog, :resources => resource_objects) }
@@ -33,7 +25,10 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
     ]
   end
 
-  it { pending 'method not implemented'; is_expected.not_to be_diffable }
+  it 'is not a diffable matcher' do
+    pending 'method not implemented'
+    expect(matcher).not_to be_diffable
+  end
 
   describe '#initialize' do
     context 'when initialised with a specified type' do
@@ -77,7 +72,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
   end
 
   describe '#description' do
-    subject { matcher.description }
+    subject(:description) { matcher.description }
 
     context 'when counting classes in the catalogue' do
       let(:type) { 'class' }
@@ -86,7 +81,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
         let(:expected) { 1 }
 
         it 'describes an expectation of a singular class' do
-          is_expected.to eq('contain exactly 1 class')
+          expect(description).to eq('contain exactly 1 class')
         end
       end
 
@@ -94,7 +89,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
         let(:expected) { 2 }
 
         it 'describes an expectation of plural classes' do
-          is_expected.to eq('contain exactly 2 classes')
+          expect(description).to eq('contain exactly 2 classes')
         end
       end
     end
@@ -106,7 +101,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
         let(:expected) { 1 }
 
         it 'describes an expectation of a singular resource' do
-          is_expected.to eq('contain exactly 1 resource')
+          expect(description).to eq('contain exactly 1 resource')
         end
       end
 
@@ -114,7 +109,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
         let(:expected) { 2 }
 
         it 'describes an expectation of plural resources' do
-          is_expected.to eq('contain exactly 2 resources')
+          expect(description).to eq('contain exactly 2 resources')
         end
       end
     end
@@ -126,7 +121,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
         let(:expected) { 1 }
 
         it 'describes an expectation of a singular resource type' do
-          is_expected.to eq('contain exactly 1 Exec resource')
+          expect(description).to eq('contain exactly 1 Exec resource')
         end
       end
 
@@ -134,14 +129,14 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
         let(:expected) { 2 }
 
         it 'describes an expectation of plural resources of a type' do
-          is_expected.to eq('contain exactly 2 Exec resources')
+          expect(description).to eq('contain exactly 2 Exec resources')
         end
       end
     end
   end
 
   describe '#matches?' do
-    subject { matcher.matches?(actual) }
+    subject(:match) { matcher.matches?(actual) }
 
     context 'when counting all resources' do
       let(:type) { 'resource' }
@@ -155,7 +150,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
       end
 
       it 'does not include Class, Node or default resources in the count' do
-        is_expected.to be_truthy
+        expect(match).to be_truthy
       end
 
       context 'and the catalogue contains a number of countable resources' do
@@ -170,13 +165,17 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
         context 'and the expected value matches the resource count' do
           let(:expected) { 3 }
 
-          it { is_expected.to be_truthy }
+          it 'returns true' do
+            expect(match).to be_truthy
+          end
         end
 
         context 'and the expected value does not match the resource count' do
           let(:expected) { 4 }
 
-          it { is_expected.to be_falsey }
+          it 'returns false' do
+            expect(match).to be_falsey
+          end
         end
       end
     end
@@ -192,7 +191,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
       end
 
       it 'does not include default resources of that type in the resource count' do
-        is_expected.to be_truthy
+        expect(match).to be_truthy
       end
     end
   end

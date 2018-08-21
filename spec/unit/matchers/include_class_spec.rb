@@ -1,15 +1,7 @@
-require 'spec_helper'
+require 'spec_helper_unit'
 
 describe 'RSpec::Puppet::ManifestMatchers.include_class' do
   subject(:matcher) { Class.new { extend RSpec::Puppet::ManifestMatchers }.include_class(expected) }
-
-  def test_double(type, *args)
-    if respond_to?(:instance_double)
-      instance_double(type, *args)
-    else
-      double(type.to_s, *args)
-    end
-  end
 
   let(:actual) do
     lambda { test_double(Puppet::Resource::Catalog, :classes => included_classes) }
@@ -18,7 +10,9 @@ describe 'RSpec::Puppet::ManifestMatchers.include_class' do
   let(:expected) { 'test_class' }
   let(:included_classes) { [] }
 
-  it { is_expected.not_to be_diffable }
+  it 'is not a diffable matcher' do
+    expect(matcher).not_to be_diffable
+  end
 
   before do
     allow(RSpec).to receive(:deprecate).with('include_class()', :replacement => 'contain_class()')
