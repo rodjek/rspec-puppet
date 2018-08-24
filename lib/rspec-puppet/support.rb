@@ -408,7 +408,7 @@ module RSpec::Puppet
     end
 
     def stub_facts!(facts)
-      Puppet.settings[:autosign] = false
+      Puppet.settings[:autosign] = false if Puppet.settings.include? :autosign
       Facter.clear
       facts.each { |k, v| Facter.add(k, :weight => 999) { setcode { v } } }
     end
