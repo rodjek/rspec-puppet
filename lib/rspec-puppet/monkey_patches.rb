@@ -315,6 +315,18 @@ Puppet::Type.type(:file).provide(:windows).class_eval do
   end
 end
 
+# Puppet 4.8 systemd provider does not recognize Debian 9 (Stretch). It fall
+# back to runit which causes:
+#   Could not find the daemon directory (tested [/etc/sv,/var/lib/service])
+# The Debian package is patched, but the gem 4.8.2 is not.
+# Support has been added in Puppet 4.10.0:
+# https://github.com/puppetlabs/puppet/commit/d5a69fb57c15683873b422cb5e17ef06ca13cea5
+if Puppet::Util::Package.versioncmp(Puppet.version, '4.8.0') >= 0 && Puppet::Util::Package.versioncmp(Puppet.version, '4.10.0') < 0
+  Puppet::Type.type(:service).provide(:systemd).instance_eval do
+    defaultfor :operatingsystem => :debian
+  end
+end
+
 # Prevent Puppet from requiring 'puppet/util/windows' if we're pretending to be
 # windows, otherwise it will require other libraries that probably won't be
 # available on non-windows hosts.

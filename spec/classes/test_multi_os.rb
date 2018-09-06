@@ -23,5 +23,12 @@ describe 'test::multi_os' do
     it 'sets the provider of the File resource to :posix' do
       catalogue.resource('file', '/test').to_ral.provider.class.name.should eq(:posix)
     end
+
+    describe "service resource" do
+      let (:pre_condition) { 'service { "foo": }' }
+      it 'sets provider to systemd' do
+        catalogue.resource('service', 'foo').to_ral.provider.class.name.should eq(:systemd)
+      end
+    end
   end
 end
