@@ -6,3 +6,8 @@ require 'rspec-puppet/matchers/count_generic'
 require 'rspec-puppet/matchers/dynamic_matchers'
 require 'rspec-puppet/matchers/type_matchers'
 require 'rspec-puppet/matchers/allow_value'
+
+require 'rspec-puppet/matchers/notify'
+require 'rspec-puppet/matchers/subscribe_to'
+require 'rspec-puppet/matchers/require'
+require 'rspec-puppet/matchers/come_before'
