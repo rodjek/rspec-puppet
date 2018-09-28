@@ -15,19 +15,19 @@ class relationships::before {
   Notify['foo'] -> Notify['baz']
   Notify['baz'] <- Notify['bar']
 
-  class { '::relationship::before::pre': } ->
-  class { '::relationship::before::middle': } ->
-  class { '::relationship::before::post': }
+  class { '::relationships::before::pre': } ->
+  class { '::relationships::before::middle': } ->
+  class { '::relationships::before::post': }
 }
 
-class relationship::before::pre {
+class relationships::before::pre {
   notify { 'pre': }
 }
 
-class relationship::before::middle {
+class relationships::before::middle {
   notify { 'middle': }
 }
 
-class relationship::before::post {
+class relationships::before::post {
   notify { 'post': }
 }
