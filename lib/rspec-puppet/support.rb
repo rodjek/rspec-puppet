@@ -168,6 +168,8 @@ module RSpec::Puppet
         nil
       elsif type == :type_alias
         "$test = #{str_from_value(opts[:test_value])}\nassert_type(#{self.class.top_level_description}, $test)"
+      elsif type == :string
+        RSpec.configuration.string
       end
     end
 

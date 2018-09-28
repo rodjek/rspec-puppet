@@ -7,6 +7,7 @@ require 'rspec-puppet/example/type_example_group'
 require 'rspec-puppet/example/type_alias_example_group'
 require 'rspec-puppet/example/provider_example_group'
 require 'rspec-puppet/example/application_example_group'
+require 'rspec-puppet/example/string_example_group'
 
 RSpec::configure do |c|
 
@@ -27,6 +28,7 @@ RSpec::configure do |c|
   c.rspec_puppet_include RSpec::Puppet::TypeAliasExampleGroup, :type_alias, %w[spec type_aliases]
   c.rspec_puppet_include RSpec::Puppet::ProviderExampleGroup, :provider, %w[spec providers]
   c.rspec_puppet_include RSpec::Puppet::ApplicationExampleGroup, :application, %w[spec applications]
+  c.rspec_puppet_include RSpec::Puppet::StringExampleGroup, :string, %w[spec strings]
 
   # Hook for each example group type to remove any caches or instance variables, since they will remain
   # and cause a memory leak.  Can't be assigned per type by :file_path, so check for its presence.

@@ -211,3 +211,12 @@ facts with values that it derives from the node name (specified with
 In some circumstances (e.g. where your nodename/certname is not the same as
 your FQDN), this behaviour is undesirable and can be disabled by changing this
 setting to `false`.
+
+### string
+**Type:** String<br />
+**Default:** `nil`<br />
+**Puppet Version(s):** 2.x, 3.x, 4.x, 5.x
+
+Set this to an arbitrary string of Puppet code and define an example of type
+`:string`. Rather than reading files off disk, `rspec-puppet` will run the tests
+against this string of code.

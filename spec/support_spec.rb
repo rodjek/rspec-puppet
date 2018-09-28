@@ -152,5 +152,13 @@ describe RSpec::Puppet::Support do
         expect(subject.build_code(:class, {})).to eq "\ninclude class_name\npost_condition"
       end
     end
+
+    context "with code passed in as a string" do
+      it "builds a test manifest" do
+        allow(RSpec.configuration).to receive(:string).and_return("example code")
+        expect(subject.build_code(:string, {})).to eq "\nexample code"
+      end
+    end
+
   end
 end
