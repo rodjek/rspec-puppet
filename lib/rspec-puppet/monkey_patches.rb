@@ -98,18 +98,6 @@ module Puppet
         old_set_default.bind(self).call(attr)
       end
     end
-
-    def self.suppress_provider?
-      @suppress_provider ||= false
-    end
-
-    def self.suppress_provider
-      @suppress_provider = true
-    end
-
-    def self.unsuppress_provider
-      @suppress_provider = false
-    end
   end
 
   module Parser::Files
