@@ -154,7 +154,7 @@ module Puppet
 
       def windows?
         if RSpec::Puppet.rspec_puppet_example?
-          pretend_platform.nil? ? (actual_platform == :windows) : pretend_windows?
+          !pretending? ? (actual_platform == :windows) : pretend_windows?
         else
           old_windows?
         end
@@ -189,6 +189,27 @@ module Puppet
         @pretend_platform ||= nil
       end
       module_function :pretend_platform
+
+      def pretending?
+        !pretend_platform.nil?
+      end
+      module_function :pretending?
+    end
+
+    class Autoload
+      if singleton_class.respond_to?(:load_file)
+        singleton_class.send(:alias_method, :old_load_file, :load_file)
+
+        def self.load_file(*args)
+          if RSpec::Puppet.rspec_puppet_example?
+            RSpec::Puppet::Consts.without_stubs do
+              old_load_file(*args)
+            end
+          else
+            old_load_file(*args)
+          end
+        end
+      end
     end
   end
 

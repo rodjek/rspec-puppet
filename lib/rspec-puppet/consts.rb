@@ -12,9 +12,24 @@ module RSpec::Puppet::Consts
     }
   }
 
+  FEATURES = {
+    :posix   => {
+      :posix             => true,
+      :microsoft_windows => false,
+    },
+    :windows => {
+      :posix             => false,
+      :microsoft_windows => true,
+    },
+  }
+
   def self.stub_consts_for(platform)
     STUBBED_CONSTS[platform].each do |const_name, const_value|
       stub_const_wrapper(const_name, const_value)
+    end
+    Puppet::Util::Platform.pretend_to_be(platform)
+    FEATURES[platform].each do |feature_name, feature_value|
+      Puppet.features.add(feature_name) { feature_value }
     end
   end
 
@@ -27,5 +42,16 @@ module RSpec::Puppet::Consts
 
   def self.restore_consts
     stub_consts_for(RSpec.configuration.platform)
+  end
+
+  def self.without_stubs
+    if Puppet::Util::Platform.pretending?
+      pretend_platform = Puppet::Util::Platform.pretend_platform
+      restore_consts
+    end
+
+    yield
+
+    stub_consts_for(pretend_platform) if pretend_platform
   end
 end
