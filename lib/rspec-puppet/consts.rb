@@ -51,7 +51,7 @@ module RSpec::Puppet::Consts
     end
 
     yield
-
+  ensure
     stub_consts_for(pretend_platform) if pretend_platform
   end
 end

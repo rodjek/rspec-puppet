@@ -160,6 +160,7 @@ module Puppet
           old_path_to_uri(*args)
         end
       end
+      module_function :path_to_uri
     end
 
     # Allow rspec-puppet to pretend to be different platforms.
