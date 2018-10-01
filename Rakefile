@@ -18,13 +18,17 @@ fixtures = {
   'stdlib'      => {
     :url         => 'https://github.com/puppetlabs/puppetlabs-stdlib',
     :requirement => Gem::Requirement.new('>= 0'),
+    :ref         => '4.2.0',
   },
 }
 
 namespace :test do
   RSpec::Core::RakeTask.new(:spec) do |t|
-    next unless t.respond_to?(:exclude_pattern)
-    t.exclude_pattern = 'spec/fixtures/**/*_spec.rb'
+    if t.respond_to?(:exclude_pattern)
+      t.exclude_pattern = 'spec/fixtures/**/*_spec.rb'
+    else
+      t.pattern = 'spec/{applications,classes,defines,functions,hosts,type_aliases,types,unit}/**/*_spec.rb'
+    end
   end
 
   task :setup do
@@ -37,6 +41,13 @@ namespace :test do
 
         system('git', 'clone', fixture[:url], name)
         fail unless $?.success?
+
+        if fixture.key?(:ref)
+          Dir.chdir(name) do
+            system('git', 'checkout', fixture[:ref])
+            fail unless $?.success?
+          end
+        end
       end
     end
   end
