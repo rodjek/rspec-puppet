@@ -147,6 +147,21 @@ module Puppet
       module_function :get_env
     end
 
+    if respond_to?(:path_to_uri)
+      alias :old_path_to_uri :path_to_uri
+      module_function :old_path_to_uri
+
+      def path_to_uri(*args)
+        if RSpec::Puppet.rspec_puppet_example?
+          RSpec::Puppet::Consts.without_stubs do
+            old_path_to_uri(*args)
+          end
+        else
+          old_path_to_uri(*args)
+        end
+      end
+    end
+
     # Allow rspec-puppet to pretend to be different platforms.
     module Platform
       alias :old_windows? :windows?
