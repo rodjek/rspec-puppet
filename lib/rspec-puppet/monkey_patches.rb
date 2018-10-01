@@ -98,18 +98,6 @@ module Puppet
         old_set_default.bind(self).call(attr)
       end
     end
-
-    def self.suppress_provider?
-      @suppress_provider ||= false
-    end
-
-    def self.suppress_provider
-      @suppress_provider = true
-    end
-
-    def self.unsuppress_provider
-      @suppress_provider = false
-    end
   end
 
   module Parser::Files
@@ -159,6 +147,22 @@ module Puppet
       module_function :get_env
     end
 
+    if respond_to?(:path_to_uri)
+      alias :old_path_to_uri :path_to_uri
+      module_function :old_path_to_uri
+
+      def path_to_uri(*args)
+        if RSpec::Puppet.rspec_puppet_example?
+          RSpec::Puppet::Consts.without_stubs do
+            old_path_to_uri(*args)
+          end
+        else
+          old_path_to_uri(*args)
+        end
+      end
+      module_function :path_to_uri
+    end
+
     # Allow rspec-puppet to pretend to be different platforms.
     module Platform
       alias :old_windows? :windows?
@@ -166,7 +170,7 @@ module Puppet
 
       def windows?
         if RSpec::Puppet.rspec_puppet_example?
-          pretend_platform.nil? ? (actual_platform == :windows) : pretend_windows?
+          !pretending? ? (actual_platform == :windows) : pretend_windows?
         else
           old_windows?
         end
@@ -201,6 +205,27 @@ module Puppet
         @pretend_platform ||= nil
       end
       module_function :pretend_platform
+
+      def pretending?
+        !pretend_platform.nil?
+      end
+      module_function :pretending?
+    end
+
+    class Autoload
+      if singleton_class.respond_to?(:load_file)
+        singleton_class.send(:alias_method, :old_load_file, :load_file)
+
+        def self.load_file(*args)
+          if RSpec::Puppet.rspec_puppet_example?
+            RSpec::Puppet::Consts.without_stubs do
+              old_load_file(*args)
+            end
+          else
+            old_load_file(*args)
+          end
+        end
+      end
     end
   end
 

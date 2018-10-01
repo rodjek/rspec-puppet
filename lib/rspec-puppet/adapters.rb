@@ -192,7 +192,14 @@ module RSpec::Puppet
       end
     end
 
-    class Adapter6X < Adapter40; end
+    class Adapter6X < Adapter40
+      def settings_map
+        super.concat([
+          [:basemodulepath, :basemodulepath],
+          [:vendormoduledir, :vendormoduledir],
+        ])
+      end
+    end
 
     class Adapter30 < Base
       def settings_map

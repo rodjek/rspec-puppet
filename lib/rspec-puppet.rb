@@ -52,6 +52,8 @@ RSpec.configure do |c|
   c.add_setting :derive_node_facts_from_nodename, :default => true
   c.add_setting :adapter
   c.add_setting :platform, :default => Puppet::Util::Platform.actual_platform
+  c.add_setting :vendormoduledir, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
+  c.add_setting :basemodulepath, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
 
   c.instance_eval do
     def trusted_server_facts
