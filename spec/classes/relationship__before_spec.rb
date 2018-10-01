@@ -16,8 +16,8 @@ describe 'relationships::before' do
   it { should contain_notify('bar').that_requires(['Notify[foo]']) }
   it { should contain_notify('baz').that_requires(['Notify[foo]','Notify[bar]']) }
 
-  it { should contain_class('relationship::before::pre').that_comes_before('Class[relationship::before::post]') }
-  it { should contain_class('relationship::before::post').that_requires('Class[relationship::before::pre]') }
+  it { should contain_class('relationships::before::pre').that_comes_before('Class[relationships::before::post]') }
+  it { should contain_class('relationships::before::post').that_requires('Class[relationships::before::pre]') }
 
   it { should contain_notify('pre').that_comes_before(['Notify[post]']) }
   it { should contain_notify('post').that_requires(['Notify[pre]']) }
@@ -38,6 +38,6 @@ describe 'relationships::before' do
   it { should_not contain_notify('bar').that_requires('Notify[unknown]') }
   it { should_not contain_notify('baz').that_requires('Notify[unknown]') }
 
-  it { should_not contain_class('relationship::before::pre').that_comes_before('Class[relationship::before::unknown]') }
-  it { should_not contain_class('relationship::before::post').that_requires('Class[relationship::before::unknown]') }
+  it { should_not contain_class('relationships::before::pre').that_comes_before('Class[relationships::before::unknown]') }
+  it { should_not contain_class('relationships::before::post').that_requires('Class[relationships::before::unknown]') }
 end

@@ -12,19 +12,19 @@ class relationships::notify {
 
   Notify['gronk'] <~ Notify['baz']
 
-  class { '::relationship::notify::pre': } ~>
-  class { '::relationship::notify::middle': } ~>
-  class { '::relationship::notify::post': }
+  class { '::relationships::notify::pre': } ~>
+  class { '::relationships::notify::middle': } ~>
+  class { '::relationships::notify::post': }
 }
 
-class relationship::notify::pre {
+class relationships::notify::pre {
   notify { 'pre': }
 }
 
-class relationship::notify::middle {
+class relationships::notify::middle {
   notify { 'middle': }
 }
 
-class relationship::notify::post {
+class relationships::notify::post {
   notify { 'post': }
 }
