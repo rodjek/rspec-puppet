@@ -2,6 +2,7 @@ require 'rake'
 require 'rspec/core/rake_task'
 require 'bundler/gem_tasks'
 require 'fileutils'
+require 'puppet'
 
 task :default => :test
 task :spec => :test
@@ -10,7 +11,14 @@ require 'rspec-puppet/tasks/release_test' unless RUBY_VERSION.start_with?('1')
 
 fixtures_dir = File.expand_path(File.join(__FILE__, '..', 'spec', 'fixtures', 'modules'))
 fixtures = {
-  'augeas_core' => 'https://github.com/puppetlabs/puppetlabs-augeas_core',
+  'augeas_core' => {
+    :url         => 'https://github.com/puppetlabs/puppetlabs-augeas_core',
+    :requirement => Gem::Requirement.new('>= 6.0.0'),
+  },
+  'stdlib'      => {
+    :url         => 'https://github.com/puppetlabs/puppetlabs-stdlib',
+    :requirement => Gem::Requirement.new('>= 0'),
+  },
 }
 
 namespace :test do
@@ -20,12 +28,14 @@ namespace :test do
   end
 
   task :setup do
-    next unless (ENV['PUPPET_GEM_VERSION'] || '').include?('#master')
+    puppet_version = Gem::Version.new(Puppet.version)
 
     Dir.chdir(fixtures_dir) do
-      fixtures.each do |name, repo|
+      fixtures.each do |name, fixture|
         next if File.directory?(name)
-        system('git', 'clone', repo, name)
+        next unless fixture[:requirement].satisfied_by?(puppet_version)
+
+        system('git', 'clone', fixture[:url], name)
         fail unless $?.success?
       end
     end
