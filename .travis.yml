@@ -41,6 +41,10 @@ matrix:
       env: PUPPET_GEM_VERSION='~> 5.5.0'
     - rvm: 2.3.0
       env: PUPPET_GEM_VERSION='~> 5.5.0'
+    - rvm: 2.5.1
+      env: PUPPET_GEM_VERSION='~> 6.0.0'
+    - rvm: 2.5.1
+      env: PUPPET_GEM_VERSION='~> 6.0.0' FACTER_GEM_VERSION='3.11.2.cfacter.20180612'
 
   exclude:
     # run Coveralls exactly once
