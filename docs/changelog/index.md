@@ -4,6 +4,19 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.7.0
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.15...v2.7.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Changed
+ * Official Puppet 6 support added.
+ * When testing resource parameter values, the values received from Puppet are
+   now reencoded before testing to ensure that the line endings (if present)
+   match the platform being tested.
+ * `vendormoduledir` and `basemodulepath` settings (introduced in Puppet 6) are
+   now configurable in rspec-puppet.
+
 ## 2.6.15
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.14...v2.6.15"
