@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.7.0]
+
+### Changed
+ * Official Puppet 6 support added.
+ * When testing resource parameter values, the values received from Puppet are
+   now reencoded before testing to ensure that the line endings (if present)
+   match the platform being tested.
+ * `vendormoduledir` and `basemodulepath` settings (introduced in Puppet 6) are
+   now configurable in rspec-puppet.
+
 ## [2.6.15]
 
 ### Fixed

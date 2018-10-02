@@ -211,3 +211,19 @@ facts with values that it derives from the node name (specified with
 In some circumstances (e.g. where your nodename/certname is not the same as
 your FQDN), this behaviour is undesirable and can be disabled by changing this
 setting to `false`.
+
+### vendormoduledir
+**Type:** String<br />
+**Default:** `'/dev/null'` (or `'c:/nul/'` on Windows)
+**Puppet Version(s):** 6.x
+
+The path to the directory containing vendored modules. Almost always
+unnecessary in a testing environment.
+
+### basemodulepath
+**Type:** String<br />
+**Default:** `'/dev/null'` (or `'c:/nul/'` on Windows)
+**Puppet Version(s):** 6.x
+
+The search path for global modules. Almost always unnecessary in a testing
+environment.
