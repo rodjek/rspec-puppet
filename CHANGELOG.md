@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.7.1]
+
+### Fixed
+ * Fixed a bug that prevented the platform pretending/stubbing logic from being
+   temporarily disabled when loading Ruby code.
+
 ## [2.7.0]
 
 ### Changed
