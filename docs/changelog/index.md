@@ -4,6 +4,15 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.7.1
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.0...v2.7.1"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+ * Fixed a bug that prevented the platform pretending/stubbing logic from being
+   temporarily disabled when loading Ruby code.
+
 ## 2.7.0
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.15...v2.7.0"
