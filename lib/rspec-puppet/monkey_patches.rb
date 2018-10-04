@@ -213,7 +213,7 @@ module Puppet
     end
 
     class Autoload
-      if singleton_class.respond_to?(:load_file)
+      if respond_to?(:load_file)
         singleton_class.send(:alias_method, :old_load_file, :load_file)
 
         def self.load_file(*args)
