@@ -20,6 +20,10 @@ fixtures = {
     :requirement => Gem::Requirement.new('>= 0'),
     :ref         => '4.2.0',
   },
+  'registry'    => {
+    :url         => 'https://github.com/puppetlabs/puppetlabs-registry',
+    :requirement => Gem::Requirement.new('>= 0'),
+  },
 }
 
 namespace :test do
