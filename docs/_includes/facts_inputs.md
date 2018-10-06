@@ -53,6 +53,8 @@ describe 'My::Class' do
 end
 {% endhighlight %}
 
+Note : It is also possible to populate facts with [rspec-puppet-facts](https://github.com/mcanevet/rspec-puppet-facts).
+
 ### Specifying trusted facts
 
 When testing with Puppet >= 4.3, the trusted facts hash will have the standard
