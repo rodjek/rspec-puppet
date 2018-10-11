@@ -53,6 +53,13 @@ describe 'My::Class' do
 end
 {% endhighlight %}
 
+<div class="callout-block callout-info">
+<div class="icon-holder"><i class="fa fa-info-circle"></i></div>
+<div class="content">
+A common pattern is to use <a href="https://github.com/mcanevet/rspec-puppet-facts">rspec-puppet-facts</a> to automatically populate the facts for a specified operating system. Please read the <a href="https://github.com/mcanevet/rspec-puppet-facts/blob/master/README.md">rspec-puppet-facts documentation</a> for more information.
+</div>
+</div>
+
 ### Specifying trusted facts
 
 When testing with Puppet >= 4.3, the trusted facts hash will have the standard
