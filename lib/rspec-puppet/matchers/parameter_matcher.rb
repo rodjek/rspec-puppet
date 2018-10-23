@@ -78,7 +78,7 @@ module RSpec::Puppet
       end
 
       def check_regexp(expected, actual)
-        !!(munge_line_endings(actual.to_s).match expected) == @should_match
+        !!(actual.to_s.match expected) == @should_match
       end
 
       # Ensure that two hashes have the same number of keys, and that for each
@@ -119,17 +119,7 @@ module RSpec::Puppet
       end
 
       def check_string(expected, actual)
-        (expected.to_s == munge_line_endings(actual.to_s)) == @should_match
-      end
-
-      def munge_line_endings(value)
-        return value unless value.respond_to?(:encode)
-
-        if Puppet::Util::Platform.windows?
-          value.encode(:crlf_newline => true)
-        else
-          value.encode(:universal_newline => true)
-        end
+        (expected.to_s == actual.to_s) == @should_match
       end
     end
   end
