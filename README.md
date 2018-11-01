@@ -873,7 +873,7 @@ Or by using the `execute` method on the subject directly
 
 ```ruby
 it 'something' do
-  subject.exectue('foo', 'bar', ['baz'])
+  subject.execute('foo', 'bar', ['baz'])
 end
 ```
 
