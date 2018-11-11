@@ -43,7 +43,7 @@ it { is_expected.to run.with_lambda { |x| x * 2 } }
 
 ### Testing the return value
 
-The return value of the function can be tested by chaining the `and_returns`
+The return value of the function can be tested by chaining the `and_return`
 method on to the `run` matcher.
 
 {% highlight ruby %}
