@@ -1,6 +1,12 @@
 require 'spec_helper'
 
-describe ::Windows::TaskSchedulerConstants do
+klass = if defined?(::Win32::TaskScheduler::TaskSchedulerConstants)
+          ::Win32::TaskScheduler::TaskSchedulerConstants
+        else
+          ::Windows::TaskSchedulerConstants
+        end
+
+describe klass do
   subject { described_class }
 
   let(:stub_class) { RSpec::Puppet::Windows::TaskSchedulerConstants }
@@ -20,7 +26,10 @@ describe ::Windows::TaskSchedulerConstants do
       :FORMAT_MESSAGE_IGNORE_INSERTS,
       :FORMAT_MESSAGE_FROM_SYSTEM,
       :FORMAT_MESSAGE_MAX_WIDTH_MASK,
-      :Error
+      :Error,
+      :SERVICE_ACCOUNT_USERS,
+      :BUILT_IN_GROUPS,
+      :SYSTEM_USERS,
     ]
 
     it { should_not be_nil }
