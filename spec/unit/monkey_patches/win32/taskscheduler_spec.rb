@@ -20,7 +20,16 @@ describe ::Win32::TaskScheduler do
       :FORMAT_MESSAGE_IGNORE_INSERTS,
       :FORMAT_MESSAGE_FROM_SYSTEM,
       :FORMAT_MESSAGE_MAX_WIDTH_MASK,
-      :Error
+      :Error,
+      :TaskSchedulerConstants,
+      :IdleSettings,
+      :SID,
+      :Helper,
+      :TimeCalcHelper,
+      :BUILT_IN_GROUPS,
+      :SERVICE_ACCOUNT_USERS,
+      :ERROR_INSUFFICIENT_BUFFER,
+      :SYSTEM_USERS,
     ]
 
     it { should_not be_nil }
