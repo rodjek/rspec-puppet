@@ -4,6 +4,15 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.7.2
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.1...v2.7.2"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Changed
+ * Reverted the change introduced in 2.7.0 that reencoded resource parameter
+   values to modify their line endings.
+
 ## 2.7.1
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.0...v2.7.1"
