@@ -136,7 +136,7 @@ require 'spec_helper'
 describe 'logrotate::rule' do
   let(:title) { 'nginx' }
 
-  it { is_expected.to contain_class('logrotate::rule') }
+  it { is_expected.to contain_class('logrotate::setup') }
 
   it do
     is_expected.to contain_file('/etc/logrotate.d/nginx').with({
@@ -202,7 +202,7 @@ require 'spec_helper'
 describe 'logrotate::rule' do
   let(:title) { 'nginx' }
 
-  it { is_expected.to contain_class('logrotate::rule') }
+  it { is_expected.to contain_class('logrotate::setup') }
 
   it do
     is_expected.to contain_file('/etc/logrotate.d/nginx').with({
