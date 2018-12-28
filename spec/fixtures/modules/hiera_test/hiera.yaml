@@ -1,0 +1,11 @@
+---
+version: 5
+defaults:
+  datadir: data
+  lookup_key: eyaml_lookup_key
+hierarchy:
+  - name: 'Defaults'
+    glob: '**.yaml'
+    options:
+      pkcs7_private_key: /fakekey
+      pkcs7_public_key: /fakepubkey

@@ -1,2 +1,4 @@
 ---
 data: foo
+hiera_test::test_param: global
+hiera_test2::test_param: global
