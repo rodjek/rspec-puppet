@@ -258,6 +258,40 @@ module Puppet
       end
     end
   end
+
+  if Puppet::Util::Package.versioncmp(Puppet.version, '4.9.0') >= 0
+    class Module
+      old_hiera_conf_file = instance_method(:hiera_conf_file)
+      define_method(:hiera_conf_file) do
+        if RSpec::Puppet.rspec_puppet_example?
+          if RSpec.configuration.disable_module_hiera
+            return nil
+          elsif RSpec.configuration.fixture_hiera_configs.key?(name)
+            config = RSpec.configuration.fixture_hiera_configs[name]
+            config = File.absolute_path(config, path) unless config.nil?
+            return config
+          elsif RSpec.configuration.use_fixture_spec_hiera
+            config = RSpec::Puppet.current_example.fixture_spec_hiera_conf(self)
+            return config unless config.nil? && RSpec.configuration.fallback_to_default_hiera
+          end
+        end
+        old_hiera_conf_file.bind(self).call
+      end
+    end
+
+    class Pops::Lookup::ModuleDataProvider
+      old_configuration_path = instance_method(:configuration_path)
+      define_method(:configuration_path) do |lookup_invocation|
+        if RSpec::Puppet.rspec_puppet_example?
+          env = lookup_invocation.scope.environment
+          mod = env.module(module_name)
+          raise Puppet::DataBinding::LookupError, _("Environment '%{env}', cannot find module '%{module_name}'") % { :env => env.name, :module_name => module_name } unless mod
+          return Pathname.new(mod.hiera_conf_file)
+        end
+        old_configuration_path.bind(self).call(lookup_invocation)
+      end
+    end
+  end
 end
 
 class Pathname

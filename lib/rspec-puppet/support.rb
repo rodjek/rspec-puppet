@@ -5,6 +5,7 @@ require 'rspec-puppet/raw_string'
 module RSpec::Puppet
   module Support
     @@cache = RSpec::Puppet::Cache.new
+    @@fixture_hiera_configs = Hash.new { |h, k| h[k] = nil }
 
     def subject
       lambda { catalogue }
@@ -84,10 +85,18 @@ module RSpec::Puppet
         hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
         hiera_data_value = self.respond_to?(:hiera_data) ? hiera_data : nil
 
+        rspec_config_values = [
+            :trusted_server_facts,
+            :disable_module_hiera,
+            :use_fixture_spec_hiera,
+            :fixture_hiera_configs,
+            :fallback_to_default_hiera,
+        ].map { |setting| RSpec.configuration.send(setting) }
+
         build_facts = facts_hash(node_name)
         catalogue = build_catalog(node_name, build_facts, trusted_facts_hash(node_name), hiera_config_value,
                                   build_code(type, manifest_opts), exported, node_params_hash, hiera_data_value,
-                                  RSpec.configuration.trusted_server_facts)
+                                  rspec_config_values)
 
         test_module = type == :host ? nil : class_name.split('::').first
         if type == :define
@@ -442,6 +451,23 @@ module RSpec::Puppet
         alias_method :failure_message_for_should, :failure_message
         alias_method :failure_message_for_should_not, :failure_message_when_negated
       end
+    end
+
+    def fixture_spec_hiera_conf(mod)
+      return @@fixture_hiera_configs[mod.name] if @@fixture_hiera_configs.key?(mod.name)
+
+      path = Pathname.new(mod.path)
+      if path.join('spec').exist?
+        path.join('spec').find do |file|
+          Find.prune if %w[modules work-dir].any? do |dir|
+            file.relative_path_from(path).to_s.start_with?("spec/fixtures/#{dir}")
+          end
+          if file.basename.to_s.eql?(Puppet::Pops::Lookup::HieraConfig::CONFIG_FILE_NAME)
+            return @@fixture_hiera_configs[mod.name] = file.to_s
+          end
+        end
+      end
+      @@fixture_hiera_configs[mod.name]
     end
 
     # Helper to return a resource/node reference, so it gets translated in params to a raw string
