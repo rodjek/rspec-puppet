@@ -4,6 +4,18 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.7.3
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.2...v2.7.3"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+ * Puppet 6 deferred functions are now evaluated and resolved as part of the
+   catalogue compilation process.
+ * If running with parallel\_tests, the resources that are filtered out of the
+   resource coverage report are now taken into account when merging the final
+   report, fixing false negative results that can occur.
+
 ## 2.7.2
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.1...v2.7.2"
