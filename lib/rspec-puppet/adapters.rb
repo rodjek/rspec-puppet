@@ -199,6 +199,12 @@ module RSpec::Puppet
           [:vendormoduledir, :vendormoduledir],
         ])
       end
+
+      def catalog(node, _exported)
+        super.tap do |c|
+          Puppet::Pops::Evaluator::DeferredResolver.resolve_and_replace(node.facts, c)
+        end
+      end
     end
 
     class Adapter30 < Base
