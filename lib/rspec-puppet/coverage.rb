@@ -39,6 +39,9 @@ module RSpec::Puppet
 
     def save_results
       slug = "#{Digest::MD5.hexdigest(Dir.pwd)}-#{Process.pid}"
+      File.open(File.join(Dir.tmpdir, "rspec-puppet-filter-#{slug}"), 'w+') do |f|
+        f.puts @filters.to_json
+      end
       File.open(File.join(Dir.tmpdir, "rspec-puppet-coverage-#{slug}"), 'w+') do |f|
         f.puts @collection.to_json
       end
@@ -52,11 +55,27 @@ module RSpec::Puppet
       end
     end
 
+    def merge_filters
+      pattern = File.join(Dir.tmpdir, "rspec-puppet-filter-#{Digest::MD5.hexdigest(Dir.pwd)}-*")
+      Dir[pattern].each do |result_file|
+        load_filters(result_file)
+        FileUtils.rm(result_file)
+      end
+    end
+
     def load_results(path)
       saved_results = JSON.parse(File.read(path))
       saved_results.each do |resource, data|
         add(resource)
         cover!(resource) if data['touched']
+      end
+    end
+
+    def load_filters(path)
+      saved_filters = JSON.parse(File.read(path))
+      saved_filters.each do |resource|
+        @filters << resource
+        @collection.delete(resource) if @collection.key?(resource)
       end
     end
 
@@ -117,7 +136,10 @@ module RSpec::Puppet
     end
 
     def run_report(coverage_desired = nil)
-      merge_results if ENV['TEST_ENV_NUMBER']
+      if ENV['TEST_ENV_NUMBER']
+        merge_filters
+        merge_results
+      end
 
       report = results
 
