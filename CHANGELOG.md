@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.7.3]
+
+### Fixed
+ * Puppet 6 deferred functions are now evaluated and resolved as part of the
+   catalogue compilation process.
+ * If running with parallel\_tests, the resources that are filtered out of the
+   resource coverage report are now taken into account when merging the final
+   report, fixing false negative results that can occur.
+
 ## [2.7.2]
 
 ### Changed
