@@ -126,6 +126,15 @@ undefined parameters at once by chaining the `without` method to the
 it { is_expected.to contain_service('apache').without(['restart', 'status']) }
 {% endhighlight %}
 
+### Test resource parameter values for uniqueness
+
+Use the `have_unique_values_for_all` matcher to test a specific resource parameter
+for uniqueness of values across the entire catalogue:
+
+{% highlight ruby %}
+it { is_expected.to have_unique_values_for_all('user', 'uid')
+{% endhighlight %}
+
 ### Testing relationships between resources
 The relationships between resources can be tested using the following methods,
 regardless of how the relationship has been defined. This mean that it doesn't
