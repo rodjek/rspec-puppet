@@ -94,7 +94,13 @@ module RSpec::Puppet
               File.join(File.dirname(r), 'lib')
             }
             dir = env_libdirs.find { |r| File.directory?(r) }
-            loader = Puppet::Pops::Loader::ModuleLoaders::FileBased.new(loaders.private_environment_loader, loaders, Puppet::Pops::Loader::ENVIRONMENT, dir, 'environment functions', [:func_4x])
+            loader_dir = loader_needs_lib? ? dir : File.dirname(dir)
+            module_name = if Puppet::Pops::Loader.const_defined?(:ENVIRONMENT)
+                            Puppet::Pops::Loader::ENVIRONMENT
+                          else
+                            nil
+                          end
+            loader = Puppet::Pops::Loader::ModuleLoaders::FileBased.new(loaders.private_environment_loader, loaders, module_name, loader_dir, 'environment functions', [:func_4x])
             func = V4FunctionWrapper.new(function_name, loader.load(:function, function_name), context_overrides)
             @scope = context_overrides[:global_scope]
           end
@@ -137,6 +143,10 @@ module RSpec::Puppet
     end
 
     private
+
+    def loader_needs_lib?
+      !Puppet::Pops::Loader::LoaderPaths::FunctionPath4x::FUNCTION_PATH_4X.start_with?('lib')
+    end
 
     def compiler
       @compiler ||= build_compiler
