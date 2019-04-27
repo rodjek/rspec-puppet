@@ -90,17 +90,9 @@ module RSpec::Puppet
 
           # allow loading functions from the environment
           Puppet.override(context_overrides, "rspec-test scope") do
-            env_libdirs = env.modulepath.map { |r|
-              File.join(File.dirname(r), 'lib')
-            }
-            dir = env_libdirs.find { |r| File.directory?(r) }
-            loader_dir = loader_needs_lib? ? dir : File.dirname(dir)
-            module_name = if Puppet::Pops::Loader.const_defined?(:ENVIRONMENT)
-                            Puppet::Pops::Loader::ENVIRONMENT
-                          else
-                            nil
-                          end
-            loader = Puppet::Pops::Loader::ModuleLoaders::FileBased.new(loaders.private_environment_loader, loaders, module_name, loader_dir, 'environment functions', [:func_4x])
+            env_dirs = env.modulepath.map { |r| File.dirname(r) }
+            dir = env_dirs.find { |r| File.directory?(File.join(r, 'lib')) }
+            loader = Puppet::Pops::Loader::ModuleLoaders.environment_loader_from(loaders.private_environment_loader, loaders, dir)
             func = V4FunctionWrapper.new(function_name, loader.load(:function, function_name), context_overrides)
             @scope = context_overrides[:global_scope]
           end
