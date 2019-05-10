@@ -1,6 +1,6 @@
 module RSpec::Puppet
   # A wrapper representing Sensitive data type, eg. in class params.
-  class Sensitive
+  class Sensitive < ::Puppet::Pops::Types::PSensitiveType::Sensitive
     # Create a new Sensitive object
     # @param [Object] value to wrap
     def initialize(value)
