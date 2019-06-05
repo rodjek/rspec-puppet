@@ -159,6 +159,11 @@ module RSpec::Puppet
         end
         coverage_test.run(RSpec.configuration.reporter)
 
+        if coverage_results.execution_result[:status] == :failed
+          RSpec.world.non_example_failure = true
+          RSpec.world.wants_to_quit = true
+        end
+
         # This is not available on RSpec 2.x
         if coverage_results.execution_result.respond_to?(:pending_message)
           coverage_results.execution_result.pending_message = report[:text]
