@@ -159,7 +159,13 @@ module RSpec::Puppet
         end
         coverage_test.run(RSpec.configuration.reporter)
 
-        if coverage_results.execution_result[:status] == :failed
+        status = if coverage_results.execution_result.respond_to?(:status)
+                   coverage_results.execution_result.status
+                 else
+                   coverage_results.execution_result[:status]
+                 end
+
+        if status == :failed
           RSpec.world.non_example_failure = true
           RSpec.world.wants_to_quit = true
         end
