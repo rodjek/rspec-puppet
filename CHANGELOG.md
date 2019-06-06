@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.7.5]
+
+### Fixed
+ * Minor refactor to prevent the fix introduced in 2.7.4 from raising
+   a deprecation warning on latest RSpec.
+
 ## [2.7.4]
 
 ### Fixed
