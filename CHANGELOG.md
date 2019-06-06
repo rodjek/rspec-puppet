@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.7.4]
+
+### Fixed
+ * Fix the resource coverage test so that rspec will exit non-zero if the
+   desired coverage is not met.
+
 ## [2.7.3]
 
 ### Fixed
