@@ -4,6 +4,15 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.7.4
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.3...v2.7.4"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+ * Fix the resource coverage test so that rspec will exit non-zero if the
+   desired coverage is not met.
+
 ## 2.7.3
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.2...v2.7.3"
