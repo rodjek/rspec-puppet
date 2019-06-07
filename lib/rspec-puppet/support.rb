@@ -129,18 +129,13 @@ module RSpec::Puppet
     end
 
     def site_pp_str
-      return '' unless (path = adapter.manifest)
+      site_pp_str = ''
+      filepath = adapter.manifest
 
-      if File.file?(path)
-        File.read(path)
-      elsif File.directory?(path)
-        # Read and concatenate all .pp files.
-        Dir[File.join(path, '*.pp')].sort.map do |f|
-          File.read(f)
-        end.join("\n")
-      else
-        ''
+      if (!filepath.nil?) && File.file?(filepath)
+        site_pp_str = File.open(filepath).read
       end
+      site_pp_str
     end
 
     def test_manifest(type, opts = {})
