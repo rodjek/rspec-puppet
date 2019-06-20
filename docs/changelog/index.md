@@ -4,15 +4,6 @@ title: Change Log
 icon: fa fa-history
 ---
 
-## 2.7.5
-
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.4...v2.7.5"
-class="btn btn-primary btn-inline pull-right">View Diff</a>
-
-### Fixed
- * Minor refactor to prevent the fix introduced in 2.7.4 from raising
-   a deprecation warning on latest RSpec.
-
 ## 2.7.4
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.3...v2.7.4"
