@@ -1,4 +1,5 @@
 language: ruby
+dist: trusty
 cache: bundler
 bundler_args: --without development
 # workaround bundler/rubygems version mismatch on new trusty images for ruby 1.9
