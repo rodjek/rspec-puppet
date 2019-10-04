@@ -4,6 +4,15 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## 2.7.6
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.5...v2.7.6"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Changed
+ * Limit rspec-expectations dependency to < 3.8.5 due to an incompatible
+   change.
+
 ## 2.7.5
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.4...v2.7.5"
