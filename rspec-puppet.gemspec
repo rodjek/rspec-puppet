@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.files = Dir['CHANGELOG.md', 'LICENSE.md', 'README.md', 'lib/**/*', 'bin/**/*']
 
   s.add_dependency 'rspec'
+  s.add_dependency 'rspec-expectations', '< 3.8.5'
 
   s.authors = ['Tim Sharpe']
   s.email = 'tim@sharpe.id.au'
