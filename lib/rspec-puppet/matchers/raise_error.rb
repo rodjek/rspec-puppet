@@ -16,8 +16,8 @@ module RSpec::Puppet
       end
     end
 
-    def raise_error(error=nil, message=nil, &block)
-      RaiseError.new(error, message, &block)
+    def raise_error(*args, &block)
+      RaiseError.new(*args, &block)
     end
   end
 end
