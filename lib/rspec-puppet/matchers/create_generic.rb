@@ -177,6 +177,14 @@ module RSpec::Puppet
         true
       end
 
+      def supports_block_expectations
+        true
+      end
+
+      def supports_value_expectations
+        true
+      end
+
       def expected
         @errors.map {|e| e.expected if e.respond_to?(:expected)}.compact.join("\n\n")
       end

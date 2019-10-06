@@ -22,6 +22,13 @@ module RSpec::Puppet
         end
       end
 
+      def supports_block_expectations
+        true
+      end
+
+      def supports_value_expectations
+        true
+      end
     end
 
   end

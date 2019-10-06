@@ -61,6 +61,14 @@ module RSpec::Puppet
         "expected that the catalogue would not " + description + " but it does"
       end
 
+      def supports_block_expectations
+        true
+      end
+
+      def supports_value_expectations
+        true
+      end
+
     private
 
       def referenced_type(type)
