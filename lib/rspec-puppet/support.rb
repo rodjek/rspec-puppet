@@ -4,6 +4,8 @@ require 'rspec-puppet/raw_string'
 
 module RSpec::Puppet
   module Support
+    include GenericMatchers
+
     @@cache = RSpec::Puppet::Cache.new
 
     def subject
