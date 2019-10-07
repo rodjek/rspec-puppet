@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.7.7]
+
+### Fixed
+ * Fix the support for rspec-expectations >= 3.8.5.
+
+### Changed
+ * Remove the rspec-expectations dependency limit introduced in 2.7.6.
+
 ## [2.7.6]
 
 ### Changed
