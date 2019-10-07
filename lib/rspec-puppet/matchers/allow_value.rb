@@ -34,6 +34,14 @@ module RSpec::Puppet
       def failure_message_when_negated
         "expected that the type alias would not " + description + " but it does"
       end
+
+      def supports_block_expectations
+        true
+      end
+
+      def supports_value_expectations
+        true
+      end
     end
 
     def allow_value(*values)
