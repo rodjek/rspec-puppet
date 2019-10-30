@@ -226,10 +226,11 @@ module RSpec::Puppet
       }
 
       node_facts = {
-        'hostname'      => node.split('.').first,
-        'fqdn'          => node,
-        'domain'        => node.split('.', 2).last,
-        'clientcert'    => node,
+        'hostname'   => node.split('.').first,
+        'fqdn'       => node,
+        'domain'     => node.split('.', 2).last,
+        'clientcert' => node,
+        'ipaddress6' => 'FE80:0000:0000:0000:AAAA:AAAA:AAAA',
       }
 
       networking_facts = {
