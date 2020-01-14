@@ -22,6 +22,10 @@ gem 'puppet', *location_for(ENV['PUPPET_GEM_VERSION'] || '~> 4.0')
 gem 'facter', *location_for(ENV['FACTER_GEM_VERSION'] || '~> 2.0')
 gem 'pry', :group => :development
 
+if ENV['PUPPET_GEM_VERSION'] && Gem::Requirement.new(ENV['PUPPET_GEM_VERSION']).requirements.flatten.find { |r| r.is_a?(Gem::Version) } >= Gem::Version.new('6.0')
+  gem 'bolt', :path => '/home/tsharpe/code/puppetlabs/bolt'
+end
+
 if RUBY_VERSION =~ /^1\.?/
   gem 'rake', '10.5.0' # still supports 1.8
 else
