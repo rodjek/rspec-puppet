@@ -88,8 +88,7 @@ module RSpec::Puppet
           false
         else
           RSpec::Puppet::Coverage.cover!(resource)
-          rsrc_hsh = resource.to_data_hash
-          resource_params = rsrc_hsh['parameters'] || {}
+          rsrc_hsh = resource.to_hash
 
           if resource.builtin_type?
             namevar = resource.resource_type.key_attributes.first.to_s
@@ -98,11 +97,11 @@ module RSpec::Puppet
           end
 
           unless @expected_params.any? { |param| param.first.to_s == namevar }
-            resource_params.delete(namevar.to_sym) if resource_params.has_key?(namevar.to_sym)
+            rsrc_hsh.delete(namevar.to_sym) if rsrc_hsh.has_key?(namevar.to_sym)
           end
 
           if @expected_params_count
-            unless resource_params.size == @expected_params_count
+            unless rsrc_hsh.size == @expected_params_count
               ret = false
               (@errors ||= []) << "exactly #{@expected_params_count} parameters but the catalogue contains #{rsrc_hsh.size}"
             end
@@ -367,7 +366,7 @@ module RSpec::Puppet
           param = param.to_sym
 
           if value.nil? then
-            unless (resource['parameters'] || {})[param].nil?
+            unless resource[param].nil?
               @errors << "#{param} undefined but it is set to #{resource[param].inspect}"
             end
           else

@@ -21,12 +21,12 @@ module RSpec::Puppet
       #
       # @return [true, false]
       def matches?(resource)
-        actual = (resource['parameters'] || {})[@parameter]
+        actual = resource[@parameter]
+        expected = @value
 
-        if resource['sensitive_parameters'] && resource['sensitive_parameters'].include?(@parameter)
+        if resource.respond_to?(:sensitive_parameters) && resource.sensitive_parameters.include?(@parameter)
           actual = ::Puppet::Pops::Types::PSensitiveType::Sensitive.new(actual)
         end
-        expected = @value
 
         # Puppet flattens an array with a single value into just the value and
         # this can cause confusion when testing as people expect when you put
