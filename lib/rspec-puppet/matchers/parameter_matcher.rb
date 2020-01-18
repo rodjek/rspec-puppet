@@ -21,10 +21,7 @@ module RSpec::Puppet
       #
       # @return [true, false]
       def matches?(resource)
-
-        @resource = resource
-
-        actual   = @resource[@parameter]
+        actual = resource[@parameter]
         expected = @value
 
         # Puppet flattens an array with a single value into just the value and
@@ -65,6 +62,8 @@ module RSpec::Puppet
           check_hash(expected, actual)
         when Array
           check_array(expected, actual)
+        when RSpec::Puppet::Sensitive
+          expected == actual
         else
           check_string(expected, actual)
         end
