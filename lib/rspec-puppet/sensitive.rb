@@ -36,10 +36,12 @@ module RSpec::Puppet
       end
     end
   else
+    #:nocov:
     class Sensitive
       def initialize(value)
         raise 'The use of the Sensitive data type is not supported by this Puppet version'
       end
     end
+    #:nocov:
   end
 end

@@ -27,5 +27,9 @@ describe RSpec::Puppet::Sensitive, :if => sensitive? do
     it "compares equal to Puppet sensitive type" do
       expect(sensitive).to eq ::Puppet::Pops::Types::PSensitiveType::Sensitive.new contents
     end
+
+    it 'compares false to the unwrapped value' do
+      expect(sensitive).not_to eq(contents)
+    end
   end
 end
