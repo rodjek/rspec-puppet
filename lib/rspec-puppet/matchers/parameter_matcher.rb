@@ -24,10 +24,6 @@ module RSpec::Puppet
         actual = resource[@parameter]
         expected = @value
 
-        if resource.respond_to?(:sensitive_parameters) && resource.sensitive_parameters.include?(@parameter)
-          actual = ::Puppet::Pops::Types::PSensitiveType::Sensitive.new(actual)
-        end
-
         # Puppet flattens an array with a single value into just the value and
         # this can cause confusion when testing as people expect when you put
         # an array in, you'll get an array out.
