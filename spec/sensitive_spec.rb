@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rspec-puppet/sensitive'
 
-describe RSpec::Puppet::Sensitive do
+describe RSpec::Puppet::Sensitive, :if => sensitive? do
   let(:contents) { double :contents }
   subject(:sensitive) { RSpec::Puppet::Sensitive.new contents }
 
