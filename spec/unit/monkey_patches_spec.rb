@@ -128,3 +128,24 @@ describe 'Pathname#rspec_puppet_basename' do
     end
   end
 end
+
+describe "Puppet::Module#match_manifests" do
+  subject {
+    Puppet::Module.new('escape',
+                       File.join(RSpec.configuration.module_path, 'escape'),
+                       'production')
+  }
+  it 'returns init.pp for top level class' do
+    expect(subject.match_manifests(nil).length).to eq(1)
+    expect(subject.match_manifests(nil)[0]).to match(/init\.pp$/)
+  end
+  it 'returns init.pp for escape::unknown' do
+    expect(subject.match_manifests('unknown').length).to eq(1)
+    expect(subject.match_manifests('unknown')[0]).to match(/init\.pp$/)
+  end
+  it 'returns just def.pp for escape::def' do
+    expect(subject.match_manifests('def').length).to eq(1)
+    expect(subject.match_manifests('def')[0]).to match(/def\.pp$/)
+  end
+end
+
