@@ -297,12 +297,12 @@ end
 # "mod::foo", this causes duplicate declaration for "mod".
 # This monkey patch only loads "init.pp" if "foo.pp" does not exist.
 class Puppet::Module
-  if instance_methods.include?(:match_manifests)
+  if [:match_manifests, 'match_manifests'].any? { |r| instance_methods.include?(r) }
     old_match_manifests = instance_method(:match_manifests)
 
     define_method(:match_manifests) do |rest|
       result = old_match_manifests.bind(self).call(rest)
-      if result.length > 1 && result[0] =~ %r{/init.pp$}
+      if result.length > 1 && File.basename(result[0]) == 'init.pp'
         result.shift
       end
       result
