@@ -292,6 +292,24 @@ class Pathname
   end
 end
 
+# Puppet loads init.pp, then foo.pp, to find class "mod::foo".  If
+# class "mod" has been mocked using pre_condition when testing
+# "mod::foo", this causes duplicate declaration for "mod".
+# This monkey patch only loads "init.pp" if "foo.pp" does not exist.
+class Puppet::Module
+  if [:match_manifests, 'match_manifests'].any? { |r| instance_methods.include?(r) }
+    old_match_manifests = instance_method(:match_manifests)
+
+    define_method(:match_manifests) do |rest|
+      result = old_match_manifests.bind(self).call(rest)
+      if result.length > 1 && File.basename(result[0]) == 'init.pp'
+        result.shift
+      end
+      result
+    end
+  end
+end
+
 # Prevent the File type from munging paths (which uses File.expand_path to
 # normalise paths, which does very bad things to *nix paths on Windows.
 file_path_munge = Puppet::Type.type(:file).paramclass(:path).instance_method(:unsafe_munge)
