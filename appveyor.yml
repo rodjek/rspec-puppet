@@ -20,6 +20,9 @@ environment:
     - RUBY_VERSION: 25-x64
       PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
 
+test:
+  this: is a test
+
 matrix:
   allow_failures:
     # Don't fail for puppet.git#master because it may be to blame for any failures
