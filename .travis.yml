@@ -7,6 +7,7 @@ before_install: gem install bundler -v '1.15.4'
 
 rvm:
   - 2.5
+  - 2.7
 
 sudo: false
 
@@ -28,6 +29,8 @@ matrix:
     - rvm: 2.1
       env: PUPPET_GEM_VERSION='~> 4.0'
     - rvm: 2.3
+      env: PUPPET_GEM_VERSION='~> 5.5.0'
+    - rvm: 2.7
       env: PUPPET_GEM_VERSION='~> 5.5.0'
 
   allowed_failures:
