@@ -155,7 +155,7 @@ module RSpec::Puppet
       if coverage_desired.is_a?(Numeric) && coverage_desired.to_f <= 100.00 && coverage_desired.to_f >= 0.0
         coverage_test = RSpec.describe("Code coverage")
         coverage_results = coverage_test.example("must cover at least #{coverage_desired}% of resources") do
-          expect( coverage_actual.to_f ).to be >= coverage_desired.to_f
+          expect( coverage_actual.to_f ).to be >= coverage_desired.to_f unless report[:total].zero?
         end
         coverage_test.run(RSpec.configuration.reporter)
 
