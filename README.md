@@ -759,6 +759,30 @@ RSpec.configure do |c|
 end
 ```
 
+#### Specifying trusted external data
+
+When testing with Puppet >= 6.14, the trusted facts hash will have an additional `external`
+key for trusted external data.
+
+By default, the test environment contains no trusted external data (as usually obtained from
+trusted external commands and found in the `external` key). If you need to test against specific
+trusted external data you can set those with a hash. The hash will then be available in
+`$trusted['external']`
+
+```ruby
+let(:trusted_external_data) { {'foo' => 'bar'} }
+```
+
+You can also create a set of default trusted external data provided to all specs in your spec_helper:
+
+```ruby
+RSpec.configure do |c|
+  c.default_trusted_external_data = {
+    'foo' => 'bar'
+  }
+end
+```
+
 #### Testing Exported Resources
 
 You can test if a resource was exported from the catalogue by using the
