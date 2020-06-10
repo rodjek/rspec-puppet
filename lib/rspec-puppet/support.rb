@@ -441,8 +441,7 @@ module RSpec::Puppet
     end
 
     def escape_special_chars(string)
-      string.gsub!(/\$/, "\\$")
-      string
+      string.gsub(/\$/, "\\$")
     end
 
     def rspec_compatibility
