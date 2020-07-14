@@ -2,9 +2,9 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## [2.7.9]
 ### Fixed
- * Fix issues with puppet gem removal of `default_env` #796
+ * Fix issues with removal of `default_env` method in Puppet 6.17.0.
 
 ## [2.7.8]
 
