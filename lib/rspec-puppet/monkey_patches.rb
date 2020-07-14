@@ -132,6 +132,16 @@ module Puppet
   end
 
   module Util
+    # Fix for removal of default_env function
+    # Bug: https://github.com/rodjek/rspec-puppet/issues/796
+    # Upstream: https://github.com/puppetlabs/puppet/commit/94df3c1a3992d89b2d7d5db8a70373c135bdd86b
+    if !respond_to?(:default_env)
+      def default_env()
+        DEFAULT_ENV
+      end
+      module_function :default_env
+    end
+
     if respond_to?(:get_env)
       alias :old_get_env :get_env
       module_function :old_get_env
