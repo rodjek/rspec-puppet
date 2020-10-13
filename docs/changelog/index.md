@@ -4,13 +4,17 @@ title: Change Log
 icon: fa fa-history
 ---
 
-## 2.7.9
+## 2.7.10
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.8...v2.7.9"
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.8...v2.7.10"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
  * Fix issues with removal of `default_env` method in Puppet 6.17.0.
+
+## 2.7.9
+
+This release had unintended breaking changes and was withdrawn.
 
 ## 2.7.8
 
