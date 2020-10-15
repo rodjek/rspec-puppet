@@ -19,7 +19,8 @@ environment:
     # Latest code from puppetlabs/puppet.git
     - RUBY_VERSION: 25-x64
       PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
-    - RUBY_VERSION: 27-x64
+    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2019'
+      RUBY_VERSION: 27-x64
       PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
 
 matrix:
