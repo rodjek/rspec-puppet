@@ -103,5 +103,14 @@ describe RSpec::Puppet::Coverage do
         expect(resources["Notify[#{name}]"]).to eq(:touched => false)
       end
     end
+
+    context "when there are no resources" do
+      let(:touched) { [] }
+      let(:untouched) { [] }
+
+      it "reports 100% coverage" do
+        expect(report[:coverage]).to eq "100.00"
+      end
+    end
   end
 end

@@ -187,7 +187,9 @@ module RSpec::Puppet
       report[:total] = @collection.size
       report[:touched] = @collection.count { |_, resource| resource.touched? }
       report[:untouched] = report[:total] - report[:touched]
-      report[:coverage] = "%5.2f" % ((report[:touched].to_f / report[:total].to_f) * 100)
+
+      coverage = report[:total].to_f > 0 ? ((report[:touched].to_f / report[:total].to_f) * 100) : 100.0
+      report[:coverage] = "%5.2f" % coverage
 
       report[:resources] = Hash[*@collection.map do |name, wrapper|
         [name, wrapper.to_hash]
