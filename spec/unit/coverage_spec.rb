@@ -33,6 +33,14 @@ describe RSpec::Puppet::Coverage do
       expect(subject.filters).to include("Class[Foo::Bar]")
     end
 
+    it "can add regular expression based filters" do
+      subject.add_filter_regex("notify", /test.*/)
+      expect(subject.filters_regex).to include(/\ANotify\[test.*\]\z/)
+
+      subject.add_filter_regex("foo::bar", /ignore[0-9]+/)
+      expect(subject.filters_regex).to include(/\AFoo::Bar\[ignore[0-9]+\]\z/)
+    end
+
     it "filters resources based on the resource title" do
       # TODO: this is evil and uses duck typing on `#to_s` to work.
       fake_resource = "Stage[main]"
@@ -54,6 +62,11 @@ describe RSpec::Puppet::Coverage do
 
       subject.add_filter("class", "foo::bar")
       expect(subject.add("Class[Foo::Bar]")).to_not be
+    end
+
+    it "ignores resources that have been regex filtered" do
+      subject.add_filter_regex("notify", /test.*/)
+      expect(subject.add("Notify[testing123]")).to_not be
     end
 
     it "ignores resources that have already been added" do
