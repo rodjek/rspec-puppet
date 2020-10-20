@@ -126,4 +126,32 @@ describe RSpec::Puppet::Coverage do
       end
     end
   end
+
+  context "with parallel tests" do
+    before(:each) do
+      allow(subject).to receive(:parallel_tests?).and_return(true)
+    end
+
+    describe "getting coverage results" do
+      let(:touched) { %w[First Second Third Fourth Fifth] }
+      let(:untouched) { %w[Sixth Seventh Eighth Nineth] }
+
+      before(:each) do
+        touched.each do |title|
+          subject.add("Notify[#{title}]")
+          subject.cover!("Notify[#{title}]")
+        end
+
+        untouched.each do |title|
+          subject.add("Notify[#{title}]")
+        end
+
+        allow(subject).to receive(:coverage_test)
+      end
+
+      it "outputs report" do
+        expect { subject.run_report }.to output(/coverage report/i).to_stdout
+      end
+    end
+  end
 end

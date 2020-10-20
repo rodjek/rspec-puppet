@@ -179,7 +179,7 @@ module RSpec::Puppet
     end
 
     def run_report(coverage_desired = nil)
-      if ENV['TEST_ENV_NUMBER']
+      if parallel_tests?
         merge_filters
         merge_results
       end
