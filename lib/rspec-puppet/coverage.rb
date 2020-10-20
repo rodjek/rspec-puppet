@@ -107,7 +107,7 @@ module RSpec::Puppet
       saved_regex_filters.each do |pattern|
         regex = Regexp.new(pattern)
         @filters_regex << regex
-        @collection.delete_if { |resource, _| regex.match?(resource) }
+        @collection.delete_if { |resource, _| resource =~ regex }
       end
     end
 
@@ -148,7 +148,7 @@ module RSpec::Puppet
 
     def filtered?(resource)
       return true if filters.include?(resource.to_s)
-      return true if filters_regex.any? { |f| f.match?(resource.to_s) }
+      return true if filters_regex.any? { |f| resource.to_s =~ f }
 
       false
     end
