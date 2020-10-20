@@ -36,6 +36,9 @@ matrix:
   allowed_failures:
     # Don't fail for puppet.git#master because it may be to blame for any failures
     - env: PUPPET_GEM_VERSION='https://github.com/puppetlabs/puppet.git#master'
+    # Don't fail for very old versions of Ruby/Puppet at this point
+    - rvm: 1.8.7
+    - rvm: 1.9.3
 
 notifications:
   email:
