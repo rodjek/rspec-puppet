@@ -188,7 +188,7 @@ module RSpec::Puppet
 
       coverage_test(coverage_desired, report)
 
-      puts report[:text]
+      puts "\n\nCoverage Report:\n\n#{report[:text]}"
     end
 
     def coverage_test(coverage_desired, report)
