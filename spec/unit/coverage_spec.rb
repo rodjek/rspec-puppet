@@ -33,12 +33,27 @@ describe RSpec::Puppet::Coverage do
       expect(subject.filters).to include("Class[Foo::Bar]")
     end
 
-    it "can add regular expression based filters" do
-      subject.add_filter_regex("notify", /test.*/)
-      expect(subject.filters_regex).to include(/\ANotify\[test.*\]\z/)
-
-      subject.add_filter_regex("foo::bar", /ignore[0-9]+/)
-      expect(subject.filters_regex).to include(/\AFoo::Bar\[ignore[0-9]+\]\z/)
+    describe 'regular expression based filtering' do
+      [
+        [/test.*/, /\ANotify\[.*test.*.*\]\z/],
+        [/ignore[0-9]+/, /\ANotify\[.*ignore[0-9]+.*\]\z/],
+        [/\Astart_with/, /\ANotify\[start_with.*\]\z/],
+        [/\Aanchored\Z/, /\ANotify\[anchored\]\z/],
+        [/end_with\Z/, /\ANotify\[.*end_with\]\z/],
+        [/end_with\z/, /\ANotify\[.*end_with\]\z/],
+        [/end_with$/, /\ANotify\[.*end_with\]\z/],
+        [/escapism\$/, /\ANotify\[.*escapism\$.*\]\z/],
+        [/escapism\\Z/, /\ANotify\[.*escapism\\Z.*\]\z/],
+        [/escapism\\\\\Z/, /\ANotify\[.*escapism\\\\\]\z/],
+        [/escapism\\\\$/, /\ANotify\[.*escapism\\\\\]\z/],
+        [/escapism\\\\\$/, /\ANotify\[.*escapism\\\\\$.*\]\z/],
+        [/escapism\\\\\\\$/, /\ANotify\[.*escapism\\\\\\\$.*\]\z/]
+      ].each do |input, filter|
+        it "maps #{input} to #{filter}" do
+          subject.add_filter_regex('notify', input)
+          expect(subject.filters_regex).to include(filter)
+        end
+      end
     end
 
     it "filters resources based on the resource title" do

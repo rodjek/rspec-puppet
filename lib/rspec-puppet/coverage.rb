@@ -132,10 +132,27 @@ module RSpec::Puppet
 
       type = capitalize_name(type)
 
-      # strip anchors from pattern since it is embedded into a larger pattern
-      pattern = pattern.source.gsub(/\A(?:\\A|\^)|(?:\\[zZ]|\$)\z/, '')
+      # avoid recompiling the regular expression during processing
+      src = pattern.source
 
-      @filters_regex << /\A#{Regexp.escape(type)}\[#{pattern}\]\z/
+      # switch from anchors to wildcards since it is embedded into a larger pattern
+      src = if src.start_with?('\\A', '^')
+              src.gsub(/\A(?:\\A|\^)/, '')
+            else
+              # no anchor at the start
+              ".*#{src}"
+            end
+
+      # match an even number of backslashes before the anchor - this indicates that the anchor was not escaped
+      # note the necessity for the negative lookbehind `(?<!)` to assert that there is no backslash before this
+      src = if src.match(/(?<!\\)(\\\\)*(?:\\[zZ]|\$)\z/)
+              src.gsub(/(?:\\[zZ]|\$)\z/, '')
+            else
+              # no anchor at the end
+              "#{src}.*"
+            end
+
+      @filters_regex << /\A#{Regexp.escape(type)}\[#{src}\]\z/
     end
 
     # add all resources from catalog declared in module test_module
