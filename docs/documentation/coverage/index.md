@@ -65,3 +65,26 @@ the required information in them to determine which manifest they came from and
 so can not be excluded from the coverage report.
 </div>
 </div>
+
+To exclude other resources from the coverage reports, for example to avoid `anchor`s,
+use the `add_filter(type, title)` and `add_filter_regex(type, regex)` methods:
+
+{% highlight ruby %}
+RSpec.configure do |c|
+  c.before(:suite) do
+    # Exclude File[/tmp] from all coverage reports
+    RSpec::Puppet::Coverage.add_filter('File', '/tmp')
+    # Exclude all anchor resources from all coverage reports
+    RSpec::Puppet::Coverage.add_filter_regex('Anchor', '.*')
+  end
+end
+{% endhighlight %}
+
+<div class="callout-block callout-info">
+<div class="icon-holder"><i class="fa fa-exclamation-triangle"></i></div>
+<div class="content">
+Note that currently filters are global and do not get reset in between examples.
+To avoid accidents you should only configure global excludes and only in the
+`before(:suite)` hook.
+</div>
+</div>

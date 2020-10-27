@@ -33,6 +33,29 @@ describe RSpec::Puppet::Coverage do
       expect(subject.filters).to include("Class[Foo::Bar]")
     end
 
+    describe 'regular expression based filtering' do
+      [
+        [/test.*/, /\ANotify\[.*test.*.*\]\z/],
+        [/ignore[0-9]+/, /\ANotify\[.*ignore[0-9]+.*\]\z/],
+        [/\Astart_with/, /\ANotify\[start_with.*\]\z/],
+        [/\Aanchored\Z/, /\ANotify\[anchored\]\z/],
+        [/end_with\Z/, /\ANotify\[.*end_with\]\z/],
+        [/end_with\z/, /\ANotify\[.*end_with\]\z/],
+        [/end_with$/, /\ANotify\[.*end_with\]\z/],
+        [/escapism\$/, /\ANotify\[.*escapism\$.*\]\z/],
+        [/escapism\\Z/, /\ANotify\[.*escapism\\Z.*\]\z/],
+        [/escapism\\\\\Z/, /\ANotify\[.*escapism\\\\\]\z/],
+        [/escapism\\\\$/, /\ANotify\[.*escapism\\\\\]\z/],
+        [/escapism\\\\\$/, /\ANotify\[.*escapism\\\\\$.*\]\z/],
+        [/escapism\\\\\\\$/, /\ANotify\[.*escapism\\\\\\\$.*\]\z/]
+      ].each do |input, filter|
+        it "maps #{input} to #{filter}" do
+          subject.add_filter_regex('notify', input)
+          expect(subject.filters_regex).to include(filter)
+        end
+      end
+    end
+
     it "filters resources based on the resource title" do
       # TODO: this is evil and uses duck typing on `#to_s` to work.
       fake_resource = "Stage[main]"
@@ -54,6 +77,11 @@ describe RSpec::Puppet::Coverage do
 
       subject.add_filter("class", "foo::bar")
       expect(subject.add("Class[Foo::Bar]")).to_not be
+    end
+
+    it "ignores resources that have been regex filtered" do
+      subject.add_filter_regex("notify", /test.*/)
+      expect(subject.add("Notify[testing123]")).to_not be
     end
 
     it "ignores resources that have already been added" do
@@ -110,6 +138,34 @@ describe RSpec::Puppet::Coverage do
 
       it "reports 100% coverage" do
         expect(report[:coverage]).to eq "100.00"
+      end
+    end
+  end
+
+  context "with parallel tests" do
+    before(:each) do
+      allow(subject).to receive(:parallel_tests?).and_return(true)
+    end
+
+    describe "getting coverage results" do
+      let(:touched) { %w[First Second Third Fourth Fifth] }
+      let(:untouched) { %w[Sixth Seventh Eighth Nineth] }
+
+      before(:each) do
+        touched.each do |title|
+          subject.add("Notify[#{title}]")
+          subject.cover!("Notify[#{title}]")
+        end
+
+        untouched.each do |title|
+          subject.add("Notify[#{title}]")
+        end
+
+        allow(subject).to receive(:coverage_test)
+      end
+
+      it "outputs report" do
+        expect { subject.run_report }.to output(/coverage report/i).to_stdout
       end
     end
   end

@@ -17,13 +17,25 @@ end
 module RSpec::Puppet
   class Coverage
 
-    attr_accessor :filters
+    attr_accessor :filters, :filters_regex
 
     class << self
       extend Forwardable
-      def_delegators(:instance, :add, :cover!, :report!,
-                     :filters, :add_filter, :add_from_catalog,
-                     :results)
+
+      delegated_methods = [
+        :instance,
+        :add,
+        :cover!,
+        :report!,
+        :filters,
+        :filters_regex,
+        :add_filter,
+        :add_filter_regex,
+        :add_from_catalog,
+        :results,
+      ]
+
+      def_delegators(*delegated_methods)
 
       attr_writer :instance
 
@@ -35,12 +47,16 @@ module RSpec::Puppet
     def initialize
       @collection = {}
       @filters = ['Stage[main]', 'Class[Settings]', 'Class[main]', 'Node[default]']
+      @filters_regex = []
     end
 
     def save_results
       slug = "#{Digest::MD5.hexdigest(Dir.pwd)}-#{Process.pid}"
       File.open(File.join(Dir.tmpdir, "rspec-puppet-filter-#{slug}"), 'w+') do |f|
         f.puts @filters.to_json
+      end
+      File.open(File.join(Dir.tmpdir, "rspec-puppet-filter_regex-#{slug}"), 'w+') do |f|
+        f.puts @filters_regex.to_json
       end
       File.open(File.join(Dir.tmpdir, "rspec-puppet-coverage-#{slug}"), 'w+') do |f|
         f.puts @collection.to_json
@@ -57,8 +73,15 @@ module RSpec::Puppet
 
     def merge_filters
       pattern = File.join(Dir.tmpdir, "rspec-puppet-filter-#{Digest::MD5.hexdigest(Dir.pwd)}-*")
+      regex_filter_pattern = File.join(Dir.tmpdir, "rspec-puppet-filter_regex-#{Digest::MD5.hexdigest(Dir.pwd)}-*")
+
       Dir[pattern].each do |result_file|
         load_filters(result_file)
+        FileUtils.rm(result_file)
+      end
+
+      Dir[regex_filter_pattern].each do |result_file|
+        load_filters_regex(result_file)
         FileUtils.rm(result_file)
       end
     end
@@ -79,6 +102,15 @@ module RSpec::Puppet
       end
     end
 
+    def load_filters_regex(path)
+      saved_regex_filters = JSON.parse(File.read(path))
+      saved_regex_filters.each do |pattern|
+        regex = Regexp.new(pattern)
+        @filters_regex << regex
+        @collection.delete_if { |resource, _| resource =~ regex }
+      end
+    end
+
     def add(resource)
       if !exists?(resource) && !filtered?(resource)
         @collection[resource.to_s] = ResourceWrapper.new(resource)
@@ -86,16 +118,41 @@ module RSpec::Puppet
     end
 
     def add_filter(type, title)
-      def capitalize_name(name)
-        name.split('::').map { |subtitle| subtitle.capitalize }.join('::')
-      end
-
       type = capitalize_name(type)
+
       if type == 'Class'
         title = capitalize_name(title)
       end
 
       @filters << "#{type}[#{title}]"
+    end
+
+    def add_filter_regex(type, pattern)
+      raise ArgumentError.new('pattern argument must be a Regexp') unless pattern.is_a?(Regexp)
+
+      type = capitalize_name(type)
+
+      # avoid recompiling the regular expression during processing
+      src = pattern.source
+
+      # switch from anchors to wildcards since it is embedded into a larger pattern
+      src = if src.start_with?('\\A', '^')
+              src.gsub(/\A(?:\\A|\^)/, '')
+            else
+              # no anchor at the start
+              ".*#{src}"
+            end
+
+      # match an even number of backslashes before the anchor - this indicates that the anchor was not escaped
+      # note the necessity for the negative lookbehind `(?<!)` to assert that there is no backslash before this
+      src = if src.match(/(?<!\\)(\\\\)*(?:\\[zZ]|\$)\z/)
+              src.gsub(/(?:\\[zZ]|\$)\z/, '')
+            else
+              # no anchor at the end
+              "#{src}.*"
+            end
+
+      @filters_regex << /\A#{Regexp.escape(type)}\[#{src}\]\z/
     end
 
     # add all resources from catalog declared in module test_module
@@ -107,7 +164,10 @@ module RSpec::Puppet
     end
 
     def filtered?(resource)
-      filters.include?(resource.to_s)
+      return true if filters.include?(resource.to_s)
+      return true if filters_regex.any? { |f| resource.to_s =~ f }
+
+      false
     end
 
     def cover!(resource)
@@ -136,7 +196,7 @@ module RSpec::Puppet
     end
 
     def run_report(coverage_desired = nil)
-      if ENV['TEST_ENV_NUMBER']
+      if parallel_tests?
         merge_filters
         merge_results
       end
@@ -145,7 +205,7 @@ module RSpec::Puppet
 
       coverage_test(coverage_desired, report)
 
-      puts report[:text]
+      puts "\n\nCoverage Report:\n\n#{report[:text]}"
     end
 
     def coverage_test(coverage_desired, report)
@@ -228,7 +288,7 @@ module RSpec::Puppet
     # @param test_module [String] The name of the module under test
     # @return [true, false]
     def filter_resource?(resource, test_module)
-      if @filters.include?(resource.to_s)
+      if filtered?(resource)
         return true
       end
 
@@ -267,6 +327,10 @@ module RSpec::Puppet
 
     def exists?(resource)
       !find(resource).nil?
+    end
+
+    def capitalize_name(name)
+      name.split('::').map { |subtitle| subtitle.capitalize }.join('::')
     end
 
     class ResourceWrapper
