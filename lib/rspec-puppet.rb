@@ -42,6 +42,7 @@ RSpec.configure do |c|
   c.add_setting :default_facts, :default => {}
   c.add_setting :default_node_params, :default => {}
   c.add_setting :default_trusted_facts, :default => {}
+  c.add_setting :default_trusted_external_data, :default => {}
   c.add_setting :hiera_config, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
   c.add_setting :parser, :default => 'current'
   c.add_setting :trusted_node_data, :default => false
