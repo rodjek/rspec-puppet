@@ -2,6 +2,20 @@
 [![Build Status](https://travis-ci.org/rodjek/rspec-puppet.svg?branch=master)](https://travis-ci.org/rodjek/rspec-puppet)
 [![Coverage Status](https://coveralls.io/repos/rodjek/rspec-puppet/badge.svg?branch=master)](https://coveralls.io/r/rodjek/rspec-puppet?branch=master)
 
+#### Table of Contents
+
+* [Installation](#installation)
+* [Starting out with a new module](#starting-out-with-a-new-module)
+* [Configure manifests for Puppet 4](#configure-manifests-for-puppet-4)
+* [Configuration](#configuration)
+* [Naming conventions](#naming-conventions)
+* [Example groups](#example-groups)
+* [Defined Types, Classes & Applications](#defined-types-classes--applications)
+* [Functions](#functions)
+* [Hiera integration](#hiera-integration)
+* [Producing coverage reports](#producing-coverage-reports)
+* [Related projects](#related-projects)
+
 ## Installation
 
     gem install rspec-puppet
