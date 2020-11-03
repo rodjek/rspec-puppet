@@ -509,7 +509,34 @@ Thanks to Adrien Thebo, Alex Harvey, Brian, Dan Bode, Dominic Cleal, Javier Pala
 ## 1.0.1 and earlier
 For changelog of versions 1.0.1 and earlier, see http://rspec-puppet.com/changelog/
 
-[2.x]: https://github.com/rodjek/rspec-puppet/compare/v2.5.0...master
+[2.x]: https://github.com/rodjek/rspec-puppet/compare/v2.7.10...master
+[2.7.10]: https://github.com/rodjek/rspec-puppet/compare/v2.7.9...v2.7.10
+[2.7.9]: https://github.com/rodjek/rspec-puppet/compare/v2.7.8...v2.7.9
+[2.7.8]: https://github.com/rodjek/rspec-puppet/compare/v2.7.7...v2.7.8
+[2.7.7]: https://github.com/rodjek/rspec-puppet/compare/v2.7.6...v2.7.7
+[2.7.6]: https://github.com/rodjek/rspec-puppet/compare/v2.7.5...v2.7.6
+[2.7.5]: https://github.com/rodjek/rspec-puppet/compare/v2.7.4...v2.7.5
+[2.7.4]: https://github.com/rodjek/rspec-puppet/compare/v2.7.3...v2.7.4
+[2.7.3]: https://github.com/rodjek/rspec-puppet/compare/v2.7.2...v2.7.3
+[2.7.2]: https://github.com/rodjek/rspec-puppet/compare/v2.7.1...v2.7.2
+[2.7.1]: https://github.com/rodjek/rspec-puppet/compare/v2.7.0...v2.7.1
+[2.7.0]: https://github.com/rodjek/rspec-puppet/compare/v2.6.15...v2.7.0
+[2.6.15]: https://github.com/rodjek/rspec-puppet/compare/v2.6.14...v2.6.15
+[2.6.14]: https://github.com/rodjek/rspec-puppet/compare/v2.6.13...v2.6.14
+[2.6.13]: https://github.com/rodjek/rspec-puppet/compare/v2.6.12...v2.6.13
+[2.6.12]: https://github.com/rodjek/rspec-puppet/compare/v2.6.11...v2.6.12
+[2.6.11]: https://github.com/rodjek/rspec-puppet/compare/v2.6.10...v2.6.11
+[2.6.10]: https://github.com/rodjek/rspec-puppet/compare/v2.6.9...v2.6.10
+[2.6.9]: https://github.com/rodjek/rspec-puppet/compare/v2.6.8...v2.6.9
+[2.6.8]: https://github.com/rodjek/rspec-puppet/compare/v2.6.7...v2.6.8
+[2.6.7]: https://github.com/rodjek/rspec-puppet/compare/v2.6.6...v2.6.7
+[2.6.6]: https://github.com/rodjek/rspec-puppet/compare/v2.6.5...v2.6.6
+[2.6.5]: https://github.com/rodjek/rspec-puppet/compare/v2.6.4...v2.6.5
+[2.6.4]: https://github.com/rodjek/rspec-puppet/compare/v2.6.3...v2.6.4
+[2.6.3]: https://github.com/rodjek/rspec-puppet/compare/v2.6.2...v2.6.3
+[2.6.2]: https://github.com/rodjek/rspec-puppet/compare/v2.6.1...v2.6.2
+[2.6.1]: https://github.com/rodjek/rspec-puppet/compare/v2.6.0...v2.6.1
+[2.6.0]: https://github.com/rodjek/rspec-puppet/compare/2.5.0...v2.6.0
 [2.5.0]: https://github.com/rodjek/rspec-puppet/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/rodjek/rspec-puppet/compare/v2.3.2...v2.4.0
 [2.3.2]: https://github.com/rodjek/rspec-puppet/compare/v2.3.1...v2.3.2
