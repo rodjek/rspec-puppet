@@ -227,3 +227,35 @@ unnecessary in a testing environment.
 
 The search path for global modules. Almost always unnecessary in a testing
 environment.
+
+### disable_module_hiera
+**Type:** Boolean<br />
+**Default:** `false`<br />
+**Puppet Version(s):** 4.9+, 5.x, 6.x
+
+Enabling this will prevent Puppet from using module-layer Hiera data entirely.
+This includes the module being tested as well as any fixture modules.
+The end effect is that only Hiera data from the global `:hiera_config` parameter will be used
+
+### fixture_hiera_configs
+**Type:** Hash<br />
+**Default:** `{}`<br />
+**Puppet Version(s):** 4.9+, 5.x, 6.x
+
+A hash of module names and their respective module-layer Hiera config file paths.
+This can be used to override the path to the module-layer hiera.yaml
+
+### use_fixture_spec_hiera
+**Type:** Boolean<br />
+**Default:** `false`<br />
+**Puppet Version(s):** 4.9+, 5.x, 6.x
+
+Enabling this will prevent Puppet from using the module-layer Hiera config file and instead search the module spec folder for a file named hiera.yaml.
+
+### fallback_to_default_hiera
+**Type:** Boolean<br />
+**Default:** `true`<br />
+**Puppet Version(s):** 4.9+, 5.x, 6.x
+
+A hash of module names and their respective module-layer Hiera config file paths.
+This can be used to override the path to the module-layer hiera.yaml.

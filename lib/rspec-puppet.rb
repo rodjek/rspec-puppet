@@ -55,6 +55,10 @@ RSpec.configure do |c|
   c.add_setting :platform, :default => Puppet::Util::Platform.actual_platform
   c.add_setting :vendormoduledir, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
   c.add_setting :basemodulepath, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
+  c.add_setting :disable_module_hiera, :default => false
+  c.add_setting :fixture_hiera_configs, :default => {}
+  c.add_setting :use_fixture_spec_hiera, :default => false
+  c.add_setting :fallback_to_default_hiera, :default => true
 
   c.instance_eval do
     def trusted_server_facts
