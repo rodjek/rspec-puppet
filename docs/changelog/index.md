@@ -4,6 +4,46 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## [2.8.0]
+
+<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.10...v2.8.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Breaking Changes
+ * As of the 2.8.0 release, the `rspec-puppet` project no longer guarantees compatibility
+   with Puppet 2.x or 3.x (running under Ruby 1.8.7) or Puppet 4.x (running under Ruby 1.9.3).
+ * This release adds support for the [`Sensitive`](https://puppet.com/docs/puppet/latest/lang_data_sensitive.html) 
+   data type, however existing tests that were expecting `String` content may need to be updated 
+   to wrap the expected value in the new `sensitive` helper:
+
+   ```ruby
+   # Old
+   it { is_expected.to contain_file('/etc/mysecret.conf').with_content("top secret\n") }
+
+   # New
+   it { is_expected.to contain_file('/etc/mysecret.conf').with_content(sensitive("top secret\n")) }
+   ```
+
+### Added
+ * Added support for [trusted external fact data](https://github.com/rodjek/rspec-puppet#specifying-trusted-external-data).
+ * Added the ability to exclude resources from the coverage report calculations using a regular expression. 
+   (See [documentation](https://rspec-puppet.com/documentation/coverage/#excluded-resources) for an example.
+ * Added `have_unique_values_for_all` matcher to assert a specific resource parameter value is unique across 
+   the entire catalogue. 
+   (See [documentation](https://rspec-puppet.com/documentation/classes/#test-resource-parameter-values-for-uniqueness).)
+ * Added ability to customize module-layer Hiera configuration via new settings. See 
+   [documentation](https://rspec-puppet.com/documentation/configuration/#disable_module_hiera) for details.
+
+### Changed
+ * `RSpec::Puppet::Cache` now evicts least recently used entries when it reaches max size.
+ * `rspec-puppet`'s implementation of `match_manifests` will no longer look in `init.pp` for class 
+   declarations if a manifest file exactly matching the class name exists.
+ 
+### Fixed
+ * Resolved compatibility issues with Ruby 2.7.x and added Ruby 2.7.x to the test matrix.
+ * Resolved issues calculating coverage and reporting results when there are 0 tested resources.
+ * Resolved compatibility issue with `rspec-expectations` 3.10.0.
+
 ## 2.7.10
 
 <a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.8...v2.7.10"
