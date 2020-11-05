@@ -21,7 +21,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
  * Added support for [trusted external fact data](https://github.com/rodjek/rspec-puppet#specifying-trusted-external-data).
- * Adeded the ability to exclude resources from the coverage report calculations using a regular expression. 
+ * Added the ability to exclude resources from the coverage report calculations using a regular expression. 
    (See [documentation](https://rspec-puppet.com/documentation/coverage/#excluded-resources) for an example.
  * Added `have_unique_values_for_all` matcher to assert a specific resource parameter value is unique across 
    the entire catalogue. 
