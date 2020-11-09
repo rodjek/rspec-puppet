@@ -392,7 +392,7 @@ module RSpec::Puppet
 
       # Enable app_management by default for Puppet versions that support it
       if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 && Puppet.version.to_i < 5
-        Puppet[:app_management] = true
+        Puppet[:app_management] = ENV.include?('PUPPET_NOAPP_MANAGMENT') ? false : true
       end
 
       adapter.modulepath.map do |d|
