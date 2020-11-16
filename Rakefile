@@ -35,6 +35,10 @@ namespace :test do
     end
   end
 
+  RSpec::Core::RakeTask.new(:spec_unit) do |t|
+    t.pattern = 'spec/unit/**/*_spec.rb'
+  end
+
   task :setup do
     puppet_version = Gem::Version.new(Puppet.version)
 
@@ -62,6 +66,17 @@ namespace :test do
         next unless File.directory?(name)
         FileUtils.rm_r(name)
       end
+    end
+  end
+
+  task :unit do
+    begin
+      Rake::Task['test:setup'].invoke
+      ENV['COVERAGE'] = 'local'
+      Rake::Task['test:spec_unit'].invoke
+    ensure
+      ENV.delete('COVERAGE')
+      Rake::Task['test:teardown'].invoke
     end
   end
 end

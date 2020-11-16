@@ -1,97 +1,45 @@
-require 'spec_helper'
+require 'spec_helper_unit'
 
 describe RSpec::Puppet::FunctionMatchers::Run do
-  let (:wrapper) { double("function wrapper") }
+  subject(:matcher) { described_class.new }
 
-  before :each do
-    expect(wrapper).to receive(:call).never
-  end
+  let(:wrapper) { test_double(RSpec::Puppet::FunctionExampleGroup::V4FunctionWrapper) }
 
-  it 'should call the wrapper with no params' do
-    expect(wrapper).to receive(:execute).with(no_args).once
-    expect(subject.matches?(wrapper)).to be true
-  end
-
-  it 'should not match a wrapper that raises an error' do
-    expect(wrapper).to receive(:execute).and_raise(StandardError, 'Forced Error').once
-    expect(subject.matches?(wrapper)).to be false
-  end
-
-  [ [true], [false], [''], ['string'], [nil], [0], [1.1], [[]], ['one', 'two'], [{}], [{ 'key' => 'value' }], [:undef] ].each do |supplied_params|
-    context "with_params(#{supplied_params.collect { |p| p.inspect }.join(', ')})" do
-      before(:each) { subject.with_params(*supplied_params) }
-
-      it 'should call the wrapper with the supplied params' do
-        expect(wrapper).to receive(:execute).with(*supplied_params).once
-        expect(subject.matches?(wrapper)).to be true
+  describe '#matches?' do
+    context 'when the function takes no arguments and has no expected return value' do
+      context 'and returns nothing' do
+        it 'returns true' do
+          allow(wrapper).to receive(:execute).with(no_args).once
+          expect(matcher.matches?(wrapper)).to be_truthy
+        end
       end
 
-      it 'should not match a wrapper that raises an error' do
-        expect(wrapper).to receive(:execute).and_raise(StandardError, 'Forced Error').once
-        expect(subject.matches?(wrapper)).to be false
+      context 'and raises an exception' do
+        it 'returns false' do
+          allow(wrapper).to receive(:execute).with(no_args).and_raise(StandardError, 'Forced Error').once
+          expect(matcher.matches?(wrapper)).to be_falsey
+        end
       end
     end
+  end
 
-    [ true, false, '', 'string', nil, 0, 1.1, [], {}, :undef ].each do |expected_return|
-      context "and_return(#{expected_return.inspect})" do
-        before(:each) { subject.and_return(expected_return) }
+  describe '#with_params' do
 
-        it 'should match a wrapper that does return the requested value' do
-          expect(wrapper).to receive(:execute).and_return(expected_return).once
-          expect(subject.matches?(wrapper)).to be true
-        end
+  end
 
-        it 'should not match a wrapper that does return a different value' do
-          expect(wrapper).to receive(:execute).and_return(!expected_return).once
-          expect(subject.matches?(wrapper)).to be false
-        end
+  describe '#with_lambda' do
+    context 'when a lambda is passed to the matcher' do
+      let(:block) { proc { |r| r + 2 } }
+
+      before do
       end
 
-      context "and_raise_error(ArgumentError)" do
-        before(:each) { subject.and_raise_error(ArgumentError) }
-
-        it 'should match a wrapper that raises ArgumentError' do
-          expect(wrapper).to receive(:execute).and_raise(ArgumentError, 'Forced Error').once
-          expect(subject.matches?(wrapper)).to be true
-        end
-
-        [ true, false, '', 'string', nil, 0, 1.1, [], {}, :undef ].each do |value|
-          it "should not match a wrapper that returns #{value.inspect}" do
-            expect(wrapper).to receive(:execute).and_return(value).once
-            expect(subject.matches?(wrapper)).to be false
-          end
-        end
-
-        it 'should not match a wrapper that raises a different error' do
-          expect(wrapper).to receive(:execute).and_raise(StandardError, 'Forced Error').once
-          expect(subject.matches?(wrapper)).to be false
-        end
+      after do
       end
 
-      context "and_raise_error(ArgumentError, /message/)" do
-        before(:each) { subject.and_raise_error(ArgumentError, /message/) }
-
-        it 'should match a wrapper that raises ArgumentError("with matching message")' do
-          expect(wrapper).to receive(:execute).and_raise(ArgumentError, 'with matching message').once
-          expect(subject.matches?(wrapper)).to be true
-        end
-
-        it 'should not match a wrapper that raises a different ArgumentError' do
-          expect(wrapper).to receive(:execute).and_raise(ArgumentError, 'Forced Error').once
-          expect(subject.matches?(wrapper)).to be false
-        end
-
-        [ true, false, '', 'string', nil, 0, 1.1, [], {}, :undef ].each do |value|
-          it "should not match a wrapper that returns #{value.inspect}" do
-            expect(wrapper).to receive(:execute).and_return(value).once
-            expect(subject.matches?(wrapper)).to be false
-          end
-        end
-
-        it 'should not match a wrapper that raises a different error' do
-          expect(wrapper).to receive(:execute).and_raise(StandardError, 'Forced Error').once
-          expect(subject.matches?(wrapper)).to be false
-        end
+      it 'passes the lambda when executing the function' do
+        matcher.with_lambda { |r| r + 2 }
+        matcher.matches?(wrapper)
       end
     end
   end

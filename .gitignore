@@ -7,3 +7,4 @@
 /tmp/
 /spec/fixtures/modules/augeas_core/
 /spec/fixtures/modules/stdlib/
+/coverage/

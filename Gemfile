@@ -43,8 +43,9 @@ else
   gem 'sync' if (RUBY_VERSION >= '2.7.0')
 end
 
-if ENV['COVERAGE'] == 'yes'
+if ENV['COVERAGE']
   gem 'coveralls', :require => false
+  gem 'simplecov', :require => false
 end
 
 gem 'win32-taskscheduler', :platforms => [:mingw, :x64_mingw, :mswin]

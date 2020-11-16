@@ -1,10 +1,14 @@
-if ENV['COVERAGE'] == 'yes'
+if ENV['COVERAGE']
   require 'simplecov'
   require 'coveralls'
 
-  SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+  if ENV['COVERAGE'] == 'yes'
+    SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+  end
+
   SimpleCov.start do
-    add_filter(/^\/spec\//)
+    add_filter %r{^/spec/}
+    add_filter %r{^/vendor/}
   end
 end
 
@@ -21,6 +25,13 @@ def sensitive?
   defined?(::Puppet::Pops::Types::PSensitiveType)
 end
 
+module Helpers
+  def rspec2?
+    RSpec::Version::STRING < '3'
+  end
+  module_function :rspec2?
+end
+
 RSpec.configure do |c|
   c.module_path     = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'modules')
   c.manifest_dir    = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests')
@@ -31,4 +42,7 @@ RSpec.configure do |c|
   c.after(:suite) do
     RSpec::Puppet::Coverage.report!(0)
   end
+
+  c.include Helpers
+  c.extend Helpers
 end
