@@ -307,14 +307,17 @@ module RSpec::Puppet
           end
         end
 
-        # Add autorequires if any
-        if type == :require and resource.resource_type.respond_to? :eachautorequire
-          resource.resource_type.eachautorequire do |t, b|
-            Array(resource.to_ral.instance_eval(&b)).each do |dep|
-              res = "#{t.to_s.capitalize}[#{dep}]"
-              if r = relationship_refs(res, type, visited)
-                results << res
-                results << r
+        # Add auto* (autorequire etc) if any
+        if [:before, :notify, :require, :subscribe].include?(type)
+          func = "eachauto#{type}".to_sym
+          if resource.resource_type.respond_to?(func)
+            resource.resource_type.send(func) do |t, b|
+              Array(resource.to_ral.instance_eval(&b)).each do |dep|
+                res = "#{t.to_s.capitalize}[#{dep}]"
+                if r = relationship_refs(res, type, visited)
+                  results << res
+                  results << r
+                end
               end
             end
           end
