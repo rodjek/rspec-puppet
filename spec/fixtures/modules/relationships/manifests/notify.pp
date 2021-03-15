@@ -15,6 +15,10 @@ class relationships::notify {
   class { '::relationships::notify::pre': } ~>
   class { '::relationships::notify::middle': } ~>
   class { '::relationships::notify::post': }
+
+  file { '/tmp/file.txt': } ~>
+  file { '/tmp/directory': } ~>
+  service { 'myservice': }
 }
 
 class relationships::notify::pre {
