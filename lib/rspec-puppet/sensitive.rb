@@ -29,7 +29,11 @@ module RSpec::Puppet
       # @param other [#unwrap, Object] value to compare to
       def == other
         if other.respond_to? :unwrap
-          return unwrap == other.unwrap
+          if unwrap.kind_of?(Regexp)
+            return unwrap =~ other.unwrap
+          else
+            return unwrap == other.unwrap
+          end
         else
           super
         end
