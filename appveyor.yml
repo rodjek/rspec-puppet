@@ -7,10 +7,6 @@ branches:
 # ruby versions under test
 environment:
   matrix:
-    - RUBY_VERSION: 21
-      PUPPET_GEM_VERSION: '~> 4.0'
-    - RUBY_VERSION: 23-x64
-      PUPPET_GEM_VERSION: '~> 5.0'
     - RUBY_VERSION: 25-x64
       PUPPET_GEM_VERSION: '~> 6.0'
     - RUBY_VERSION: 25-x64
@@ -18,15 +14,15 @@ environment:
       FACTER_GEM_VERSION: '3.11.2.cfacter.20180612'
     # Latest code from puppetlabs/puppet.git
     - RUBY_VERSION: 25-x64
-      PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
+      PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#main'
     - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2019'
       RUBY_VERSION: 27-x64
-      PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
+      PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#main'
 
 matrix:
   allow_failures:
     # Don't fail for puppet.git#master because it may be to blame for any failures
-    - PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#master'
+    - PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#main'
 
 install:
   - SET PATH=C:\Ruby%RUBY_VERSION%\bin;C:\Ruby%RUBY_VERSION%\lib\ruby\gems\2.5.0\gems\facter-3.11.2.cfacter.20180612-x64-mingw32\bin;%PATH%
