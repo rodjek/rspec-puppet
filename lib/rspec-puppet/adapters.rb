@@ -139,7 +139,8 @@ module RSpec::Puppet
         Puppet.push_context(
           {
             :environments => loader,
-            :current_environment => env
+            :current_environment => env,
+            :loaders => Puppet::Pops::Loaders.new(env),
           },
           "Setup rspec-puppet environments"
         )
