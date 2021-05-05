@@ -140,7 +140,7 @@ module RSpec::Puppet
           {
             :environments => loader,
             :current_environment => env,
-            :loaders => Puppet::Pops::Loaders.new(env),
+            :loaders => (Puppet::Pops::Loaders.new(env) if Gem::Version.new(Puppet.version) >= Gem::Version.new('6.0.0')),
           },
           "Setup rspec-puppet environments"
         )
