@@ -48,3 +48,15 @@ node 'facts.acme.com' {
     path => "cert ${clientcert}"
   }
 }
+
+node 'tags_testing' {
+  tag 'keyword_tag'
+  include sysctl::common
+  file { '/tmp/a':
+    ensure => present
+  }
+  file { '/tmp/b':
+    ensure => present,
+    tag    => 'metaparam_tag'
+  }
+}

@@ -152,9 +152,9 @@ if Puppet.version.to_f >= 3.0
         before(:each) { subject.and_raise_error(expected_error) }
 
         if Puppet::Util::Package.versioncmp(Puppet.version, '5.3.4') >= 0
-          let(:error_detail) { "failure (line: 52, column: 1)" }
+          let(:error_detail) { "failure (line: 64, column: 1)" }
         else
-          let(:error_detail) { "failure at line 52:1" }
+          let(:error_detail) { "failure at line 64:1" }
         end
 
         if Puppet.version.to_f >= 4.0
