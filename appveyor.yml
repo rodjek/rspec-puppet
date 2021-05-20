@@ -12,6 +12,9 @@ environment:
     - RUBY_VERSION: 25-x64
       PUPPET_GEM_VERSION: '~> 6.0'
       FACTER_GEM_VERSION: '3.11.2.cfacter.20180612'
+    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2019'
+      RUBY_VERSION: 27-x64
+      PUPPET_GEM_VERSION: '~> 7.0'
     # Latest code from puppetlabs/puppet.git
     - RUBY_VERSION: 25-x64
       PUPPET_GEM_VERSION: 'https://github.com/puppetlabs/puppet.git#main'
