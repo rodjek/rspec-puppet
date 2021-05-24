@@ -24,6 +24,7 @@ END
       end
 
       safe_setup_directories(module_name)
+      safe_setup_links(module_name)
       safe_touch(File.join('spec', 'fixtures', 'manifests', 'site.pp'))
 
       safe_create_spec_helper
@@ -31,11 +32,6 @@ END
     end
 
     def self.safe_setup_directories(module_name=nil, verbose=true)
-      if control_repo?
-        $stderr.puts "Unable to setup rspec-puppet automatically in a control repo" if verbose
-        return false
-      end
-
       if module_name.nil?
         module_name = get_module_name
         if module_name.nil?
@@ -54,6 +50,20 @@ END
         File.join('spec', 'fixtures', 'manifests'),
         File.join('spec', 'fixtures', 'modules'),
       ].each { |dir| safe_mkdir(dir, verbose) }
+    end
+
+    def self.safe_setup_links(module_name=nil)
+      if control_repo?
+        $stderr.puts "Unable to setup rspec-puppet symlinks in a control repo" if verbose
+        return false
+      end
+      if module_name.nil?
+        module_name = get_module_name
+        if module_name.nil?
+          $stderr.puts "Unable to determine module name.  Aborting"
+          return false
+        end
+      end
 
       target = File.join('spec', 'fixtures', 'modules', module_name)
       safe_make_link('.', target, verbose)
