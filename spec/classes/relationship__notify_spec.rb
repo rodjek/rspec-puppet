@@ -17,4 +17,7 @@ describe 'relationships::notify' do
 
   it { should contain_notify('pre').that_notifies(['Notify[post]']) }
   it { should contain_notify('post').that_subscribes_to(['Notify[pre]']) }
+
+  # TODO: in practice this transitive notification doesn't work
+  it { should contain_service('myservice').that_subscribes_to('File[/tmp/file.txt]') }
 end
