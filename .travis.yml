@@ -33,6 +33,9 @@ matrix:
       env: PUPPET_GEM_VERSION='~> 5.5.0'
     - rvm: 2.7
       env: PUPPET_GEM_VERSION='~> 5.5.0'
+    - rvm: 3.0
+      env: PUPPET_GEM_VERSION='~> 7.7.0'
+      dist: focal
 
   allowed_failures:
     # Don't fail for puppet.git#master because it may be to blame for any failures

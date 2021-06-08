@@ -485,7 +485,7 @@ module RSpec::Puppet
     def build_catalog(*args)
       @@cache.get(*args) do |*args|
         if args.length == 1 && args.first.is_a?(Hash)
-          build_catalog_without_cache_v2(args.first)
+          build_catalog_without_cache_v2(**args.first)
         else
           build_catalog_without_cache(*args)
         end
