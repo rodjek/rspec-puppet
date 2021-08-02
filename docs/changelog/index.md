@@ -11,7 +11,7 @@ The release sees rspec-puppet move into the puppetlabs namespace
 * Add ruby 3 support ([GH-11](https://github.com/puppetlabs/rspec-puppet/pull/11))
 
 ## [2.9.0]
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.8.0...v2.9.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.8.0...v2.9.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Added
@@ -23,7 +23,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## [2.8.0]
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.10...v2.8.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.10...v2.8.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Breaking Changes
@@ -42,7 +42,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
    ```
 
 ### Added
- * Added support for [trusted external fact data](https://github.com/rodjek/rspec-puppet#specifying-trusted-external-data).
+ * Added support for [trusted external fact data](https://github.com/puppetlabs/rspec-puppet#specifying-trusted-external-data).
  * Added the ability to exclude resources from the coverage report calculations using a regular expression.
    (See [documentation](https://rspec-puppet.com/documentation/coverage/#excluded-resources) for an example.
  * Added `have_unique_values_for_all` matcher to assert a specific resource parameter value is unique across
@@ -63,7 +63,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.7.10
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.8...v2.7.10"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.8...v2.7.10"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -75,7 +75,7 @@ This release had unintended breaking changes and was withdrawn.
 
 ## 2.7.8
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.7...v2.7.8"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.7...v2.7.8"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -84,7 +84,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.7.7
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.6...v2.7.7"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.6...v2.7.7"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -95,7 +95,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.7.6
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.5...v2.7.6"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.5...v2.7.6"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Changed
@@ -104,7 +104,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.7.5
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.4...v2.7.5"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.4...v2.7.5"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -113,7 +113,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.7.4
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.3...v2.7.4"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.3...v2.7.4"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -122,7 +122,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.7.3
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.2...v2.7.3"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.2...v2.7.3"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -134,7 +134,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.7.2
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.1...v2.7.2"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.1...v2.7.2"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Changed
@@ -143,7 +143,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.7.1
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.7.0...v2.7.1"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.7.0...v2.7.1"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -152,7 +152,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.7.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.15...v2.7.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.15...v2.7.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Changed
@@ -165,7 +165,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.15
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.14...v2.6.15"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.14...v2.6.15"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -176,7 +176,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.14
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.13...v2.6.14"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.13...v2.6.14"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -196,7 +196,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.13
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.12...v2.6.13"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.12...v2.6.13"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -209,7 +209,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.12
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.11...v2.6.12"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.11...v2.6.12"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -241,7 +241,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.11
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.10...v2.6.11"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.10...v2.6.11"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -252,7 +252,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.10
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.9...v2.6.10"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.9...v2.6.10"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -302,7 +302,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.9
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.8...v2.6.9"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.8...v2.6.9"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -312,7 +312,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.8
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.7...v2.6.8"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.7...v2.6.8"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -324,7 +324,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.7
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.6...v2.6.7"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.6...v2.6.7"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -334,7 +334,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.6
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.5...v2.6.6"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.5...v2.6.6"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -344,7 +344,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.5
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.4...v2.6.5"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.4...v2.6.5"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Changed
@@ -365,7 +365,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.4
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.3...v2.6.4"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.3...v2.6.4"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -379,7 +379,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.3
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.2...v2.6.3"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.2...v2.6.3"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -390,7 +390,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.2
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.1...v2.6.2"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.1...v2.6.2"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Changed
@@ -416,7 +416,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.1
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.6.0...v2.6.1"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.6.0...v2.6.1"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -428,7 +428,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.6.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.5.0...v2.6.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.5.0...v2.6.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 The Windows parity release. rspec-puppet now officially supports Windows. A lot
@@ -517,7 +517,7 @@ test your Windows manifests on \*nix, and your \*nix manifests on Windows.
 
 ## 2.5.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.4.0...v2.5.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.4.0...v2.5.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 Headline features are app management, nested hashes in params, and testing for
@@ -538,7 +538,7 @@ Thanks to everyone who contributed: Leo Arnold, Matt Schuchard, and Si Wilkins.
 
 ## 2.4.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.3.0...v2.4.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.3.0...v2.4.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 This release now supports testing exported resources in the same way that
@@ -561,7 +561,7 @@ as all the folks helping out on github for the contributions to this release.
 
 ## 2.3.2
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.3.1...v2.3.2"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.3.1...v2.3.2"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 Properly fix yesterday's issue by unsharing the cache key before passing the
@@ -571,7 +571,7 @@ a half-baked fix.
 
 ## 2.3.1
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.3.0...v2.3.1"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.3.0...v2.3.1"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 A quick workaround to re-enable testing with the recently released Puppet 3.8.5
@@ -581,7 +581,7 @@ nil:NilClass" error.
 
 ## 2.3.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.2.0...v2.3.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.2.0...v2.3.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 rspec-puppet now supports testing custom types, `:undef` values in params,
@@ -639,7 +639,7 @@ Kohlmeyer, and Tristan Colgate for their contibutions to this release.
 
 ## 2.2.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.1.0...v2.2.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.1.0...v2.2.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Added
@@ -654,7 +654,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.1.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.0.1...v2.1.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.0.1...v2.1.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Added
@@ -669,7 +669,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.0.1
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v2.0.0...v2.0.1"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.0.0...v2.0.1"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Fixed
@@ -677,7 +677,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 2.0.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v1.0.1...v2.0.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v1.0.1...v2.0.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ### Changed
@@ -698,7 +698,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 1.0.1
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v1.0.0...v1.0.1"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v1.0.0...v1.0.1"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Fixed bug where under certain circumstances a newline isn't added after the
@@ -708,7 +708,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 1.0.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.6...v1.0.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.1.6...v1.0.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Added support for setting `confdir` inside the `RSpec.configure` block
@@ -740,7 +740,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 0.1.6
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.5...v0.1.6"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.1.5...v0.1.6"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Allow an array of pre\_conditions
@@ -749,14 +749,14 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 0.1.5
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.4...v0.1.5"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.1.4...v0.1.5"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Puppet 3.0.x support
 
 ## 0.1.4
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.3...v0.1.4"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.1.3...v0.1.4"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Improved catalogue caching for faster testing on the same compiled catalogue
@@ -765,7 +765,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 0.1.3
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.1...v0.1.3"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.1.1...v0.1.3"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add support for testing the catalogue of a node
@@ -776,7 +776,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 0.1.1
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.1.0...v0.1.1"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.1.0...v0.1.1"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add 'with' and 'without' chains to the 'contain\_' matcher to support
@@ -786,14 +786,14 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 0.1.0
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.9...v0.1.0"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.0.9...v0.1.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 * Add support for testing Puppet functions
 
 ## 0.0.9
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.8...v0.0.9"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.0.8...v0.0.9"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add support for setting custom 'manifestdir', 'manifest' and 'templatedir'
@@ -802,14 +802,14 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 0.0.8
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.7...v0.0.8"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.0.7...v0.0.8"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add support for fact names as Symbols
 
 ## 0.0.7
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.6...v0.0.7"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.0.6...v0.0.7"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Add 'without\_\*' chain to the 'contain\_\*' matcher to test for the absence
@@ -817,7 +817,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 0.0.6
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.7...v0.0.6"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.0.7...v0.0.6"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Remove Faces API call for Puppet 2.7.x
@@ -826,14 +826,14 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 0.0.5
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.4...v0.0.5"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.0.4...v0.0.5"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Fix 0.0.4 release (incorrect tag pushed for 0.0.4 release)
 
 ## 0.0.4
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.3...v0.0.4"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.0.3...v0.0.4"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * DRY up catalogue compilation
@@ -842,7 +842,7 @@ class="btn btn-primary btn-inline pull-right">View Diff</a>
 
 ## 0.0.3
 
-<a href="https://github.com/rodjek/rspec-puppet/compare/v0.0.2...v0.0.3"
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v0.0.2...v0.0.3"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
 
  * Provide default 'hostname' and 'fqdn' facts

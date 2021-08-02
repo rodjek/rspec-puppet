@@ -34,7 +34,7 @@ The release sees rspec-puppet move into the puppetlabs namespace
    ```
 
 ### Added
- * Added support for [trusted external fact data](https://github.com/rodjek/rspec-puppet#specifying-trusted-external-data).
+ * Added support for [trusted external fact data](https://github.com/puppetlabs/rspec-puppet#specifying-trusted-external-data).
  * Added the ability to exclude resources from the coverage report calculations using a regular expression.
    (See [documentation](https://rspec-puppet.com/documentation/coverage/#excluded-resources) for an example.
  * Added `have_unique_values_for_all` matcher to assert a specific resource parameter value is unique across
