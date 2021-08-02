@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.10.0]
+The release sees rspec-puppet move into the puppetlabs namespace
+
+### Added
+* Add ruby 3 support ([GH-11](https://github.com/puppetlabs/rspec-puppet/pull/11))
+
 ## [2.9.0]
 
 ### Added
@@ -15,8 +21,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 ### Breaking Changes
  * As of the 2.8.0 release, the `rspec-puppet` project no longer guarantees compatibility
    with Puppet 2.x or 3.x (running under Ruby 1.8.7) or Puppet 4.x (running under Ruby 1.9.3).
- * This release adds support for the [`Sensitive`](https://puppet.com/docs/puppet/latest/lang_data_sensitive.html) 
-   data type, however existing tests that were expecting `String` content may need to be updated 
+ * This release adds support for the [`Sensitive`](https://puppet.com/docs/puppet/latest/lang_data_sensitive.html)
+   data type, however existing tests that were expecting `String` content may need to be updated
    to wrap the expected value in the new `sensitive` helper:
 
    ```ruby
@@ -28,20 +34,20 @@ project adheres to [Semantic Versioning](http://semver.org/).
    ```
 
 ### Added
- * Added support for [trusted external fact data](https://github.com/rodjek/rspec-puppet#specifying-trusted-external-data).
- * Added the ability to exclude resources from the coverage report calculations using a regular expression. 
+ * Added support for [trusted external fact data](https://github.com/puppetlabs/rspec-puppet#specifying-trusted-external-data).
+ * Added the ability to exclude resources from the coverage report calculations using a regular expression.
    (See [documentation](https://rspec-puppet.com/documentation/coverage/#excluded-resources) for an example.
- * Added `have_unique_values_for_all` matcher to assert a specific resource parameter value is unique across 
-   the entire catalogue. 
+ * Added `have_unique_values_for_all` matcher to assert a specific resource parameter value is unique across
+   the entire catalogue.
    (See [documentation](https://rspec-puppet.com/documentation/classes/#test-resource-parameter-values-for-uniqueness).)
- * Added ability to customize module-layer Hiera configuration via new settings. See 
+ * Added ability to customize module-layer Hiera configuration via new settings. See
    [documentation](https://rspec-puppet.com/documentation/configuration/#disable_module_hiera) for details.
 
 ### Changed
  * `RSpec::Puppet::Cache` now evicts least recently used entries when it reaches max size.
- * `rspec-puppet`'s implementation of `match_manifests` will no longer look in `init.pp` for class 
+ * `rspec-puppet`'s implementation of `match_manifests` will no longer look in `init.pp` for class
    declarations if a manifest file exactly matching the class name exists.
- 
+
 ### Fixed
  * Resolved compatibility issues with Ruby 2.7.x and added Ruby 2.7.x to the test matrix.
  * Resolved issues calculating coverage and reporting results when there are 0 tested resources.
@@ -554,42 +560,43 @@ Thanks to Adrien Thebo, Alex Harvey, Brian, Dan Bode, Dominic Cleal, Javier Pala
 ## 1.0.1 and earlier
 For changelog of versions 1.0.1 and earlier, see http://rspec-puppet.com/changelog/
 
-[2.x]: https://github.com/rodjek/rspec-puppet/compare/v2.9.0...master
-[2.9.0]: https://github.com/rodjek/rspec-puppet/compare/v2.8.0...v2.9.0
-[2.8.0]: https://github.com/rodjek/rspec-puppet/compare/v2.7.10...v2.8.0
-[2.7.10]: https://github.com/rodjek/rspec-puppet/compare/v2.7.9...v2.7.10
-[2.7.9]: https://github.com/rodjek/rspec-puppet/compare/v2.7.8...v2.7.9
-[2.7.8]: https://github.com/rodjek/rspec-puppet/compare/v2.7.7...v2.7.8
-[2.7.7]: https://github.com/rodjek/rspec-puppet/compare/v2.7.6...v2.7.7
-[2.7.6]: https://github.com/rodjek/rspec-puppet/compare/v2.7.5...v2.7.6
-[2.7.5]: https://github.com/rodjek/rspec-puppet/compare/v2.7.4...v2.7.5
-[2.7.4]: https://github.com/rodjek/rspec-puppet/compare/v2.7.3...v2.7.4
-[2.7.3]: https://github.com/rodjek/rspec-puppet/compare/v2.7.2...v2.7.3
-[2.7.2]: https://github.com/rodjek/rspec-puppet/compare/v2.7.1...v2.7.2
-[2.7.1]: https://github.com/rodjek/rspec-puppet/compare/v2.7.0...v2.7.1
-[2.7.0]: https://github.com/rodjek/rspec-puppet/compare/v2.6.15...v2.7.0
-[2.6.15]: https://github.com/rodjek/rspec-puppet/compare/v2.6.14...v2.6.15
-[2.6.14]: https://github.com/rodjek/rspec-puppet/compare/v2.6.13...v2.6.14
-[2.6.13]: https://github.com/rodjek/rspec-puppet/compare/v2.6.12...v2.6.13
-[2.6.12]: https://github.com/rodjek/rspec-puppet/compare/v2.6.11...v2.6.12
-[2.6.11]: https://github.com/rodjek/rspec-puppet/compare/v2.6.10...v2.6.11
-[2.6.10]: https://github.com/rodjek/rspec-puppet/compare/v2.6.9...v2.6.10
-[2.6.9]: https://github.com/rodjek/rspec-puppet/compare/v2.6.8...v2.6.9
-[2.6.8]: https://github.com/rodjek/rspec-puppet/compare/v2.6.7...v2.6.8
-[2.6.7]: https://github.com/rodjek/rspec-puppet/compare/v2.6.6...v2.6.7
-[2.6.6]: https://github.com/rodjek/rspec-puppet/compare/v2.6.5...v2.6.6
-[2.6.5]: https://github.com/rodjek/rspec-puppet/compare/v2.6.4...v2.6.5
-[2.6.4]: https://github.com/rodjek/rspec-puppet/compare/v2.6.3...v2.6.4
-[2.6.3]: https://github.com/rodjek/rspec-puppet/compare/v2.6.2...v2.6.3
-[2.6.2]: https://github.com/rodjek/rspec-puppet/compare/v2.6.1...v2.6.2
-[2.6.1]: https://github.com/rodjek/rspec-puppet/compare/v2.6.0...v2.6.1
-[2.6.0]: https://github.com/rodjek/rspec-puppet/compare/2.5.0...v2.6.0
-[2.5.0]: https://github.com/rodjek/rspec-puppet/compare/v2.4.0...v2.5.0
-[2.4.0]: https://github.com/rodjek/rspec-puppet/compare/v2.3.2...v2.4.0
-[2.3.2]: https://github.com/rodjek/rspec-puppet/compare/v2.3.1...v2.3.2
-[2.3.1]: https://github.com/rodjek/rspec-puppet/compare/v2.3.0...v2.3.1
-[2.3.0]: https://github.com/rodjek/rspec-puppet/compare/v2.2.0...v2.3.0
-[2.2.0]: https://github.com/rodjek/rspec-puppet/compare/v2.1.0...v2.2.0
-[2.1.0]: https://github.com/rodjek/rspec-puppet/compare/v2.0.1...v2.1.0
-[2.0.1]: https://github.com/rodjek/rspec-puppet/compare/v2.0.0...v2.0.1
-[2.0.0]: https://github.com/rodjek/rspec-puppet/compare/v1.0.1...v2.0.0
+[2.x]: https://github.com/puppetlabs/rspec-puppet/compare/v2.10.0...master
+[2.10.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.9.0...v2.10.0
+[2.9.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.8.0...v2.9.0
+[2.8.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.10...v2.8.0
+[2.7.10]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.9...v2.7.10
+[2.7.9]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.8...v2.7.9
+[2.7.8]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.7...v2.7.8
+[2.7.7]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.6...v2.7.7
+[2.7.6]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.5...v2.7.6
+[2.7.5]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.4...v2.7.5
+[2.7.4]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.3...v2.7.4
+[2.7.3]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.2...v2.7.3
+[2.7.2]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.1...v2.7.2
+[2.7.1]: https://github.com/puppetlabs/rspec-puppet/compare/v2.7.0...v2.7.1
+[2.7.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.15...v2.7.0
+[2.6.15]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.14...v2.6.15
+[2.6.14]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.13...v2.6.14
+[2.6.13]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.12...v2.6.13
+[2.6.12]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.11...v2.6.12
+[2.6.11]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.10...v2.6.11
+[2.6.10]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.9...v2.6.10
+[2.6.9]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.8...v2.6.9
+[2.6.8]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.7...v2.6.8
+[2.6.7]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.6...v2.6.7
+[2.6.6]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.5...v2.6.6
+[2.6.5]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.4...v2.6.5
+[2.6.4]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.3...v2.6.4
+[2.6.3]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.2...v2.6.3
+[2.6.2]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.1...v2.6.2
+[2.6.1]: https://github.com/puppetlabs/rspec-puppet/compare/v2.6.0...v2.6.1
+[2.6.0]: https://github.com/puppetlabs/rspec-puppet/compare/2.5.0...v2.6.0
+[2.5.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.4.0...v2.5.0
+[2.4.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.3.2...v2.4.0
+[2.3.2]: https://github.com/puppetlabs/rspec-puppet/compare/v2.3.1...v2.3.2
+[2.3.1]: https://github.com/puppetlabs/rspec-puppet/compare/v2.3.0...v2.3.1
+[2.3.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.2.0...v2.3.0
+[2.2.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.1.0...v2.2.0
+[2.1.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.0.1...v2.1.0
+[2.0.1]: https://github.com/puppetlabs/rspec-puppet/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/puppetlabs/rspec-puppet/compare/v1.0.1...v2.0.0
