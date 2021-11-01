@@ -337,7 +337,7 @@ module RSpec::Puppet
       {"servername" => "fqdn",
         "serverip" => "ipaddress"
       }.each do |var, fact|
-        if value = Facter.value(fact)
+        if value = FacterImpl.value(fact)
           server_facts[var] = value
         else
           warn "Could not retrieve fact #{fact}"
@@ -345,8 +345,8 @@ module RSpec::Puppet
       end
 
       if server_facts["servername"].nil?
-        host = Facter.value(:hostname)
-        if domain = Facter.value(:domain)
+        host = FacterImpl.value(:hostname)
+        if domain = FacterImpl.value(:domain)
           server_facts["servername"] = [host, domain].join(".")
         else
           server_facts["servername"] = host
@@ -478,8 +478,8 @@ module RSpec::Puppet
 
     def stub_facts!(facts)
       Puppet.settings[:autosign] = false if Puppet.settings.include? :autosign
-      Facter.clear
-      facts.each { |k, v| Facter.add(k, :weight => 999) { setcode { v } } }
+      FacterImpl.clear
+      facts.each { |k, v| FacterImpl.add(k, :weight => 999) { setcode { v } } }
     end
 
     def build_catalog(*args)

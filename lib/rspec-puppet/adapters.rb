@@ -1,3 +1,5 @@
+require 'rspec-puppet/facter_impl'
+
 module RSpec::Puppet
   module Adapters
 
@@ -108,6 +110,17 @@ module RSpec::Puppet
     end
 
     class Adapter40 < Base
+      #
+      # @api private
+      #
+      # Set the FacterImpl constant to the given Facter implementation.
+      # The method noops if the constant is already set
+      #
+      # @param impl [Object]
+      def set_facter_impl(impl)
+        Object.send(:const_set, :FacterImpl, impl) unless defined? FacterImpl
+      end
+
       def setup_puppet(example_group)
         super
 
@@ -186,6 +199,12 @@ module RSpec::Puppet
     end
 
     class Adapter4X < Adapter40
+      def setup_puppet(example_group)
+        super
+
+        set_facter_impl(Facter)
+      end
+
       def settings_map
         super.concat([
           [:trusted_server_facts, :trusted_server_facts]
@@ -194,6 +213,46 @@ module RSpec::Puppet
     end
 
     class Adapter6X < Adapter40
+      #
+      # @api private
+      #
+      # Check to see if Facter runtime implementations are supported in the
+      # current Puppet version
+      #
+      # @return [Boolean] true if runtime implementations are supported
+      def supports_facter_runtime?
+        unless defined?(@supports_facter_runtime)
+          begin
+            Puppet.runtime[:facter]
+            @supports_facter_runtime = true
+          rescue
+            @supports_facter_runtime = false
+          end
+        end
+
+        @supports_facter_runtime
+      end
+
+      def setup_puppet(example_group)
+        case RSpec.configuration.facter_implementation.to_sym
+        when :rspec
+          if supports_facter_runtime?
+            Puppet.runtime[:facter] = proc { RSpec::Puppet::FacterTestImpl.new }
+            set_facter_impl(Puppet.runtime[:facter])
+          else
+            warn "Facter runtime implementations are not supported in Puppet #{Puppet.version}, continuing with facter_implementation 'facter'"
+            RSpec.configuration.facter_implementation = 'facter'
+            set_facter_impl(Facter)
+          end
+        when :facter
+          set_facter_impl(Facter)
+        else
+          raise "Unsupported facter_implementation '#{RSpec.configuration.facter_implementation}'"
+        end
+
+        super
+      end
+
       def settings_map
         super.concat([
           [:basemodulepath, :basemodulepath],

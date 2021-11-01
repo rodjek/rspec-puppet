@@ -230,6 +230,20 @@ In some circumstances (e.g. where your nodename/certname is not the same as
 your FQDN), this behaviour is undesirable and can be disabled by changing this
 setting to `false`.
 
+#### facter\_implementation
+Type    | Default  | Puppet Version(s)
+------- | -------- | -----------------
+String  | `facter` | 6.25+, 7.12+
+
+Configures rspec-puppet to use a specific Facter implementation for running
+unit tests. If the `rspec` implementation is set and Puppet does not support
+it, rspec-puppet will warn and fall back to the `facter` implementation.
+Setting an unsupported option will make rspec-puppet raise an error.
+
+ * `facter` - Use the default implementation, honoring the Facter version specified in the Gemfile
+ * `rspec` - Use a custom hash-based implementation of Facter defined in
+   rspec-puppet (this provides a considerable gain in speed if tests are run with Facter 4)
+
 ## Naming conventions
 
 For clarity and consistency, I recommend that you use the following directory
