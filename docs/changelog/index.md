@@ -4,7 +4,18 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## [2.11.0]
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.10.0...v2.11.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Added
+* Add setting to use custom Facter implementation ([GH-16](https://github.com/puppetlabs/rspec-puppet/pull/16))
+
 ## [2.10.0]
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.9.0...v2.10.0"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+
 The release sees rspec-puppet move into the puppetlabs namespace
 
 ### Added
