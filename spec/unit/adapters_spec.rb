@@ -178,6 +178,62 @@ describe RSpec::Puppet::Adapters::Adapter32, :if => (3.2 ... 4.0).include?(Puppe
   end
 end
 
+describe RSpec::Puppet::Adapters::Adapter6X, :if => (6.0 ... 6.25).include?(Puppet.version.to_f) do
+
+  let(:test_context) { double :environment => 'rp_env' }
+
+  describe '#setup_puppet' do
+    describe 'when managing the facter_implementation' do
+      after(:each) do
+        Object.send(:remove_const, :FacterImpl) if defined? FacterImpl
+      end
+
+      it 'warns and falls back if hash implementation is set and facter runtime is not supported' do
+        context = context_double
+        allow(RSpec.configuration).to receive(:facter_implementation).and_return('rspec')
+        expect(subject).to receive(:warn)
+          .with("Facter runtime implementations are not supported in Puppet #{Puppet.version}, continuing with facter_implementation 'facter'")
+        subject.setup_puppet(context)
+        expect(FacterImpl).to be(Facter)
+      end
+    end
+  end
+end
+
+describe RSpec::Puppet::Adapters::Adapter6X, :if => Puppet::Util::Package.versioncmp(Puppet.version, '6.25.0') >= 0 do
+
+  let(:test_context) { double :environment => 'rp_env' }
+
+  describe '#setup_puppet' do
+    describe 'when managing the facter_implementation' do
+      after(:each) do
+        Object.send(:remove_const, :FacterImpl) if defined? FacterImpl
+      end
+
+      it 'uses facter as default implementation' do
+        context = context_double
+        subject.setup_puppet(context)
+        expect(FacterImpl).to be(Facter)
+      end
+
+      it 'uses the hash implementation if set and if puppet supports runtimes' do
+        context = context_double
+        Puppet.runtime[:facter] = 'something'
+        allow(RSpec.configuration).to receive(:facter_implementation).and_return('rspec')
+        subject.setup_puppet(context)
+        expect(FacterImpl).to be_kind_of(RSpec::Puppet::FacterTestImpl)
+      end
+
+      it 'raises if given an unsupported option' do
+        context = context_double
+        allow(RSpec.configuration).to receive(:facter_implementation).and_return('salam')
+        expect { subject.setup_puppet(context) }
+          .to raise_error(RuntimeError, "Unsupported facter_implementation 'salam'")
+      end
+    end
+  end
+end
+
 describe RSpec::Puppet::Adapters::Adapter4X, :if => (4.0 ... 6.0).include?(Puppet.version.to_f) do
 
   let(:test_context) { double :environment => 'rp_env' }
