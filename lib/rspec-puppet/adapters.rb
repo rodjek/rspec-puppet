@@ -247,7 +247,7 @@ module RSpec::Puppet
             Puppet.runtime[:facter] = FacterImpl
           else
             warn "Facter runtime implementations are not supported in Puppet #{Puppet.version}, continuing with facter_implementation 'facter'"
-            RSpec.configuration.facter_implementation = 'facter'
+            RSpec.configuration.facter_implementation = :facter
             set_facter_impl(Facter)
           end
         when :facter
