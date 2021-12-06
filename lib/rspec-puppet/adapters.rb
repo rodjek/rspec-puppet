@@ -237,8 +237,8 @@ module RSpec::Puppet
         case RSpec.configuration.facter_implementation.to_sym
         when :rspec
           if supports_facter_runtime?
-            Puppet.runtime[:facter] = proc { RSpec::Puppet::FacterTestImpl.new }
-            set_facter_impl(Puppet.runtime[:facter])
+            set_facter_impl(RSpec::Puppet::FacterTestImpl.new)
+            Puppet.runtime[:facter] = FacterImpl
           else
             warn "Facter runtime implementations are not supported in Puppet #{Puppet.version}, continuing with facter_implementation 'facter'"
             RSpec.configuration.facter_implementation = 'facter'

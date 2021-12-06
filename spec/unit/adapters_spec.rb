@@ -224,6 +224,18 @@ describe RSpec::Puppet::Adapters::Adapter6X, :if => Puppet::Util::Package.versio
         expect(FacterImpl).to be_kind_of(RSpec::Puppet::FacterTestImpl)
       end
 
+      it 'ensures consistency of FacterImpl in subsequent example groups' do
+        context = context_double
+
+        # Pretend that FacterImpl is already initialized from a previous example group
+        Puppet.runtime[:facter] = RSpec::Puppet::FacterTestImpl.new
+        Object.send(:const_set, :FacterImpl, Puppet.runtime[:facter])
+
+        allow(RSpec.configuration).to receive(:facter_implementation).and_return('rspec')
+        subject.setup_puppet(context)
+        expect(FacterImpl).to eq(Puppet.runtime[:facter])
+      end
+
       it 'raises if given an unsupported option' do
         context = context_double
         allow(RSpec.configuration).to receive(:facter_implementation).and_return('salam')
