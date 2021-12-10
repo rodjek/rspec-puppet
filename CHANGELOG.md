@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.11.1]
+
+### Fixed
+* Ensure FacterImpl consistency between example groups ([#19](https://github.com/puppetlabs/rspec-puppet/pull/19))
+
 ## [2.11.0]
 
 ### Added
@@ -565,7 +570,8 @@ Thanks to Adrien Thebo, Alex Harvey, Brian, Dan Bode, Dominic Cleal, Javier Pala
 ## 1.0.1 and earlier
 For changelog of versions 1.0.1 and earlier, see http://rspec-puppet.com/changelog/
 
-[2.x]: https://github.com/puppetlabs/rspec-puppet/compare/v2.11.0...master
+[2.x]: https://github.com/puppetlabs/rspec-puppet/compare/v2.11.1...master
+[2.11.1]: https://github.com/puppetlabs/rspec-puppet/compare/v2.11.0..v2.11.1
 [2.11.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/puppetlabs/rspec-puppet/compare/v2.8.0...v2.9.0
