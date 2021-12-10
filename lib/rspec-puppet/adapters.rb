@@ -113,12 +113,16 @@ module RSpec::Puppet
       #
       # @api private
       #
-      # Set the FacterImpl constant to the given Facter implementation.
-      # The method noops if the constant is already set
+      # Set the FacterImpl constant to the given Facter implementation or noop
+      # if the constant is already set. If a proc is given, it will only be
+      # called if FacterImpl is not defined.
       #
-      # @param impl [Object]
+      # @param impl [Object, Proc] An object or a proc that implements the Facter API
       def set_facter_impl(impl)
-        Object.send(:const_set, :FacterImpl, impl) unless defined? FacterImpl
+        return if defined?(FacterImpl)
+
+        impl = impl.call if impl.is_a?(Proc)
+        Object.send(:const_set, :FacterImpl, impl)
       end
 
       def setup_puppet(example_group)
@@ -237,11 +241,13 @@ module RSpec::Puppet
         case RSpec.configuration.facter_implementation.to_sym
         when :rspec
           if supports_facter_runtime?
-            Puppet.runtime[:facter] = proc { RSpec::Puppet::FacterTestImpl.new }
-            set_facter_impl(Puppet.runtime[:facter])
+            # Lazily instantiate FacterTestImpl here to optimize memory
+            # allocation, as the proc will only be called if FacterImpl is unset
+            set_facter_impl(proc { RSpec::Puppet::FacterTestImpl.new })
+            Puppet.runtime[:facter] = FacterImpl
           else
             warn "Facter runtime implementations are not supported in Puppet #{Puppet.version}, continuing with facter_implementation 'facter'"
-            RSpec.configuration.facter_implementation = 'facter'
+            RSpec.configuration.facter_implementation = :facter
             set_facter_impl(Facter)
           end
         when :facter
