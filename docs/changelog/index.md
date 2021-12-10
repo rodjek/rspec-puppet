@@ -4,6 +4,13 @@ title: Change Log
 icon: fa fa-history
 ---
 
+## [2.11.1]
+<a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.11.0...v2.11.1"
+class="btn btn-primary btn-inline pull-right">View Diff</a>
+
+### Fixed
+* Ensure FacterImpl consistency between example groups ([#19](https://github.com/puppetlabs/rspec-puppet/pull/19))
+
 ## [2.11.0]
 <a href="https://github.com/puppetlabs/rspec-puppet/compare/v2.10.0...v2.11.0"
 class="btn btn-primary btn-inline pull-right">View Diff</a>
