@@ -313,6 +313,8 @@ module RSpec::Puppet
           if resource.resource_type.respond_to?(func)
             resource.resource_type.send(func) do |t, b|
               Array(resource.to_ral.instance_eval(&b)).each do |dep|
+                next if dep.nil?
+
                 res = "#{t.to_s.capitalize}[#{dep}]"
                 if r = relationship_refs(res, type, visited)
                   results << res
