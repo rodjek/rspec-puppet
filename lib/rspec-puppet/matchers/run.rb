@@ -35,6 +35,8 @@ module RSpec::Puppet
             case @expected_return
             when Regexp
               return !!(@actual_return =~ @expected_return)
+            when RSpec::Mocks::ArgumentMatchers::KindOf, RSpec::Matchers::AliasedMatcher
+              return @expected_return === @actual_return
             else
               return @actual_return == @expected_return
             end
