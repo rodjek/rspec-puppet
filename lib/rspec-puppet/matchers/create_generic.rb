@@ -20,6 +20,8 @@ module RSpec::Puppet
         @subscribes = []
         @requires = []
         @befores = []
+        @tagged = []
+        @not_tagged = []
       end
 
       def with(*args, &block)
@@ -57,6 +59,16 @@ module RSpec::Puppet
 
       def that_comes_before(resource)
         @befores.concat(Array(resource))
+        self
+      end
+
+      def tagged(resource)
+        @tagged.concat(Array(resource))
+        self
+      end
+
+      def not_tagged(resource)
+        @not_tagged.concat(Array(resource))
         self
       end
 
@@ -114,6 +126,8 @@ module RSpec::Puppet
 
           check_params(rsrc_hsh, @expected_params, :should) if @expected_params.any?
           check_params(rsrc_hsh, @expected_undef_params, :not) if @expected_undef_params.any?
+          check_tags(resource, @tagged, :should) if @tagged.any?
+          check_tags(resource, @not_tagged, :not) if @not_tagged.any?
           check_befores(@catalogue, resource) if @befores.any?
           check_requires(@catalogue, resource) if @requires.any?
           check_notifies(@catalogue, resource) if @notifies.any?
@@ -132,8 +146,8 @@ module RSpec::Puppet
       end
 
       def description
+        tests = []
         values = []
-        value_str_prefix = "with"
 
         if @expected_params_count
           values << "exactly #{@expected_params_count} parameters"
@@ -148,34 +162,39 @@ module RSpec::Puppet
         end
 
         if @notifies.any?
-          value_str_prefix = "that notifies"
-          values = @notifies
+          tests << english_list("that notifies", @notifies)
         end
 
         if @subscribes.any?
-          value_str_prefix = "that subscribes to"
-          values = @subscribes
+          tests << english_list("that subscribes to", @subscribes)
         end
 
         if @requires.any?
-          value_str_prefix = "that requires"
-          values = @requires
+          tests << english_list("that requires", @requires)
         end
 
         if @befores.any?
-          value_str_prefix = "that comes before"
-          values = @befores
+          tests << english_list("that comes before", @befores)
+        end
+
+        if @tagged.any?
+          tests << english_list("that is tagged", @tagged)
+        end
+
+        if @not_tagged.any?
+          tests << english_list("that is not tagged", @not_tagged, "nor")
         end
 
         unless values.empty?
-          if values.length == 1
-            value_str = " #{value_str_prefix} #{values.first}"
-          else
-            value_str = " #{value_str_prefix} #{values[0..-2].join(", ")} and #{values[-1]}"
-          end
+          tests << english_list("with", values)
         end
 
-        "contain #{@referenced_type}[#{@title}]#{value_str}"
+        tests_str = ""
+        unless tests.empty?
+          tests_str = english_list("", tests, "and", true)
+        end
+
+        "contain #{@referenced_type}[#{@title}]#{tests_str}"
       end
 
       def diffable?
@@ -223,6 +242,16 @@ module RSpec::Puppet
           end
         end
         output
+      end
+
+      def english_list(value_str_prefix, values, joiner='and', oxford_comma=false)
+        if values.length == 1
+          "#{value_str_prefix} #{values.first}"
+        elsif oxford_comma
+          "#{value_str_prefix} #{values[0..-2].join(", ")}, #{joiner} #{values[-1]}"
+        else
+          "#{value_str_prefix} #{values[0..-2].join(", ")} #{joiner} #{values[-1]}"
+        end
       end
 
       def check_befores(catalogue, resource)
@@ -381,6 +410,25 @@ module RSpec::Puppet
             m = ParameterMatcher.new(param, value, type)
             unless m.matches?(resource)
               @errors.concat m.errors
+            end
+          end
+        end
+      end
+      # @param resource [Puppet::Resource] The resource in the catalog
+      # @param list [Array<String>] The expected tags for the resource
+      # @param type [:should, :not] Whether the given tags should/not be present
+      def check_tags(resource, list, type)
+        case type
+        when :should
+          list.each do |tag|
+            unless resource.tags.include? tag
+              @errors << "#{tag} is not set"
+            end
+          end
+        when :not
+          list.each do |tag|
+            if resource.tags.include? tag
+              @errors << "#{tag} is set"
             end
           end
         end
