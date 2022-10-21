@@ -1115,4 +1115,5 @@ be excluded from the coverage report.
   * [rspec-puppet-osmash](https://github.com/Aethylred/rspec-puppet-osmash): Provides Operation System hashes and validations for rspec-puppet
   * [puppet_spec_facts](https://github.com/danieldreier/puppet_spec_facts): Gem to provide puppet fact hashes for rspec-puppet testing
 
-For a list of other module development tools see https://puppet.community/plugins/
+For a list of other module development tools see https://voxpupuli.org/plugins/
+
