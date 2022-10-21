@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.12.0]
+
+### Added
+* Handle nil autorequire results ([#22](https://github.com/puppetlabs/rspec-puppet/pull/22))
+* Add the ability to use kind_of matchers ([#24](https://github.com/puppetlabs/rspec-puppet/pull/24))
+
 ## [2.11.1]
 
 ### Fixed
