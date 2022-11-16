@@ -617,6 +617,11 @@ be translated to `undef` when compiling. For example:
 let(:params) { {'user' => :undef, ...} }
 ```
 
+For passing a sensitive value you can use the sensitive function with a value in brackets. For example
+```ruby
+let(:params) { {'password' =>sensitive('secret') } }
+```
+
 For references to nodes or resources as seen when using `require` or `before` properties,
 or an `application` resource you can pass the string as an argument to the `ref` helper:
 
