@@ -18,8 +18,8 @@ if RUBY_VERSION =~ /^1\.?9/
 end
 
 gem 'rspec', *location_for(ENV['RSPEC_GEM_VERSION'] || '~> 3.0')
-gem 'puppet', *location_for(ENV['PUPPET_GEM_VERSION'] || '~> 4.0')
-gem 'facter', *location_for(ENV['FACTER_GEM_VERSION'] || '~> 2.0')
+gem 'puppet', *location_for(ENV['PUPPET_GEM_VERSION'] || '~> 7.0')
+gem 'facter', *location_for(ENV['FACTER_GEM_VERSION'] || '~> 4.0')
 gem 'pry', :group => :development
 
 if RUBY_VERSION =~ /^1\.?/
