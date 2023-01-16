@@ -987,8 +987,17 @@ Some complex functions require access to the current parser's scope, e.g. for
 stubbing other parts of the system.
 
 ```ruby
-before(:each) { scope.expects(:lookupvar).with('some_variable').returns('some_value') }
-it { is_expected.to run.with_params('...').and_return('...') }
+context 'when called with top-scope vars foo and bar set' do
+  before do
+    # :lookupvar is the method on scope that puppet calls internally to
+    # resolve the value of a variable.
+    allow(scope).to receive(:lookupvar).and_call_original
+    allow(scope).to receive(:lookupvar).with('::foo').and_return('Hello')
+    allow(scope).to receive(:lookupvar).with('::bar').and_return('World')
+  end
+
+  it { is_expected.to run.with_params().and_return('Hello World') }
+end
 ```
 
 Note that this does not work when testing manifests which use custom functions. Instead,
