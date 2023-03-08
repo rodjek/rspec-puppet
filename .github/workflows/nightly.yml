@@ -1,0 +1,42 @@
+name: "nightly"
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  spec:
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby_version:
+          - "2.5"
+          - "2.7"
+        puppet_gem_version:
+          - '~> 6.0'
+          - '~> 7.0'
+    name: "spec (ruby ${{ matrix.ruby_version }} | puppet ${{matrix.puppet_gem_version}})"
+    uses: "puppetlabs/cat-github-actions/.github/workflows/gem_ci.yml@main"
+    secrets: "inherit"
+    with:
+      ruby_version: ${{ matrix.ruby_version }}
+
+  acceptance:
+    needs: "spec"
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - "ubuntu-latest"
+          - "windows-2019"
+        ruby_version:
+          - "2.5"
+          - "2.7"
+    name: "acceptance (ruby ${{ matrix.ruby_version }} | ${{ matrix.os }})"
+    uses: "puppetlabs/cat-github-actions/.github/workflows/gem_acceptance.yml@main"
+    secrets: "inherit"
+    with:
+      ruby_version: ${{ matrix.ruby_version }}
+      rake_task: 'acceptance:local_parallel'
+      runs_on: ${{ matrix.os }}
