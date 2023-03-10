@@ -126,6 +126,12 @@ undefined parameters at once by chaining the `without` method to the
 it { is_expected.to contain_service('apache').without(['restart', 'status']) }
 {% endhighlight %}
 
+It can be tested that a Sensitive value of resource parameter passed to template is present as expected.
+
+{% highlight ruby %}
+it { is_expected.to contain_file('/etc/mysecret.conf').with_content(sensitive(%r{^Token==MySecretTokenValue$})) }
+{% endhighlight %}
+
 ### Test resource parameter values for uniqueness
 
 Use the `have_unique_values_for_all` matcher to test a specific resource parameter
