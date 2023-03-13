@@ -17,28 +17,13 @@ jobs:
         puppet_gem_version:
           - '~> 6.0'
           - '~> 7.0'
-    name: "spec (ruby ${{ matrix.ruby_version }} | puppet ${{matrix.puppet_gem_version}})"
+        runs_on:
+          - "ubuntu-latest"
+          - "windows-latest"
+    name: "spec (${{ matrix.runs_on }} ruby ${{ matrix.ruby_version }} | puppet ${{matrix.puppet_gem_version}})"
     uses: "puppetlabs/cat-github-actions/.github/workflows/gem_ci.yml@main"
     secrets: "inherit"
     with:
       ruby_version: ${{ matrix.ruby_version }}
       puppet_gem_version: ${{ matrix.puppet_gem_version }}
-
-  acceptance:
-    needs: "spec"
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - "ubuntu-latest"
-          - "windows-2019"
-        ruby_version:
-          - "2.5"
-          - "2.7"
-    name: "acceptance (${{ matrix.os }} | ruby ${{ matrix.ruby_version }})"
-    uses: "puppetlabs/cat-github-actions/.github/workflows/gem_acceptance.yml@main"
-    secrets: "inherit"
-    with:
-      ruby_version: ${{ matrix.ruby_version }}
-      rake_task: 'acceptance:local_parallel'
-      runs_on: ${{ matrix.os }}
+      runs_on: ${{ matrix.runs_on }}

@@ -1,0 +1,4 @@
+# Silencing rubocop warnings until https://tickets.puppetlabs.com/browse/CONT-725
+# is completed
+AllCops:
+  DisabledByDefault: true
