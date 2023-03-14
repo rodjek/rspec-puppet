@@ -1,5 +1,6 @@
 require 'rake'
 require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
 require 'bundler/gem_tasks'
 require 'fileutils'
 require 'puppet'
@@ -88,4 +89,8 @@ task :test do
   ensure
     Rake::Task['test:teardown'].invoke
   end
+end
+
+RuboCop::RakeTask.new(:rubocop) do |task|
+  task.options = %w[-D -S -E]
 end

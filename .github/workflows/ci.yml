@@ -1,0 +1,29 @@
+name: "ci"
+
+on:
+  pull_request:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+jobs:
+  spec:
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby_version:
+          - "2.5"
+          - "2.7"
+        puppet_gem_version:
+          - '~> 6.0'
+          - '~> 7.0'
+        runs_on:
+          - "ubuntu-latest"
+          - "windows-latest"
+    name: "spec (${{ matrix.runs_on }} ruby ${{ matrix.ruby_version }} | puppet ${{matrix.puppet_gem_version}})"
+    uses: "puppetlabs/cat-github-actions/.github/workflows/gem_ci.yml@main"
+    secrets: "inherit"
+    with:
+      ruby_version: ${{ matrix.ruby_version }}
+      puppet_gem_version: ${{ matrix.puppet_gem_version }}
+      runs_on: ${{ matrix.runs_on }}

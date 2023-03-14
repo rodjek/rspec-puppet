@@ -17,9 +17,9 @@ if RUBY_VERSION =~ /^1\.?9/
   gem 'ffi', '<= 1.9.14'
 end
 
-gem 'rspec', *location_for(ENV['RSPEC_GEM_VERSION'] || '~> 3.0')
-gem 'puppet', *location_for(ENV['PUPPET_GEM_VERSION'] || '~> 7.0')
-gem 'facter', *location_for(ENV['FACTER_GEM_VERSION'] || '~> 4.0')
+gem 'rspec', *location_for(!ENV['RSPEC_GEM_VERSION']&.empty? ? ENV['RSPEC_GEM_VERSION'] : '~> 3.0')
+gem 'puppet', *location_for(!ENV['PUPPET_GEM_VERSION']&.empty? ? ENV['PUPPET_GEM_VERSION'] : '~> 7.0')
+gem 'facter', *location_for(!ENV['FACTER_GEM_VERSION']&.empty? ? ENV['FACTER_GEM_VERSION'] : '~> 4.0')
 gem 'pry', :group => :development
 
 if RUBY_VERSION =~ /^1\.?/
@@ -38,8 +38,9 @@ if RUBY_VERSION =~ /^1\.?9/
 elsif RUBY_VERSION =~ /^1\.?8/
   gem 'json_pure', '< 2.0.0'
 else
-  gem 'rubocop'
-  gem 'rubocop-rspec', '~> 1.6' if (RUBY_VERSION >= '2.3.0' || RUBY_VERSION >= '23')
+  gem "rubocop", '= 1.6.1',                            require: false
+  gem "rubocop-performance", '= 1.9.1',                require: false
+  gem "rubocop-rspec", '= 2.0.1',                      require: false
   gem 'sync' if (RUBY_VERSION >= '2.7.0')
 end
 
