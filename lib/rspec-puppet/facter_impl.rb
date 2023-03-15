@@ -8,7 +8,11 @@ module RSpec::Puppet
     end
 
     def value(fact_name)
-      @facts[fact_name.to_s]
+      begin
+        @facts.dig(*fact_name.to_s.split('.'))
+      rescue TypeError
+        nil
+      end
     end
 
     def clear

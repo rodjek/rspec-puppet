@@ -10,6 +10,7 @@ describe RSpec::Puppet::FacterTestImpl do
       'int_fact' => 3,
       'true_fact' => true,
       'false_fact' => false,
+      'os' => { 'name' => 'my_os', 'release' => { 'major' => '42' } }
     }
   end
 
@@ -19,6 +20,7 @@ describe RSpec::Puppet::FacterTestImpl do
     facter_impl.add(:int_fact) { setcode { 3 } }
     facter_impl.add(:true_fact) { setcode { true } }
     facter_impl.add(:false_fact) { setcode { false } }
+    facter_impl.add(:os) { setcode { { 'name' => 'my_os', 'release' => { 'major' => '42'  }} } }
   end
 
   describe 'noop methods' do
@@ -48,6 +50,28 @@ describe RSpec::Puppet::FacterTestImpl do
 
     it 'retrieves a fact of type FalseClass' do
       expect(facter_impl.value(:false_fact)).to eq(false)
+    end
+
+    context 'when using dot-notation' do
+      it 'retrieves a child fact using dot-notation' do
+        expect(facter_impl.value('os.name')).to eq('my_os')
+      end
+
+      it 'retrieves a hash child fact using dot-notation' do
+        expect(facter_impl.value('os.release')).to eq({ 'major' => '42' })
+      end
+
+      it 'retrieves a deeply nested child fact using dot-notation' do
+        expect(facter_impl.value('os.release.major')).to eq('42')
+      end
+
+      it 'returns nil if a child fact is missing' do
+        expect(facter_impl.value('os.release.unknown_subkey')).to eq(nil)
+      end
+
+      it 'returns nil if trying to lookup into a string' do
+        expect(facter_impl.value('os.name.foo')).to eq(nil)
+      end
     end
   end
 
