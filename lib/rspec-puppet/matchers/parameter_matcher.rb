@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   module ManifestMatchers
     class ParameterMatcher
@@ -7,7 +9,9 @@ module RSpec::Puppet
       # @param value [Object] The expected data to match the parameter against
       # @param type [:should, :not] Whether the given parameter should match
       def initialize(parameter, value, type)
-        @parameter, @value, @type = parameter, value, type
+        @parameter = parameter
+        @value = value
+        @type = type
 
         @should_match = (type == :should)
 
@@ -31,9 +35,7 @@ module RSpec::Puppet
 
         retval = check(expected, actual)
 
-        unless retval
-          @errors << MatchError.new(@parameter, expected, actual, !@should_match)
-        end
+        @errors << MatchError.new(@parameter, expected, actual, !@should_match) unless retval
 
         retval
       end
@@ -53,6 +55,7 @@ module RSpec::Puppet
       # @return [true, false] If the resource matched
       def check(expected, actual)
         return false if !expected.is_a?(Proc) && actual.nil? && !expected.nil?
+
         case expected
         when Proc
           check_proc(expected, actual)
@@ -84,16 +87,14 @@ module RSpec::Puppet
       # key in the expected hash, there's a stringified key in the actual hash
       # with a matching value.
       def check_hash(expected, actual)
-        op = @should_match ? :"==" : :"!="
+        op = @should_match ? :'==' : :'!='
 
         unless actual.class.send(op, expected.class)
           @errors << MatchError.new(@parameter, expected, actual, !@should_match)
           return false
         end
 
-        unless expected.keys.size.send(op, actual.keys.size)
-          return false
-        end
+        return false unless expected.keys.size.send(op, actual.keys.size)
 
         expected.keys.all? do |key|
           check(expected[key], actual[key])
@@ -101,16 +102,14 @@ module RSpec::Puppet
       end
 
       def check_array(expected, actual)
-        op = @should_match ? :"==" : :"!="
+        op = @should_match ? :'==' : :'!='
 
         unless actual.class.send(op, expected.class)
           @errors << MatchError.new(@parameter, expected, actual, !@should_match)
           return false
         end
 
-        unless expected.size.send(op, actual.size)
-          return false
-        end
+        return false unless expected.size.send(op, actual.size)
 
         (0...expected.size).all? do |index|
           check(expected[index], actual[index])

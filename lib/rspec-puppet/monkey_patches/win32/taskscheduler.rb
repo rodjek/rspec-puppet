@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Create our dummy Win32::TaskScheduler with the consts defined from
 # https://github.com/djberg96/win32-taskscheduler/blob/ole/lib/win32/taskscheduler.rb
 
@@ -9,7 +11,7 @@ module RSpec
       class TaskScheduler
         include Windows::TaskSchedulerConstants
 
-        DAYS_IN_A_MONTH = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        DAYS_IN_A_MONTH = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31].freeze
 
         IDLE = IDLE_PRIORITY_CLASS
         NORMAL = NORMAL_PRIORITY_CLASS

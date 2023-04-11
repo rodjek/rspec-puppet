@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rspec-puppet/matchers/create_generic'
 require 'rspec-puppet/matchers/include_class'
 require 'rspec-puppet/matchers/compile'

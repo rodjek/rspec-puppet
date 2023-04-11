@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rspec-puppet/cache'
 require 'rspec-puppet/adapters'
 require 'rspec-puppet/raw_string'
@@ -11,7 +13,7 @@ module RSpec::Puppet
     @@fixture_hiera_configs = Hash.new { |h, k| h[k] = nil }
 
     def subject
-      lambda { catalogue }
+      -> { catalogue }
     end
 
     def environment
@@ -19,7 +21,7 @@ module RSpec::Puppet
     end
 
     def build_code(type, manifest_opts)
-      if Puppet.version.to_f >= 4.0 or Puppet[:parser] == 'future'
+      if (Puppet.version.to_f >= 4.0) || (Puppet[:parser] == 'future')
         [site_pp_str, pre_cond, test_manifest(type, manifest_opts), post_cond].compact.join("\n")
       else
         [import_str, pre_cond, test_manifest(type, manifest_opts), post_cond].compact.join("\n")
@@ -28,21 +30,21 @@ module RSpec::Puppet
 
     def guess_type_from_path(path)
       case path
-      when /spec\/defines/
+      when %r{spec/defines}
         :define
-      when /spec\/classes/
+      when %r{spec/classes}
         :class
-      when /spec\/functions/
+      when %r{spec/functions}
         :function
-      when /spec\/hosts/
+      when %r{spec/hosts}
         :host
-      when /spec\/types/
+      when %r{spec/types}
         :type
-      when /spec\/type_aliases/
+      when %r{spec/type_aliases}
         :type_alias
-      when /spec\/provider/
+      when %r{spec/provider}
         :provider
-      when /spec\/applications/
+      when %r{spec/applications}
         :application
       else
         :unknown
@@ -50,11 +52,11 @@ module RSpec::Puppet
     end
 
     def stub_file_consts(example)
-      if example.respond_to?(:metadata)
-        type = example.metadata[:type]
-      else
-        type = guess_type_from_path(example.example.metadata[:file_path])
-      end
+      type = if example.respond_to?(:metadata)
+               example.metadata[:type]
+             else
+               guess_type_from_path(example.example.metadata[:file_path])
+             end
 
       munged_facts = facts_hash(nodename(type))
 
@@ -64,15 +66,15 @@ module RSpec::Puppet
 
     def find_pretend_platform(test_facts)
       from_value = lambda { |value|
-        value.to_s.downcase == 'windows' ? :windows : :posix
+        value.to_s.casecmp('windows').zero? ? :windows : :posix
       }
 
-      ['operatingsystem', 'osfamily'].each do |os_fact|
+      %w[operatingsystem osfamily].each do |os_fact|
         return from_value.call(test_facts[os_fact]) if test_facts.key?(os_fact)
       end
 
       if test_facts.key?('os') && test_facts['os'].is_a?(Hash)
-        ['name', 'family'].each do |os_hash_key|
+        %w[name family].each do |os_hash_key|
           return from_value.call(test_facts['os'][os_hash_key]) if test_facts['os'].key?(os_hash_key)
         end
       end
@@ -80,20 +82,19 @@ module RSpec::Puppet
       nil
     end
 
-
     def load_catalogue(type, exported = false, manifest_opts = {})
       with_vardir do
         node_name = nodename(type)
 
-        hiera_config_value = self.respond_to?(:hiera_config) ? hiera_config : nil
-        hiera_data_value = self.respond_to?(:hiera_data) ? hiera_data : nil
+        hiera_config_value = respond_to?(:hiera_config) ? hiera_config : nil
+        hiera_data_value = respond_to?(:hiera_data) ? hiera_data : nil
 
-        rspec_config_values = [
-            :trusted_server_facts,
-            :disable_module_hiera,
-            :use_fixture_spec_hiera,
-            :fixture_hiera_configs,
-            :fallback_to_default_hiera,
+        rspec_config_values = %i[
+          trusted_server_facts
+          disable_module_hiera
+          use_fixture_spec_hiera
+          fixture_hiera_configs
+          fallback_to_default_hiera
         ].map { |setting| RSpec.configuration.send(setting) }
 
         build_facts = facts_hash(node_name)
@@ -108,7 +109,7 @@ module RSpec::Puppet
           trusted_external_data: trusted_external_data_hash,
           ignored_cache_params: {
             hiera_data_value: hiera_data_value,
-            rspec_config_values: rspec_config_values,
+            rspec_config_values: rspec_config_values
           }
         )
 
@@ -128,25 +129,25 @@ module RSpec::Puppet
     end
 
     def import_str
-      import_str = ""
-      adapter.modulepath.each { |d|
-        if File.exists?(File.join(d, 'manifests', 'init.pp'))
+      import_str = ''
+      adapter.modulepath.each do |d|
+        if File.exist?(File.join(d, 'manifests', 'init.pp'))
           path_to_manifest = File.join([
             d,
             'manifests',
-            class_name.split('::')[1..-1]
+            class_name.split('::')[1..]
           ].flatten)
           import_str = [
             "import '#{d}/manifests/init.pp'",
             "import '#{path_to_manifest}.pp'",
-            '',
+            ''
           ].join("\n")
           break
-        elsif File.exists?(d)
+        elsif File.exist?(d)
           import_str = "import '#{adapter.manifest}'\n"
           break
         end
-      }
+      end
 
       import_str
     end
@@ -167,34 +168,34 @@ module RSpec::Puppet
     end
 
     def test_manifest(type, opts = {})
-      opts[:params] = params if self.respond_to?(:params)
+      opts[:params] = params if respond_to?(:params)
 
-      if type == :class
+      case type
+      when :class
         if opts[:params].nil? || opts[:params] == {}
           "include #{class_name}"
         else
           "class { '#{class_name}': #{param_str(opts[:params])} }"
         end
-      elsif type == :application
-        if opts.has_key?(:params)
-          "site { #{class_name} { #{sanitise_resource_title(title)}: #{param_str(opts[:params])} } }"
-        else
-          raise ArgumentError, "You need to provide params for an application"
-        end
-      elsif type == :define
+      when :application
+        raise ArgumentError, 'You need to provide params for an application' unless opts.key?(:params)
+
+        "site { #{class_name} { #{sanitise_resource_title(title)}: #{param_str(opts[:params])} } }"
+
+      when :define
         title_str = if title.is_a?(Array)
                       '[' + title.map { |r| sanitise_resource_title(r) }.join(', ') + ']'
                     else
                       sanitise_resource_title(title)
                     end
-        if opts.has_key?(:params)
+        if opts.key?(:params)
           "#{class_name} { #{title_str}: #{param_str(opts[:params])} }"
         else
           "#{class_name} { #{title_str}: }"
         end
-      elsif type == :host
+      when :host
         nil
-      elsif type == :type_alias
+      when :type_alias
         "$test = #{str_from_value(opts[:test_value])}\nassert_type(#{self.class.top_level_description}, $test)"
       end
     end
@@ -204,8 +205,9 @@ module RSpec::Puppet
     end
 
     def nodename(type)
-      return node if self.respond_to?(:node)
-      if [:class, :define, :function, :application].include? type
+      return node if respond_to?(:node)
+
+      if %i[class define function application].include? type
         Puppet[:certname]
       else
         class_name
@@ -217,47 +219,43 @@ module RSpec::Puppet
     end
 
     def pre_cond
-      if self.respond_to?(:pre_condition) && !pre_condition.nil?
-        if pre_condition.is_a? Array
-          pre_condition.compact.join("\n")
-        else
-          pre_condition
-        end
+      return unless respond_to?(:pre_condition) && !pre_condition.nil?
+
+      if pre_condition.is_a? Array
+        pre_condition.compact.join("\n")
       else
-        nil
+        pre_condition
       end
     end
 
     def post_cond
-      if self.respond_to?(:post_condition) && !post_condition.nil?
-        if post_condition.is_a? Array
-          post_condition.compact.join("\n")
-        else
-          post_condition
-        end
+      return unless respond_to?(:post_condition) && !post_condition.nil?
+
+      if post_condition.is_a? Array
+        post_condition.compact.join("\n")
       else
-        nil
+        post_condition
       end
     end
 
     def facts_hash(node)
       base_facts = {
         'clientversion' => Puppet::PUPPETVERSION,
-        'environment'   => environment.to_s,
+        'environment' => environment.to_s
       }
 
       node_facts = {
-        'hostname'   => node.split('.').first,
-        'fqdn'       => node,
-        'domain'     => node.split('.', 2).last,
+        'hostname' => node.split('.').first,
+        'fqdn' => node,
+        'domain' => node.split('.', 2).last,
         'clientcert' => node,
-        'ipaddress6' => 'FE80:0000:0000:0000:AAAA:AAAA:AAAA',
+        'ipaddress6' => 'FE80:0000:0000:0000:AAAA:AAAA:AAAA'
       }
 
       networking_facts = {
         'hostname' => node_facts['hostname'],
-        'fqdn'     => node_facts['fqdn'],
-        'domain'   => node_facts['domain'],
+        'fqdn' => node_facts['fqdn'],
+        'domain' => node_facts['domain']
       }
 
       result_facts = if RSpec.configuration.default_facts.any?
@@ -269,11 +267,13 @@ module RSpec::Puppet
       # Merge in node facts so they always exist by default, but only if they
       # haven't been defined in `RSpec.configuration.default_facts`
       result_facts.merge!(munge_facts(node_facts)) { |_key, old_val, new_val| old_val.nil? ? new_val : old_val }
-      (result_facts['networking'] ||= {}).merge!(networking_facts) { |_key, old_val, new_val| old_val.nil? ? new_val : old_val }
+      (result_facts['networking'] ||= {}).merge!(networking_facts) do |_key, old_val, new_val|
+        old_val.nil? ? new_val : old_val
+      end
 
       # Merge in `let(:facts)` facts
       result_facts.merge!(munge_facts(base_facts))
-      result_facts.merge!(munge_facts(facts)) if self.respond_to?(:facts)
+      result_facts.merge!(munge_facts(facts)) if respond_to?(:facts)
 
       # Merge node facts again on top of `let(:facts)` facts, but only if
       # a node name is given with `let(:node)`
@@ -284,8 +284,7 @@ module RSpec::Puppet
 
       # Facter currently supports lower case facts.  Bug FACT-777 has been submitted to support case sensitive
       # facts.
-      downcase_facts = Hash[result_facts.map { |k, v| [k.downcase, v] }]
-      downcase_facts
+      result_facts.transform_keys(&:downcase)
     end
 
     def node_params_hash
@@ -301,7 +300,7 @@ module RSpec::Puppet
       param_str_from_hash(params)
     end
 
-    def trusted_facts_hash(node_name)
+    def trusted_facts_hash(_node_name)
       return {} unless Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
 
       extensions = {}
@@ -310,7 +309,7 @@ module RSpec::Puppet
         extensions.merge!(munge_facts(RSpec.configuration.default_trusted_facts))
       end
 
-      extensions.merge!(munge_facts(trusted_facts)) if self.respond_to?(:trusted_facts)
+      extensions.merge!(munge_facts(trusted_facts)) if respond_to?(:trusted_facts)
       extensions
     end
 
@@ -323,7 +322,7 @@ module RSpec::Puppet
         external_data.merge!(munge_facts(RSpec.configuration.default_trusted_external_data))
       end
 
-      external_data.merge!(munge_facts(trusted_external_data)) if self.respond_to?(:trusted_external_data)
+      external_data.merge!(munge_facts(trusted_external_data)) if respond_to?(:trusted_external_data)
       external_data
     end
 
@@ -331,26 +330,25 @@ module RSpec::Puppet
       server_facts = {}
 
       # Add our server version to the fact list
-      server_facts["serverversion"] = Puppet.version.to_s
+      server_facts['serverversion'] = Puppet.version.to_s
 
       # And then add the server name and IP
-      {"servername" => "fqdn",
-        "serverip" => "ipaddress"
-      }.each do |var, fact|
-        if value = FacterImpl.value(fact)
+      { 'servername' => 'fqdn',
+        'serverip' => 'ipaddress' }.each do |var, fact|
+        if (value = FacterImpl.value(fact))
           server_facts[var] = value
         else
           warn "Could not retrieve fact #{fact}"
         end
       end
 
-      if server_facts["servername"].nil?
+      if server_facts['servername'].nil?
         host = FacterImpl.value(:hostname)
-        if domain = FacterImpl.value(:domain)
-          server_facts["servername"] = [host, domain].join(".")
-        else
-          server_facts["servername"] = host
-        end
+        server_facts['servername'] = if (domain = FacterImpl.value(:domain))
+                                       [host, domain].join('.')
+                                     else
+                                       host
+                                     end
       end
       server_facts
     end
@@ -358,19 +356,19 @@ module RSpec::Puppet
     def str_from_value(value)
       case value
       when Hash
-        kvs = value.collect do |k,v|
+        kvs = value.collect do |k, v|
           "#{str_from_value(k)} => #{str_from_value(v)}"
-        end.join(", ")
+        end.join(', ')
         "{ #{kvs} }"
       when Array
         vals = value.map do |v|
           str_from_value(v)
-        end.join(", ")
+        end.join(', ')
         "[ #{vals} ]"
       when :default
-        'default'  # verbatim default keyword
+        'default' # verbatim default keyword
       when :undef
-        'undef'  # verbatim undef keyword
+        'undef' # verbatim undef keyword
       when Symbol
         str_from_value(value.to_s)
       else
@@ -381,8 +379,8 @@ module RSpec::Puppet
     def param_str_from_hash(params_hash)
       # the param_str has special quoting rules, because the top-level keys are the Puppet
       # params, which may not be quoted
-      params_hash.collect do |k,v|
-        "#{k.to_s} => #{str_from_value(v)}"
+      params_hash.collect do |k, v|
+        "#{k} => #{str_from_value(v)}"
       end.join(', ')
     end
 
@@ -392,7 +390,7 @@ module RSpec::Puppet
 
       # Enable app_management by default for Puppet versions that support it
       if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 && Puppet.version.to_i < 5
-        Puppet[:app_management] = ENV.include?('PUPPET_NOAPP_MANAGMENT') ? false : true
+        Puppet[:app_management] = !ENV.include?('PUPPET_NOAPP_MANAGMENT')
       end
 
       adapter.modulepath.map do |d|
@@ -405,25 +403,24 @@ module RSpec::Puppet
     end
 
     def with_vardir
-      begin
-        vardir = setup_puppet
-        return yield(vardir) if block_given?
-      ensure
-        FileUtils.rm_rf(vardir) if vardir && File.directory?(vardir)
-      end
+      vardir = setup_puppet
+      return yield(vardir) if block_given?
+    ensure
+      FileUtils.rm_rf(vardir) if vardir && File.directory?(vardir)
     end
 
-    def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported, node_params, *_)
+    def build_catalog_without_cache(nodename, facts_val, trusted_facts_val, hiera_config_val, code, exported,
+                                    node_params, *_)
       build_catalog_without_cache_v2({
-        nodename: nodename,
-        facts_val: facts_val,
-        trusted_facts_val: trusted_facts_val,
-        hiera_config_val: hiera_config_val,
-        code: code,
-        exported: exported,
-        node_params: node_params,
-        trusted_external: {},
-      })
+                                       nodename: nodename,
+                                       facts_val: facts_val,
+                                       trusted_facts_val: trusted_facts_val,
+                                       hiera_config_val: hiera_config_val,
+                                       code: code,
+                                       exported: exported,
+                                       node_params: node_params,
+                                       trusted_external: {}
+                                     })
     end
 
     def build_catalog_without_cache_v2(
@@ -445,7 +442,7 @@ module RSpec::Puppet
       # It would be nice if Puppet offered a public API for invalidating their
       # cached instance of Hiera, but que sera sera.  We will go directly against
       # the implementation out of absolute necessity.
-      HieraPuppet.instance_variable_set('@hiera', nil) if defined? HieraPuppet
+      HieraPuppet.instance_variable_set(:@hiera, nil) if defined? HieraPuppet
 
       Puppet[:code] = code
 
@@ -456,18 +453,16 @@ module RSpec::Puppet
       node_facts = Puppet::Node::Facts.new(nodename, facts_val.dup)
       node_params = facts_val.merge(node_params)
 
-      node_obj = Puppet::Node.new(nodename, { :parameters => node_params, :facts => node_facts })
+      node_obj = Puppet::Node.new(nodename, { parameters: node_params, facts: node_facts })
 
       trusted_info = ['remote', nodename, trusted_facts_val]
-      if Puppet::Util::Package.versioncmp(Puppet.version, '6.14.0') >= 0
-        trusted_info.push(trusted_external_data)
-      end
+      trusted_info.push(trusted_external_data) if Puppet::Util::Package.versioncmp(Puppet.version, '6.14.0') >= 0
       if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
         Puppet.push_context(
           {
-            :trusted_information => Puppet::Context::TrustedInformation.new(*trusted_info)
+            trusted_information: Puppet::Context::TrustedInformation.new(*trusted_info)
           },
-          "Context for spec trusted hash"
+          'Context for spec trusted hash'
         )
 
         node_obj.add_server_facts(server_facts_hash) if RSpec.configuration.trusted_server_facts
@@ -479,7 +474,7 @@ module RSpec::Puppet
     def stub_facts!(facts)
       Puppet.settings[:autosign] = false if Puppet.settings.include? :autosign
       FacterImpl.clear
-      facts.each { |k, v| FacterImpl.add(k, :weight => 999) { setcode { v } } }
+      facts.each { |k, v| FacterImpl.add(k, weight: 999) { setcode { v } } }
     end
 
     def build_catalog(*args)
@@ -493,27 +488,31 @@ module RSpec::Puppet
     end
 
     def munge_facts(facts)
-      return facts.reduce({}) do | memo, (k, v)|
-        memo.tap { |m| m[k.to_s] = munge_facts(v) }
-      end if facts.is_a? Hash
+      if facts.is_a? Hash
+        return facts.reduce({}) do |memo, (k, v)|
+          memo.tap { |m| m[k.to_s] = munge_facts(v) }
+        end
+      end
 
-      return facts.reduce([]) do |memo, v|
-        memo << munge_facts(v); memo
-      end if facts.is_a? Array
+      if facts.is_a? Array
+        return facts.each_with_object([]) do |v, memo|
+          memo << munge_facts(v)
+        end
+      end
 
       facts
     end
 
     def escape_special_chars(string)
-      string.gsub(/\$/, "\\$")
+      string.gsub(/\$/, '\\$')
     end
 
     def rspec_compatibility
-      if RSpec::Version::STRING < '3'
-        # RSpec 2 compatibility:
-        alias_method :failure_message_for_should, :failure_message
-        alias_method :failure_message_for_should_not, :failure_message_when_negated
-      end
+      return unless RSpec::Version::STRING < '3'
+
+      # RSpec 2 compatibility:
+      alias_method :failure_message_for_should, :failure_message
+      alias_method :failure_message_for_should_not, :failure_message_when_negated
     end
 
     def fixture_spec_hiera_conf(mod)
@@ -540,7 +539,7 @@ module RSpec::Puppet
     # @param [String] title reference title
     # @return [RSpec::Puppet::RawString] return a new RawString with the type/title populated correctly
     def ref(type, title)
-      return RSpec::Puppet::RawString.new("#{type}['#{title}']")
+      RSpec::Puppet::RawString.new("#{type}['#{title}']")
     end
 
     # Helper to return value wrapped in Sensitive type.
@@ -548,7 +547,7 @@ module RSpec::Puppet
     # @param [Object] value to wrap
     # @return [RSpec::Puppet::Sensitive] a new Sensitive wrapper with the new value
     def sensitive(value)
-      return RSpec::Puppet::Sensitive.new(value)
+      RSpec::Puppet::Sensitive.new(value)
     end
 
     # @!attribute [r] adapter

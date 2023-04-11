@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'test::bare_class' do
   describe 'rspec group' do
-    it 'should have a catalogue method' do
+    it 'has a catalogue method' do
       expect(catalogue).to be_a(Puppet::Resource::Catalog)
     end
 
@@ -27,8 +29,8 @@ describe 'test::bare_class' do
     # file and line information was only added to resources created with
     # ensure_resource() in 4.6.0 (PUP-6530).
     if Puppet::Util::Package.versioncmp(Puppet.version, '4.6.0') >= 0
-      it 'should not include resources from other modules created with create_resources()' do
-        expect(RSpec::Puppet::Coverage.instance.results[:resources]).to_not include('Notify[create_resources notify]')
+      it 'does not include resources from other modules created with create_resources()' do
+        expect(RSpec::Puppet::Coverage.instance.results[:resources]).not_to include('Notify[create_resources notify]')
         expect(subject).to contain_notify('create_resources notify')
       end
     end

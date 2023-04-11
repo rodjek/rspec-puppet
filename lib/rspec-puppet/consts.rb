@@ -1,27 +1,29 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet::Consts
   STUBBED_CONSTS = {
-    :posix => {
+    posix: {
       'File::PATH_SEPARATOR' => ':',
       'File::ALT_SEPARATOR' => nil,
-      'Pathname::SEPARATOR_PAT' => /#{Regexp.quote('/')}/,
+      'Pathname::SEPARATOR_PAT' => /#{Regexp.quote('/')}/
     },
-    :windows => {
+    windows: {
       'File::PATH_SEPARATOR' => ';',
-      'File::ALT_SEPARATOR' => "\\",
-      'Pathname::SEPARATOR_PAT' => /[#{Regexp.quote("\\")}#{Regexp.quote('/')}]/,
+      'File::ALT_SEPARATOR' => '\\',
+      'Pathname::SEPARATOR_PAT' => /[#{Regexp.quote("\\")}#{Regexp.quote('/')}]/
     }
-  }
+  }.freeze
 
   FEATURES = {
-    :posix   => {
-      :posix             => true,
-      :microsoft_windows => false,
+    posix: {
+      posix: true,
+      microsoft_windows: false
     },
-    :windows => {
-      :posix             => false,
-      :microsoft_windows => true,
-    },
-  }
+    windows: {
+      posix: false,
+      microsoft_windows: true
+    }
+  }.freeze
 
   def self.stub_consts_for(platform)
     STUBBED_CONSTS[platform].each do |const_name, const_value|

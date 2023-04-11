@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   module TypeAliasMatchers
     class AllowValue
@@ -8,13 +10,11 @@ module RSpec::Puppet
 
       def matches?(catalogue)
         matches = @values.map do |test_value|
-          begin
-            catalogue.call(test_value)
-            true
-          rescue Puppet::Error => e
-            @error_msgs << e.message
-            false
-          end
+          catalogue.call(test_value)
+          true
+        rescue Puppet::Error => e
+          @error_msgs << e.message
+          false
         end
         matches.all?
       end
@@ -28,11 +28,11 @@ module RSpec::Puppet
       end
 
       def failure_message
-        "expected that the type alias would " + description + " but it raised the #{@error_msgs.length == 1 ? 'error' : 'errors'} #{@error_msgs.join(', ')}"
+        "expected that the type alias would #{description} but it raised the #{@error_msgs.length == 1 ? 'error' : 'errors'} #{@error_msgs.join(', ')}"
       end
 
       def failure_message_when_negated
-        "expected that the type alias would not " + description + " but it does"
+        "expected that the type alias would not #{description} but it does"
       end
 
       def supports_block_expectations
@@ -48,6 +48,6 @@ module RSpec::Puppet
       RSpec::Puppet::TypeAliasMatchers::AllowValue.new(values)
     end
 
-    alias_method :allow_values, :allow_value
+    alias allow_values allow_value
   end
 end

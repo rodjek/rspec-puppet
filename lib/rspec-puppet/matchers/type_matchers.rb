@@ -1,10 +1,9 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   module TypeMatchers
-
     class CreateGeneric
-
-      def initialize(*args, &block)
-
+      def initialize(*_args)
         @exp_provider = nil
         @exp_parameters       = []
         @exp_properties       = []
@@ -22,19 +21,19 @@ module RSpec::Puppet
 
       # ensures the listed properties are valid
       def with_properties(props)
-        @exp_properties = @exp_properties | Array(props)
+        @exp_properties |= Array(props)
         self
       end
 
       # ensures the listed parameters are valid
       def with_parameters(params)
-        @exp_parameters = @exp_parameters | Array(params)
+        @exp_parameters |= Array(params)
         self
       end
 
       # ensure the type has the list of features
       def with_features(features)
-        @exp_features = @exp_features | Array(features)
+        @exp_features |= Array(features)
         self
       end
 
@@ -59,9 +58,8 @@ module RSpec::Puppet
         type   = type_title_and_params[0]
         title  = type_title_and_params[1]
         params = type_title_and_params[2]
-        unless match_params(type) && match_props(type) && match_features(type)
-         return false
-        end
+        return false unless match_params(type) && match_props(type) && match_features(type)
+
         if @params_with_values != {} || @exp_provider
           # only build a resource if we are validating provider or setting
           # additional parameters
@@ -97,25 +95,20 @@ module RSpec::Puppet
       # checks that the expected provider is set
       #
       def match_default_provider(resource)
-        if @exp_provider
-          if resource[:provider] == @exp_provider
-            return true
-          else
-            @errors.push("Expected provider: #{@exp_provider} does not match: #{resource[:provider]}")
-            return false
-          end
-        else
-          return true
-        end
+        return true unless @exp_provider
+        return true if resource[:provider] == @exp_provider
+
+        @errors.push("Expected provider: #{@exp_provider} does not match: #{resource[:provider]}")
+        false
       end
 
-      def match_default_values(resource)
-        # TODO FINISH
+      def match_default_values(_resource)
+        # TODO: FINISH
         true
       end
 
       def description
-        "be a valid type"
+        'be a valid type'
       end
 
       def failure_message
@@ -124,35 +117,31 @@ module RSpec::Puppet
 
       private
 
-        def match_attrs(type, attrs, attr_type)
-          baddies = []
-          attrs.each do |param|
-            param = param.to_sym
-            if attr_type == :feature
-              unless type.provider_feature(param)
-                baddies.push(param)
-              end
-            elsif ! type.send("valid#{attr_type}?".to_sym, param)
-              baddies.push(param)
-            end
-          end
-          if baddies.size > 0
-            @errors.push("Invalid #{pluralize(attr_type)}: #{baddies.join(',')}")
-            false
-          else
-            true
+      def match_attrs(type, attrs, attr_type)
+        baddies = []
+        attrs.each do |param|
+          param = param.to_sym
+          if attr_type == :feature
+            baddies.push(param) unless type.provider_feature(param)
+          elsif !type.send("valid#{attr_type}?".to_sym, param)
+            baddies.push(param)
           end
         end
-
-        def pluralize(name)
-          if name == :property
-            "properties"
-          else
-            "#{name}s"
-          end
+        if baddies.size.positive?
+          @errors.push("Invalid #{pluralize(attr_type)}: #{baddies.join(',')}")
+          false
+        else
+          true
         end
+      end
 
+      def pluralize(name)
+        if name == :property
+          'properties'
+        else
+          "#{name}s"
+        end
+      end
     end
-
   end
 end

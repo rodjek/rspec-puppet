@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   module GenericMatchers
     # Due to significant code base depending on the
@@ -16,7 +18,9 @@ module RSpec::Puppet
       end
     end
 
-    def raise_error(error=defined?(RSpec::Matchers::BuiltIn::RaiseError::UndefinedValue) ? RSpec::Matchers::BuiltIn::RaiseError::UndefinedValue : nil, message=nil, &block)
+    def raise_error(
+      error = defined?(RSpec::Matchers::BuiltIn::RaiseError::UndefinedValue) ? RSpec::Matchers::BuiltIn::RaiseError::UndefinedValue : nil, message = nil, &block
+    )
       RaiseError.new(error, message, &block)
     end
   end

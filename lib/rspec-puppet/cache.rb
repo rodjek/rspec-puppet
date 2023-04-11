@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   class Cache
-
     MAX_ENTRIES = 16
 
     # @param [Proc] default_proc The default proc to use to fetch objects on cache miss
@@ -12,7 +13,7 @@ module RSpec::Puppet
 
     def get(*args, &blk)
       key = Marshal.load(Marshal.dump(args))
-      if @cache.has_key?(key)
+      if @cache.key?(key)
         # Cache hit
         # move that entry last to make it "most recenty used"
         @lra.insert(-1, @lra.delete_at(@lra.index(args)))

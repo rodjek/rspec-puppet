@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   # A raw string object, that is used by helpers to allow consumers to return non-quoted strings
   # as part of their params section.

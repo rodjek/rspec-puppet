@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake'
 require 'open3'
 require 'json'
@@ -17,7 +19,7 @@ task :release_test do
     'garethr/garethr-docker',
     'sensu/sensu-puppet',
     'jenkinsci/puppet-jenkins',
-    'rnelson0/puppet-local_user',
+    'rnelson0/puppet-local_user'
   ]
 
   Bundler.with_clean_env do
@@ -61,7 +63,8 @@ task :release_test do
           end
 
           print '  Running baseline tests... '
-          baseline_output, _, status = Open3.capture3({'SPEC_OPTS' => '--format json'}, 'bundle', 'exec', 'rake', 'spec')
+          baseline_output, _, status = Open3.capture3({ 'SPEC_OPTS' => '--format json' }, 'bundle', 'exec', 'rake',
+                                                      'spec')
           if status.success?
             puts 'Done'
           else
@@ -94,12 +97,12 @@ task :release_test do
           if status.success?
             puts 'Done'
           else
-            puts "FAILED"
+            puts 'FAILED'
             next
           end
 
           print '  Running tests against rspec-puppet HEAD... '
-          head_output, _, status = Open3.capture3({'SPEC_OPTS' => '--format json'}, 'bundle', 'exec', 'rake', 'spec')
+          head_output, _, status = Open3.capture3({ 'SPEC_OPTS' => '--format json' }, 'bundle', 'exec', 'rake', 'spec')
           if status.success?
             puts 'Done'
           else
@@ -114,7 +117,7 @@ task :release_test do
             puts 'FAILED'
           end
 
-          json_regex = %r{\{(?:[^{}]|(?:\g<0>))*\}}x
+          json_regex = /\{(?:[^{}]|(?:\g<0>))*\}/x
           baseline_results = JSON.parse(baseline_output.scan(json_regex).find { |r| r.include?('summary_line') })
           head_results = JSON.parse(head_output.scan(json_regex).find { |r| r.include?('summary_line') })
           if head_results['summary_line'] == baseline_results['summary_line']

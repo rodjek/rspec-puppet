@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 if ENV['COVERAGE']
   require 'simplecov'
   require 'coveralls'
 
-  if ENV['COVERAGE'] == 'yes'
-    SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-  end
+  SimpleCov.formatter = Coveralls::SimpleCov::Formatter if ENV['COVERAGE'] == 'yes'
 
   SimpleCov.start do
     add_filter %r{^/spec/}
@@ -18,11 +18,12 @@ require 'rspec-puppet'
 # detect if running on windows
 def windows?
   return @windowsp unless @windowsp.nil?
+
   @windowsp = defined?(RSpec::Support) ? RSpec::Support::OS.windows? : !!File::ALT_SEPARATOR
 end
 
 def sensitive?
-  defined?(::Puppet::Pops::Types::PSensitiveType)
+  defined?(Puppet::Pops::Types::PSensitiveType)
 end
 
 module Helpers

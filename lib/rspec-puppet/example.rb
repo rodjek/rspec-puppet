@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rspec-puppet/support'
 require 'rspec-puppet/example/define_example_group'
 require 'rspec-puppet/example/class_example_group'
@@ -8,15 +10,12 @@ require 'rspec-puppet/example/type_alias_example_group'
 require 'rspec-puppet/example/provider_example_group'
 require 'rspec-puppet/example/application_example_group'
 
-RSpec::configure do |c|
-
+RSpec.configure do |c|
   def c.rspec_puppet_include(group, type, file_path)
     escaped_file_path = Regexp.compile(file_path.join('[\\\/]'))
-    if RSpec::Version::STRING < '3'
-      self.include group, :type => type, :example_group => { :file_path => escaped_file_path }, :spec_type => type
-    else
-      self.include group, :type => type, :file_path => lambda { |file_path, metadata| metadata[:type].nil? && escaped_file_path =~ file_path }
-    end
+    include group, type: type, file_path: lambda { |file_path, metadata|
+                                            metadata[:type].nil? && escaped_file_path =~ file_path
+                                          }
   end
 
   c.rspec_puppet_include RSpec::Puppet::DefineExampleGroup, :define, %w[spec defines]

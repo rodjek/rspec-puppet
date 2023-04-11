@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'test::bare_class' do
@@ -8,7 +10,7 @@ describe 'test::bare_class' do
       catalogue_id = catalogue.object_id
     end
 
-    it 'should contain the same catalogue ID' do
+    it 'contains the same catalogue ID' do
       expect(catalogue.object_id).to eq(catalogue_id)
     end
   end
@@ -34,7 +36,7 @@ describe 'test::bare_class' do
           { 'iteration' => i }
         end
 
-        it 'should contain the same catalogue ID' do
+        it 'contains the same catalogue ID' do
           expect(catalogue.object_id).to eq(catalogue_ids[i])
         end
       end
@@ -62,7 +64,7 @@ describe 'test::bare_class' do
           { 'iteration' => i }
         end
 
-        it 'should receive a new catalogue ID' do
+        it 'receives a new catalogue ID' do
           expect(catalogue.object_id).not_to eq(catalogue_ids[i])
         end
       end
@@ -74,7 +76,7 @@ describe 'test::bare_class' do
           { 'iteration' => i }
         end
 
-        it 'should contain the same catalogue ID' do
+        it 'contains the same catalogue ID' do
           expect(catalogue.object_id).to eq(catalogue_ids[i])
         end
       end

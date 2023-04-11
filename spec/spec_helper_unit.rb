@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 if ENV['COVERAGE']
   require 'coveralls'
   require 'simplecov'
 
-  if ENV['COVERAGE'] == 'yes'
-    SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-  end
+  SimpleCov.formatter = Coveralls::SimpleCov::Formatter if ENV['COVERAGE'] == 'yes'
 
   SimpleCov.start do
     add_filter %r{^/spec/}
@@ -36,13 +36,13 @@ RSpec.configure do |c|
   if Helpers.rspec2?
     RSpec::Matchers.define :be_truthy do
       match do |actual|
-        !!actual == true
+        !actual.nil? == true
       end
     end
 
     RSpec::Matchers.define :be_falsey do
       match do |actual|
-        !!actual == false
+        !actual.nil? == false
       end
     end
   end

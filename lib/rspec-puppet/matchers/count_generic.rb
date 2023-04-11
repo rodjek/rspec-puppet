@@ -1,20 +1,22 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   module ManifestMatchers
     class CountGeneric
       DEFAULT_RESOURCES = [
         'Class[main]',
         'Class[Settings]',
-        'Stage[main]',
+        'Stage[main]'
       ].freeze
 
       attr_reader :resource_type
 
       def initialize(type, count, *method)
-        if type.nil?
-          @type = method[0].to_s.gsub(/^have_(.+)_resource_count$/, '\1')
-        else
-          @type = type
-        end
+        @type = if type.nil?
+                  method[0].to_s.gsub(/^have_(.+)_resource_count$/, '\1')
+                else
+                  type
+                end
         @resource_type = referenced_type(@type)
         @expected_number = count.to_i
       end
@@ -28,7 +30,7 @@ module RSpec::Puppet
 
         @actual_number = if @type == 'resource'
                            resources.count do |res|
-                             !['Class', 'Node'].include?(res.type)
+                             !%w[Class Node].include?(res.type)
                            end
                          else
                            resources.count do |res|
@@ -43,24 +45,22 @@ module RSpec::Puppet
         desc = []
 
         desc << "contain exactly #{@expected_number}"
-        if @type == "class"
-          desc << "#{@expected_number == 1 ? "class" : "classes" }"
+        if @type == 'class'
+          desc << (@expected_number == 1 ? 'class' : 'classes').to_s
         else
-          unless @type == "resource"
-            desc << "#{@resource_type}"
-          end
-          desc << "#{@expected_number == 1 ? "resource" : "resources" }"
+          desc << @resource_type.to_s unless @type == 'resource'
+          desc << (@expected_number == 1 ? 'resource' : 'resources').to_s
         end
 
-        desc.join(" ")
+        desc.join(' ')
       end
 
       def failure_message
-        "expected that the catalogue would " + description + " but it contains #{@actual_number}"
+        "expected that the catalogue would #{description} but it contains #{@actual_number}"
       end
 
       def failure_message_when_negated
-        "expected that the catalogue would not " + description + " but it does"
+        "expected that the catalogue would not #{description} but it does"
       end
 
       def supports_block_expectations
@@ -71,10 +71,10 @@ module RSpec::Puppet
         true
       end
 
-    private
+      private
 
       def referenced_type(type)
-        type.split('__').map { |r| r.capitalize }.join('::')
+        type.split('__').map(&:capitalize).join('::')
       end
     end
 

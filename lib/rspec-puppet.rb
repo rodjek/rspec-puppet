@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'puppet'
 require 'rspec'
 require 'fileutils'
@@ -16,7 +18,7 @@ rescue LoadError
 end
 
 RSpec.configure do |c|
-  c.add_setting :enable_pathname_stubbing, :default => false
+  c.add_setting :enable_pathname_stubbing, default: false
 end
 
 module RSpec::Puppet
@@ -32,34 +34,34 @@ end
 require 'rspec-puppet/monkey_patches'
 
 RSpec.configure do |c|
-  c.add_setting :environmentpath, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
-  c.add_setting :module_path, :default => nil
-  c.add_setting :manifest_dir, :default => nil
-  c.add_setting :manifest, :default => nil
-  c.add_setting :template_dir, :default => nil
-  c.add_setting :config, :default => nil
-  c.add_setting :confdir, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
-  c.add_setting :default_facts, :default => {}
-  c.add_setting :default_node_params, :default => {}
-  c.add_setting :default_trusted_facts, :default => {}
-  c.add_setting :default_trusted_external_data, :default => {}
-  c.add_setting :facter_implementation, :default => :facter
-  c.add_setting :hiera_config, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
-  c.add_setting :parser, :default => 'current'
-  c.add_setting :trusted_node_data, :default => false
-  c.add_setting :ordering, :default => 'title-hash'
-  c.add_setting :stringify_facts, :default => true
-  c.add_setting :strict_variables, :default => false
-  c.add_setting :setup_fixtures, :default => true
-  c.add_setting :derive_node_facts_from_nodename, :default => true
+  c.add_setting :environmentpath, default: Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
+  c.add_setting :module_path, default: nil
+  c.add_setting :manifest_dir, default: nil
+  c.add_setting :manifest, default: nil
+  c.add_setting :template_dir, default: nil
+  c.add_setting :config, default: nil
+  c.add_setting :confdir, default: Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
+  c.add_setting :default_facts, default: {}
+  c.add_setting :default_node_params, default: {}
+  c.add_setting :default_trusted_facts, default: {}
+  c.add_setting :default_trusted_external_data, default: {}
+  c.add_setting :facter_implementation, default: :facter
+  c.add_setting :hiera_config, default: Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
+  c.add_setting :parser, default: 'current'
+  c.add_setting :trusted_node_data, default: false
+  c.add_setting :ordering, default: 'title-hash'
+  c.add_setting :stringify_facts, default: true
+  c.add_setting :strict_variables, default: false
+  c.add_setting :setup_fixtures, default: true
+  c.add_setting :derive_node_facts_from_nodename, default: true
   c.add_setting :adapter
-  c.add_setting :platform, :default => Puppet::Util::Platform.actual_platform
-  c.add_setting :vendormoduledir, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
-  c.add_setting :basemodulepath, :default => Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
-  c.add_setting :disable_module_hiera, :default => false
-  c.add_setting :fixture_hiera_configs, :default => {}
-  c.add_setting :use_fixture_spec_hiera, :default => false
-  c.add_setting :fallback_to_default_hiera, :default => true
+  c.add_setting :platform, default: Puppet::Util::Platform.actual_platform
+  c.add_setting :vendormoduledir, default: Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
+  c.add_setting :basemodulepath, default: Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
+  c.add_setting :disable_module_hiera, default: false
+  c.add_setting :fixture_hiera_configs, default: {}
+  c.add_setting :use_fixture_spec_hiera, default: false
+  c.add_setting :fallback_to_default_hiera, default: true
 
   c.instance_eval do
     def trusted_server_facts
@@ -68,14 +70,12 @@ RSpec.configure do |c|
 
     def trusted_server_facts=(value)
       @trusted_server_facts = value
-      adapter.setup_puppet(RSpec::Puppet.current_example) unless adapter.nil?
+      adapter&.setup_puppet(RSpec::Puppet.current_example)
     end
   end
 
   c.before(:all) do
-    if RSpec.configuration.setup_fixtures?
-      RSpec::Puppet::Setup.safe_setup_directories(nil, false)
-    end
+    RSpec::Puppet::Setup.safe_setup_directories(nil, false) if RSpec.configuration.setup_fixtures?
   end
 
   if defined?(Puppet::Test::TestHelper)
@@ -86,33 +86,25 @@ RSpec.configure do |c|
     end
 
     c.before :all do
-      begin
-        Puppet::Test::TestHelper.before_all_tests
-      rescue
-      end
+      Puppet::Test::TestHelper.before_all_tests
+    rescue StandardError
     end
 
     c.after :all do
-      begin
-        Puppet::Test::TestHelper.after_all_tests
-      rescue
-      end
+      Puppet::Test::TestHelper.after_all_tests
+    rescue StandardError
     end
 
     c.before :each do
-      begin
-        Puppet::Test::TestHelper.before_each_test
-      rescue Puppet::Context::DuplicateRollbackMarkError
-        Puppet::Test::TestHelper.send(:initialize_settings_before_each)
-      rescue
-      end
+      Puppet::Test::TestHelper.before_each_test
+    rescue Puppet::Context::DuplicateRollbackMarkError
+      Puppet::Test::TestHelper.send(:initialize_settings_before_each)
+    rescue StandardError
     end
 
     c.after :each do
-      begin
-        Puppet::Test::TestHelper.after_each_test
-      rescue
-      end
+      Puppet::Test::TestHelper.after_each_test
+    rescue StandardError
     end
   end
 
@@ -127,7 +119,7 @@ RSpec.configure do |c|
   c.before :each do |example|
     if RSpec::Puppet.rspec_puppet_example?
       Puppet::Util::Platform.pretend_to_be RSpec.configuration.platform
-      stub_file_consts(example) if self.respond_to?(:stub_file_consts)
+      stub_file_consts(example) if respond_to?(:stub_file_consts)
 
       if defined?(Selinux)
         if respond_to?(:allow)

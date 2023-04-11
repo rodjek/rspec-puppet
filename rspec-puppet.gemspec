@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'rspec-puppet/version'
@@ -18,4 +20,5 @@ Gem::Specification.new do |s|
 
   s.authors = ['Tim Sharpe', 'Puppet, Inc.', 'Community Contributors']
   s.email = ['tim@sharpe.id.au', 'modules-team@puppet.com']
+  s.metadata['rubygems_mfa_required'] = 'true'
 end

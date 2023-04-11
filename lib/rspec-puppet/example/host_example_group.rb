@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   module HostExampleGroup
     include RSpec::Puppet::ManifestMatchers
@@ -8,7 +10,7 @@ module RSpec::Puppet
     end
 
     def exported_resources
-      lambda { load_catalogue(:host, true) }
+      -> { load_catalogue(:host, true) }
     end
 
     def rspec_puppet_cleanup

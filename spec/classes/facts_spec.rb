@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 family = 'RedHat'
@@ -6,156 +8,176 @@ family = 'RedHat'
 # with the description of "Facter should not downcast fact names".  The "mixed case in facts" tests this functionality.
 
 describe 'structured_facts::hash' do
-
-  context 'symbols and strings in facts', :if => Puppet.version.to_f >= 4.0 do
-    let(:facts) {{
-      :os => {
-        'family' => family
+  context 'symbols and strings in facts', if: Puppet.version.to_f >= 4.0 do
+    let(:facts) do
+      {
+        os: {
+          'family' => family
+        }
       }
-    }}
+    end
 
-    it { should contain_class('structured_facts::hash') }
-    it { should compile.with_all_deps }
+    it { is_expected.to contain_class('structured_facts::hash') }
+    it { is_expected.to compile.with_all_deps }
 
-    it { should contain_notify(family) }
+    it { is_expected.to contain_notify(family) }
   end
 
-  context 'only symbols in facts', :if => Puppet.version.to_f >= 4.0 do
-    let(:facts) {{
-      :os => {
-        :family => family
+  context 'only symbols in facts', if: Puppet.version.to_f >= 4.0 do
+    let(:facts) do
+      {
+        os: {
+          family: family
+        }
       }
-    }}
+    end
 
-    it { should contain_class('structured_facts::hash') }
-    it { should compile.with_all_deps }
+    it { is_expected.to contain_class('structured_facts::hash') }
+    it { is_expected.to compile.with_all_deps }
 
-    it { should contain_notify(family) }
-  end
-
-  # See note concerning mixed case in facts at the beginning of the file
-  context 'mixed case symbols in facts', :if => Puppet.version.to_f >= 4.0 do
-    let(:facts) {{
-      :oS => {
-        :family => family
-      }
-    }}
-
-    it { should contain_class('structured_facts::hash') }
-    it { should compile.with_all_deps }
-
-    it { should contain_notify(family) }
-  end
-
-  context 'only strings in facts', :if => Puppet.version.to_f >= 4.0 do
-    let(:facts) {{
-      'os' => {
-        'family' => family
-      }
-    }}
-
-    it { should contain_class('structured_facts::hash') }
-    it { should compile.with_all_deps }
-
-    it { should contain_notify(family) }
+    it { is_expected.to contain_notify(family) }
   end
 
   # See note concerning mixed case in facts at the beginning of the file
-  context 'mixed case strings in facts', :if => Puppet.version.to_f >= 4.0 do
-    let(:facts) {{
-      'oS' => {
-        'family' => family
+  context 'mixed case symbols in facts', if: Puppet.version.to_f >= 4.0 do
+    let(:facts) do
+      {
+        oS: {
+          family: family
+        }
       }
-    }}
+    end
 
-    it { should contain_class('structured_facts::hash') }
-    it { should compile.with_all_deps }
+    it { is_expected.to contain_class('structured_facts::hash') }
+    it { is_expected.to compile.with_all_deps }
 
-    it { should contain_notify(family) }
+    it { is_expected.to contain_notify(family) }
+  end
+
+  context 'only strings in facts', if: Puppet.version.to_f >= 4.0 do
+    let(:facts) do
+      {
+        'os' => {
+          'family' => family
+        }
+      }
+    end
+
+    it { is_expected.to contain_class('structured_facts::hash') }
+    it { is_expected.to compile.with_all_deps }
+
+    it { is_expected.to contain_notify(family) }
+  end
+
+  # See note concerning mixed case in facts at the beginning of the file
+  context 'mixed case strings in facts', if: Puppet.version.to_f >= 4.0 do
+    let(:facts) do
+      {
+        'oS' => {
+          'family' => family
+        }
+      }
+    end
+
+    it { is_expected.to contain_class('structured_facts::hash') }
+    it { is_expected.to compile.with_all_deps }
+
+    it { is_expected.to contain_notify(family) }
   end
 end
 
 describe 'structured_facts::top_scope' do
-
   context 'symbols and strings in facts' do
-    let(:facts) {{
-      :os => {
-        'family' => family
+    let(:facts) do
+      {
+        os: {
+          'family' => family
+        }
       }
-    }}
+    end
 
-    it { should contain_class('structured_facts::top_scope') }
-    it { should compile.with_all_deps }
+    it { is_expected.to contain_class('structured_facts::top_scope') }
+    it { is_expected.to compile.with_all_deps }
 
-    it { should contain_notify(family) }
+    it { is_expected.to contain_notify(family) }
   end
 
   context 'only symbols in facts' do
-    let(:facts) {{
-      :os => {
-        :family => family
+    let(:facts) do
+      {
+        os: {
+          family: family
+        }
       }
-    }}
+    end
 
-    it { should contain_class('structured_facts::top_scope') }
-    it { should compile.with_all_deps }
+    it { is_expected.to contain_class('structured_facts::top_scope') }
+    it { is_expected.to compile.with_all_deps }
 
-    it { should contain_notify(family) }
+    it { is_expected.to contain_notify(family) }
   end
 
   # See note concerning mixed case in facts at the beginning of the file
   context 'mixed case in facts' do
-    let(:facts) {{
-      :Os => {
-        :family => family
+    let(:facts) do
+      {
+        Os: {
+          family: family
+        }
       }
-    }}
+    end
 
-    it { should contain_class('structured_facts::top_scope') }
-    it { should compile.with_all_deps }
+    it { is_expected.to contain_class('structured_facts::top_scope') }
+    it { is_expected.to compile.with_all_deps }
 
-    it { should contain_notify(family) }
+    it { is_expected.to contain_notify(family) }
   end
 
   context 'only string in facts' do
-    let(:facts) {{
-      'os' => {
-        'family' => family
+    let(:facts) do
+      {
+        'os' => {
+          'family' => family
+        }
       }
-    }}
+    end
 
-    it { should contain_class('structured_facts::top_scope') }
-    it { should compile.with_all_deps }
+    it { is_expected.to contain_class('structured_facts::top_scope') }
+    it { is_expected.to compile.with_all_deps }
 
-    it { should contain_notify(family) }
+    it { is_expected.to contain_notify(family) }
   end
 
   # See note concerning mixed case in facts at the beginning of the file
   context 'mixed case in facts' do
-    let(:facts) {{
-      'Os' => {
-        'family' => family
+    let(:facts) do
+      {
+        'Os' => {
+          'family' => family
+        }
       }
-    }}
+    end
 
-    it { should contain_class('structured_facts::top_scope') }
-    it { should compile.with_all_deps }
+    it { is_expected.to contain_class('structured_facts::top_scope') }
+    it { is_expected.to compile.with_all_deps }
 
-    it { should contain_notify(family) }
+    it { is_expected.to contain_notify(family) }
   end
 end
 
 describe 'structured_facts::case_check' do
-  context 'mixed case in structure fact nested keys', :if => Puppet.version.to_f >= 4.0 do
-    let(:facts) {{
-      'custom_fact' => {
-        'MixedCase' => 'value'
+  context 'mixed case in structure fact nested keys', if: Puppet.version.to_f >= 4.0 do
+    let(:facts) do
+      {
+        'custom_fact' => {
+          'MixedCase' => 'value'
+        }
       }
-    }}
+    end
 
-    it { should contain_class('structured_facts::case_check') }
-    it { should compile.with_all_deps }
+    it { is_expected.to contain_class('structured_facts::case_check') }
+    it { is_expected.to compile.with_all_deps }
 
-    it { should contain_notify('value') }
+    it { is_expected.to contain_notify('value') }
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   if defined?(::Puppet::Pops::Types::PSensitiveType::Sensitive)
     # A wrapper representing Sensitive data type, eg. in class params.
@@ -27,12 +29,12 @@ module RSpec::Puppet
       # If compared to Puppet Sensitive type, it compares the wrapped values.
 
       # @param other [#unwrap, Object] value to compare to
-      def == other
+      def ==(other)
         if other.respond_to? :unwrap
-          if unwrap.kind_of?(Regexp)
-            return unwrap =~ other.unwrap
+          if unwrap.is_a?(Regexp)
+            unwrap =~ other.unwrap
           else
-            return unwrap == other.unwrap
+            unwrap == other.unwrap
           end
         else
           super
@@ -40,12 +42,12 @@ module RSpec::Puppet
       end
     end
   else
-    #:nocov:
+    # :nocov:
     class Sensitive
-      def initialize(value)
+      def initialize(_value)
         raise 'The use of the Sensitive data type is not supported by this Puppet version'
       end
     end
-    #:nocov:
+    # :nocov:
   end
 end

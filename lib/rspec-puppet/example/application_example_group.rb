@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   # This module provides support for the application type
   module ApplicationExampleGroup
@@ -9,7 +11,7 @@ module RSpec::Puppet
     end
 
     def exported_resources
-      lambda { load_catalogue(:application, true) }
+      -> { load_catalogue(:application, true) }
     end
 
     def rspec_puppet_cleanup

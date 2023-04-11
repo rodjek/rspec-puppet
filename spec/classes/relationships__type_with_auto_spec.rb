@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe 'relationships::type_with_auto', :if => Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0 do
+describe 'relationships::type_with_auto', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0 do
   it { is_expected.to compile.with_all_deps }
+
   it do
-    is_expected.to contain_type_with_all_auto('test')
+    expect(subject).to contain_type_with_all_auto('test')
       .that_comes_before('Notify[test/before]')
       .that_notifies('Notify[test/notify]')
       .that_requires('Notify[test/require]')

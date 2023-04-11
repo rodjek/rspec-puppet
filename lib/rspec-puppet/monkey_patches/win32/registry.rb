@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec
   module Puppet
     module Win32
@@ -37,9 +39,9 @@ module RSpec
           KEY_NOTIFY = 0x0010
           KEY_CREATE_LINK = 0x0020
           KEY_READ = STANDARD_RIGHTS_READ |
-          KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY
+                     KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY
           KEY_WRITE = STANDARD_RIGHTS_WRITE |
-          KEY_SET_VALUE | KEY_CREATE_SUB_KEY
+                      KEY_SET_VALUE | KEY_CREATE_SUB_KEY
           KEY_EXECUTE = KEY_READ
           KEY_ALL_ACCESS = KEY_READ | KEY_WRITE | KEY_CREATE_LINK
 
@@ -50,8 +52,8 @@ module RSpec
           REG_OPTION_BACKUP_RESTORE = 0x0004
           REG_OPTION_OPEN_LINK = 0x0008
           REG_LEGAL_OPTION = REG_OPTION_RESERVED |
-          REG_OPTION_NON_VOLATILE | REG_OPTION_CREATE_LINK |
-          REG_OPTION_BACKUP_RESTORE | REG_OPTION_OPEN_LINK
+                             REG_OPTION_NON_VOLATILE | REG_OPTION_CREATE_LINK |
+                             REG_OPTION_BACKUP_RESTORE | REG_OPTION_OPEN_LINK
 
           REG_CREATED_NEW_KEY = 1
           REG_OPENED_EXISTING_KEY = 2
@@ -62,7 +64,7 @@ module RSpec
           REG_FORCE_RESTORE = 0x0008
 
           MAX_KEY_LENGTH = 514
-          MAX_VALUE_LENGTH = 32768
+          MAX_VALUE_LENGTH = 32_768
         end
         include Constants
       end

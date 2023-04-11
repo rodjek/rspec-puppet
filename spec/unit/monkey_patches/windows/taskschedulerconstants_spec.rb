@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-klass = if defined?(::Win32::TaskScheduler::TaskSchedulerConstants)
-          ::Win32::TaskScheduler::TaskSchedulerConstants
+klass = if defined?(Win32::TaskScheduler::TaskSchedulerConstants)
+          Win32::TaskScheduler::TaskSchedulerConstants
         else
-          ::Windows::TaskSchedulerConstants
+          Windows::TaskSchedulerConstants
         end
 
 describe klass do
@@ -11,31 +13,30 @@ describe klass do
 
   let(:stub_class) { RSpec::Puppet::Windows::TaskSchedulerConstants }
 
-
-  context 'on non-windows', :unless => windows? do
-    it { should_not be_nil }
+  context 'on non-windows', unless: windows? do
+    it { is_expected.not_to be_nil }
 
     it 'uses the stubbed rspec-puppet version' do
-      should eq(stub_class)
+      expect(subject).to eq(stub_class)
     end
   end
 
-  context 'on windows', :if => windows? do
-    ignored_consts = [
-      :VERSION,
-      :FORMAT_MESSAGE_IGNORE_INSERTS,
-      :FORMAT_MESSAGE_FROM_SYSTEM,
-      :FORMAT_MESSAGE_MAX_WIDTH_MASK,
-      :Error,
-      :SERVICE_ACCOUNT_USERS,
-      :BUILT_IN_GROUPS,
-      :SYSTEM_USERS,
+  context 'on windows', if: windows? do
+    ignored_consts = %i[
+      VERSION
+      FORMAT_MESSAGE_IGNORE_INSERTS
+      FORMAT_MESSAGE_FROM_SYSTEM
+      FORMAT_MESSAGE_MAX_WIDTH_MASK
+      Error
+      SERVICE_ACCOUNT_USERS
+      BUILT_IN_GROUPS
+      SYSTEM_USERS
     ]
 
-    it { should_not be_nil }
+    it { is_expected.not_to be_nil }
 
     it 'does not use the stubbed rspec-puppet version' do
-      should_not eq(stub_class)
+      expect(subject).not_to eq(stub_class)
     end
 
     described_class.constants.each do |const_name|
@@ -44,7 +45,7 @@ describe klass do
       context const_name.to_s do
         subject { described_class.const_get(const_name) }
 
-        it { should eq(stub_class.const_get(const_name)) }
+        it { is_expected.to eq(stub_class.const_get(const_name)) }
       end
     end
   end
