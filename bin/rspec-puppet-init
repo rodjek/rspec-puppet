@@ -1,16 +1,17 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 
 require 'rspec-puppet'
 require 'optparse'
 
 options = {
-  :module_name => nil,
+  module_name: nil
 }
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: rspec-puppet-init [options]"
+  opts.banner = 'Usage: rspec-puppet-init [options]'
 
   opts.on('-n', '--name NAME', 'The name of the module (override autodetection)') do |v|
     options[:module_name] = v

@@ -3,6 +3,6 @@
 require 'spec_helper'
 
 describe 'unique' do
-  it { should compile }
-  it { should have_unique_values_for_all('user', 'uid') }
+  it { is_expected.to compile }
+  it { is_expected.to have_unique_values_for_all('user', 'uid') }
 end

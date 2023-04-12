@@ -1,4 +1,20 @@
-# Silencing rubocop warnings until https://tickets.puppetlabs.com/browse/CONT-725
-# is completed
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-performance
+  - rubocop-rspec
+
 AllCops:
-  DisabledByDefault: true
+  Exclude:
+    - Gemfile
+    - Rakefile
+    - spec/fixtures/**/*
+    - vendor/bundle/**/*
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: '2.7'
+
+# Disabled
+Style/ClassAndModuleChildren:
+  Enabled: false
+

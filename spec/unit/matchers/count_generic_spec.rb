@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 require 'spec_helper_unit'
 
 describe RSpec::Puppet::ManifestMatchers::CountGeneric do
   subject(:matcher) { described_class.new(type, expected, method) }
 
   let(:actual) do
-    lambda { test_double(Puppet::Resource::Catalog, :resources => resource_objects) }
+    -> { test_double(Puppet::Resource::Catalog, resources: resource_objects) }
   end
 
   let(:resource_objects) do
     resources.map do |type, title|
-      test_double(Puppet::Resource, :ref => "#{type}[#{title}]", :type => type)
+      test_double(Puppet::Resource, ref: "#{type}[#{title}]", type: type)
     end
   end
 
@@ -19,9 +21,9 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
   let(:method) { nil }
   let(:default_resources) do
     [
-      ['Class', 'main'],
-      ['Class', 'Settings'],
-      ['Stage', 'main'],
+      %w[Class main],
+      %w[Class Settings],
+      %w[Stage main]
     ]
   end
 
@@ -145,7 +147,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
       let(:resources) do
         [
           ['Class', 'test'],
-          ['Node', 'testhost.test.com'],
+          ['Node', 'testhost.test.com']
         ]
       end
 
@@ -158,7 +160,7 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
           super() + [
             ['File', '/tmp/testfile'],
             ['Exec', 'some command'],
-            ['Service', 'a service'],
+            ['Service', 'a service']
           ]
         end
 
@@ -185,8 +187,8 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
       let(:expected) { 1 }
       let(:resources) do
         [
-          ['Class', 'test'],
-          ['File', 'testfile'],
+          %w[Class test],
+          %w[File testfile]
         ]
       end
 

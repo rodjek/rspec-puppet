@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'someotherhost' do
-  let(:pre_condition) { <<-EOF
+  let(:pre_condition) do
+    <<-EOF
     define foo($param) {
     }
 
@@ -9,7 +12,7 @@ describe 'someotherhost' do
       param => ['baz'],
     }
     EOF
-  }
+  end
 
-  it { should contain_foo('bar').with_param(['baz']) }
+  it { is_expected.to contain_foo('bar').with_param(['baz']) }
 end

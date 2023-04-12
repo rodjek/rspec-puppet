@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'rspec-puppet/support'
 
@@ -6,190 +8,224 @@ if Puppet.version.to_f >= 3.0
   describe RSpec::Puppet::ManifestMatchers::Compile do
     include RSpec::Puppet::Support
     # override RSpec::Puppet::Support's subject with the original default
-    subject { RSpec::Puppet::ManifestMatchers::Compile.new }
+    subject { described_class.new }
 
-    let(:catalogue) { lambda { load_catalogue(:host) } }
+    let(:catalogue) { -> { load_catalogue(:host) } }
     let(:facts) { { 'operatingsystem' => 'Debian' } }
 
-    describe "a valid manifest" do
-      let (:pre_condition) { 'file { "/tmp/resource": }' }
+    describe 'a valid manifest' do
+      let(:pre_condition) { 'file { "/tmp/resource": }' }
 
-      it ("matches") { is_expected.to be_matches catalogue }
-      it { is_expected.to have_attributes(
-        :description => "compile into a catalogue without dependency cycles"
-      )}
+      it('matches') { is_expected.to be_matches catalogue }
 
-      context "when expecting an \"example\" error" do
-        before(:each) { subject.and_raise_error("example") }
+      it {
+        expect(subject).to have_attributes(
+          description: 'compile into a catalogue without dependency cycles'
+        )
+      }
 
-        it ("doesn't match") { is_expected.to_not be_matches catalogue }
-        it { is_expected.to have_attributes(
-          :description => "fail to compile and raise the error \"example\""
-        )}
+      context 'when expecting an "example" error' do
+        before { subject.and_raise_error('example') }
 
-        context "after matching" do
-          before(:each) { subject.matches? catalogue }
+        it("doesn't match") { is_expected.not_to be_matches catalogue }
 
-          it { is_expected.to have_attributes(
-            :failure_message => a_string_starting_with("expected that the catalogue would fail to compile and raise the error \"example\"")
-          )}
+        it {
+          expect(subject).to have_attributes(
+            description: 'fail to compile and raise the error "example"'
+          )
+        }
+
+        context 'after matching' do
+          before { subject.matches? catalogue }
+
+          it {
+            expect(subject).to have_attributes(
+              failure_message: a_string_starting_with('expected that the catalogue would fail to compile and raise the error "example"')
+            )
+          }
         end
       end
 
-      context "when matching an \"example\" error" do
-        before(:each) { subject.and_raise_error(/example/) }
+      context 'when matching an "example" error' do
+        before { subject.and_raise_error(/example/) }
 
-        it ("doesn't match") { is_expected.to_not be_matches catalogue }
-        it { is_expected.to have_attributes(
-          :description => "fail to compile and raise an error matching /example/"
-        )}
+        it("doesn't match") { is_expected.not_to be_matches catalogue }
 
-        context "after matching" do
-          before(:each) { subject.matches? catalogue }
+        it {
+          expect(subject).to have_attributes(
+            description: 'fail to compile and raise an error matching /example/'
+          )
+        }
 
-          it { is_expected.to have_attributes(
-            :failure_message => a_string_starting_with("expected that the catalogue would fail to compile and raise an error matching /example/")
-          )}
+        context 'after matching' do
+          before { subject.matches? catalogue }
+
+          it {
+            expect(subject).to have_attributes(
+              failure_message: a_string_starting_with('expected that the catalogue would fail to compile and raise an error matching /example/')
+            )
+          }
         end
       end
     end
 
-    describe "a manifest with missing dependencies" do
-      let (:pre_condition) { 'file { "/tmp/resource": require => File["/tmp/missing"] }' }
+    describe 'a manifest with missing dependencies' do
+      let(:pre_condition) { 'file { "/tmp/resource": require => File["/tmp/missing"] }' }
 
-      it ("doesn't match") { is_expected.to_not be_matches catalogue }
+      it("doesn't match") { is_expected.not_to be_matches catalogue }
 
-      context "after matching" do
-        before(:each) { subject.matches? catalogue }
+      context 'after matching' do
+        before { subject.matches? catalogue }
 
-        it { is_expected.to have_attributes(
-          :failure_message => a_string_matching(%r{\Aerror during compilation: Could not (retrieve dependency|find resource) 'File\[/tmp/missing\]'})
-        )}
+        it {
+          expect(subject).to have_attributes(
+            failure_message: a_string_matching(%r{\Aerror during compilation: Could not (retrieve dependency|find resource) 'File\[/tmp/missing\]'})
+          )
+        }
       end
     end
 
-    describe "a manifest with syntax error" do
-      let (:pre_condition) { 'file { "/tmp/resource": ' }
+    describe 'a manifest with syntax error' do
+      let(:pre_condition) { 'file { "/tmp/resource": ' }
 
-      it ("doesn't match") { is_expected.to_not be_matches catalogue }
+      it("doesn't match") { is_expected.not_to be_matches catalogue }
 
-      context "after matching" do
-        before(:each) { subject.matches? catalogue }
+      context 'after matching' do
+        before { subject.matches? catalogue }
 
-        it { is_expected.to have_attributes(
-          :failure_message => a_string_starting_with("error during compilation: ")
-        )}
+        it {
+          expect(subject).to have_attributes(
+            failure_message: a_string_starting_with('error during compilation: ')
+          )
+        }
       end
     end
 
-    describe "a manifest with a dependency cycle" do
-      let (:pre_condition) { <<-EOS
+    describe 'a manifest with a dependency cycle' do
+      let(:pre_condition) do
+        <<-EOS
         file { "/tmp/a": require => File["/tmp/b"] }
         file { "/tmp/b": require => File["/tmp/a"] }
         EOS
-      }
-
-      it ("doesn't match") { is_expected.to_not be_matches catalogue }
-
-      context "after matching" do
-        before(:each) { subject.matches? catalogue }
-
-        it { is_expected.to have_attributes(
-          :failure_message => a_string_starting_with("dependency cycles found: ")
-        )}
       end
 
-      context "when expecting an \"example\" error" do
-        before(:each) { subject.and_raise_error("example") }
+      it("doesn't match") { is_expected.not_to be_matches catalogue }
 
-        it ("doesn't match") { is_expected.to_not be_matches catalogue }
+      context 'after matching' do
+        before { subject.matches? catalogue }
 
-        context "after matching" do
-          before(:each) { subject.matches? catalogue }
+        it {
+          expect(subject).to have_attributes(
+            failure_message: a_string_starting_with('dependency cycles found: ')
+          )
+        }
+      end
 
-          it { is_expected.to have_attributes(
-            :description => "fail to compile and raise the error \"example\"",
-            :failure_message => a_string_starting_with("dependency cycles found: ")
-          )}
+      context 'when expecting an "example" error' do
+        before { subject.and_raise_error('example') }
+
+        it("doesn't match") { is_expected.not_to be_matches catalogue }
+
+        context 'after matching' do
+          before { subject.matches? catalogue }
+
+          it {
+            expect(subject).to have_attributes(
+              description: 'fail to compile and raise the error "example"',
+              failure_message: a_string_starting_with('dependency cycles found: ')
+            )
+          }
         end
       end
 
-      context "when matching an \"example\" error" do
-        before(:each) { subject.and_raise_error(/example/) }
+      context 'when matching an "example" error' do
+        before { subject.and_raise_error(/example/) }
 
-        it ("doesn't match") { is_expected.to_not be_matches catalogue }
+        it("doesn't match") { is_expected.not_to be_matches catalogue }
 
-        context "after matching" do
-          before(:each) { subject.matches? catalogue }
+        context 'after matching' do
+          before { subject.matches? catalogue }
 
-          it { is_expected.to have_attributes(
-            :description => "fail to compile and raise an error matching /example/",
-            :failure_message => a_string_starting_with("dependency cycles found: ")
-          )}
+          it {
+            expect(subject).to have_attributes(
+              description: 'fail to compile and raise an error matching /example/',
+              failure_message: a_string_starting_with('dependency cycles found: ')
+            )
+          }
         end
       end
     end
 
-    describe "a manifest with a real failure" do
-      let (:pre_condition) { 'fail("failure")' }
+    describe 'a manifest with a real failure' do
+      let(:pre_condition) { 'fail("failure")' }
 
-      it ("doesn't match") { is_expected.to_not be_matches catalogue }
+      it("doesn't match") { is_expected.not_to be_matches catalogue }
 
-      context "after matching" do
-        before(:each) { subject.matches? catalogue }
+      context 'after matching' do
+        before { subject.matches? catalogue }
 
-        it { is_expected.to have_attributes(
-          :description => "compile into a catalogue without dependency cycles",
-          :failure_message => a_string_starting_with("error during compilation: ")
-        )}
+        it {
+          expect(subject).to have_attributes(
+            description: 'compile into a catalogue without dependency cycles',
+            failure_message: a_string_starting_with('error during compilation: ')
+          )
+        }
       end
 
-      context "when expecting the failure" do
+      context 'when expecting the failure' do
         let(:expected_error) do
           "Evaluation Error: Error while evaluating a Function Call, #{error_detail} on node rspec::puppet::manifestmatchers::compile"
         end
 
-        before(:each) { subject.and_raise_error(expected_error) }
+        before { subject.and_raise_error(expected_error) }
 
         if Puppet::Util::Package.versioncmp(Puppet.version, '5.3.4') >= 0
-          let(:error_detail) { "failure (line: 52, column: 1)" }
+          let(:error_detail) { 'failure (line: 52, column: 1)' }
         else
-          let(:error_detail) { "failure at line 52:1" }
+          let(:error_detail) { 'failure at line 52:1' }
         end
 
         if Puppet.version.to_f >= 4.0
           # the error message above is puppet4 specific
-          it ("matches") { is_expected.to be_matches catalogue }
+          it('matches') { is_expected.to be_matches catalogue }
         end
 
-        it { is_expected.to have_attributes(
-          :description => "fail to compile and raise the error \"#{expected_error}\""
-        )}
+        it {
+          expect(subject).to have_attributes(
+            description: "fail to compile and raise the error \"#{expected_error}\""
+          )
+        }
 
-        context "after matching" do
-          before(:each) { subject.matches? catalogue }
+        context 'after matching' do
+          before { subject.matches? catalogue }
 
-          it { is_expected.to have_attributes(
-            :failure_message => a_string_starting_with("error during compilation: ")
-          )}
+          it {
+            expect(subject).to have_attributes(
+              failure_message: a_string_starting_with('error during compilation: ')
+            )
+          }
         end
       end
 
-      context "when matching the failure" do
-        before(:each) { subject.and_raise_error(/failure/) }
+      context 'when matching the failure' do
+        before { subject.and_raise_error(/failure/) }
 
-        it ("matches") { is_expected.to be_matches catalogue }
-        it { is_expected.to have_attributes(
-          :description => "fail to compile and raise an error matching /failure/"
-        )}
+        it('matches') { is_expected.to be_matches catalogue }
 
+        it {
+          expect(subject).to have_attributes(
+            description: 'fail to compile and raise an error matching /failure/'
+          )
+        }
 
-        context "after matching" do
-          before(:each) { subject.matches? catalogue }
+        context 'after matching' do
+          before { subject.matches? catalogue }
 
-          it { is_expected.to have_attributes(
-            :failure_message => a_string_starting_with("error during compilation: ")
-          )}
+          it {
+            expect(subject).to have_attributes(
+              failure_message: a_string_starting_with('error during compilation: ')
+            )
+          }
         end
       end
     end

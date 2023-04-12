@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tmpdir'
 require 'digest'
 require 'json'
@@ -16,23 +18,22 @@ end
 
 module RSpec::Puppet
   class Coverage
-
     attr_accessor :filters, :filters_regex
 
     class << self
       extend Forwardable
 
-      delegated_methods = [
-        :instance,
-        :add,
-        :cover!,
-        :report!,
-        :filters,
-        :filters_regex,
-        :add_filter,
-        :add_filter_regex,
-        :add_from_catalog,
-        :results,
+      delegated_methods = %i[
+        instance
+        add
+        cover!
+        report!
+        filters
+        filters_regex
+        add_filter
+        add_filter_regex
+        add_from_catalog
+        results
       ]
 
       def_delegators(*delegated_methods)
@@ -112,23 +113,21 @@ module RSpec::Puppet
     end
 
     def add(resource)
-      if !exists?(resource) && !filtered?(resource)
-        @collection[resource.to_s] = ResourceWrapper.new(resource)
-      end
+      return unless !exists?(resource) && !filtered?(resource)
+
+      @collection[resource.to_s] = ResourceWrapper.new(resource)
     end
 
     def add_filter(type, title)
       type = capitalize_name(type)
 
-      if type == 'Class'
-        title = capitalize_name(title)
-      end
+      title = capitalize_name(title) if type == 'Class'
 
       @filters << "#{type}[#{title}]"
     end
 
     def add_filter_regex(type, pattern)
-      raise ArgumentError.new('pattern argument must be a Regexp') unless pattern.is_a?(Regexp)
+      raise ArgumentError, 'pattern argument must be a Regexp' unless pattern.is_a?(Regexp)
 
       type = capitalize_name(type)
 
@@ -145,7 +144,7 @@ module RSpec::Puppet
 
       # match an even number of backslashes before the anchor - this indicates that the anchor was not escaped
       # note the necessity for the negative lookbehind `(?<!)` to assert that there is no backslash before this
-      src = if src.match(/(?<!\\)(\\\\)*(?:\\[zZ]|\$)\z/)
+      src = if /(?<!\\)(\\\\)*(?:\\[zZ]|\$)\z/.match?(src)
               src.gsub(/(?:\\[zZ]|\$)\z/, '')
             else
               # no anchor at the end
@@ -157,7 +156,9 @@ module RSpec::Puppet
 
     # add all resources from catalog declared in module test_module
     def add_from_catalog(catalog, test_module)
-      coverable_resources = catalog.to_a.reject { |resource| !test_module.nil? && filter_resource?(resource, test_module) }
+      coverable_resources = catalog.to_a.reject do |resource|
+        !test_module.nil? && filter_resource?(resource, test_module)
+      end
       coverable_resources.each do |resource|
         add(resource)
       end
@@ -171,9 +172,9 @@ module RSpec::Puppet
     end
 
     def cover!(resource)
-      if !filtered?(resource) && (wrapper = find(resource))
-        wrapper.touch!
-      end
+      return unless !filtered?(resource) && (wrapper = find(resource))
+
+      wrapper.touch!
     end
 
     def report!(coverage_desired = nil)
@@ -213,9 +214,9 @@ module RSpec::Puppet
       coverage_desired ||= 0
 
       if coverage_desired.is_a?(Numeric) && coverage_desired.to_f <= 100.00 && coverage_desired.to_f >= 0.0
-        coverage_test = RSpec.describe("Code coverage")
+        coverage_test = RSpec.describe('Code coverage')
         coverage_results = coverage_test.example("must cover at least #{coverage_desired}% of resources") do
-          expect( coverage_actual.to_f ).to be >= coverage_desired.to_f
+          expect(coverage_actual.to_f).to be >= coverage_desired.to_f
         end
         coverage_test.run(RSpec.configuration.reporter)
 
@@ -248,8 +249,8 @@ module RSpec::Puppet
       report[:touched] = @collection.count { |_, resource| resource.touched? }
       report[:untouched] = report[:total] - report[:touched]
 
-      coverage = report[:total].to_f > 0 ? ((report[:touched].to_f / report[:total].to_f) * 100) : 100.0
-      report[:coverage] = "%5.2f" % coverage
+      coverage = report[:total].to_f.positive? ? ((report[:touched].to_f / report[:total]) * 100) : 100.0
+      report[:coverage] = '%5.2f' % coverage
 
       report[:resources] = Hash[*@collection.map do |name, wrapper|
         [name, wrapper.to_hash]
@@ -258,10 +259,10 @@ module RSpec::Puppet
       text = [
         "Total resources:   #{report[:total]}",
         "Touched resources: #{report[:touched]}",
-        "Resource coverage: #{report[:coverage]}%",
+        "Resource coverage: #{report[:coverage]}%"
       ]
 
-      if report[:untouched] > 0
+      if (report[:untouched]).positive?
         text += ['', 'Untouched resources:']
         untouched_resources = report[:resources].reject { |_, r| r[:touched] }
         text += untouched_resources.map { |name, _| "  #{name}" }.sort
@@ -288,25 +289,19 @@ module RSpec::Puppet
     # @param test_module [String] The name of the module under test
     # @return [true, false]
     def filter_resource?(resource, test_module)
-      if filtered?(resource)
-        return true
-      end
+      return true if filtered?(resource)
 
       if resource.type == 'Class'
         module_name = resource.title.split('::').first.downcase
-        if module_name != test_module
-          return true
-        end
+        return true if module_name != test_module
       end
 
       if resource.file
         paths = module_paths(test_module)
-        unless paths.any? { |path| resource.file.include?(path) }
-          return true
-        end
+        return true unless paths.any? { |path| resource.file.include?(path) }
       end
 
-      return false
+      false
     end
 
     # Find all paths that may contain testable resources for a module.
@@ -330,7 +325,7 @@ module RSpec::Puppet
     end
 
     def capitalize_name(name)
-      name.split('::').map { |subtitle| subtitle.capitalize }.join('::')
+      name.split('::').map(&:capitalize).join('::')
     end
 
     class ResourceWrapper
@@ -346,7 +341,7 @@ module RSpec::Puppet
 
       def to_hash
         {
-          :touched => touched?,
+          touched: touched?
         }
       end
 

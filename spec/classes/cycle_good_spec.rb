@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'cycle::good' do
-  it { should compile }
-  it { should_not compile.and_raise_error(//) }
+  it { is_expected.to compile }
+  it { is_expected.not_to compile.and_raise_error(//) }
 end

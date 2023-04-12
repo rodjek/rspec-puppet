@@ -1,24 +1,26 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'File constants' do
-  context 'on windows', :if => windows? do
+  context 'on windows', if: windows? do
     specify('File::PATH_SEPARATOR') { expect(File::PATH_SEPARATOR).to eq(';') }
-    specify('File::ALT_SEPARATOR') { expect(File::ALT_SEPARATOR).to eq("\\") }
+    specify('File::ALT_SEPARATOR') { expect(File::ALT_SEPARATOR).to eq('\\') }
   end
 
-  context 'on non-windows', :unless => windows? do
+  context 'on non-windows', unless: windows? do
     specify('File::PATH_SEPARATOR') { expect(File::PATH_SEPARATOR).to eq(':') }
     specify('File::ALT_SEPARATOR') { expect(File::ALT_SEPARATOR).to be_nil }
   end
 end
 
 describe 'Pathname constants' do
-  context 'on windows', :if => windows? do
-    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT.to_s).to eq(%r{[\\\/]}.to_s) }
+  context 'on windows', if: windows? do
+    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT.to_s).to eq(%r{[\\/]}.to_s) }
   end
 
-  context 'on non-windows', :unless => windows? do
-    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT.to_s).to eq(%r{\/}.to_s) }
+  context 'on non-windows', unless: windows? do
+    specify('Pathname::SEPARATOR_PAT') { expect(Pathname::SEPARATOR_PAT.to_s).to eq(%r{/}.to_s) }
   end
 end
 
@@ -40,7 +42,7 @@ describe 'Pathname#rspec_puppet_basename' do
     it 'returns the basename of a path (basic cases)' do
       expect(subject.rspec_puppet_basename('/Some/path/to/test.txt')).to eq('test.txt')
       expect(subject.rspec_puppet_basename(File.join('/tmp'))).to eq('tmp')
-      expect(subject.rspec_puppet_basename(File.join(*%w( g f d s a b)))).to eq('b')
+      expect(subject.rspec_puppet_basename(File.join(*%w[g f d s a b]))).to eq('b')
       expect(subject.rspec_puppet_basename(File.join('/tmp/'))).to eq('tmp')
       expect(subject.rspec_puppet_basename('/')).to eq('/')
       expect(subject.rspec_puppet_basename('//')).to eq('/')
@@ -77,7 +79,7 @@ describe 'Pathname#rspec_puppet_basename' do
 
     context 'on posix' do
       before do
-        stub_const('Pathname::SEPARATOR_PAT', /\//)
+        stub_const('Pathname::SEPARATOR_PAT', %r{/})
       end
 
       it 'returns the basename for edgecases' do
@@ -94,7 +96,7 @@ describe 'Pathname#rspec_puppet_basename' do
 
     context 'on windows' do
       before do
-        stub_const('Pathname::SEPARATOR_PAT', /[\\\/]/)
+        stub_const('Pathname::SEPARATOR_PAT', %r{[\\/]})
       end
 
       it 'handles UNC pathnames' do
@@ -129,13 +131,13 @@ describe 'Pathname#rspec_puppet_basename' do
   end
 end
 
-describe "Puppet::Module#match_manifests" do
+describe 'Puppet::Module#match_manifests' do
   subject do
     if Puppet::Module.instance_method(:initialize).arity == -2
       Puppet::Module.new(
         'escape',
-        :path        => File.join(RSpec.configuration.module_path, 'escape'),
-        :environment => 'production'
+        path: File.join(RSpec.configuration.module_path, 'escape'),
+        environment: 'production'
       )
     else
       Puppet::Module.new(
@@ -161,4 +163,3 @@ describe "Puppet::Module#match_manifests" do
     expect(subject.match_manifests('def')[0]).to match(/def\.pp$/)
   end
 end
-

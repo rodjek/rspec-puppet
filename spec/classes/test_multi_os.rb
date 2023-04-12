@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'test::multi_os' do
   context 'on windows' do
     let(:facts) do
-      { :operatingsystem => 'windows' }
+      { operatingsystem: 'windows' }
     end
 
-    it { should compile.with_all_deps }
+    it { is_expected.to compile.with_all_deps }
 
     it 'sets the provider of the File resource to :windows' do
       catalogue.resource('file', 'C:/test').to_ral.provider.class.name.should eq(:windows)
@@ -15,10 +17,10 @@ describe 'test::multi_os' do
 
   context 'on Debian' do
     let(:facts) do
-      { :operatingsystem => 'Debian' }
+      { operatingsystem: 'Debian' }
     end
 
-    it { should compile.with_all_deps }
+    it { is_expected.to compile.with_all_deps }
 
     it 'sets the provider of the File resource to :posix' do
       catalogue.resource('file', '/test').to_ral.provider.class.name.should eq(:posix)

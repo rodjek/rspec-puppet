@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'RSpec::Puppet::ManifestMatchers.have_class_count' do
   subject(:example_group) { Class.new { extend RSpec::Puppet::ManifestMatchers } }
+
   let(:expected) { 123 }
 
   after do

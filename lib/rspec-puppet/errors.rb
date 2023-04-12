@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   module Errors
     class MatchError < StandardError
@@ -11,18 +13,16 @@ module RSpec::Puppet
       end
 
       def message
-        if @param.to_s == 'content' and expected.is_a?( String )
+        if (@param.to_s == 'content') && expected.is_a?(String)
           if negative == true
             "#{param} not set to supplied string"
           else
             "#{param} set to supplied string"
           end
+        elsif negative == true
+          "#{param} not set to #{expected.inspect} but it is set to #{actual.inspect}"
         else
-          if negative == true
-            "#{param} not set to #{expected.inspect} but it is set to #{actual.inspect}"
-          else
-            "#{param} set to #{expected.inspect} but it is set to #{actual.inspect}"
-          end
+          "#{param} set to #{expected.inspect} but it is set to #{actual.inspect}"
         end
       end
 

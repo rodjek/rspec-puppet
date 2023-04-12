@@ -1,23 +1,25 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe 'type_mismatch', :if => Puppet.version.to_f >= 4.0 do
-  it { should compile.with_all_deps }
+describe 'type_mismatch', if: Puppet.version.to_f >= 4.0 do
+  it { is_expected.to compile.with_all_deps }
 
   it do
-    should_not contain_type_mismatch__hash('bug').with_hash(
+    expect(subject).not_to contain_type_mismatch__hash('bug').with_hash(
       'foo' => {
-        'bar' => {},
+        'bar' => {}
       }
     )
   end
 
   it do
-    expect {
-      should_not contain_type_mismatch__hash('bug').with_hash(
+    expect do
+      expect(subject).not_to contain_type_mismatch__hash('bug').with_hash(
         'foo' => {
-          'bar' => {},
+          'bar' => {}
         }
       )
-    }.to_not raise_error
+    end.not_to raise_error
   end
 end

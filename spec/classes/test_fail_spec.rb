@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'test::fail' do
-  it { should compile.and_raise_error(/test/) }
+  it { is_expected.to compile.and_raise_error(/test/) }
 end

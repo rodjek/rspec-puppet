@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'pathname'
 
 # Load this library before enabling the monkey-patches to avoid HI-581
 begin
-require 'hiera/util/win32'
+  require 'hiera/util/win32'
 rescue LoadError
   # ignore this on installs without hiera, e.g. puppet 3 gems
 end
@@ -21,15 +23,15 @@ class RSpec::Puppet::EventListener
     end
   end
 
-  def self.example_passed(example)
+  def self.example_passed(_example)
     @rspec_puppet_example = false
   end
 
-  def self.example_pending(example)
+  def self.example_pending(_example)
     @rspec_puppet_example = false
   end
 
-  def self.example_failed(example)
+  def self.example_failed(_example)
     @rspec_puppet_example = false
   end
 
@@ -38,19 +40,18 @@ class RSpec::Puppet::EventListener
   end
 
   def self.rspec3?
-    if @rspec3.nil?
-      @rspec3 = defined?(RSpec::Core::Notifications)
-    end
+    @rspec3 = defined?(RSpec::Core::Notifications) if @rspec3.nil?
 
     @rspec3
   end
 
-  def self.current_example
-    @current_example
+  class << self
+    attr_reader :current_example
   end
 end
 
-RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :example_started, :example_pending, :example_passed, :example_failed)
+RSpec.configuration.reporter.register_listener(RSpec::Puppet::EventListener, :example_started, :example_pending,
+                                               :example_passed, :example_failed)
 
 require 'rspec-puppet/monkey_patches/win32/taskscheduler'
 require 'rspec-puppet/monkey_patches/win32/registry'
@@ -84,24 +85,20 @@ module Puppet
           end
         end
 
-        retval = old_set_default.bind(self).call(attr)
+        retval = old_set_default.bind_call(self, attr)
 
-        unless old_posix.nil?
-          Puppet.features.add(:posix) { old_posix }
-        end
-        unless old_microsoft_windows.nil?
-          Puppet.features.add(:microsoft_windows) { old_microsoft_windows }
-        end
+        Puppet.features.add(:posix) { old_posix } unless old_posix.nil?
+        Puppet.features.add(:microsoft_windows) { old_microsoft_windows } unless old_microsoft_windows.nil?
 
         retval
       else
-        old_set_default.bind(self).call(attr)
+        old_set_default.bind_call(self, attr)
       end
     end
   end
 
   module Parser::Files
-    alias :old_find_manifests_in_modules :find_manifests_in_modules
+    alias old_find_manifests_in_modules find_manifests_in_modules
     module_function :old_find_manifests_in_modules
 
     def find_manifests_in_modules(pattern, environment)
@@ -113,8 +110,9 @@ module Puppet
           RSpec::Puppet::Consts.stub_consts_for(RSpec.configuration.platform)
         end
 
-        if pretending && pretending != Puppet::Util::Platform.actual_platform
-          environment.send(:value_cache).clear if environment.respond_to?(:value_cache, true)
+        if pretending && pretending != Puppet::Util::Platform.actual_platform && environment.respond_to?(:value_cache,
+                                                                                                         true)
+          environment.send(:value_cache).clear
         end
         output = old_find_manifests_in_modules(pattern, environment)
 
@@ -135,30 +133,30 @@ module Puppet
     # Fix for removal of default_env function
     # Bug: https://github.com/rodjek/rspec-puppet/issues/796
     # Upstream: https://github.com/puppetlabs/puppet/commit/94df3c1a3992d89b2d7d5db8a70373c135bdd86b
-    if !respond_to?(:default_env)
-      def default_env()
+    unless respond_to?(:default_env)
+      def default_env
         DEFAULT_ENV
       end
       module_function :default_env
     end
 
     if respond_to?(:get_env)
-      alias :old_get_env :get_env
+      alias old_get_env get_env
       module_function :old_get_env
 
       def get_env(name, mode = default_env)
         if RSpec::Puppet.rspec_puppet_example?
           # use the actual platform, not the pretended
-         old_get_env(name, Platform.actual_platform)
+          old_get_env(name, Platform.actual_platform)
         else
-         old_get_env(name, mode)
+          old_get_env(name, mode)
         end
       end
       module_function :get_env
     end
 
     if respond_to?(:path_to_uri)
-      alias :old_path_to_uri :path_to_uri
+      alias old_path_to_uri path_to_uri
       module_function :old_path_to_uri
 
       def path_to_uri(*args)
@@ -175,12 +173,12 @@ module Puppet
 
     # Allow rspec-puppet to pretend to be different platforms.
     module Platform
-      alias :old_windows? :windows?
+      alias old_windows? windows?
       module_function :old_windows?
 
       def windows?
         if RSpec::Puppet.rspec_puppet_example?
-          !pretending? ? (actual_platform == :windows) : pretend_windows?
+          pretending? ? pretend_windows? : (actual_platform == :windows)
         else
           old_windows?
         end
@@ -249,7 +247,7 @@ module Puppet
         if RSpec::Puppet.rspec_puppet_example?
           true
         else
-          old_pass.bind(self).call(value)
+          old_pass.bind_call(self, value)
         end
       end
     end
@@ -263,7 +261,7 @@ module Puppet
         if RSpec::Puppet.rspec_puppet_example?
           true
         else
-          old_pass.bind(self).call(value)
+          old_pass.bind_call(self, value)
         end
       end
     end
@@ -285,7 +283,7 @@ module Puppet
             return config unless config.nil? && RSpec.configuration.fallback_to_default_hiera
           end
         end
-        old_hiera_conf_file.bind(self).call
+        old_hiera_conf_file.bind_call(self)
       end
     end
 
@@ -295,10 +293,15 @@ module Puppet
         if RSpec::Puppet.rspec_puppet_example?
           env = lookup_invocation.scope.environment
           mod = env.module(module_name)
-          raise Puppet::DataBinding::LookupError, _("Environment '%{env}', cannot find module '%{module_name}'") % { :env => env.name, :module_name => module_name } unless mod
+          unless mod
+            raise Puppet::DataBinding::LookupError,
+                  format(_("Environment '%<env>s', cannot find module '%<module_name>s'"), env: env.name,
+                                                                                           module_name: module_name)
+          end
+
           return Pathname.new(mod.hiera_conf_file)
         end
-        old_configuration_path.bind(self).call(lookup_invocation)
+        old_configuration_path.bind_call(self, lookup_invocation)
       end
     end
   end
@@ -308,29 +311,26 @@ class Pathname
   def rspec_puppet_basename(path)
     raise ArgumentError, 'pathname stubbing not enabled' unless RSpec.configuration.enable_pathname_stubbing
 
-    if path =~ /\A[a-zA-Z]:(#{SEPARATOR_PAT}.*)\z/
-      path = path[2..-1]
-    end
+    path = path[2..-1] if /\A[a-zA-Z]:(#{SEPARATOR_PAT}.*)\z/.match?(path)
     path.split(SEPARATOR_PAT).last || path[/(#{SEPARATOR_PAT})/, 1] || path
   end
 
-  if instance_methods.include?("chop_basename")
+  if instance_methods.include?('chop_basename')
     old_chop_basename = instance_method(:chop_basename)
 
     define_method(:chop_basename) do |path|
       if RSpec::Puppet.rspec_puppet_example?
         if RSpec.configuration.enable_pathname_stubbing
           base = rspec_puppet_basename(path)
-          if /\A#{SEPARATOR_PAT}?\z/o =~ base
-            return nil
-          else
-            return path[0, path.rindex(base)], base
-          end
+          return nil if /\A#{SEPARATOR_PAT}?\z/o.match?(base)
+
+          [path[0, path.rindex(base)], base]
+
         else
-          old_chop_basename.bind(self).call(path)
+          old_chop_basename.bind_call(self, path)
         end
       else
-        old_chop_basename.bind(self).call(path)
+        old_chop_basename.bind_call(self, path)
       end
     end
   end
@@ -345,10 +345,8 @@ class Puppet::Module
     old_match_manifests = instance_method(:match_manifests)
 
     define_method(:match_manifests) do |rest|
-      result = old_match_manifests.bind(self).call(rest)
-      if result.length > 1 && File.basename(result[0]) == 'init.pp'
-        result.shift
-      end
+      result = old_match_manifests.bind_call(self, rest)
+      result.shift if result.length > 1 && File.basename(result[0]) == 'init.pp'
       result
     end
   end
@@ -361,7 +359,7 @@ Puppet::Type.type(:file).paramclass(:path).munge do |value|
   if RSpec::Puppet.rspec_puppet_example?
     value
   else
-    file_path_munge.bind(self).call(value)
+    file_path_munge.bind_call(self, value)
   end
 end
 
@@ -373,7 +371,7 @@ Puppet::Type.type(:exec).paramclass(:user).validate do |value|
   if RSpec::Puppet.rspec_puppet_example?
     true
   else
-    exec_user_validate.bind(self).call(value)
+    exec_user_validate.bind_call(self, value)
   end
 end
 
@@ -383,11 +381,11 @@ end
 Puppet::Type.type(:file).provide(:windows).class_eval do
   old_supports_acl = instance_method(:supports_acl?) if respond_to?(:supports_acl?)
 
-  def supports_acl?(path)
+  def supports_acl?(_path)
     if RSpec::Puppet.rspec_puppet_example?
       true
     else
-      old_supports_acl.bind(self).call(value)
+      old_supports_acl.bind_call(self, value)
     end
   end
 
@@ -397,7 +395,7 @@ Puppet::Type.type(:file).provide(:windows).class_eval do
     if RSpec::Puppet.rspec_puppet_example?
       true
     else
-      old_manages_symlinks.bind(self).call(value)
+      old_manages_symlinks.bind_call(self, value)
     end
   end
 end
@@ -406,9 +404,11 @@ end
 # windows, otherwise it will require other libraries that probably won't be
 # available on non-windows hosts.
 module Kernel
-  alias :old_require :require
+  alias old_require require
   def require(path)
-    return if (['puppet/util/windows', 'win32/registry'].include?(path)) && RSpec::Puppet.rspec_puppet_example? && Puppet::Util::Platform.pretend_windows?
+    return if ['puppet/util/windows',
+               'win32/registry'].include?(path) && RSpec::Puppet.rspec_puppet_example? && Puppet::Util::Platform.pretend_windows?
+
     old_require(path)
   end
 end

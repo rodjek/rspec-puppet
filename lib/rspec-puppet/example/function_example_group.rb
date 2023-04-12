@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   module FunctionExampleGroup
     include RSpec::Puppet::FunctionMatchers
@@ -15,14 +17,14 @@ module RSpec::Puppet
 
       # This method is used by the `run` matcher to trigger the function execution, and provides a uniform interface across all puppet versions.
       def execute(*args, &block)
-        Puppet.override(@overrides, "rspec-test scope") do
+        Puppet.override(@overrides, 'rspec-test scope') do
           @func.call(@overrides[:global_scope], *freeze_arg(args), &block)
         end
       end
 
       # compatibility alias for existing tests
-      def call(scope, *args)
-        RSpec.deprecate("subject.call", :replacement => "is_expected.to run.with().and_raise_error(), or execute()")
+      def call(_scope, *args)
+        RSpec.deprecate('subject.call', replacement: 'is_expected.to run.with().and_raise_error(), or execute()')
         execute(*args)
       end
 
@@ -36,7 +38,10 @@ module RSpec::Puppet
           arg.each { |a| freeze_arg(a) }
           arg.freeze
         when Hash
-          arg.each { |k,v| freeze_arg(k); freeze_arg(v) }
+          arg.each do |k, v|
+            freeze_arg(k)
+            freeze_arg(v)
+          end
           arg.freeze
         when String
           arg.freeze
@@ -64,7 +69,7 @@ module RSpec::Puppet
 
       # This method was formerly used by the `run` matcher to trigger the function execution, and provides puppet versions dependant interface.
       def call(*args)
-        RSpec.deprecate("subject.call", :replacement => "is_expected.to run.with().and_raise_error(), or execute()")
+        RSpec.deprecate('subject.call', replacement: 'is_expected.to run.with().and_raise_error(), or execute()')
         if args.nil?
           @func.call
         else
@@ -87,8 +92,9 @@ module RSpec::Puppet
           context_overrides = compiler.context_overrides
           func = nil
           loaders = Puppet.lookup(:loaders)
-          Puppet.override(context_overrides, "rspec-test scope") do
-            func = V4FunctionWrapper.new(function_name, loaders.private_environment_loader.load(:function, function_name), context_overrides)
+          Puppet.override(context_overrides, 'rspec-test scope') do
+            func = V4FunctionWrapper.new(function_name,
+                                         loaders.private_environment_loader.load(:function, function_name), context_overrides)
             @scope = context_overrides[:global_scope]
           end
 
@@ -97,16 +103,14 @@ module RSpec::Puppet
 
         if Puppet::Parser::Functions.function(function_name)
           V3FunctionWrapper.new(function_name, scope.method("function_#{function_name}".intern))
-        else
-          nil
         end
       end
     end
+
     def call_function(function_name, *args)
-#      function = find_function(function_name)
-#      function.execute(*args)
-     scope.call_function(function_name, args)
+      scope.call_function(function_name, args)
     end
+
     def scope
       @scope ||= build_scope(compiler, nodename(:function))
     end
@@ -135,7 +139,7 @@ module RSpec::Puppet
       trusted_values = trusted_facts_hash(node_name)
 
       # Allow different Hiera configurations:
-      HieraPuppet.instance_variable_set('@hiera', nil) if defined? HieraPuppet
+      HieraPuppet.instance_variable_set(:@hiera, nil) if defined? HieraPuppet
 
       # if we specify a pre_condition, we should ensure that we compile that
       # code into a catalog that is accessible from the scope where the
@@ -145,8 +149,8 @@ module RSpec::Puppet
       node_facts = Puppet::Node::Facts.new(node_name, fact_values.dup)
 
       node_options = {
-        :parameters => fact_values,
-        :facts => node_facts
+        parameters: fact_values,
+        facts: node_facts
       }
 
       stub_facts! fact_values
@@ -156,9 +160,9 @@ module RSpec::Puppet
       if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
         Puppet.push_context(
           {
-            :trusted_information => Puppet::Context::TrustedInformation.new('remote', node_name, trusted_values)
+            trusted_information: Puppet::Context::TrustedInformation.new('remote', node_name, trusted_values)
           },
-          "Context for spec trusted hash"
+          'Context for spec trusted hash'
         )
       end
 
@@ -168,10 +172,11 @@ module RSpec::Puppet
         loaders = Puppet::Pops::Loaders.new(adapter.current_environment)
         Puppet.push_context(
           {
-            :loaders => loaders,
-            :global_scope => compiler.context_overrides[:global_scope]
+            loaders: loaders,
+            global_scope: compiler.context_overrides[:global_scope]
           },
-        "set globals")
+          'set globals'
+        )
       end
       compiler
     end
@@ -179,12 +184,12 @@ module RSpec::Puppet
     def build_scope(compiler, node_name)
       if Puppet.version.to_f >= 4.0
         return compiler.context_overrides[:global_scope]
-      elsif Puppet.version =~ /^2\.[67]/
+      elsif /^2\.[67]/.match?(Puppet.version)
         # loadall should only be necessary prior to 3.x
         # Please note, loadall needs to happen first when creating a scope, otherwise
         # you might receive undefined method `function_*' errors
         Puppet::Parser::Functions.autoloader.loadall
-        scope = Puppet::Parser::Scope.new(:compiler => compiler)
+        scope = Puppet::Parser::Scope.new(compiler: compiler)
       else
         scope = Puppet::Parser::Scope.new(compiler)
       end
@@ -196,7 +201,7 @@ module RSpec::Puppet
 
     def build_node(name, opts = {})
       node_environment = adapter.current_environment
-      opts.merge!({:environment => node_environment})
+      opts[:environment] = node_environment
       Puppet::Node.new(name, opts)
     end
   end

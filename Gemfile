@@ -1,56 +1,43 @@
 source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-def location_for(place, fake_version = nil)
-  if place =~ /^((?:git|https?)[:@][^#]*)#(.*)/
-    [fake_version, { :git => $1, :branch => $2, :require => false, :submodules => true }].compact
-  elsif place =~ /^file:\/\/(.*)/
-    ['>= 0', { :path => File.expand_path($1), :require => false }]
+gemspec
+
+def location_for(place_or_version, fake_version = nil)
+  git_url_regex = %r{\A(?<url>(https?|git)[:@][^#]*)(#(?<branch>.*))?}
+  file_url_regex = %r{\Afile:\/\/(?<path>.*)}
+
+  if place_or_version && (git_url = place_or_version.match(git_url_regex))
+    [fake_version, { git: git_url[:url], branch: git_url[:branch], require: false }].compact
+  elsif place_or_version && (file_url = place_or_version.match(file_url_regex))
+    ['>= 0', { path: File.expand_path(file_url[:path]), require: false }]
   else
-    [place, { :require => false }]
+    [place_or_version, { require: false }]
   end
 end
 
-gemspec
-
-# ffi (specifically the x64-mingw32 variant) requires ruby >= 2.0 after version 1.9.14 
-if RUBY_VERSION =~ /^1\.?9/
-  gem 'ffi', '<= 1.9.14'
+group :development do
+  gem 'pry'
+  gem 'pry-stack_explorer'
+  gem 'fuubar'
 end
 
-gem 'rspec', *location_for(!ENV['RSPEC_GEM_VERSION']&.empty? ? ENV['RSPEC_GEM_VERSION'] : '~> 3.0')
-gem 'puppet', *location_for(!ENV['PUPPET_GEM_VERSION']&.empty? ? ENV['PUPPET_GEM_VERSION'] : '~> 7.0')
-gem 'facter', *location_for(!ENV['FACTER_GEM_VERSION']&.empty? ? ENV['FACTER_GEM_VERSION'] : '~> 4.0')
-gem 'pry', :group => :development
+group :test do
 
-if RUBY_VERSION =~ /^1\.?/
-  gem 'rake', '10.5.0' # still supports 1.8
-else
-  gem 'rake'
-end
+  gem 'puppet', *location_for(ENV['PUPPET_LOCATION'])
+  gem 'facter', *location_for(ENV['FACTER_LOCATION'])
 
-# json_pure 2.0.2 added a requirement on ruby >= 2. We pin to json_pure 2.0.1
-# if using ruby 1.9; older ruby versions do not support puppets that require
-# these gems.
-if RUBY_VERSION =~ /^1\.?9/
-  gem 'json_pure', '<=2.0.1'
-  # rubocop 0.42.0 requires ruby >=2; 1.8 is not supported
-  gem 'rubocop', '0.41.2'       if RUBY_VERSION =~ /^1\.?9/
-elsif RUBY_VERSION =~ /^1\.?8/
-  gem 'json_pure', '< 2.0.0'
-else
-  gem "rubocop", '= 1.6.1',                            require: false
-  gem "rubocop-performance", '= 1.9.1',                require: false
-  gem "rubocop-rspec", '= 2.0.1',                      require: false
-  gem 'sync' if (RUBY_VERSION >= '2.7.0')
-end
+  gem 'json_pure'
+  gem 'sync'
 
-if ENV['COVERAGE']
-  gem 'coveralls', :require => false
-  gem 'simplecov', :require => false
-end
+  gem 'rake', require: false
 
-gem 'win32-taskscheduler', :platforms => [:mingw, :x64_mingw, :mswin]
+  gem 'codecov', require: false
+  gem 'rspec', '~> 3.0', require: false
+  gem 'rubocop', '~> 1.48', require: false
+  gem 'rubocop-performance', '~> 1.16', require: false
+  gem 'rubocop-rspec', '~> 2.19', require: false
+  gem 'simplecov', require: false
+  gem 'simplecov-console', require: false
 
-if File.exist?('Gemfile.local')
-  eval_gemfile('Gemfile.local')
+  gem 'win32-taskscheduler', :platforms => [:mingw, :x64_mingw, :mswin]
 end

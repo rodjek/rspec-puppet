@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'split' do
   describe 'rspec group' do
-    it 'should have a catalogue method' do
+    it 'has a catalogue method' do
       expect(catalogue).to be_a(Puppet::Resource::Catalog)
     end
 
@@ -10,7 +12,7 @@ describe 'split' do
       expect(catalogue).to be_a(Puppet::Resource::Catalog)
       pre_id = catalogue.object_id
 
-      should run.with_params('aoeu', 'o').and_return(['a', 'eu'])
+      expect(subject).to run.with_params('aoeu', 'o').and_return(%w[a eu])
 
       post_id = catalogue.object_id
 

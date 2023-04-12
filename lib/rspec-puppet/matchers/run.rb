@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RSpec::Puppet
   module FunctionMatchers
     class Run
@@ -15,34 +17,33 @@ module RSpec::Puppet
 
         if @has_expected_error
           if @has_returned
-            return false
+            false
           elsif @actual_error.is_a?(@expected_error)
             case @expected_error_message
             when nil
-              return true
+              true
             when Regexp
-              return !!(@actual_error.message =~ @expected_error_message)
+              !(@actual_error.message =~ @expected_error_message).nil?
             else
-              return @actual_error.message == @expected_error_message
+              @actual_error.message == @expected_error_message
             end
           else # error did not match
-            return false
+            false
           end
         elsif @has_expected_return
-          if !@has_returned
-            return false
+          return false unless @has_returned
+
+          case @expected_return
+          when Regexp
+            !(@actual_return =~ @expected_return).nil?
+          when RSpec::Mocks::ArgumentMatchers::KindOf, RSpec::Matchers::AliasedMatcher
+            @expected_return === @actual_return
           else
-            case @expected_return
-            when Regexp
-              return !!(@actual_return =~ @expected_return)
-            when RSpec::Mocks::ArgumentMatchers::KindOf, RSpec::Matchers::AliasedMatcher
-              return @expected_return === @actual_return
-            else
-              return @actual_return == @expected_return
-            end
+            @actual_return == @expected_return
           end
+
         else
-          return @has_returned
+          @has_returned
         end
       end
 
@@ -62,30 +63,30 @@ module RSpec::Puppet
       def and_return(value)
         @has_expected_return = true
         @expected_return = value
-        if value.is_a? Regexp
-          @desc = "match #{value.inspect}"
-        else
-          @desc = "return #{value.inspect}"
-        end
+        @desc = if value.is_a? Regexp
+                  "match #{value.inspect}"
+                else
+                  "return #{value.inspect}"
+                end
         self
       end
 
-      def and_raise_error(error_or_message, message=nil)
+      def and_raise_error(error_or_message, message = nil)
         @has_expected_error = true
         case error_or_message
         when String, Regexp
-          @expected_error, @expected_error_message = Exception, error_or_message
+          @expected_error = Exception
+          @expected_error_message = error_or_message
         else
-          @expected_error, @expected_error_message = error_or_message, message
+          @expected_error = error_or_message
+          @expected_error_message = message
         end
 
         if @expected_error_message.is_a? Regexp
           @desc = "raise an #{@expected_error} with the message matching #{@expected_error_message.inspect}"
         else
           @desc = "raise an #{@expected_error}"
-          unless @expected_error_message.nil?
-            @desc += "with the message #{@expected_error_message.inspect}"
-          end
+          @desc += "with the message #{@expected_error_message.inspect}" unless @expected_error_message.nil?
         end
         self
       end
@@ -115,6 +116,7 @@ module RSpec::Puppet
       end
 
       private
+
       def func_name
         @func_obj.func_name
       end
@@ -132,30 +134,25 @@ module RSpec::Puppet
           else
             " instead of #{@actual_error.class.inspect}(#{@actual_error})\n#{@actual_error.backtrace.join("\n")}"
           end
-        else # function has returned
-          if @has_expected_error
-            " instead of returning #{@actual_return.inspect}"
-          else
-            " instead of #{@actual_return.inspect}"
-          end
+        elsif @has_expected_error # function has returned
+          " instead of returning #{@actual_return.inspect}"
+        else
+          " instead of #{@actual_return.inspect}"
         end
       end
 
-      def failure_message_generic(type, func_obj)
-        message = "expected #{func_name}(#{func_params}) to "
-        message << "not " if type == :should_not
+      def failure_message_generic(type, _func_obj)
+        # message is mutable
+        message = +"expected #{func_name}(#{func_params}) to "
+        message << 'not ' if type == :should_not
 
         if @has_expected_return
           message << "have returned #{@expected_return.inspect}"
+        elsif @has_expected_error
+          message << "have raised #{@expected_error.inspect}"
+          message << " matching #{@expected_error_message.inspect}" if @expected_error_message
         else
-          if @has_expected_error
-            message << "have raised #{@expected_error.inspect}"
-            if @expected_error_message
-              message << " matching #{@expected_error_message.inspect}"
-            end
-          else
-            message << "have run successfully"
-          end
+          message << 'have run successfully'
         end
         message << failure_message_actual(type)
       end

@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'rspec-puppet/facter_impl'
 
 describe RSpec::Puppet::FacterTestImpl do
-  subject(:facter_impl) { RSpec::Puppet::FacterTestImpl.new }
+  subject(:facter_impl) { described_class.new }
+
   let(:fact_hash) do
     {
       'string_fact' => 'string_value',
@@ -20,11 +23,11 @@ describe RSpec::Puppet::FacterTestImpl do
     facter_impl.add(:int_fact) { setcode { 3 } }
     facter_impl.add(:true_fact) { setcode { true } }
     facter_impl.add(:false_fact) { setcode { false } }
-    facter_impl.add(:os) { setcode { { 'name' => 'my_os', 'release' => { 'major' => '42'  }} } }
+    facter_impl.add(:os) { setcode { { 'name' => 'my_os', 'release' => { 'major' => '42' } } } }
   end
 
   describe 'noop methods' do
-    [:debugging, :reset, :search, :setup_logging].each do |method|
+    %i[debugging reset search setup_logging].each do |method|
       it "implements ##{method}" do
         expect(facter_impl).to respond_to(method)
       end
@@ -45,11 +48,11 @@ describe RSpec::Puppet::FacterTestImpl do
     end
 
     it 'retrieves a fact of type TrueClass' do
-      expect(facter_impl.value(:true_fact)).to eq(true)
+      expect(facter_impl.value(:true_fact)).to be(true)
     end
 
     it 'retrieves a fact of type FalseClass' do
-      expect(facter_impl.value(:false_fact)).to eq(false)
+      expect(facter_impl.value(:false_fact)).to be(false)
     end
 
     context 'when using dot-notation' do
@@ -66,11 +69,11 @@ describe RSpec::Puppet::FacterTestImpl do
       end
 
       it 'returns nil if a child fact is missing' do
-        expect(facter_impl.value('os.release.unknown_subkey')).to eq(nil)
+        expect(facter_impl.value('os.release.unknown_subkey')).to be_nil
       end
 
       it 'returns nil if trying to lookup into a string' do
-        expect(facter_impl.value('os.name.foo')).to eq(nil)
+        expect(facter_impl.value('os.name.foo')).to be_nil
       end
     end
   end

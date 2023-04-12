@@ -1,5 +1,6 @@
-module RSpec::Puppet
+# frozen_string_literal: true
 
+module RSpec::Puppet
   # Implements a simple hash-based version of Facter to be used in module tests
   # that use rspec-puppet.
   class FacterTestImpl
@@ -8,11 +9,9 @@ module RSpec::Puppet
     end
 
     def value(fact_name)
-      begin
-        @facts.dig(*fact_name.to_s.split('.'))
-      rescue TypeError
-        nil
-      end
+      @facts.dig(*fact_name.to_s.split('.'))
+    rescue TypeError
+      nil
     end
 
     def clear
@@ -23,8 +22,9 @@ module RSpec::Puppet
       @facts
     end
 
-    def add(name, options = {}, &block)
-      raise 'Facter.add expects a block' unless block_given?
+    def add(name, _options = {}, &block)
+      raise 'Facter.add expects a block' unless block
+
       @facts[name.to_s] = instance_eval(&block)
     end
 
@@ -40,14 +40,11 @@ module RSpec::Puppet
     private
 
     def setcode(string = nil, &block)
-      if block_given?
-        value = block.call
+      if block
+        yield
       else
-        value = string
+        string
       end
-
-      value
     end
   end
 end
-

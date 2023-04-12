@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'rspec-puppet/facter_impl'
 
 module RSpec::Puppet
   module Adapters
-
     class Base
       # Set up all Puppet settings applicable for this Puppet version as
       # application defaults.
@@ -44,12 +45,16 @@ module RSpec::Puppet
         settings = settings_map.map do |puppet_setting, rspec_setting|
           [puppet_setting, get_setting(example_group, rspec_setting)]
         end.flatten
-        default_hash = {:confdir => '/dev/null', :vardir => '/dev/null' }
+        default_hash = { confdir: '/dev/null', vardir: '/dev/null' }
         if defined?(Puppet::Test::TestHelper) && Puppet::Test::TestHelper.respond_to?(:app_defaults_for_tests, true)
           default_hash.merge!(Puppet::Test::TestHelper.send(:app_defaults_for_tests))
         end
         settings_hash = default_hash.merge(Hash[*settings])
-        settings_hash.inject(settings_hash) { |h, (k, v)| h[k] = (v == '/dev/null') ? 'c:/nul/' : v; h } if Gem.win_platform?
+        if Gem.win_platform?
+          settings_hash.each_with_object(settings_hash) do |(k, v), h|
+            h[k] = v == '/dev/null' ? 'c:/nul/' : v
+          end
+        end
 
         if Puppet.settings.respond_to?(:initialize_app_defaults)
           Puppet.settings.initialize_app_defaults(settings_hash)
@@ -83,7 +88,7 @@ module RSpec::Puppet
           # Use the compiler directly to skip the filtering done by the indirector
           Puppet::Parser::Compiler.compile(node).filter { |r| !r.exported? }
         else
-          Puppet::Resource::Catalog.indirection.find(node.name, :use_node => node)
+          Puppet::Resource::Catalog.indirection.find(node.name, use_node: node)
         end
       end
 
@@ -93,9 +98,9 @@ module RSpec::Puppet
 
       def settings_map
         [
-          [:modulepath, :module_path],
-          [:config, :config],
-          [:confdir, :confdir],
+          %i[modulepath module_path],
+          %i[config config],
+          %i[confdir confdir]
         ]
       end
 
@@ -128,15 +133,15 @@ module RSpec::Puppet
       def setup_puppet(example_group)
         super
 
-        if rspec_modulepath = RSpec.configuration.module_path
-          modulepath = rspec_modulepath.split(File::PATH_SEPARATOR)
-        else
-          modulepath = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
-            File.join(path, 'fixtures', 'modules')
-          end
-        end
+        modulepath = if (rspec_modulepath = RSpec.configuration.module_path)
+                       rspec_modulepath.split(File::PATH_SEPARATOR)
+                     else
+                       Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
+                         File.join(path, 'fixtures', 'modules')
+                       end
+                     end
 
-        if rspec_manifest = RSpec.configuration.manifest
+        if (rspec_manifest = RSpec.configuration.manifest)
           manifest = rspec_manifest
         else
           manifest_paths = Puppet[:environmentpath].split(File::PATH_SEPARATOR).map do |path|
@@ -155,28 +160,31 @@ module RSpec::Puppet
 
         Puppet.push_context(
           {
-            :environments => loader,
-            :current_environment => env,
-            :loaders => (Puppet::Pops::Loaders.new(env) if Gem::Version.new(Puppet.version) >= Gem::Version.new('6.0.0')),
+            environments: loader,
+            current_environment: env,
+            loaders: (Puppet::Pops::Loaders.new(env) if Gem::Version.new(Puppet.version) >= Gem::Version.new('6.0.0'))
           },
-          "Setup rspec-puppet environments"
+          'Setup rspec-puppet environments'
         )
       end
 
       def settings_map
-        super.concat([
-          [:environmentpath, :environmentpath],
-          [:hiera_config, :hiera_config],
-          [:strict_variables, :strict_variables],
-          [:manifest, :manifest],
-        ])
+        super.push(
+          %i[environmentpath environmentpath],
+          %i[hiera_config hiera_config],
+          %i[strict_variables strict_variables],
+          %i[manifest manifest]
+        )
       end
 
       def catalog(node, exported)
         node.environment = current_environment
         # Override $::environment to workaround PUP-5835, where Puppet otherwise
         # stores a symbol for the parameter
-        node.parameters['environment'] = current_environment.name.to_s if node.parameters['environment'] != node.parameters['environment'].to_s
+        if node.parameters['environment'] != node.parameters['environment'].to_s
+          node.parameters['environment'] =
+            current_environment.name.to_s
+        end
         super
       end
 
@@ -210,9 +218,9 @@ module RSpec::Puppet
       end
 
       def settings_map
-        super.concat([
-          [:trusted_server_facts, :trusted_server_facts]
-        ])
+        super.push(
+          %i[trusted_server_facts trusted_server_facts]
+        )
       end
     end
 
@@ -229,7 +237,7 @@ module RSpec::Puppet
           begin
             Puppet.runtime[:facter]
             @supports_facter_runtime = true
-          rescue
+          rescue StandardError
             @supports_facter_runtime = false
           end
         end
@@ -260,10 +268,10 @@ module RSpec::Puppet
       end
 
       def settings_map
-        super.concat([
-          [:basemodulepath, :basemodulepath],
-          [:vendormoduledir, :vendormoduledir],
-        ])
+        super.push(
+          %i[basemodulepath basemodulepath],
+          %i[vendormoduledir vendormoduledir]
+        )
       end
 
       def catalog(node, _exported)
@@ -275,55 +283,55 @@ module RSpec::Puppet
 
     class Adapter30 < Base
       def settings_map
-        super.concat([
-          [:manifestdir, :manifest_dir],
-          [:manifest, :manifest],
-          [:templatedir, :template_dir],
-          [:hiera_config, :hiera_config],
-        ])
+        super.push(
+          %i[manifestdir manifest_dir],
+          %i[manifest manifest],
+          %i[templatedir template_dir],
+          %i[hiera_config hiera_config]
+        )
       end
     end
 
     class Adapter32 < Adapter30
       def settings_map
-        super.concat([
-          [:parser, :parser],
-        ])
+        super.push(
+          %i[parser parser]
+        )
       end
     end
 
     class Adapter33 < Adapter32
       def settings_map
-        super.concat([
-          [:ordering, :ordering],
-          [:stringify_facts, :stringify_facts],
-        ])
+        super.push(
+          %i[ordering ordering],
+          %i[stringify_facts stringify_facts]
+        )
       end
     end
 
     class Adapter34 < Adapter33
       def settings_map
-        super.concat([
-          [:trusted_node_data, :trusted_node_data],
-        ])
+        super.push(
+          %i[trusted_node_data trusted_node_data]
+        )
       end
     end
 
     class Adapter35 < Adapter34
       def settings_map
-        super.concat([
-          [:strict_variables, :strict_variables],
-        ])
+        super.push(
+          %i[strict_variables strict_variables]
+        )
       end
     end
 
     class Adapter27 < Base
       def settings_map
-        super.concat([
-          [:manifestdir, :manifest_dir],
-          [:manifest, :manifest],
-          [:templatedir, :template_dir],
-        ])
+        super.push(
+          %i[manifestdir manifest_dir],
+          %i[manifest manifest],
+          %i[templatedir template_dir]
+        )
       end
     end
 
@@ -339,9 +347,7 @@ module RSpec::Puppet
         ['3.0', Adapter30],
         ['2.7', Adapter27]
       ].each do |(version, klass)|
-        if Puppet::Util::Package.versioncmp(Puppet.version, version) >= 0
-          return klass.new
-        end
+        return klass.new if Puppet::Util::Package.versioncmp(Puppet.version, version) >= 0
       end
       raise "Puppet version #{Puppet.version} is not supported."
     end
