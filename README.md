@@ -1,6 +1,4 @@
 # RSpec tests for your Puppet manifests & modules
-[![Build Status](https://travis-ci.org/rodjek/rspec-puppet.svg?branch=master)](https://travis-ci.org/rodjek/rspec-puppet)
-[![Coverage Status](https://coveralls.io/repos/rodjek/rspec-puppet/badge.svg?branch=master)](https://coveralls.io/r/rodjek/rspec-puppet?branch=master)
 
 #### Table of Contents
 
