@@ -21,4 +21,6 @@ Gem::Specification.new do |s|
   s.authors = ['Tim Sharpe', 'Puppet, Inc.', 'Community Contributors']
   s.email = ['tim@sharpe.id.au', 'modules-team@puppet.com']
   s.metadata['rubygems_mfa_required'] = 'true'
+
+  s.required_ruby_version = Gem::Requirement.new('>= 2.7.0')
 end
