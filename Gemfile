@@ -23,8 +23,8 @@ end
 
 group :test do
 
-  gem 'puppet', *location_for(ENV['PUPPET_LOCATION'])
-  gem 'facter', *location_for(ENV['FACTER_LOCATION'])
+  gem 'puppet', *location_for(ENV['PUPPET_GEM_VERSION'])
+  gem 'facter', *location_for(ENV['FACTER_GEM_VERSION'])
 
   gem 'json_pure'
   gem 'sync'
