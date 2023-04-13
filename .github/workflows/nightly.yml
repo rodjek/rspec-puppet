@@ -11,11 +11,13 @@ jobs:
       fail-fast: false
       matrix:
         ruby_version:
-          - "2.5"
           - "2.7"
-        puppet_gem_version:
-          - '~> 6.0'
-          - '~> 7.0'
+          - "3.2"
+        include:
+          - ruby-version: '2.7'
+            puppet_gem_version: '~> 7.0'
+          - ruby_version: '3.2'
+            puppet_gem_version: 'https://github.com/puppetlabs/puppet' # puppet8'
         runs_on:
           - "ubuntu-latest"
           - "windows-latest"
