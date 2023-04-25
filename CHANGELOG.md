@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [v3.0.0-rc.1](https://github.com/puppetlabs/rspec-puppet/tree/v3.0.0-rc.1) - 2023-04-12
+## [v3.0.0](https://github.com/puppetlabs/rspec-puppet/tree/v3.0.0) - 2023-04-25
 
-[Full Changelog](https://github.com/puppetlabs/rspec-puppet/compare/v2.12.0...v3.0.0-rc.1)
+[Full Changelog](https://github.com/puppetlabs/rspec-puppet/compare/v3.0.0.rc.1...v3.0.0)
+
+## [v3.0.0.rc.1](https://github.com/puppetlabs/rspec-puppet/tree/v3.0.0.rc.1) - 2023-04-12
+
+[Full Changelog](https://github.com/puppetlabs/rspec-puppet/compare/v2.12.0...v3.0.0.rc.1)
+
+### Added
+
+- Support dot-notation when retrieving facts in facter_impl [#46](https://github.com/puppetlabs/rspec-puppet/pull/46) ([alexjfisher](https://github.com/alexjfisher))
 
 ### Changed
 - (CONT-808) Ruby 3 / Puppet 8 Support [#48](https://github.com/puppetlabs/rspec-puppet/pull/48) ([chelnak](https://github.com/chelnak))
@@ -16,10 +24,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - Default to current versions of Puppet and Facter [#36](https://github.com/puppetlabs/rspec-puppet/pull/36) ([ekohl](https://github.com/ekohl))
 - fixed plugins link [#30](https://github.com/puppetlabs/rspec-puppet/pull/30) ([binford2k](https://github.com/binford2k))
-
-### Other
-
-- Support dot-notation when retrieving facts in facter_impl [#46](https://github.com/puppetlabs/rspec-puppet/pull/46) ([alexjfisher](https://github.com/alexjfisher))
 
 ## [v2.12.0](https://github.com/puppetlabs/rspec-puppet/tree/v2.12.0) - 2022-07-21
 
