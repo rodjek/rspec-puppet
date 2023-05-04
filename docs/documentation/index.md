@@ -40,12 +40,6 @@ cards:
         icon: fa fa-server
         colour: orange
     -
-        title: Testing Applications
-        text:
-        path: /documentation/applications/
-        icon: fa fa-cubes
-        colour: green
-    -
         title: Testing Types
         text:
         path: /documentation/types/

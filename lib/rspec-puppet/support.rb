@@ -44,8 +44,6 @@ module RSpec::Puppet
         :type_alias
       when %r{spec/provider}
         :provider
-      when %r{spec/applications}
-        :application
       else
         :unknown
       end
@@ -177,11 +175,6 @@ module RSpec::Puppet
         else
           "class { '#{class_name}': #{param_str(opts[:params])} }"
         end
-      when :application
-        raise ArgumentError, 'You need to provide params for an application' unless opts.key?(:params)
-
-        "site { #{class_name} { #{sanitise_resource_title(title)}: #{param_str(opts[:params])} } }"
-
       when :define
         title_str = if title.is_a?(Array)
                       '[' + title.map { |r| sanitise_resource_title(r) }.join(', ') + ']'
@@ -207,7 +200,7 @@ module RSpec::Puppet
     def nodename(type)
       return node if respond_to?(:node)
 
-      if %i[class define function application].include? type
+      if %i[class define function].include? type
         Puppet[:certname]
       else
         class_name

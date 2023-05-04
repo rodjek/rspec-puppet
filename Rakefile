@@ -32,7 +32,7 @@ namespace :test do
     if t.respond_to?(:exclude_pattern)
       t.exclude_pattern = 'spec/fixtures/**/*_spec.rb'
     else
-      t.pattern = 'spec/{applications,classes,defines,functions,hosts,type_aliases,types,unit}/**/*_spec.rb'
+      t.pattern = 'spec/{classes,defines,functions,hosts,type_aliases,types,unit}/**/*_spec.rb'
     end
   end
 

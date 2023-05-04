@@ -8,7 +8,7 @@
 * [Configuration](#configuration)
 * [Naming conventions](#naming-conventions)
 * [Example groups](#example-groups)
-* [Defined Types, Classes & Applications](#defined-types-classes--applications)
+* [Defined Types and Classes](#defined-types-and-classes)
 * [Functions](#functions)
 * [Hiera integration](#hiera-integration)
 * [Producing coverage reports](#producing-coverage-reports)
@@ -259,9 +259,6 @@ structure and naming convention.
            ├── defines/
            │     └── <define_name>_spec.rb
            │
-           ├── applications/
-           │     └── <application_name>_spec.rb
-           │
            ├── functions/
            │     └── <function_name>_spec.rb
            │
@@ -289,10 +286,6 @@ describe 'mydefine', :type => :define do
   ...
 end
 
-describe 'myapplication', :type => :application do
-  ...
-end
-
 describe 'myfunction', :type => :puppet_function do
   ...
 end
@@ -310,7 +303,7 @@ describe 'myhost.example.com', :type => :host do
 end
 ```
 
-## Defined Types, Classes & Applications
+## Defined Types and Classes
 
 ### Matchers
 
@@ -601,7 +594,7 @@ let(:title) { 'foo' }
 
 #### Specifying the parameters to pass to a resources or parameterised class
 
-Parameters of a defined type, class or application can be passed defining `:params` in a let,
+Parameters of a defined type or class can be passed defining `:params` in a let,
 and passing it a hash as seen below.
 
 ```ruby
@@ -621,7 +614,7 @@ let(:params) { {'password' =>sensitive('secret') } }
 ```
 
 For references to nodes or resources as seen when using `require` or `before` properties,
-or an `application` resource you can pass the string as an argument to the `ref` helper:
+you can pass the string as an argument to the `ref` helper:
 
 ```ruby
 let(:params) { 'require' => ref('Package', 'sudoku') }
@@ -631,18 +624,6 @@ Which translates to:
 
 ```puppet
 mydefine { 'mytitle': require => Package['sudoku'] }
-```
-
-Another example, for an application setup (when using `app_management`):
-
-```ruby
-let(:params) { { 'nodes' => { ref('Node', 'dbnode') => ref('Myapp::Mycomponent', 'myapp') } } }
-```
-
-Will translate to:
-
-```puppet
-site { myapp { 'myimpl': nodes => { Node['dbnode'] => Myapp::Mycomponent['myimpl'] } } }
 ```
 
 #### Specifying the FQDN of the test node
@@ -834,46 +815,6 @@ You can also use `exported_resources` directly in a test:
 ```ruby
 it { expect(exported_resources).to contain_file('foo') }
 ```
-
-#### Testing applications
-
-Applications in some ways behave as defined resources, but are more complex so
-require a number of elements already documented above to be combined for testing.
-
-A full example of the simplest rspec test for a single component application:
-
-```ruby
-require 'spec_helper'
-
-describe 'orch_app' do
-  let(:node) { 'my_node' }
-  let(:title) { 'my_awesome_app' }
-  let(:params) do
-    {
-      'nodes' => {
-        ref('Node', node) => ref('Orch_app::Db', title),
-      }
-    }
-  end
-
-  it { should compile }
-  it { should contain_orch_app(title) }
-end
-```
-
-Each piece is required:
-
-* You must turn on app_management during testing for the handling to work
-* The `:node` definition is required to be set so later on you can reference it in the `:nodes` argument within `:params`
-* Applications act like defined resources, and each require a `:title` to be defined
-* The `:nodes` key in `:params` requires the use of node reference mappings to resource
-  mappings. The `ref` keyword allows you to provide these (a normal string will not work).
-
-Beyond these requirements, the very basic `should compile` test and other matchers
-as you would expect will work the same as classes and defined resources.
-
-**Note:** for the moment, cross-node support is not available and will return an error.
-Ensure you model your tests to be single-node for the time being.
 
 ## Functions
 
