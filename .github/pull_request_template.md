@@ -12,4 +12,4 @@ Mention any related issues or pull requests.
 ## Checklist
 - [ ] 🟢 Spec tests.
 - [ ] 🟢 Acceptance tests.
-- [ ] Manually verified. (For example `puppet apply`)
+- [ ] Manually verified.

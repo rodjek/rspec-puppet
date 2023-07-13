@@ -96,7 +96,7 @@ module RSpec::Puppet
           vertex.each do |param, value|
             next unless %i[require subscribe notify before].include? param
 
-            value = Array[value] unless value.is_a? Array
+            value = [value] unless value.is_a? Array
             value.each do |val|
               retval = true if val.is_a?(Puppet::Resource) && !resource_exists?(val, vertex)
             end

@@ -290,7 +290,7 @@ module RSpec::Puppet
 
         visited << resource.object_id
 
-        Array[resource[type]].flatten.compact.each do |r|
+        [resource[type]].flatten.compact.each do |r|
           results << canonicalize_resource_ref(r)
           results << relationship_refs(r, type, visited)
 
