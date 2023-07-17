@@ -241,9 +241,17 @@ module RSpec::Puppet
         'hostname' => node.split('.').first,
         'fqdn' => node,
         'domain' => node.split('.', 2).last,
-        'clientcert' => node,
-        'ipaddress6' => 'FE80:0000:0000:0000:AAAA:AAAA:AAAA'
+        'clientcert' => node
       }
+
+      # Puppet 6.9.0 started setting a `serverip6` server fact which is set
+      # using the value of the `ipaddress6` fact. If the fact set(s) provided
+      # by FacterDB don't have an `ipaddress6` fact set, then the normal Facter
+      # fact will be resolved, which can result in Ruby trying to load Windows
+      # only gems on Linux. This is only a problem if facter is used.
+      if RSpec.configuration.facter_implementation.to_sym == :facter
+        node_facts['ipaddress6'] = 'FE80:0000:0000:0000:AAAA:AAAA:AAAA'
+      end
 
       networking_facts = {
         'hostname' => node_facts['hostname'],
