@@ -10,7 +10,7 @@ module RSpec::Puppet::Consts
     windows: {
       'File::PATH_SEPARATOR' => ';',
       'File::ALT_SEPARATOR' => '\\',
-      'Pathname::SEPARATOR_PAT' => /[#{Regexp.quote("\\")}#{Regexp.quote('/')}]/
+      'Pathname::SEPARATOR_PAT' => /[#{Regexp.quote('\\')}#{Regexp.quote('/')}]/
     }
   }.freeze
 
