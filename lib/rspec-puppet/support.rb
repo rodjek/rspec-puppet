@@ -405,7 +405,7 @@ module RSpec::Puppet
 
     def with_vardir
       vardir = setup_puppet
-      return yield(vardir) if block_given?
+      yield(vardir) if block_given?
     ensure
       FileUtils.rm_rf(vardir) if vardir && File.directory?(vardir)
     end
