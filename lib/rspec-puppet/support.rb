@@ -508,14 +508,6 @@ module RSpec::Puppet
       string.gsub('$', '\\$')
     end
 
-    def rspec_compatibility
-      return unless RSpec::Version::STRING < '3'
-
-      # RSpec 2 compatibility:
-      alias_method :failure_message_for_should, :failure_message
-      alias_method :failure_message_for_should_not, :failure_message_when_negated
-    end
-
     def fixture_spec_hiera_conf(mod)
       return @@fixture_hiera_configs[mod.name] if @@fixture_hiera_configs.key?(mod.name)
 

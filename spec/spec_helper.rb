@@ -14,23 +14,15 @@ end
 
 require 'rspec-puppet'
 
-# rspec 2.x doesn't have RSpec::Support, so fall back to File::ALT_SEPARATOR to
-# detect if running on windows
+# TODO: drop?
 def windows?
   return @windowsp unless @windowsp.nil?
 
-  @windowsp = defined?(RSpec::Support) ? RSpec::Support::OS.windows? : !!File::ALT_SEPARATOR
+  @windowsp = RSpec::Support::OS.windows?
 end
 
 def sensitive?
   defined?(Puppet::Pops::Types::PSensitiveType)
-end
-
-module Helpers
-  def rspec2?
-    RSpec::Version::STRING < '3'
-  end
-  module_function :rspec2?
 end
 
 RSpec.configure do |c|
@@ -43,7 +35,4 @@ RSpec.configure do |c|
   c.after(:suite) do
     RSpec::Puppet::Coverage.report!(0)
   end
-
-  c.include Helpers
-  c.extend Helpers
 end

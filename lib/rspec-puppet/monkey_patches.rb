@@ -11,15 +11,10 @@ end
 
 class RSpec::Puppet::EventListener
   def self.example_started(example)
-    if rspec3?
-      @rspec_puppet_example = example.example.example_group.ancestors.include?(RSpec::Puppet::Support)
-      @current_example = example.example
-      if !@current_example.respond_to?(:environment) && @current_example.respond_to?(:example_group_instance)
-        @current_example = @current_example.example_group_instance
-      end
-    else
-      @rspec_puppet_example = example.example_group.ancestors.include?(RSpec::Puppet::Support)
-      @current_example = example
+    @rspec_puppet_example = example.example.example_group.ancestors.include?(RSpec::Puppet::Support)
+    @current_example = example.example
+    if !@current_example.respond_to?(:environment) && @current_example.respond_to?(:example_group_instance)
+      @current_example = @current_example.example_group_instance
     end
   end
 
@@ -37,12 +32,6 @@ class RSpec::Puppet::EventListener
 
   def self.rspec_puppet_example?
     @rspec_puppet_example || false
-  end
-
-  def self.rspec3?
-    @rspec3 = defined?(RSpec::Core::Notifications) if @rspec3.nil?
-
-    @rspec3
   end
 
   class << self

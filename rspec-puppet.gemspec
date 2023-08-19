@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 
   s.files = Dir['CHANGELOG.md', 'LICENSE.md', 'README.md', 'lib/**/*', 'bin/**/*']
 
-  s.add_dependency 'rspec'
+  s.add_dependency 'rspec', '~> 3.0'
 
   s.authors = ['Tim Sharpe', 'Puppet, Inc.', 'Community Contributors']
   s.email = ['tim@sharpe.id.au', 'modules-team@puppet.com']
