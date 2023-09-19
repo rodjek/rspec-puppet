@@ -1,5 +1,9 @@
 # RSpec tests for your Puppet manifests & modules
 
+[![Code Owners](https://img.shields.io/badge/owners-DevX--team-blue)](https://github.com/puppetlabs/pdk/blob/main/CODEOWNERS)
+![ci](https://github.com/puppetlabs/rspec-puppet/actions/workflows/ci.yml/badge.svg)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/puppetlabs/rspec-puppet)
+
 #### Table of Contents
 
 * [Installation](#installation)
