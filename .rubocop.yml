@@ -17,4 +17,3 @@ AllCops:
 # Disabled
 Style/ClassAndModuleChildren:
   Enabled: false
-
