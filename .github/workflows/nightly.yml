@@ -17,7 +17,7 @@ jobs:
           - ruby-version: '2.7'
             puppet_gem_version: '~> 7.0'
           - ruby_version: '3.2'
-            puppet_gem_version: 'https://github.com/puppetlabs/puppet' # puppet8'
+            puppet_gem_version: '~> 8.0'
         runs_on:
           - "ubuntu-latest"
           - "windows-latest"

@@ -9,6 +9,7 @@ end
 
 describe RSpec::Puppet::Adapters::Base do
   let(:test_context) { double environment: 'rp_env' }
+
   describe '#setup_puppet' do
     it 'sets up all settings listed in the settings map' do
       context = context_double
