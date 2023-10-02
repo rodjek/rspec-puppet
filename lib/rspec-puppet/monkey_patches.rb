@@ -13,9 +13,9 @@ class RSpec::Puppet::EventListener
   def self.example_started(example)
     @rspec_puppet_example = example.example.example_group.ancestors.include?(RSpec::Puppet::Support)
     @current_example = example.example
-    if !@current_example.respond_to?(:environment) && @current_example.respond_to?(:example_group_instance)
-      @current_example = @current_example.example_group_instance
-    end
+    return unless !@current_example.respond_to?(:environment) && @current_example.respond_to?(:example_group_instance)
+
+    @current_example = @current_example.example_group_instance
   end
 
   def self.example_passed(_example)
