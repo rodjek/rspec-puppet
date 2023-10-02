@@ -6,12 +6,12 @@ describe RSpec::Puppet::ManifestMatchers::CountGeneric do
   subject(:matcher) { described_class.new(type, expected, method) }
 
   let(:actual) do
-    -> { test_double(Puppet::Resource::Catalog, resources: resource_objects) }
+    -> { instance_double(Puppet::Resource::Catalog, resources: resource_objects) }
   end
 
   let(:resource_objects) do
     resources.map do |type, title|
-      test_double(Puppet::Resource, ref: "#{type}[#{title}]", type: type)
+      instance_double(Puppet::Resource, ref: "#{type}[#{title}]", type: type)
     end
   end
 

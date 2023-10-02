@@ -6,7 +6,7 @@ describe 'RSpec::Puppet::ManifestMatchers.include_class' do
   subject(:matcher) { Class.new { extend RSpec::Puppet::ManifestMatchers }.include_class(expected) }
 
   let(:actual) do
-    -> { test_double(Puppet::Resource::Catalog, classes: included_classes) }
+    -> { instance_double(Puppet::Resource::Catalog, classes: included_classes) }
   end
 
   let(:expected) { 'test_class' }
@@ -44,31 +44,14 @@ describe 'RSpec::Puppet::ManifestMatchers.include_class' do
     end
   end
 
-  describe '#failure_message_for_should', if: rspec2? do
-    it 'provides a description and the expected class' do
-      matcher.matches?(actual)
-      expect(matcher.failure_message_for_should).to eq("expected that the catalogue would include Class[#{expected}]")
-    end
-  end
-
-  describe '#failure_message', unless: rspec2? do
+  describe '#failure_message' do
     it 'provides a description and the expected class' do
       matcher.matches?(actual)
       expect(matcher.failure_message).to eq("expected that the catalogue would include Class[#{expected}]")
     end
   end
 
-  describe '#failure_message_for_should_not', if: rspec2? do
-    let(:included_classes) { [expected] }
-
-    it 'provides a description and the expected class' do
-      pending 'not implemented'
-      matcher.matches?(actual)
-      expect(matcher.failure_message_when_negated).to eq("expected that the catalogue would not include Class[#{expected}]")
-    end
-  end
-
-  describe '#failure_message_when_negated', unless: rspec2? do
+  describe '#failure_message_when_negated' do
     let(:included_classes) { [expected] }
 
     it 'provides a description and the expected class' do
