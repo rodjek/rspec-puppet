@@ -38,36 +38,16 @@ describe 'structured_data' do
       ] }
     end
 
-    # Puppet 2.6 will automatically flatten nested arrays. If we're going
-    # to be testing recursive data structures, we might as well ensure that
-    # we're still handling numeric values correctly.
-    describe 'on Puppet 2.6', if: Puppet.version =~ /^2\.6/ do
-      it {
-        expect(subject).to contain_structured_data__def('thing').with(
-          { 'data' => [
-            'first',
-            'second',
-            'third',
-            'fourth',
-            5,
-            6
-          ] }
-        )
-      }
-    end
-
-    describe 'on Puppet 2.7 and later', unless: Puppet.version =~ /^2\.6/ do
-      it {
-        expect(subject).to contain_structured_data__def('thing').with(
-          { 'data' => [
-            'first',
-            'second',
-            %w[third fourth],
-            5,
-            6
-          ] }
-        )
-      }
-    end
+    it {
+      expect(subject).to contain_structured_data__def('thing').with(
+        { 'data' => [
+          'first',
+          'second',
+          %w[third fourth],
+          5,
+          6
+        ] }
+      )
+    }
   end
 end

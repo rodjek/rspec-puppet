@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-# hiera is not supported before 2.7
-describe 'test::hiera', if: Puppet.version.to_f >= 3.0 do
+describe 'test::hiera' do
   context 'with :hiera_config set' do
     let(:hiera_config) { 'spec/fixtures/hiera.yaml' }
 
@@ -15,7 +14,7 @@ describe 'test::hiera', if: Puppet.version.to_f >= 3.0 do
   end
 end
 
-describe 'hiera_test', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.9.0') >= 0 do
+describe 'hiera_test' do
   before do
     RSpec.configuration.disable_module_hiera = false
     RSpec.configuration.use_fixture_spec_hiera = false
@@ -106,7 +105,7 @@ describe 'hiera_test', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.9
   end
 end
 
-describe 'hiera_test2', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.9.0') >= 0 do
+describe 'hiera_test2' do
   before do
     RSpec.configuration.disable_module_hiera = false
     RSpec.configuration.use_fixture_spec_hiera = false

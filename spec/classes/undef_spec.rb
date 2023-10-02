@@ -47,7 +47,7 @@ describe 'undef_test' do
     end
   end
 
-  context 'with required_attribute => :undef', unless: Puppet.version =~ /^2/ do
+  context 'with required_attribute => :undef' do
     context 'and defaults_to_undef unspecified' do
       let(:params) { { required_attribute: :undef } }
 

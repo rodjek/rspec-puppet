@@ -88,18 +88,16 @@ module RSpec::Puppet
       with_vardir do
         env = adapter.current_environment
 
-        if Puppet.version.to_f >= 4.0
-          context_overrides = compiler.context_overrides
-          func = nil
-          loaders = Puppet.lookup(:loaders)
-          Puppet.override(context_overrides, 'rspec-test scope') do
-            func = V4FunctionWrapper.new(function_name,
-                                         loaders.private_environment_loader.load(:function, function_name), context_overrides)
-            @scope = context_overrides[:global_scope]
-          end
-
-          return func if func.func
+        context_overrides = compiler.context_overrides
+        func = nil
+        loaders = Puppet.lookup(:loaders)
+        Puppet.override(context_overrides, 'rspec-test scope') do
+          func = V4FunctionWrapper.new(function_name,
+                                        loaders.private_environment_loader.load(:function, function_name), context_overrides)
+          @scope = context_overrides[:global_scope]
         end
+
+        return func if func.func
 
         if Puppet::Parser::Functions.function(function_name)
           V3FunctionWrapper.new(function_name, scope.method("function_#{function_name}".intern))
@@ -157,46 +155,28 @@ module RSpec::Puppet
 
       node = build_node(node_name, node_options)
 
-      if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
-        Puppet.push_context(
-          {
-            trusted_information: Puppet::Context::TrustedInformation.new('remote', node_name, trusted_values)
-          },
-          'Context for spec trusted hash'
-        )
-      end
+      Puppet.push_context(
+        {
+          trusted_information: Puppet::Context::TrustedInformation.new('remote', node_name, trusted_values)
+        },
+        'Context for spec trusted hash'
+      )
 
       compiler = Puppet::Parser::Compiler.new(node)
       compiler.compile
-      if Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0
-        loaders = Puppet::Pops::Loaders.new(adapter.current_environment)
-        Puppet.push_context(
-          {
-            loaders: loaders,
-            global_scope: compiler.context_overrides[:global_scope]
-          },
-          'set globals'
-        )
-      end
+      loaders = Puppet::Pops::Loaders.new(adapter.current_environment)
+      Puppet.push_context(
+        {
+          loaders: loaders,
+          global_scope: compiler.context_overrides[:global_scope]
+        },
+        'set globals'
+      )
       compiler
     end
 
     def build_scope(compiler, node_name)
-      if Puppet.version.to_f >= 4.0
-        return compiler.context_overrides[:global_scope]
-      elsif /^2\.[67]/.match?(Puppet.version)
-        # loadall should only be necessary prior to 3.x
-        # Please note, loadall needs to happen first when creating a scope, otherwise
-        # you might receive undefined method `function_*' errors
-        Puppet::Parser::Functions.autoloader.loadall
-        scope = Puppet::Parser::Scope.new(compiler: compiler)
-      else
-        scope = Puppet::Parser::Scope.new(compiler)
-      end
-
-      scope.source = Puppet::Resource::Type.new(:node, node_name)
-      scope.parent = compiler.topscope
-      scope
+      compiler.context_overrides[:global_scope]
     end
 
     def build_node(name, opts = {})

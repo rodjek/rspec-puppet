@@ -20,7 +20,7 @@ describe 'test::basic' do
     it { is_expected.to contain_notify('test123.test.com') }
     it { is_expected.not_to contain_notify('notthis.test.com') }
 
-    context 'existing networking facts should not be clobbered', if: Puppet.version.to_f >= 4.0 do
+    context 'existing networking facts should not be clobbered' do
       let(:pre_condition) { 'notify { [$facts["networking"]["primary"], $facts["networking"]["hostname"]]: }' }
 
       it { is_expected.to contain_notify('eth0') }

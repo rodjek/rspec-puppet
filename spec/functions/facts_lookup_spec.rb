@@ -2,7 +2,7 @@
 
 require 'rspec-puppet'
 
-describe 'structured_facts::lookup', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 do
+describe 'structured_facts::lookup' do
   context 'with one set of values' do
     let(:facts) { { 'os' => { 'family' => 'RedHat' } } }
 

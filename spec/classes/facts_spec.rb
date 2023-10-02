@@ -8,7 +8,7 @@ family = 'RedHat'
 # with the description of "Facter should not downcast fact names".  The "mixed case in facts" tests this functionality.
 
 describe 'structured_facts::hash' do
-  context 'symbols and strings in facts', if: Puppet.version.to_f >= 4.0 do
+  context 'symbols and strings in facts' do
     let(:facts) do
       {
         os: {
@@ -23,7 +23,7 @@ describe 'structured_facts::hash' do
     it { is_expected.to contain_notify(family) }
   end
 
-  context 'only symbols in facts', if: Puppet.version.to_f >= 4.0 do
+  context 'only symbols in facts' do
     let(:facts) do
       {
         os: {
@@ -39,7 +39,7 @@ describe 'structured_facts::hash' do
   end
 
   # See note concerning mixed case in facts at the beginning of the file
-  context 'mixed case symbols in facts', if: Puppet.version.to_f >= 4.0 do
+  context 'mixed case symbols in facts' do
     let(:facts) do
       {
         oS: {
@@ -54,7 +54,7 @@ describe 'structured_facts::hash' do
     it { is_expected.to contain_notify(family) }
   end
 
-  context 'only strings in facts', if: Puppet.version.to_f >= 4.0 do
+  context 'only strings in facts' do
     let(:facts) do
       {
         'os' => {
@@ -70,7 +70,7 @@ describe 'structured_facts::hash' do
   end
 
   # See note concerning mixed case in facts at the beginning of the file
-  context 'mixed case strings in facts', if: Puppet.version.to_f >= 4.0 do
+  context 'mixed case strings in facts' do
     let(:facts) do
       {
         'oS' => {
@@ -166,7 +166,7 @@ describe 'structured_facts::top_scope' do
 end
 
 describe 'structured_facts::case_check' do
-  context 'mixed case in structure fact nested keys', if: Puppet.version.to_f >= 4.0 do
+  context 'mixed case in structure fact nested keys' do
     let(:facts) do
       {
         'custom_fact' => {

@@ -26,13 +26,9 @@ describe 'test::bare_class' do
       expect(RSpec::Puppet::Coverage.filters).to include('Class[Test::Bare_class]')
     end
 
-    # file and line information was only added to resources created with
-    # ensure_resource() in 4.6.0 (PUP-6530).
-    if Puppet::Util::Package.versioncmp(Puppet.version, '4.6.0') >= 0
-      it 'does not include resources from other modules created with create_resources()' do
-        expect(RSpec::Puppet::Coverage.instance.results[:resources]).not_to include('Notify[create_resources notify]')
-        expect(subject).to contain_notify('create_resources notify')
-      end
+    it 'does not include resources from other modules created with create_resources()' do
+      expect(RSpec::Puppet::Coverage.instance.results[:resources]).not_to include('Notify[create_resources notify]')
+      expect(subject).to contain_notify('create_resources notify')
     end
   end
 end

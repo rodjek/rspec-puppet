@@ -24,7 +24,7 @@ describe RSpec::Puppet::Adapters::Base do
 
     null_path = windows? ? 'c:/nul/' : '/dev/null'
 
-    %i[vardir confdir].each do |setting|
+    %i[vardir codedir rundir logdir hiera_config confdir].each do |setting|
       it "sets #{setting} to #{null_path}" do
         expect(Puppet[setting]).to eq(File.expand_path(null_path))
       end
@@ -77,124 +77,6 @@ describe RSpec::Puppet::Adapters::Base do
       end
     end
   end
-end
-
-describe RSpec::Puppet::Adapters::Adapter35, if: (3.5...4.0).cover?(Puppet.version.to_f) do
-  let(:test_context) { double environment: 'rp_env' }
-
-  context 'when running on puppet 3.5 or later', if: (3.5...4.0).cover?(Puppet.version.to_f) do
-    it 'sets Puppet[:strict_variables] to false by default' do
-      subject.setup_puppet(test_context)
-      expect(Puppet[:strict_variables]).to be(false)
-    end
-
-    it 'reads the :strict_variables setting' do
-      allow(test_context).to receive(:strict_variables).and_return true
-      subject.setup_puppet(test_context)
-      expect(Puppet[:strict_variables]).to be(true)
-    end
-  end
-end
-
-describe RSpec::Puppet::Adapters::Adapter34, if: (3.4...4.0).cover?(Puppet.version.to_f) do
-  let(:test_context) { double environment: 'rp_env' }
-
-  context 'when running on puppet 3.4 or later', if: (3.4...4.0).cover?(Puppet.version.to_f) do
-    it 'sets Puppet[:trusted_node_data] to false by default' do
-      subject.setup_puppet(test_context)
-      expect(Puppet[:trusted_node_data]).to be(false)
-    end
-
-    it 'reads the :trusted_node_data setting' do
-      allow(test_context).to receive(:trusted_node_data).and_return(true)
-      subject.setup_puppet(test_context)
-      expect(Puppet[:trusted_node_data]).to be(true)
-    end
-  end
-end
-
-describe RSpec::Puppet::Adapters::Adapter33, if: (3.3...4.0).cover?(Puppet.version.to_f) do
-  let(:test_context) { double environment: 'rp_env' }
-
-  context 'when running on puppet ~> 3.3', if: (3.3...4.0).cover?(Puppet.version.to_f) do
-    it 'sets Puppet[:stringify_facts] to true by default' do
-      subject.setup_puppet(test_context)
-      expect(Puppet[:stringify_facts]).to be(true)
-    end
-
-    it 'reads the :stringify_facts setting' do
-      allow(test_context).to receive(:stringify_facts).and_return false
-      subject.setup_puppet(test_context)
-      expect(Puppet[:stringify_facts]).to be(false)
-    end
-
-    it 'sets Puppet[:ordering] to title-hash by default' do
-      subject.setup_puppet(test_context)
-      expect(Puppet[:ordering]).to eq('title-hash')
-    end
-
-    it 'reads the :ordering setting' do
-      allow(test_context).to receive(:ordering).and_return('manifest')
-      subject.setup_puppet(test_context)
-      expect(Puppet[:ordering]).to eq('manifest')
-    end
-  end
-end
-
-describe RSpec::Puppet::Adapters::Adapter32, if: (3.2...4.0).cover?(Puppet.version.to_f) do
-  let(:test_context) { double environment: 'rp_env' }
-
-  context 'when running on puppet ~> 3.2', if: (3.2...4.0).cover?(Puppet.version.to_f) do
-    it 'sets Puppet[:parser] to "current" by default' do
-      subject.setup_puppet(test_context)
-      expect(Puppet[:parser]).to eq('current')
-    end
-
-    it 'reads the :parser setting' do
-      allow(test_context).to receive(:parser).and_return('future')
-      subject.setup_puppet(test_context)
-      expect(Puppet[:parser]).to eq('future')
-    end
-  end
-
-  describe 'default settings' do
-    before do
-      subject.setup_puppet(context_double)
-    end
-
-    null_path = windows? ? 'c:/nul/' : '/dev/null'
-
-    %i[vardir rundir logdir hiera_config confdir].each do |setting|
-      it "sets #{setting} to #{null_path}" do
-        expect(Puppet[setting]).to eq(File.expand_path(null_path))
-      end
-    end
-  end
-end
-
-describe RSpec::Puppet::Adapters::Adapter6X, if: (6.0...6.25).cover?(Puppet.version.to_f) do
-  let(:test_context) { double environment: 'rp_env' }
-
-  describe '#setup_puppet' do
-    describe 'when managing the facter_implementation' do
-      after do
-        Object.send(:remove_const, :FacterImpl) if defined? FacterImpl
-      end
-
-      it 'warns and falls back if hash implementation is set and facter runtime is not supported' do
-        context = context_double
-        allow(RSpec.configuration).to receive(:facter_implementation).and_return('rspec')
-        expect(subject).to receive(:warn)
-          .with("Facter runtime implementations are not supported in Puppet #{Puppet.version}, continuing with facter_implementation 'facter'")
-        subject.setup_puppet(context)
-        expect(FacterImpl).to be(Facter)
-      end
-    end
-  end
-end
-
-describe RSpec::Puppet::Adapters::Adapter6X, if: Puppet::Util::Package.versioncmp(Puppet.version, '6.25.0') >= 0 do
-  let(:test_context) { double environment: 'rp_env' }
 
   describe '#setup_puppet' do
     describe 'when managing the facter_implementation' do
@@ -233,56 +115,6 @@ describe RSpec::Puppet::Adapters::Adapter6X, if: Puppet::Util::Package.versioncm
         allow(RSpec.configuration).to receive(:facter_implementation).and_return('salam')
         expect { subject.setup_puppet(context) }
           .to raise_error(RuntimeError, "Unsupported facter_implementation 'salam'")
-      end
-    end
-  end
-end
-
-describe RSpec::Puppet::Adapters::Adapter4X, if: (4.0...6.0).cover?(Puppet.version.to_f) do
-  let(:test_context) { double environment: 'rp_env' }
-
-  it 'sets Puppet[:strict_variables] to false by default' do
-    subject.setup_puppet(test_context)
-    expect(Puppet[:strict_variables]).to be(false)
-  end
-
-  it 'reads the :strict_variables setting' do
-    allow(test_context).to receive(:strict_variables).and_return(true)
-    subject.setup_puppet(test_context)
-    expect(Puppet[:strict_variables]).to be(true)
-  end
-
-  it 'overrides the environmentpath set by Puppet::Test::TestHelper' do
-    allow(test_context).to receive(:environmentpath).and_return('/path/to/my/environments')
-    subject.setup_puppet(test_context)
-    expect(Puppet[:environmentpath]).to match(%r{(C:)?/path/to/my/environments})
-  end
-
-  describe '#manifest' do
-    it 'returns the configured environment manifest when set' do
-      allow(RSpec.configuration).to receive(:manifest).and_return('/path/to/manifest')
-      subject.setup_puppet(double(environment: 'rp_puppet'))
-      expect(subject.manifest).to match(%r{(C:)?/path/to/manifest})
-    end
-
-    it 'returns nil when the configured environment manifest is not set' do
-      allow(RSpec.configuration).to receive(:manifest)
-      allow(RSpec.configuration).to receive(:environmentpath).and_return('/some/missing/path:/another/missing/path')
-      subject.setup_puppet(double(environment: 'rp_puppet'))
-      expect(subject.manifest).to be_nil
-    end
-  end
-
-  describe 'default settings' do
-    before do
-      subject.setup_puppet(context_double)
-    end
-
-    null_path = windows? ? 'c:/nul/' : '/dev/null'
-
-    %i[vardir codedir rundir logdir hiera_config confdir].each do |setting|
-      it "sets #{setting} to #{null_path}" do
-        expect(Puppet[setting]).to eq(File.expand_path(null_path))
       end
     end
   end

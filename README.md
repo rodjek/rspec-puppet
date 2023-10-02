@@ -22,35 +22,17 @@
 
     gem install rspec-puppet
 
-> Note for ruby 1.8 users:  while rspec-puppet itself supports ruby 1.8, you'll
-> need to pin rspec itself to `~> 3.1.0`, as later rspec versions do not work
-> on old rubies anymore.
-
 ## Starting out with a new module
 
 When you start out on a new module, create a metadata.json file for your module and then run `rspec-puppet-init` to create the necessary files to configure rspec-puppet for your module's tests.
 
-
-## Configure manifests for Puppet 4
-
-With Puppet 3, the manifest is set to `$manifestdir/site.pp`. However Puppet 4 defaults to an empty value. In order to test manifests you will need to set appropriate settings.
-
-Puppet configuration reference for `manifest` can be found online:
-
-* Puppet 3: https://docs.puppet.com/puppet/3.8/reference/configuration.html#manifest
-* Puppet 4: https://docs.puppet.com/puppet/4.8/reference/configuration.html#manifest
-
 Configuration is typically done in a `spec/spec_helper.rb` file which each of your spec will require. Example code:
+
 ```ruby
-# /spec
-base_dir = File.dirname(File.expand_path(__FILE__))
-
 RSpec.configure do |c|
-  c.module_path     = File.join(base_dir, 'fixtures', 'modules')
-  c.manifest_dir    = File.join(base_dir, 'fixtures', 'manifests')
-  c.manifest        = File.join(base_dir, 'fixtures', 'manifests', 'site.pp')
+  c.module_path     = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'modules')
   c.environmentpath = File.join(Dir.pwd, 'spec')
-
+  c.manifest        = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests', 'site.pp')
   # Coverage generation
   c.after(:suite) do
     RSpec::Puppet::Coverage.report!
@@ -63,60 +45,59 @@ end
 rspec-puppet can be configured by modifying the `RSpec.configure` block in your
 `spec/spec_helper.rb` file.
 
-```
+```ruby
 RSpec.configure do |c|
   c.<config option> = <value>
 end
 ```
 
-#### manifest\_dir
-Type   | Default  | Puppet Version(s)
------- | -------- | -----------------
-String | Required | 2.x, 3.x
-
-The path to the directory containing your basic manifests like `site.pp`.
-
 #### module\_path
 Type   | Default  | Puppet Version(s)
 ------ | -------- | ------------------
-String | Required | 2.x, 3.x, 4.x, 5.x
+String | Required | any
 
 The path to the directory containing your Puppet modules.
 
 #### default\_facts
 Type | Default | Puppet Version(s)
 ---- | ------- | ------------------
-Hash | `{}`    | 2.x, 3.x, 4.x, 5.x
+Hash | `{}`    | any
 
 A hash of default facts that should be used for all the tests.
 
 #### hiera\_config
 Type   | Default       | Puppet Version(s)
 ------ | ------------- | -----------------
-String | `"/dev/null"` | 3.x, 4.x, 5.x
+String | `"/dev/null"` | any
 
 The path to your `hiera.yaml` file (if used).
+
+#### manifest
+Type   | Default                | Puppet Version(s)
+------ | ---------------------- | -----------------
+String | Puppet's default value | any
+
+Path to test manifest. Typically `spec/fixtures/manifests/site.pp`.
 
 #### default\_node\_params
 Type | Default | Puppet Version(s)
 ---- | ------- | -----------------
-Hash | `{}`    | 4.x, 5.x
+Hash | `{}`    | any
 
 A hash of default node parameters that should be used for all the tests.
 
 #### default\_trusted\_facts
 Type | Default | Puppet Version(s)
 ---- | ------- | -----------------
-Hash | `{}`    | 4.x, 5.x
+Hash | `{}`    | any
 
 A hash of default trusted facts that should be used for all the tests
-(available in the manifests as the `$trusted` hash). In order to use this, the
-`trusted_node_data` setting must be set to `true`.
+(available in the manifests as the `$trusted` hash).
 
 #### trusted\_node\_data
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `false` | >=3.4, 4.x, 5.x
+Boolean | `false` | any
 
 Configures rspec-puppet to use the `$trusted` hash when compiling the
 catalogues.
@@ -124,7 +105,7 @@ catalogues.
 #### trusted\_server\_facts
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `false` | >=4.3, 5.x
+Boolean | `false` | any
 
 Configures rspec-puppet to use the `$server_facts` hash when compiling the
 catalogues.
@@ -132,62 +113,28 @@ catalogues.
 #### confdir
 Type   | Default         | Puppet Version(s)
 ------ | --------------- | ------------------
-String | `"/etc/puppet"` | 2.x, 3.x, 4.x, 5.x
+String | `"/etc/puppet"` | any
 
 The path to the main Puppet configuration directory.
 
 #### config
 Type   | Default                | Puppet Version(s)
 ------ | ---------------------- | ------------------
-String | Puppet's default value | 2.x, 3.x, 4.x, 5.x
+String | Puppet's default value | any
 
 The path to `puppet.conf`.
-
-#### manifest
-Type   | Default                | Puppet Version(s)
------- | ---------------------- | -----------------
-String | Puppet's default value | 2.x, 3.x
-
-The entry-point manifest for Puppet, usually `$manifest_dir/site.pp`.
-
-#### template\_dir
-Type   | Default | Puppet Version(s)
------- | ------- | -----------------
-String | `nil`   | 2.x, 3.x
-
-The path to the directory that Puppet should search for templates that are
-stored outside of modules.
 
 #### environmentpath
 Type   | Default                               | Puppet Version(s)
 ------ | ------------------------------------- | -----------------
-String | `"/etc/puppetlabs/code/environments"` | 4.x, 5.x
+String | `"/etc/puppetlabs/code/environments"` | any
 
 The search path for environment directories.
-
-#### parser
-Type   | Default     | Puppet Version(s)
------- | ----------- | -----------------
-String | `"current"` | >= 3.2
-
-This switches between the 3.x (`current`) and 4.x (`future`) parsers.
-
-#### ordering
-Type   | Default        | Puppet Version(s)
------- | -------------- | -----------------
-String | `"title-hash"` | >= 3.3, 4.x, 5.x
-
-How unrelated resources should be ordered when applying a catalogue.
- * `manifest` - Use the order in which the resources are declared in the
-   manifest.
- * `title-hash` - Order the resources randomly, but in a consistent manner
-   across runs (the order will only change if the manifest changes).
- * `random` - Order the resources randomly.
 
 #### strict\_variables
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `false` | >= 3.5, 4.x, 5.x
+Boolean | `false` | any
 
 Makes Puppet raise an error when it tries to reference a variable that hasn't
 been defined (not including variables that have been explicitly set to
@@ -196,7 +143,7 @@ been defined (not including variables that have been explicitly set to
 #### stringify\_facts
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `true`  | >= 3.3, 4.x, 5.x
+Boolean | `true`  | any
 
 Makes rspec-puppet coerce all the fact values into strings (matching the
 behaviour of older versions of Puppet).
@@ -204,7 +151,7 @@ behaviour of older versions of Puppet).
 #### enable\_pathname\_stubbing
 Type    | Default | Puppet Version(s)
 ------- | ------- | ------------------
-Boolean |`false`  | 2.x, 3.x, 4.x, 5.x
+Boolean |`false`  | any
 
 Configures rspec-puppet to stub out `Pathname#absolute?` with it's own
 implementation. This should only be enabled if you're running into an issue
@@ -214,7 +161,7 @@ functions, etc) that use `Pathname#absolute?`.
 #### setup\_fixtures
 Type    | Default | Puppet Version(s)
 ------- | ------- | ------------------
-Boolean | `true`  | 2.x, 3.x, 4.x, 5.x
+Boolean | `true`  | any
 
 Configures rspec-puppet to automatically create a link from the root of your
 module to `spec/fixtures/<module name>` at the beginning of the test run.
@@ -222,7 +169,7 @@ module to `spec/fixtures/<module name>` at the beginning of the test run.
 #### derive\_node\_facts\_from\_nodename
 Type    | Default | Puppet Version(s)
 ------- | ------- | -----------------
-Boolean | `true`  | 2.x, 3.x, 4.x, 5.x
+Boolean | `true`  | any
 
 If `true`, rspec-puppet will override the `fdqn`, `hostname`, and `domain`
 facts with values that it derives from the node name (specified with
@@ -235,7 +182,7 @@ setting to `false`.
 #### facter\_implementation
 Type    | Default  | Puppet Version(s)
 ------- | -------- | -----------------
-String  | `facter` | 6.25+, 7.12+
+String  | `facter` | any
 
 Configures rspec-puppet to use a specific Facter implementation for running
 unit tests. If the `rspec` implementation is set and Puppet does not support
@@ -699,8 +646,6 @@ RSpec.configure do |c|
 end
 ```
 
-**NOTE** Setting top-scope variables is not supported in Puppet < 3.0.
-
 #### Specifying extra code to load (pre-conditions)
 
 If the manifest being tested relies on another class or variables to be set, these can be added via
@@ -752,7 +697,7 @@ let(:module_path) { '/path/to/your/module/dir' }
 
 #### Specifying trusted facts
 
-When testing with Puppet >= 4.3 the trusted facts hash will have the standard trusted fact keys
+The trusted facts hash will have the standard trusted fact keys
 (certname, domain, and hostname) populated based on the node name (as set with `:node`).
 
 By default, the test environment contains no custom trusted facts (as usually obtained
@@ -777,8 +722,7 @@ end
 
 #### Specifying trusted external data
 
-When testing with Puppet >= 6.14, the trusted facts hash will have an additional `external`
-key for trusted external data.
+The trusted facts hash will have an `external` key for trusted external data.
 
 By default, the test environment contains no trusted external data (as usually obtained from
 trusted external commands and found in the `external` key). If you need to test against specific

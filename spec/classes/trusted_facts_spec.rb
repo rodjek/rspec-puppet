@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'trusted_facts', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 do
+describe 'trusted_facts' do
   context 'FQDN as certname' do
     let(:node) { 'trusted.example.com' }
 

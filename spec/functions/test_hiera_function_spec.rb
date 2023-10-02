@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'test::hiera_function', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 do
+describe 'test::hiera_function' do
   context 'with :hiera_config set' do
     let(:hiera_config) { 'spec/fixtures/hiera.yaml' }
 

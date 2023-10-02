@@ -3,8 +3,7 @@
 require 'spec_helper'
 require 'rspec-puppet/support'
 
-# is_expected.to not available with rspec 2.14, which is only used for puppet < 3
-describe RSpec::Puppet::TypeAliasMatchers::AllowValue, if: Puppet.version.to_f >= 3.0 do
+describe RSpec::Puppet::TypeAliasMatchers::AllowValue do
   subject { described_class.new(values) }
 
   let(:catalogue) { double('catalogue builder') }

@@ -36,18 +36,10 @@ describe RSpec::Puppet::Support do
   end
 
   describe '#sensitive' do
-    context 'when using a version of Puppet that supports the Sensitive type', if: sensitive? do
-      it 'returns a new Sensitive with the given contents' do
-        sens = subject.sensitive('test content')
-        expect(sens).to be_sensitive
-        expect(sens.unwrap).to eq 'test content'
-      end
-    end
-
-    context 'when using a version of Puppet that does not support Sensitive', unless: sensitive? do
-      it 'raises an error' do
-        expect { subject.sensitive('test content') }.to raise_error
-      end
+    it 'returns a new Sensitive with the given contents' do
+      sens = subject.sensitive('test content')
+      expect(sens).to be_sensitive
+      expect(sens.unwrap).to eq 'test content'
     end
   end
 
@@ -141,10 +133,6 @@ describe RSpec::Puppet::Support do
         end
 
         def site_pp_str
-          ''
-        end
-
-        def import_str
           ''
         end
       end

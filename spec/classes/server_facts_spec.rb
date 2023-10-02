@@ -2,18 +2,13 @@
 
 require 'spec_helper'
 
-describe 'server_facts', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 do
-  context 'with server_facts' do
-    before do
-      RSpec.configuration.trusted_server_facts = true
-    end
-
-    let(:facts) do
-      {
-        ipaddress: '192.168.1.10'
-      }
-    end
-    let(:node) { 'test123.test.com' }
+describe 'server_facts' do
+  let(:facts) do
+    {
+      ipaddress: '192.168.1.10'
+    }
+  end
+  let(:node) { 'test123.test.com' }
 
     it { is_expected.to contain_class('server_facts') }
     it { is_expected.to compile.with_all_deps }

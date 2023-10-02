@@ -21,11 +21,7 @@ module RSpec::Puppet
     end
 
     def build_code(type, manifest_opts)
-      if (Puppet.version.to_f >= 4.0) || (Puppet[:parser] == 'future')
-        [site_pp_str, pre_cond, test_manifest(type, manifest_opts), post_cond].compact.join("\n")
-      else
-        [import_str, pre_cond, test_manifest(type, manifest_opts), post_cond].compact.join("\n")
-      end
+      [site_pp_str, pre_cond, test_manifest(type, manifest_opts), post_cond].compact.join("\n")
     end
 
     def guess_type_from_path(path)
@@ -88,7 +84,6 @@ module RSpec::Puppet
         hiera_data_value = respond_to?(:hiera_data) ? hiera_data : nil
 
         rspec_config_values = %i[
-          trusted_server_facts
           disable_module_hiera
           use_fixture_spec_hiera
           fixture_hiera_configs
@@ -124,30 +119,6 @@ module RSpec::Puppet
 
         catalogue
       end
-    end
-
-    def import_str
-      import_str = ''
-      adapter.modulepath.each do |d|
-        if File.exist?(File.join(d, 'manifests', 'init.pp'))
-          path_to_manifest = File.join([
-            d,
-            'manifests',
-            class_name.split('::')[1..]
-          ].flatten)
-          import_str = [
-            "import '#{d}/manifests/init.pp'",
-            "import '#{path_to_manifest}.pp'",
-            ''
-          ].join("\n")
-          break
-        elsif File.exist?(d)
-          import_str = "import '#{adapter.manifest}'\n"
-          break
-        end
-      end
-
-      import_str
     end
 
     def site_pp_str
@@ -302,8 +273,6 @@ module RSpec::Puppet
     end
 
     def trusted_facts_hash(_node_name)
-      return {} unless Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
-
       extensions = {}
 
       if RSpec.configuration.default_trusted_facts.any?
@@ -315,8 +284,6 @@ module RSpec::Puppet
     end
 
     def trusted_external_data_hash
-      return {} unless Puppet::Util::Package.versioncmp(Puppet.version, '6.14.0') >= 0
-
       external_data = {}
 
       if RSpec.configuration.default_trusted_external_data.any?
@@ -336,7 +303,7 @@ module RSpec::Puppet
       # And then add the server name and IP
       { 'servername' => 'fqdn',
         'serverip' => 'ipaddress' }.each do |var, fact|
-        if (value = FacterImpl.value(fact))
+        if (value = Puppet.runtime[:facter].value(fact))
           server_facts[var] = value
         else
           warn "Could not retrieve fact #{fact}"
@@ -344,8 +311,8 @@ module RSpec::Puppet
       end
 
       if server_facts['servername'].nil?
-        host = FacterImpl.value(:hostname)
-        server_facts['servername'] = if (domain = FacterImpl.value(:domain))
+        host = Puppet.runtime[:facter].value(:hostname)
+        server_facts['servername'] = if (domain = Puppet.runtime[:facter].value(:domain))
                                        [host, domain].join('.')
                                      else
                                        host
@@ -388,11 +355,6 @@ module RSpec::Puppet
     def setup_puppet
       vardir = Dir.mktmpdir
       Puppet[:vardir] = vardir
-
-      # Enable app_management by default for Puppet versions that support it
-      if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0 && Puppet.version.to_i < 5
-        Puppet[:app_management] = !ENV.include?('PUPPET_NOAPP_MANAGMENT')
-      end
 
       adapter.modulepath.map do |d|
         Dir["#{d}/*/lib"].entries
@@ -457,25 +419,23 @@ module RSpec::Puppet
       node_obj = Puppet::Node.new(nodename, { parameters: node_params, facts: node_facts })
 
       trusted_info = ['remote', nodename, trusted_facts_val]
-      trusted_info.push(trusted_external_data) if Puppet::Util::Package.versioncmp(Puppet.version, '6.14.0') >= 0
-      if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
-        Puppet.push_context(
-          {
-            trusted_information: Puppet::Context::TrustedInformation.new(*trusted_info)
-          },
-          'Context for spec trusted hash'
-        )
+      trusted_info.push(trusted_external_data)
+      Puppet.push_context(
+        {
+          trusted_information: Puppet::Context::TrustedInformation.new(*trusted_info)
+        },
+        'Context for spec trusted hash'
+      )
 
-        node_obj.add_server_facts(server_facts_hash) if RSpec.configuration.trusted_server_facts
-      end
+      node_obj.add_server_facts(server_facts_hash)
 
       adapter.catalog(node_obj, exported)
     end
 
     def stub_facts!(facts)
       Puppet.settings[:autosign] = false if Puppet.settings.include? :autosign
-      FacterImpl.clear
-      facts.each { |k, v| FacterImpl.add(k, weight: 999) { setcode { v } } }
+      Puppet.runtime[:facter].clear
+      facts.each { |k, v| Puppet.runtime[:facter].add(k, weight: 999) { setcode { v } } }
     end
 
     def build_catalog(*args)

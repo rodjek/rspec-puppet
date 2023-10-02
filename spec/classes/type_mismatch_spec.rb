@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'type_mismatch', if: Puppet.version.to_f >= 4.0 do
+describe 'type_mismatch' do
   it { is_expected.to compile.with_all_deps }
 
   it do

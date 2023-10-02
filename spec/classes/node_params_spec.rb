@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'node_params', if: Puppet::Util::Package.versioncmp(Puppet.version, '3.0.0') >= 0 do
+describe 'node_params' do
   fuzzed = {
     string: 'foo bar baz',
     hash: { 'foo' => 'bar', 'baz' => 'foo' },
@@ -27,7 +27,7 @@ describe 'node_params', if: Puppet::Util::Package.versioncmp(Puppet.version, '3.
     end
   end
 
-  it "doesn't leak to the facts hash", if: Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0 do
+  it "doesn't leak to the facts hash" do
     expect(subject).to contain_notify('stringfact').with(message: '')
   end
 end

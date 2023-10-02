@@ -36,9 +36,7 @@ require 'rspec-puppet/monkey_patches'
 RSpec.configure do |c|
   c.add_setting :environmentpath, default: Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
   c.add_setting :module_path, default: nil
-  c.add_setting :manifest_dir, default: nil
   c.add_setting :manifest, default: nil
-  c.add_setting :template_dir, default: nil
   c.add_setting :config, default: nil
   c.add_setting :confdir, default: Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
   c.add_setting :default_facts, default: {}
@@ -47,9 +45,6 @@ RSpec.configure do |c|
   c.add_setting :default_trusted_external_data, default: {}
   c.add_setting :facter_implementation, default: :facter
   c.add_setting :hiera_config, default: Puppet::Util::Platform.actually_windows? ? 'c:/nul/' : '/dev/null'
-  c.add_setting :parser, default: 'current'
-  c.add_setting :trusted_node_data, default: false
-  c.add_setting :ordering, default: 'title-hash'
   c.add_setting :stringify_facts, default: true
   c.add_setting :strict_variables, default: false
   c.add_setting :setup_fixtures, default: true
@@ -62,17 +57,6 @@ RSpec.configure do |c|
   c.add_setting :fixture_hiera_configs, default: {}
   c.add_setting :use_fixture_spec_hiera, default: false
   c.add_setting :fallback_to_default_hiera, default: true
-
-  c.instance_eval do
-    def trusted_server_facts
-      @trusted_server_facts.nil? ? false : @trusted_server_facts
-    end
-
-    def trusted_server_facts=(value)
-      @trusted_server_facts = value
-      adapter&.setup_puppet(RSpec::Puppet.current_example)
-    end
-  end
 
   c.before(:all) do
     RSpec::Puppet::Setup.safe_setup_directories(nil, false) if RSpec.configuration.setup_fixtures?
