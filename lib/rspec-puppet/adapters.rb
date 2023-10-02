@@ -101,7 +101,7 @@ module RSpec::Puppet
           {
             environments: loader,
             current_environment: env,
-            loaders: (Puppet::Pops::Loaders.new(env))
+            loaders: Puppet::Pops::Loaders.new(env)
           },
           'Setup rspec-puppet environments'
         )

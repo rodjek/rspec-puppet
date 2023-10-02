@@ -10,6 +10,7 @@ describe RSpec::Puppet::FunctionExampleGroup::V4FunctionWrapper do
 
   describe 'when calling with params' do
     subject { described_class.new(name, func, overrides) }
+
     it do
       expect(func).to receive(:call).with(global_scope, 1, 2).once
       subject.call({}, 1, 2)
@@ -18,6 +19,7 @@ describe RSpec::Puppet::FunctionExampleGroup::V4FunctionWrapper do
 
   describe 'when executing with params' do
     subject { described_class.new(name, func, overrides) }
+
     it do
       expect(func).to receive(:call).with(global_scope, 1, 2).once
       subject.execute(1, 2)

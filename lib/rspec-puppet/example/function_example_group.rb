@@ -93,7 +93,7 @@ module RSpec::Puppet
         loaders = Puppet.lookup(:loaders)
         Puppet.override(context_overrides, 'rspec-test scope') do
           func = V4FunctionWrapper.new(function_name,
-                                        loaders.private_environment_loader.load(:function, function_name), context_overrides)
+                                       loaders.private_environment_loader.load(:function, function_name), context_overrides)
           @scope = context_overrides[:global_scope]
         end
 
@@ -175,7 +175,7 @@ module RSpec::Puppet
       compiler
     end
 
-    def build_scope(compiler, node_name)
+    def build_scope(compiler, _node_name)
       compiler.context_overrides[:global_scope]
     end
 

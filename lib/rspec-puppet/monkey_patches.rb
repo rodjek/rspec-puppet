@@ -284,7 +284,7 @@ module Puppet
         unless mod
           raise Puppet::DataBinding::LookupError,
                 format(_("Environment '%<env>s', cannot find module '%<module_name>s'"), env: env.name,
-                                                                                          module_name: module_name)
+                                                                                         module_name: module_name)
         end
 
         return Pathname.new(mod.hiera_conf_file)

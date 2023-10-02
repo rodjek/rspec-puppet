@@ -8,6 +8,7 @@ def context_double(options = {})
 end
 
 describe RSpec::Puppet::Adapters::Base do
+  let(:test_context) { double environment: 'rp_env' }
   describe '#setup_puppet' do
     it 'sets up all settings listed in the settings map' do
       context = context_double
@@ -29,6 +30,25 @@ describe RSpec::Puppet::Adapters::Base do
         expect(Puppet[setting]).to eq(File.expand_path(null_path))
       end
     end
+  end
+
+  it 'sets Puppet[:strict_variables] to false by default' do
+    subject.setup_puppet(test_context)
+    # strict variables enabled by default in puppet 8.x +
+    setting = Puppet::Util::Package.versioncmp(Puppet.version, '8.0.0') >= 0
+    expect(Puppet[:strict_variables]).to be(setting)
+  end
+
+  it 'reads the :strict_variables setting' do
+    allow(test_context).to receive(:strict_variables).and_return true
+    subject.setup_puppet(test_context)
+    expect(Puppet[:strict_variables]).to be(true)
+  end
+
+  it 'overrides the environmentpath set by Puppet::Test::TestHelper' do
+    allow(test_context).to receive(:environmentpath).and_return('/path/to/my/environments')
+    subject.setup_puppet(test_context)
+    expect(Puppet[:environmentpath]).to match(%r{(C:)?/path/to/my/environments})
   end
 
   describe '#set_setting' do

@@ -177,7 +177,6 @@ describe RSpec::Puppet::ManifestMatchers::Compile do
 
       before { subject.and_raise_error(expected_error) }
 
-      let(:error_detail) { 'failure (line: 52, column: 1)' }
       it('matches') { is_expected.to be_matches catalogue }
 
       it {
