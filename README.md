@@ -8,7 +8,6 @@
 
 * [Installation](#installation)
 * [Starting out with a new module](#starting-out-with-a-new-module)
-* [Configure manifests for Puppet 4](#configure-manifests-for-puppet-4)
 * [Configuration](#configuration)
 * [Naming conventions](#naming-conventions)
 * [Example groups](#example-groups)
@@ -997,23 +996,26 @@ end
 ```
 
 Resources declared outside of the module being tested (i.e. forge dependencies)
-are automatically removed from the coverage report. There is one exception for
-this though: **prior to Puppet 4.6.0**, resources created by functions
-(create\_resources(), ensure\_package(), etc) did not have the required
-information in them to determine which manifest they came from and so can not
-be excluded from the coverage report.
+are automatically removed from the coverage report.
 
 ## Related projects
 
 * [puppetlabs_spec_helper](https://github.com/puppetlabs/puppetlabs_spec_helper): shared spec helpers to setup puppet
-* [rspec-puppet-augeas](https://github.com/domcleal/rspec-puppet-augeas): RSpec tests for Augeas resources inside Puppet manifests
-* [jimdo-rspec-puppet-helpers](https://github.com/Jimdo/jimdo-rspec-puppet-helpers): Tests the contents of a file with a source
-* Ease development of specs
-  * [puppet-catalog_rspec](https://github.com/enterprisemodules/puppet-catalog_rspec): Dump the Puppet Catalog as RSpec code at compile time
-  * [create_specs](https://github.com/alexharv074/create_specs.git): A different implementation that takes a compiled catalog and writes out RSpec code with various options
 * Fact providers
-  * [rspec-puppet-facts](https://github.com/mcanevet/rspec-puppet-facts): Simplify your unit tests by looping on every supported Operating System and populating facts.
-  * [rspec-puppet-osmash](https://github.com/Aethylred/rspec-puppet-osmash): Provides Operation System hashes and validations for rspec-puppet
-  * [puppet_spec_facts](https://github.com/danieldreier/puppet_spec_facts): Gem to provide puppet fact hashes for rspec-puppet testing
+  * [rspec-puppet-facts](https://github.com/voxpupuli/rspec-puppet-facts): Simplify your unit tests by looping on every supported Operating System and populating facts.
 
 For a list of other module development tools see [DevX Tools](https://puppetlabs.github.io/content-and-tooling-team/tools/), or from our trusted Voxpupuli community [here](https://voxpupuli.org/plugins/).
+
+## Reporting bugs or incorrect results
+
+If you find a bug in Puppet Lint or its results, please create an issue in the repo issues tracker. Bonus points will be awarded if you also include a patch that fixes the issue.
+
+## Development
+
+If you run into an issue with this tool or would like to request a feature you can raise a PR with your suggested changes. Alternatively, you can raise a Github issue with a feature request or to report any bugs. Every other Tuesday the DevX team holds office hours in the Puppet Community Slack, where you can ask questions about this and any other supported tools. This session runs at 15:00 (GMT/BST) for about an hour.
+
+If you have problems getting this tool up and running, please contact Support.
+
+## Thank you
+
+Many thanks to the original author of rspec-puppet Tim Sharpe (@rodjek).
