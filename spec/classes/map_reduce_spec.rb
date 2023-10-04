@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'map_reduce', if: (Puppet.version.to_f >= 4.0 || RSpec.configuration.parser == 'future') do
+describe 'map_reduce' do
   let(:params) do
     {
       values: [0, 1, 2]

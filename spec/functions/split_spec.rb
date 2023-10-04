@@ -6,25 +6,13 @@ describe 'split' do
   it { is_expected.to run.with_params('aoeu', 'o').and_return(%w[a eu]) }
   it { is_expected.not_to run.with_params('foo').and_raise_error(Puppet::DevError) }
 
-  expected_error = if Puppet::Util::Package.versioncmp(Puppet.version, '3.1.0') >= 0
-                     ArgumentError
-                   else
-                     Puppet::ParseError
-                   end
-
-  expected_error_message = if Puppet::Util::Package.versioncmp(Puppet.version, '4.3.0') >= 0
-                             /expects \d+ arguments/
-                           elsif Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0
-                             /mis-matched arguments/
-                           else
-                             /number of arguments/
-                           end
+  expected_error = ArgumentError
 
   it { is_expected.to run.with_params('foo').and_raise_error(expected_error) }
 
-  it { is_expected.to run.with_params('foo').and_raise_error(expected_error, expected_error_message) }
+  it { is_expected.to run.with_params('foo').and_raise_error(ArgumentError, /expects \d+ arguments/) }
 
-  it { is_expected.to run.with_params('foo').and_raise_error(expected_error_message) }
+  it { is_expected.to run.with_params('foo').and_raise_error(/expects \d+ arguments/) }
 
   it {
     expect do

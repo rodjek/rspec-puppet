@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Aliases::Shape', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.4.0') >= 0 do
+describe 'Aliases::Shape' do
   it { is_expected.to allow_value('square') }
   it { is_expected.to allow_value('circle') }
   it { is_expected.not_to allow_value('triangle') }

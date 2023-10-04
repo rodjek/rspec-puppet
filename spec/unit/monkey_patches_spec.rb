@@ -133,19 +133,11 @@ end
 
 describe 'Puppet::Module#match_manifests' do
   subject do
-    if Puppet::Module.instance_method(:initialize).arity == -2
-      Puppet::Module.new(
-        'escape',
-        path: File.join(RSpec.configuration.module_path, 'escape'),
-        environment: 'production'
-      )
-    else
-      Puppet::Module.new(
-        'escape',
-        File.join(RSpec.configuration.module_path, 'escape'),
-        'production'
-      )
-    end
+    Puppet::Module.new(
+      'escape',
+      File.join(RSpec.configuration.module_path, 'escape'),
+      'production'
+    )
   end
 
   it 'returns init.pp for top level class' do

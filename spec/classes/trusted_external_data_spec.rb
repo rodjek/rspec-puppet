@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'trusted_external_data', if: Puppet::Util::Package.versioncmp(Puppet.version, '6.14.0') >= 0 do
+describe 'trusted_external_data' do
   context 'no trusted external data' do
     it { is_expected.to contain_class('trusted_external_data') }
     it { is_expected.to compile.with_all_deps }

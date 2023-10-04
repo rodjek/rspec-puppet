@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'relationships::type_with_auto', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.0.0') >= 0 do
+describe 'relationships::type_with_auto' do
   it { is_expected.to compile.with_all_deps }
 
   it do

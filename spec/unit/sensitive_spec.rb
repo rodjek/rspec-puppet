@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rspec-puppet/sensitive'
 
-describe RSpec::Puppet::Sensitive, if: sensitive? do
+describe RSpec::Puppet::Sensitive do
   subject(:sensitive) { described_class.new contents }
 
   let(:contents) { double :contents }
@@ -26,7 +26,7 @@ describe RSpec::Puppet::Sensitive, if: sensitive? do
     end
   end
 
-  describe '#==', if: Puppet::Util::Package.versioncmp(Puppet.version, '4.6.0') >= 0 do
+  describe '#==' do
     it 'compares equal to Puppet sensitive type' do
       expect(sensitive).to eq Puppet::Pops::Types::PSensitiveType::Sensitive.new contents
     end

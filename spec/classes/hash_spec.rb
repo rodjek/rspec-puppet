@@ -20,21 +20,11 @@ describe 'structured_data' do
       { 'data' => { 1 => 'uno', 2 => 'dos' } }
     end
 
-    context 'puppet less than 4', unless: Puppet.version.to_f >= 4.0 do
-      it {
-        expect(subject).to contain_structured_data__def('thing').with(
-          { 'data'  => { '1' => 'uno', '2' => 'dos' } }
-        )
-      }
-    end
-
-    context 'puppet 4 or greater', if: Puppet.version.to_f >= 4.0 do
-      it {
-        expect(subject).to contain_structured_data__def('thing').with(
-          { 'data'  => { 1 => 'uno', 2 => 'dos' } }
-        )
-      }
-    end
+    it {
+      expect(subject).to contain_structured_data__def('thing').with(
+        { 'data' => { 1 => 'uno', 2 => 'dos' } }
+      )
+    }
   end
 
   describe 'with integers as values' do
