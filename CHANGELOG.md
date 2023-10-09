@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v4.0.0](https://github.com/puppetlabs/rspec-puppet/tree/v4.0.0) - 2023-10-09
+
+[Full Changelog](https://github.com/puppetlabs/rspec-puppet/compare/v3.0.0...v4.0.0)
+
+### Changed
+- (CAT-1226) - Remove Compatibility for Puppet 7.10 and below [#73](https://github.com/puppetlabs/rspec-puppet/pull/73) ([jordanbreen28](https://github.com/jordanbreen28))
+- Drop RSpec 2 & Ruby 1 compatiblity [#67](https://github.com/puppetlabs/rspec-puppet/pull/67) ([ekohl](https://github.com/ekohl))
+- Remove puppet applications support [#54](https://github.com/puppetlabs/rspec-puppet/pull/54) ([nabertrand](https://github.com/nabertrand))
+
+### Fixed
+
+- Avoid hardcoding ipaddress6 default [#61](https://github.com/puppetlabs/rspec-puppet/pull/61) ([ekohl](https://github.com/ekohl))
+
 ## [v3.0.0](https://github.com/puppetlabs/rspec-puppet/tree/v3.0.0) - 2023-04-25
 
 [Full Changelog](https://github.com/puppetlabs/rspec-puppet/compare/v3.0.0.rc.1...v3.0.0)
@@ -13,12 +26,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 [Full Changelog](https://github.com/puppetlabs/rspec-puppet/compare/v2.12.0...v3.0.0.rc.1)
 
+### Changed
+- (CONT-808) Ruby 3 / Puppet 8 Support [#48](https://github.com/puppetlabs/rspec-puppet/pull/48) ([chelnak](https://github.com/chelnak))
+
 ### Added
 
 - Support dot-notation when retrieving facts in facter_impl [#46](https://github.com/puppetlabs/rspec-puppet/pull/46) ([alexjfisher](https://github.com/alexjfisher))
-
-### Changed
-- (CONT-808) Ruby 3 / Puppet 8 Support [#48](https://github.com/puppetlabs/rspec-puppet/pull/48) ([chelnak](https://github.com/chelnak))
 
 ### Fixed
 
