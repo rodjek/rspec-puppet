@@ -93,14 +93,6 @@ Hash | `{}`    | any
 A hash of default trusted facts that should be used for all the tests
 (available in the manifests as the `$trusted` hash).
 
-#### trusted\_node\_data
-Type    | Default | Puppet Version(s)
-------- | ------- | -----------------
-Boolean | `false` | any
-
-Configures rspec-puppet to use the `$trusted` hash when compiling the
-catalogues.
-
 #### confdir
 Type   | Default         | Puppet Version(s)
 ------ | --------------- | ------------------
