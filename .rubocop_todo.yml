@@ -202,12 +202,6 @@ RSpec/DescribeClass:
 RSpec/ExampleLength:
   Max: 12
 
-# Offense count: 16
-# Configuration parameters: Include, CustomTransform, IgnoreMethods, SpecSuffixOnly.
-# Include: **/*_spec*rb*, **/spec/**/*
-RSpec/FilePath:
-  Enabled: false
-
 # Offense count: 2
 RSpec/ImplicitBlockExpectation:
   Exclude:
